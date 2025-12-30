@@ -5,6 +5,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use strict type checking
 - Prefer type inference when the type is obvious
 - Avoid the `any` type; use `unknown` when type is uncertain
+- Use `readonly` for properties that should not be modified
+- Do NOT use `public` modifier, it's the default visibility
 
 ## Angular Best Practices
 
@@ -53,3 +55,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## General
+
+- Use comments and JSDoc to explain HOW and WHY only, not WHAT. Code should be self-explanatory.
+- When creating bash commands assume the user is using Git Bash for Windows and the working directory is the project root.
