@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { BoardService } from './board.service';
+import { EngineService } from '../engine';
 import { GameState, GameActionType, Player, TurnInfo } from './board.model';
 
 describe('BoardService', () => {
@@ -29,7 +31,10 @@ describe('BoardService', () => {
   });
 
   beforeEach(() => {
-    service = new BoardService();
+    TestBed.configureTestingModule({
+      providers: [BoardService, EngineService]
+    });
+    service = TestBed.inject(BoardService);
   });
 
   describe('initialization', () => {
@@ -283,7 +288,9 @@ describe('BoardService', () => {
 
     it('should track multiple actions in history', () => {
       service.playItem('sword', 'player1');
-      service.playItem('shield', 'player1');
+      // After first playItem, turn advances to player2
+      service.playItem('shield', 'player2');
+      // After second playItem, turn advances back to player1
       service.surrender('player1');
 
       expect(service.actionHistory().length).toBe(3);
@@ -294,8 +301,8 @@ describe('BoardService', () => {
 
     it('should not add failed actions to history', () => {
       service.playItem('sword', 'player1');
-      service.playItem('sword', 'player2'); // fails - not their turn
-      service.playItem('nonexistent', 'player1'); // fails - item not found
+      // After first playItem, turn advances to player2
+      service.playItem('nonexistent', 'player2'); // fails - item not found
 
       expect(service.actionHistory().length).toBe(1);
     });

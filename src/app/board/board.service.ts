@@ -1,10 +1,12 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { GameState, Player, TurnInfo, GameAction, GameActionType, GameActionResult, Item } from './board.model';
+import { EngineService } from '../engine';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BoardService {
+  private readonly engineService = inject(EngineService);
   private gameStateSignal = signal<GameState | null>(null);
   private actionHistorySignal = signal<GameAction[]>([]);
 
@@ -29,8 +31,23 @@ export class BoardService {
   actionHistory = computed(() => this.actionHistorySignal());
 
   initializeGame(gameState: GameState): void {
-    this.gameStateSignal.set(gameState);
+    // Calculate turn order based on speed - higher speed goes first
+    const [currentPlayerId, nextPlayerId] = gameState.player.speed >= gameState.opponent.speed
+      ? [gameState.player.id, gameState.opponent.id]
+      : [gameState.opponent.id, gameState.player.id];
+
+    const updatedGameState: GameState = {
+      ...gameState,
+      turnInfo: {
+        currentPlayerId,
+        nextPlayerId,
+        turnQueue: [currentPlayerId, nextPlayerId]
+      }
+    };
+
+    this.gameStateSignal.set(updatedGameState);
     this.actionHistorySignal.set([]);
+    this.engineService.initializeGame(gameState.player, gameState.opponent);
   }
 
   updateGameState(newGameState: GameState): void {
@@ -84,13 +101,56 @@ export class BoardService {
       };
     }
 
+    // Delegate item effect calculation to engine
+    this.engineService.play(itemName);
+
     const action = this.createAction(GameActionType.PLAY_ITEM, playerId, itemName);
     this.actionHistorySignal.update((history) => [...history, action]);
+
+    // Advance to next player's turn
+    this.advanceTurn();
 
     return {
       success: true,
       action,
-      newGameState: currentState
+      newGameState: this.gameStateSignal() ?? undefined
+    };
+  }
+
+  pass(playerId: string): GameActionResult {
+    const currentState = this.gameStateSignal();
+
+    if (!currentState) {
+      return {
+        success: false,
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId),
+        error: 'Game has not been initialized'
+      };
+    }
+
+    if (currentState.isGameOver) {
+      return {
+        success: false,
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId),
+        error: 'Game is already over'
+      };
+    }
+
+    if (currentState.turnInfo.currentPlayerId !== playerId) {
+      return {
+        success: false,
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId),
+        error: 'Not your turn'
+      };
+    }
+
+    // Advance to next player's turn
+    this.advanceTurn();
+
+    return {
+      success: true,
+      action: this.createAction(GameActionType.PLAY_ITEM, playerId),
+      newGameState: this.gameStateSignal() ?? undefined
     };
   }
 
@@ -168,6 +228,22 @@ export class BoardService {
   resetGame(): void {
     this.gameStateSignal.set(null);
     this.actionHistorySignal.set([]);
+  }
+
+  private advanceTurn(): void {
+    const currentState = this.gameStateSignal();
+    if (!currentState) return;
+
+    const updatedGameState: GameState = {
+      ...currentState,
+      turnInfo: {
+        currentPlayerId: currentState.turnInfo.nextPlayerId,
+        nextPlayerId: currentState.turnInfo.currentPlayerId,
+        turnQueue: currentState.turnInfo.turnQueue
+      }
+    };
+
+    this.gameStateSignal.set(updatedGameState);
   }
 
   private getPlayerById(playerId: string, gameState: GameState | null): Player | null {
