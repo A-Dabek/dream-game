@@ -1,13 +1,7 @@
-import {Item as BaseItem} from '../item';
+import {EngineLoadout} from '../engine';
 
-export interface Item extends BaseItem {}
-
-export interface Player {
+export interface BoardLoadout extends EngineLoadout {
   id: string;
-  name: string;
-  health: number;
-  items: Item[];
-  speed: number;
 }
 
 export interface TurnInfo {
@@ -17,11 +11,12 @@ export interface TurnInfo {
 }
 
 export interface GameState {
-  player: Player;
-  opponent: Player;
+  player: BoardLoadout;
+  opponent: BoardLoadout;
   turnInfo: TurnInfo;
   isGameOver: boolean;
   winnerId?: string;
+  actionHistory: GameAction[];
 }
 
 export enum GameActionType {

@@ -2,111 +2,130 @@
 
 ## Overview
 
-Interface layer between players and the game engine. Manages game state, validates player actions, tracks action history, and coordinates turn management. Uses Angular signals for reactive state updates.
+Interface layer between players and the game engine. Manages game state, validates player actions, tracks action history, and coordinates turn management. The core logic is encapsulated in the `Board` class.
 
 ## Core Files
 
 - `board.model.ts` - Type definitions and enums
-- `board.service.ts` - Game orchestration and action handling
-- `index.ts` - Public exports
+- `board.ts` - Core game logic and state management
+- `turn-manager.ts` - Infinite turn sequence generator based on player speed
+- `index.ts` - Public export
 
 ## Key Concepts
 
 **GameState**: Complete game snapshot containing both players, turn information, and game status.
 
-**Action Validation**: All player actions (PLAY_ITEM, SURRENDER, PASS) are validated before execution. Invalid actions fail gracefully without state mutation.
+**Action Validation**: All player actions (PLAY_ITEM, SURRENDER, PASS) are validated before execution. Invalid actions throw an error without state mutation.
 
-**Turn Management**: Turns alternate between players automatically after successful actions. Turn order determined by player speed at game initialization.
+**Turn Management**: Turns are distributed continuously based on player speed (Bresenham-like algorithm). Speed 13 vs 16 means 13 turns out of 29 for player 1, distributed as equally as possible.
 
-**Action History**: Immutable record of all successful actions. Failed actions are not recorded.
+**Action History**: record of all successful actions. Failed actions are not recorded.
 
-**Engine Delegation**: Item effect calculations delegated to EngineService. BoardService handles validation and state transitions only.
+**Engine Delegation**: Item effect calculations delegated to Engine. Board handles validation and state transitions.
 
 ## Data Models
 
 GameState contains:
-- `player: Player` - First player in match
-- `opponent: Player` - Second player in match
-- `turnInfo: TurnInfo` - Current and next player IDs plus turn queue
+
+- `player: BoardLoadout` - First player in match
+- `opponent: BoardLoadout` - Second player in match
+- `turnInfo: TurnInfo` - Current and next player IDs
 - `isGameOver: boolean` - Match completion status
 - `winnerId?: string` - Optional winning player ID
+- `actionHistory: GameAction[]` - record of all successful actions. Failed actions are not recorded.
 
 Player contains:
+
 - `id: string` - Unique identifier
 - `name: string` - Display name
 - `health: number` - Current health value
 - `items: Item[]` - Available items to play
-- `speed: number` - Turn order priority (higher speed = first turn)
+- `speed: number` - Turn order priority (higher speed = more frequent turns)
 
 GameActionType enum: PLAY_ITEM, SURRENDER
 
-## API
+## API (`Board` Class)
 
 ### Initialization
 
-**initializeGame(gameState: GameState): void**
-- Sets initial game state
-- Calculates turn order based on player speed (higher speed goes first)
-- Resets action history
-- Initializes engine with both players
+**new Board(player: BoardLoadout, opponent: BoardLoadout)**
+
+- Initializes with two player loadouts.
+- Automatically calculates initial turn order based on player speeds.
+- Continuous turn order logic based on player speed.
+- Starts with empty action history within the game state.
 
 ### Player Actions
 
-**playItem(itemName: string, playerId: string): GameActionResult**
+**playItem(itemId: ItemId, playerId: string): GameActionResult**
+
 - Validates item exists in player inventory
 - Validates it's player's turn
 - Delegates item effect to engine
 - Advances turn on success
-- Returns GameActionResult with success status and action details
+- Mutates the board state and returns GameActionResult
 
 **pass(playerId: string): GameActionResult**
+
 - Validates it's player's turn
-- Skips to next player's turn
-- Returns GameActionResult
+- Skips to next player's turn based on speed distribution
+- Mutates the board state and returns GameActionResult
 
 **surrender(playerId: string): GameActionResult**
+
 - Validates player exists
 - Ends game with surrendering player as loser
-- Returns GameActionResult
+- Mutates the board state and returns GameActionResult
 
-### State Queries (Computed Signals - Read-Only)
+### State Queries (Properties/Getters)
 
-- `gameState` - Current complete game state
-- `playerHealth` - Current player health (defaults to 0 if null)
-- `opponentHealth` - Opponent health (defaults to 0 if null)
-- `playerItems` - Current player items (defaults to empty array)
-- `opponentItems` - Opponent items (defaults to empty array)
-- `currentTurn` - Current turn information
+- `gameState` - Current complete game state snapshot (includes player stats, turn info, and action history)
 - `isGameOver` - Game completion status
+- `playerHealth` - Current player health
+- `opponentHealth` - Opponent health
 - `currentPlayerId` - ID of player whose turn it is
 - `nextPlayerId` - ID of next player
-- `actionHistory` - All successful actions in chronological order
+
+### Simulation
+
+**clone(): Board**
+
+- Returns a deep clone of the current `Board` instance.
+- Use `clone.playItem()`, `clone.pass()`, or `clone.surrender()` to explore future scenarios without affecting the original board.
+
+## API (`TurnManager` Class)
+
+Responsible for calculating and managing the turn order. Uses a Bresenham-like algorithm for equal distribution based on player speed.
+
+- `getNextTurns(count: number): string[]` - Returns next X turns without advancing.
+- `nextTurns` - Getter returning next 10 turns.
+- `advanceTurn(): void` - Consumes current turn.
+- `refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void` - Resets distribution with new speeds and starting player.
+- `clone(): TurnManager` - Creates a deep copy of the manager, preserving sequence state.
 
 ### Helper Methods
 
 **getOpponentId(playerId: string): string | null**
+
 - Returns opponent ID for given player
 - Returns null if player not in current game
 
 **isPlayersTurn(playerId: string): boolean**
+
 - True if given player is current player
 
-**playerHasItem(playerId: string, itemName: string): boolean**
+**playerHasItem(playerId: string, itemId: ItemId): boolean**
+
 - True if player owns item
 
 **getPlayerHealth(playerId: string): number | null**
+
 - Returns player's current health or null if player not found
-
-**updateGameState(newGameState: GameState): void**
-- Directly updates game state (use sparingly, prefer action methods)
-
-**resetGame(): void**
-- Clears game state and action history
 
 ## Validation Rules
 
-Action fails if:
-- Game not initialized
+Action throws an error if:
+
 - Game is over
 - Not player's turn (applies to PLAY_ITEM and PASS only)
 - Player not found in game
@@ -114,8 +133,10 @@ Action fails if:
 
 ## Implementation Notes
 
-- All state updates immutable; new GameState objects created
-- Turn advances automatically after successful PLAY_ITEM or PASS
-- Failed actions return result with error message; state unchanged
-- Action history tracks successful actions only with timestamps
-- Engine state synchronized via EngineService.initializeGame() and EngineService.play()
+- `Board` is a plain class that maintains its own state.
+- `Board` creates a single `Engine` instance in its constructor and maintains it throughout its life.
+- Turn advances automatically after successful PLAY_ITEM or PASS.
+- Turn distribution is continuous and based on player speeds.
+- Invalid actions throw an error; state unchanged.
+- Action history tracks successful actions only with timestamps.
+- Simulation is supported via the `clone()` method.
