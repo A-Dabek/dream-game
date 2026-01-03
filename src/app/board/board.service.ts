@@ -1,6 +1,6 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
-import { GameState, Player, TurnInfo, GameAction, GameActionType, GameActionResult, Item } from './board.model';
-import { EngineService } from '../engine';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import {EngineService} from '../engine';
+import {GameAction, GameActionResult, GameActionType, GameState, Player} from './board.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,26 +8,16 @@ import { EngineService } from '../engine';
 export class BoardService {
   private readonly engineService = inject(EngineService);
   private gameStateSignal = signal<GameState | null>(null);
-  private actionHistorySignal = signal<GameAction[]>([]);
-
   gameState = computed(() => this.gameStateSignal());
-
   playerHealth = computed(() => this.gameStateSignal()?.player.health ?? 0);
-
   opponentHealth = computed(() => this.gameStateSignal()?.opponent.health ?? 0);
-
   playerItems = computed(() => this.gameStateSignal()?.player.items ?? []);
-
   opponentItems = computed(() => this.gameStateSignal()?.opponent.items ?? []);
-
   currentTurn = computed(() => this.gameStateSignal()?.turnInfo);
-
   isGameOver = computed(() => this.gameStateSignal()?.isGameOver ?? false);
-
   currentPlayerId = computed(() => this.gameStateSignal()?.turnInfo.currentPlayerId);
-
   nextPlayerId = computed(() => this.gameStateSignal()?.turnInfo.nextPlayerId);
-
+  private actionHistorySignal = signal<GameAction[]>([]);
   actionHistory = computed(() => this.actionHistorySignal());
 
   initializeGame(gameState: GameState): void {
@@ -54,13 +44,13 @@ export class BoardService {
     this.gameStateSignal.set(newGameState);
   }
 
-  playItem(itemName: string, playerId: string): GameActionResult {
+  playItem(itemId: ItemId, playerId: string): GameActionResult {
     const currentState = this.gameStateSignal();
 
     if (!currentState) {
       return {
         success: false,
-        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemName),
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemId),
         error: 'Game has not been initialized'
       };
     }
@@ -68,7 +58,7 @@ export class BoardService {
     if (currentState.isGameOver) {
       return {
         success: false,
-        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemName),
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemId),
         error: 'Game is already over'
       };
     }
@@ -76,7 +66,7 @@ export class BoardService {
     if (currentState.turnInfo.currentPlayerId !== playerId) {
       return {
         success: false,
-        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemName),
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemId),
         error: 'Not your turn'
       };
     }
@@ -86,25 +76,25 @@ export class BoardService {
     if (!player) {
       return {
         success: false,
-        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemName),
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemId),
         error: 'Player not found'
       };
     }
 
-    const itemExists = player.items.some((item) => item.name === itemName);
+    const itemExists = player.items.some((item) => item.id === itemId);
 
     if (!itemExists) {
       return {
         success: false,
-        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemName),
-        error: `Item '${itemName}' not found in player's inventory`
+        action: this.createAction(GameActionType.PLAY_ITEM, playerId, itemId),
+        error: `Item '${itemId}' not found in player's inventory`
       };
     }
 
     // Delegate item effect calculation to engine
-    this.engineService.play(itemName);
+    this.engineService.play(itemId);
 
-    const action = this.createAction(GameActionType.PLAY_ITEM, playerId, itemName);
+    const action = this.createAction(GameActionType.PLAY_ITEM, playerId, itemId);
     this.actionHistorySignal.update((history) => [...history, action]);
 
     // Advance to next player's turn
@@ -215,9 +205,9 @@ export class BoardService {
     return this.gameStateSignal()?.turnInfo.currentPlayerId === playerId;
   }
 
-  playerHasItem(playerId: string, itemName: string): boolean {
+  playerHasItem(playerId: string, itemId: ItemId): boolean {
     const player = this.getPlayerById(playerId, this.gameStateSignal());
-    return player?.items.some((item) => item.name === itemName) ?? false;
+    return player?.items.some((item) => item.id === itemId) ?? false;
   }
 
   getPlayerHealth(playerId: string): number | null {
@@ -265,12 +255,12 @@ export class BoardService {
   private createAction(
     type: GameActionType,
     playerId: string,
-    itemName?: string
+    itemId?: string
   ): GameAction {
     return {
       type,
       playerId,
-      itemName,
+      itemId,
       timestamp: Date.now()
     };
   }

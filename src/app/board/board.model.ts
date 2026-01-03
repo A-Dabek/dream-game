@@ -1,7 +1,6 @@
-export interface Item {
-  name: string;
-  [key: string]: unknown;
-}
+import {Item as BaseItem} from '../item';
+
+export interface Item extends BaseItem {}
 
 export interface Player {
   id: string;
@@ -33,7 +32,7 @@ export enum GameActionType {
 export interface GameAction {
   type: GameActionType;
   playerId: string;
-  itemName?: string;
+  itemId?: string;
   timestamp: number;
 }
 

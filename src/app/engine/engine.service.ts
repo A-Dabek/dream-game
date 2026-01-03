@@ -1,6 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { EngineState } from './engine.model';
-import { Player } from '../board';
+import {computed, Injectable, signal} from '@angular/core';
+import {ItemId} from '../item';
+import {EnginePlayer, EngineState} from './engine.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +18,14 @@ export class EngineService {
 
   playerTwoItems = computed(() => this.engineStateSignal()?.playerTwo.items ?? []);
 
-  initializeGame(playerOne: Player, playerTwo: Player): void {
+  initializeGame(playerOne: EnginePlayer, playerTwo: EnginePlayer): void {
     this.engineStateSignal.set({
       playerOne,
       playerTwo
     });
   }
 
-  play(itemName: string): void {
+  play(itemId: ItemId): void {
     // Placeholder for future item effect logic
     // To be implemented with external item effect handlers
   }

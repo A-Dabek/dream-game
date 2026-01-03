@@ -1,7 +1,11 @@
-import { Player } from '../board';
+import {Loadout} from '../item';
+
+export interface EnginePlayer extends Loadout {
+  readonly id: string;
+}
 
 export interface EngineState {
-  playerOne: Player;
-  playerTwo: Player;
+  readonly playerOne: EnginePlayer;
+  readonly playerTwo: EnginePlayer;
 }
 

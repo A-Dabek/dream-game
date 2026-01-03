@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { TestBed } from '@angular/core/testing';
-import { BoardService } from './board.service';
-import { EngineService } from '../engine';
-import { GameState, GameActionType, Player, TurnInfo } from './board.model';
+import {TestBed} from '@angular/core/testing';
+import {beforeEach, describe, expect, it} from 'vitest';
+import {EngineService} from '../engine';
+import {GameActionType, GameState, Player} from './board.model';
+import {BoardService} from './board.service';
 
 describe('BoardService', () => {
   let service: BoardService;
@@ -13,9 +13,9 @@ describe('BoardService', () => {
     health: 100,
     speed: 1,
     items: [
-      { name: 'sword' },
-      { name: 'shield' },
-      { name: 'potion' }
+      { id: 'sword' },
+      { id: 'shield' },
+      { id: 'potion' }
     ]
   });
 
@@ -69,7 +69,7 @@ describe('BoardService', () => {
 
     it('should return player items', () => {
       expect(service.playerItems().length).toBe(3);
-      expect(service.playerItems().map((item) => item.name)).toEqual([
+      expect(service.playerItems().map((item) => item.id)).toEqual([
         'sword',
         'shield',
         'potion'
@@ -112,7 +112,7 @@ describe('BoardService', () => {
       expect(result.success).toBe(true);
       expect(result.action.type).toBe(GameActionType.PLAY_ITEM);
       expect(result.action.playerId).toBe('player1');
-      expect(result.action.itemName).toBe('sword');
+      expect(result.action.itemId).toBe('sword');
     });
 
     it('should add action to history on successful play', () => {
@@ -123,7 +123,7 @@ describe('BoardService', () => {
     });
 
     it('should fail if item does not exist in player inventory', () => {
-      const result = service.playItem('nonexistent', 'player1');
+      const result = service.playItem('nonexistent' as any, 'player1');
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('not found in player\'s inventory');
@@ -294,8 +294,8 @@ describe('BoardService', () => {
       service.surrender('player1');
 
       expect(service.actionHistory().length).toBe(3);
-      expect(service.actionHistory()[0].itemName).toBe('sword');
-      expect(service.actionHistory()[1].itemName).toBe('shield');
+      expect(service.actionHistory()[0].itemId).toBe('sword');
+      expect(service.actionHistory()[1].itemId).toBe('shield');
       expect(service.actionHistory()[2].type).toBe(GameActionType.SURRENDER);
     });
 
