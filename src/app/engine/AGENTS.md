@@ -7,7 +7,7 @@ Game state management system that calculates and tracks game state after items a
 ## Core Files
 
 - `engine.model.ts` - Type definitions
-- `engine.service.ts` - Game state calculation and management
+- `engine.ts` - Game state calculation and management
 - `index.ts` - Public exports
 
 ## Key Concepts
@@ -21,6 +21,7 @@ Game state management system that calculates and tracks game state after items a
 ## Data Models
 
 EngineState contains:
+
 - `playerOne: Player`
 - `playerTwo: Player`
 
@@ -31,16 +32,19 @@ Each Player contains `health` and `items` properties.
 ### EngineService Methods
 
 **initializeGame(playerOne: Player, playerTwo: Player): void**
+
 - Sets initial game state with two players
 - Called before game starts
 
 **play(itemName: string): void**
+
 - Processes item effect on current game state
 - Calculates new EngineState based on item rules
 - Updates `engineStateSignal` with new state
 - Currently a placeholder; delegates to future item effect handlers
 
 **resetGame(): void**
+
 - Clears game state to null
 - Used when game ends or resets
 

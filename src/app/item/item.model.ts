@@ -1,7 +1,7 @@
 /**
  * Represents the unique identifier for an item.
  */
-export type ItemId = 'sword' | 'shield' | 'potion' | 'first' | 'second' | 'third';
+export type ItemId = 'sword' | 'shield' | 'potion' | 'first' | 'second' | 'third' | 'double';
 
 /**
  * Represents an effect that an item can have on the game state.
@@ -9,7 +9,6 @@ export type ItemId = 'sword' | 'shield' | 'potion' | 'first' | 'second' | 'third
 export interface ItemEffect {
   readonly type: string;
   readonly value: number;
-  readonly target?: 'self' | 'opponent';
 }
 
 /**

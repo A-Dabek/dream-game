@@ -1,3 +1,3 @@
-export * from './engine.model';
-export * from './engine.service';
+export {type EngineLoadout} from './engine.model';
+export {Engine} from './engine';
 

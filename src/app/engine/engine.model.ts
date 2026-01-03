@@ -1,11 +1,12 @@
 import {Loadout} from '../item';
 
-export interface EnginePlayer extends Loadout {
+export interface EngineLoadout extends Loadout {
   readonly id: string;
+  readonly damageMultiplier: number;
 }
 
 export interface EngineState {
-  readonly playerOne: EnginePlayer;
-  readonly playerTwo: EnginePlayer;
+  readonly playerOne: EngineLoadout;
+  readonly playerTwo: EngineLoadout;
 }
 

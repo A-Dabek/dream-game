@@ -7,7 +7,6 @@ export function attack(value: number): ItemEffect {
   return {
     type: 'damage',
     value,
-    target: 'opponent',
   };
 }
 
@@ -18,7 +17,6 @@ export function heal(value: number): ItemEffect {
   return {
     type: 'healing',
     value,
-    target: 'self',
   };
 }
 
