@@ -26,7 +26,7 @@ The core game engine that manages the game state and flow. It is a synchronous a
 **new Engine(playerOne: Loadout & { id: string }, playerTwo: Loadout & { id: string })**
 
 - Initializes the engine with two player loadouts.
-- Sets initial `damageMultiplier` to 1 and `endOfTurnEffects` to an empty array for both players.
+- Sets initial `endOfTurnEffects` to an empty array for both players.
 
 ### Actions
 
@@ -48,9 +48,8 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 ## Supported Effects
 
-- `damage`: Deals damage to the opponent, adjusted by the acting player's `damageMultiplier`.
+- `damage`: Deals damage to the opponent.
 - `healing`: Increases the acting player's health.
-- `damageMultiplier`: Multiplies the acting player's `damageMultiplier`.
 - `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
 - `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.
 

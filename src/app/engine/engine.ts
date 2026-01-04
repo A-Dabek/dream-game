@@ -9,12 +9,12 @@ export class Engine {
   readonly state = computed(() => this.engineStateSignal());
 
   constructor(
-    playerOne: Loadout & { id: string; damageMultiplier?: number; endOfTurnEffects?: ItemEffect[] },
-    playerTwo: Loadout & { id: string; damageMultiplier?: number; endOfTurnEffects?: ItemEffect[] }
+    playerOne: Loadout & { id: string; endOfTurnEffects?: ItemEffect[] },
+    playerTwo: Loadout & { id: string; endOfTurnEffects?: ItemEffect[] }
   ) {
     this.engineStateSignal.set({
-      playerOne: { damageMultiplier: 1, endOfTurnEffects: [], ...playerOne },
-      playerTwo: { damageMultiplier: 1, endOfTurnEffects: [], ...playerTwo },
+      playerOne: { endOfTurnEffects: [], ...playerOne },
+      playerTwo: { endOfTurnEffects: [], ...playerTwo },
     });
   }
 

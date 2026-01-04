@@ -9,7 +9,6 @@ export function createMockPlayer(id: string, overrides: Partial<BoardLoadout> = 
     health: 100,
     speed: 1,
     items: [{id: '_blueprint_attack'}],
-    damageMultiplier: 1,
     ...overrides,
   };
 }

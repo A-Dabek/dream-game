@@ -26,8 +26,8 @@ export class Board {
     );
 
     this.engine = new Engine(
-      { ...player, damageMultiplier: player.damageMultiplier || 1 },
-      { ...opponent, damageMultiplier: opponent.damageMultiplier || 1 }
+      { ...player },
+      { ...opponent }
     );
 
     this._gameState = this.updateTurnInfo(this._gameState);
@@ -199,13 +199,11 @@ export class Board {
       player: {
         ...state.player,
         health: updatedPlayer.health,
-        damageMultiplier: updatedPlayer.damageMultiplier,
         items: updatedPlayer.items,
       },
       opponent: {
         ...state.opponent,
         health: updatedOpponent.health,
-        damageMultiplier: updatedOpponent.damageMultiplier,
         items: updatedOpponent.items,
       },
       isGameOver: isGameOver || state.isGameOver,

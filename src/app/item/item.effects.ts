@@ -20,22 +20,13 @@ export function heal(value: number): ItemEffect {
   };
 }
 
-/**
- * Creates a damage multiplier effect.
- */
-export function damageMultiplier(value: number): ItemEffect {
-  return {
-    type: 'damageMultiplier',
-    value,
-  };
-}
 
 /**
  * Creates a passive damage effect that deals damage at the end of the turn.
  */
 export function passiveAttack(value: number): ItemEffect {
   return {
-    type: 'add_passive_damage',
+    type: 'add_passive_attack',
     value,
   };
 }

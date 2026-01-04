@@ -10,13 +10,11 @@ export type EffectProcessor = (
 export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, value) => {
     const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
-    const multiplier = state[playerKey].damageMultiplier || 1;
-    const finalDamage = value * multiplier;
     return {
       ...state,
       [opponentKey]: {
         ...state[opponentKey],
-        health: state[opponentKey].health - finalDamage,
+        health: state[opponentKey].health - value,
       },
     };
   },
@@ -25,13 +23,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     [playerKey]: {
       ...state[playerKey],
       health: state[playerKey].health + value,
-    },
-  }),
-  damageMultiplier: (state, playerKey, value) => ({
-    ...state,
-    [playerKey]: {
-      ...state[playerKey],
-      damageMultiplier: state[playerKey].damageMultiplier * value,
     },
   }),
   add_passive_attack: (state, playerKey, value) => ({

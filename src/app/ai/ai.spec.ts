@@ -11,7 +11,6 @@ describe('FirstAvailableStrategy', () => {
     health: 100,
     speed,
     items,
-    damageMultiplier: 1,
   });
 
   beforeEach(() => {
