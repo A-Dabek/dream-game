@@ -6,9 +6,8 @@ import {FirstAvailableStrategy, Strategy} from './ai';
 describe('FirstAvailableStrategy', () => {
   let strategy: Strategy;
 
-  const createMockPlayer = (id: string, name: string, speed: number, items: any[]): BoardLoadout => ({
+  const createMockPlayer = (id: string, speed: number, items: any[]): BoardLoadout => ({
     id,
-    name,
     health: 100,
     speed,
     items,
@@ -20,8 +19,8 @@ describe('FirstAvailableStrategy', () => {
   });
 
   it('should choose the leftmost item for the current player', () => {
-    const player1 = createMockPlayer('player1', 'Player 1', 100, [{ id: 'sword' }, { id: 'shield' }]);
-    const player2 = createMockPlayer('player2', 'Player 2', 1, [{ id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 100, [{ id: 'sword' }, { id: 'shield' }]);
+    const player2 = createMockPlayer('player2', 1, [{ id: 'potion' }]);
     const board = new Board(player1, player2);
 
     const action = strategy.decide(board);
@@ -32,8 +31,8 @@ describe('FirstAvailableStrategy', () => {
   });
 
   it('should choose the leftmost item for player 2 when it is their turn', () => {
-    const player1 = createMockPlayer('player1', 'Player 1', 1, [{ id: 'sword' }]);
-    const player2 = createMockPlayer('player2', 'Player 2', 100, [{ id: 'shield' }, { id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 1, [{ id: 'sword' }]);
+    const player2 = createMockPlayer('player2', 100, [{ id: 'shield' }, { id: 'potion' }]);
     const board = new Board(player1, player2);
 
     const action = strategy.decide(board);
@@ -44,8 +43,8 @@ describe('FirstAvailableStrategy', () => {
   });
 
   it('should return a pass action if the player has no items', () => {
-    const player1 = createMockPlayer('player1', 'Player 1', 100, []);
-    const player2 = createMockPlayer('player2', 'Player 2', 1, [{ id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 100, []);
+    const player2 = createMockPlayer('player2', 1, [{ id: 'potion' }]);
     const board = new Board(player1, player2);
 
     const action = strategy.decide(board);
@@ -56,8 +55,8 @@ describe('FirstAvailableStrategy', () => {
   });
 
   it('should use board.clone() to avoid modifying the original board', () => {
-    const player1 = createMockPlayer('player1', 'Player 1', 100, [{ id: 'sword' }]);
-    const player2 = createMockPlayer('player2', 'Player 2', 1, [{ id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 100, [{ id: 'sword' }]);
+    const player2 = createMockPlayer('player2', 1, [{ id: 'potion' }]);
     const board = new Board(player1, player2);
 
     const cloneSpy = vi.spyOn(board, 'clone');

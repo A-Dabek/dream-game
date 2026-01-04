@@ -1,7 +1,6 @@
 import {EngineLoadout} from '../engine';
 
 export interface BoardLoadout extends EngineLoadout {
-  id: string;
 }
 
 export interface TurnInfo {

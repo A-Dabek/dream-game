@@ -2,22 +2,26 @@
 
 ## Overview
 
-Interface layer between players and the game engine. Manages game state, validates player actions, tracks action history, and coordinates turn management. The core logic is encapsulated in the `Board` class.
+Interface layer between players and the game engine. Manages game state, validates player actions, tracks action
+history, and coordinates turn management. The core logic is encapsulated in the `Board` class.
 
 ## Core Files
 
 - `board.model.ts` - Type definitions and enums
 - `board.ts` - Core game logic and state management
 - `turn-manager.ts` - Infinite turn sequence generator based on player speed
+- `test/` - Integration and unit tests for board behavior
 - `index.ts` - Public export
 
 ## Key Concepts
 
 **GameState**: Complete game snapshot containing both players, turn information, and game status.
 
-**Action Validation**: All player actions (PLAY_ITEM, SURRENDER, PASS) are validated before execution. Invalid actions throw an error without state mutation.
+**Action Validation**: All player actions (PLAY_ITEM, SURRENDER, PASS) are validated before execution. Invalid actions
+throw an error without state mutation.
 
-**Turn Management**: Turns are distributed continuously based on player speed (Bresenham-like algorithm). Speed 13 vs 16 means 13 turns out of 29 for player 1, distributed as equally as possible.
+**Turn Management**: Turns are distributed continuously based on player speed (Bresenham-like algorithm). Speed 13 vs 16
+means 13 turns out of 29 for player 1, distributed as equally as possible.
 
 **Action History**: record of all successful actions. Failed actions are not recorded.
 
@@ -37,7 +41,6 @@ GameState contains:
 Player contains:
 
 - `id: string` - Unique identifier
-- `name: string` - Display name
 - `health: number` - Current health value
 - `items: Item[]` - Available items to play
 - `speed: number` - Turn order priority (higher speed = more frequent turns)
@@ -91,16 +94,19 @@ GameActionType enum: PLAY_ITEM, SURRENDER
 **clone(): Board**
 
 - Returns a deep clone of the current `Board` instance.
-- Use `clone.playItem()`, `clone.pass()`, or `clone.surrender()` to explore future scenarios without affecting the original board.
+- Use `clone.playItem()`, `clone.pass()`, or `clone.surrender()` to explore future scenarios without affecting the
+  original board.
 
 ## API (`TurnManager` Class)
 
-Responsible for calculating and managing the turn order. Uses a Bresenham-like algorithm for equal distribution based on player speed.
+Responsible for calculating and managing the turn order. Uses a Bresenham-like algorithm for equal distribution based on
+player speed.
 
 - `getNextTurns(count: number): string[]` - Returns next X turns without advancing.
 - `nextTurns` - Getter returning next 10 turns.
 - `advanceTurn(): void` - Consumes current turn.
-- `refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void` - Resets distribution with new speeds and starting player.
+- `refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void` - Resets distribution with new
+  speeds and starting player.
 - `clone(): TurnManager` - Creates a deep copy of the manager, preserving sequence state.
 
 ### Helper Methods
