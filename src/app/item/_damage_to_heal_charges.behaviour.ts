@@ -1,4 +1,4 @@
-import {addPassiveEffect, charges, condition, duration, heal, onIncomingDamage} from './item.effects';
+import {active, addPassiveEffect, beforeEffect, charges, invertDamage, passive} from './item.effects';
 import {ItemBehavior, ItemEffect} from './item.model';
 
 /**
@@ -8,8 +8,14 @@ import {ItemBehavior, ItemEffect} from './item.model';
 export class BlueprintDamageToHealChargesBehaviour implements ItemBehavior {
   whenPlayed(): ItemEffect[] {
     return [
-      addPassiveEffect(
-        duration(charges(2), condition(onIncomingDamage(), [heal('VALUE_PLACEHOLDER')]))
+      active(
+        addPassiveEffect(
+          passive({
+            condition: beforeEffect('damage'),
+            action: invertDamage(),
+            duration: charges(2),
+          })
+        )
       ),
     ];
   }

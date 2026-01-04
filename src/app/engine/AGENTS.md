@@ -15,13 +15,11 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 **EngineState**: An immutable snapshot of the game state, containing state for both players.
 
-**EffectProcessors**: Pure functions that take the current state, the acting player, and a value, and return either a new `EngineState` or a list of further `ItemEffect` objects to be processed. This allows for complex effect chains and logic reuse.
+**EffectProcessors**: Pure functions that take the current state, the acting player, and a value, and return either a new `EngineState` or a list of further atomic `Effect` objects to be processed.
 
-**EndOfTurnEffects**: A list of effects stored within each player's state that are processed at the end of their turn. These are usually one-off effects scheduled by playing an item.
+**Lifecycle & Passive Effects**: The engine processes effects through a defined lifecycle: `on_play`, `before_effect`, `apply_effect`, `after_effect`, and `on_turn_end`. Passive effects can hook into these stages to trigger additional effects or modify the current one (e.g., inverting damage to healing). The engine maintains a list of `RegisteredPassiveEffect` objects and handles their durations (turns/charges) and cleanup.
 
-**Passive Effects**: A declarative way for items to react to game events. The engine scans all items in the loadout at initialization and stores their passive effects in a global list. Each passive effect is linked to its origin item via an `instanceId`. When an item is removed, its associated passive effects are automatically cleaned up.
-
-**Conditions & Durations**: Logic layers that determine when and for how long a passive effect should trigger. For example, `on_damage_taken` condition and `turns(2)` duration.
+**Conditions & Durations**: Logic layers that determine when and for how long a passive effect should trigger. Supported conditions include `on_play`, `before_effect`, `after_effect`, and `on_turn_end`.
 
 ## API (`Engine` Class)
 
@@ -52,9 +50,8 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 ## Supported Effects
 
-- `damage`: A high-level effect that resolves to `apply_damage` and `check_reactive_removal`.
+- `damage`: A high-level effect that resolves to `apply_damage`.
 - `apply_damage`: Decreases the opponent's health.
-- `check_reactive_removal`: A hook that triggers reactive effects. It checks `passiveEffects` system (filtering for `on_damage_taken` condition).
 - `remove_item`: Removes an item from the acting player's loadout and cleans up its passive effects.
 - `remove_item_from_opponent`: Removes an item from the opponent's loadout and cleans up its passive effects.
 - `healing`: Increases the acting player's health.

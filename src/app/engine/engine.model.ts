@@ -1,4 +1,4 @@
-import {ItemEffect, ItemId, Loadout, PassiveEffect} from '../item';
+import {Effect, ItemId, Loadout, PassiveEffect} from '../item';
 
 export interface RegisteredPassiveEffect {
   readonly playerId: string;
@@ -11,7 +11,7 @@ export interface RegisteredPassiveEffect {
 
 export interface EngineLoadout extends Loadout {
   readonly id: string;
-  readonly endOfTurnEffects: ItemEffect[];
+  readonly endOfTurnEffects: Effect[];
 }
 
 export interface EngineState {

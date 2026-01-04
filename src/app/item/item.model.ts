@@ -11,11 +11,11 @@ export type ItemId =
   | '_blueprint_status_effect';
 
 /**
- * Represents an effect that an item can have on the game state.
+ * Represents an atomic effect that can be applied to the game state.
  */
-export interface ItemEffect {
+export interface Effect {
   readonly type: string;
-  readonly value: unknown;
+  readonly value: any;
 }
 
 /**
@@ -23,7 +23,7 @@ export interface ItemEffect {
  */
 export interface Condition {
   readonly type: string;
-  readonly value?: number | string;
+  readonly value?: any;
 }
 
 /**
@@ -35,13 +35,28 @@ export interface Duration {
 }
 
 /**
+ * Represents an active effect that is applied immediately.
+ */
+export interface ActiveEffect {
+  readonly kind: 'active';
+  readonly action: Effect;
+}
+
+/**
  * Represents a passive effect that reacts to game conditions.
  */
 export interface PassiveEffect {
+  readonly kind: 'passive';
   readonly condition: Condition;
-  readonly effects: ItemEffect[];
+  readonly action: Effect | Effect[] | ((effect: Effect) => Effect | null);
   readonly duration?: Duration;
 }
+
+/**
+ * Represents an effect that an item can have on the game state.
+ * Can be either active (immediate) or passive (reactive).
+ */
+export type ItemEffect = ActiveEffect | PassiveEffect;
 
 /**
  * Defines the behavior and effects of an item.

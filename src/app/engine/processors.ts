@@ -1,38 +1,15 @@
-import {attack, ItemEffect, ItemId, PassiveEffect} from '../item';
+import {attack, Effect, ItemId, PassiveEffect} from '../item';
 import {EngineState} from './engine.model';
 
 export type EffectProcessor = (
   state: EngineState,
   playerKey: 'playerOne' | 'playerTwo',
-  value: unknown
-) => EngineState | ItemEffect[];
+  value: any
+) => EngineState | Effect[];
 
 export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, value) => {
-    const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
-    const opponent = state[opponentKey];
-
-    const healModifier = state.passiveEffects.find(
-      (pe) => pe.playerId === opponent.id && pe.effect.condition.type === 'on_incoming_damage'
-    );
-
-    if (healModifier) {
-      const effects: ItemEffect[] = [];
-      if (healModifier.remainingCharges !== undefined) {
-        effects.push({ type: 'consume_charge', value: healModifier.instanceId });
-      }
-
-      return [
-        ...effects,
-        { type: 'apply_damage', value: -(value as number) },
-        { type: 'check_reactive_removal', value },
-      ];
-    }
-
-    return [
-      { type: 'apply_damage', value },
-      { type: 'check_reactive_removal', value },
-    ];
+    return [{type: 'apply_damage', value}];
   },
   apply_damage: (state, playerKey, value) => {
     const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
@@ -43,16 +20,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         health: state[opponentKey].health - (value as number),
       },
     };
-  },
-  check_reactive_removal: (state, playerKey, value) => {
-    const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
-    const opponent = state[opponentKey];
-
-    return state.passiveEffects
-      .filter(
-        (pe) => pe.playerId === opponent.id && pe.effect.condition.type === 'on_damage_taken'
-      )
-      .flatMap((pe) => pe.effect.effects);
   },
   remove_item: (state, playerKey, value) => {
     const player = state[playerKey];
@@ -66,9 +33,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     const updatedItems = [...player.items];
     updatedItems.splice(itemIndex, 1);
 
-    const updatedPassiveEffects = state.passiveEffects.filter(
-      (pe) => pe.instanceId !== itemToRemove.instanceId
-    );
+    const updatedPassiveEffects = state.passiveEffects.filter((pe) => pe.instanceId !== itemToRemove.instanceId);
 
     return {
       ...state,
@@ -92,9 +57,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     const updatedItems = [...opponent.items];
     updatedItems.splice(itemIndex, 1);
 
-    const updatedPassiveEffects = state.passiveEffects.filter(
-      (pe) => pe.instanceId !== itemToRemove.instanceId
-    );
+    const updatedPassiveEffects = state.passiveEffects.filter((pe) => pe.instanceId !== itemToRemove.instanceId);
 
     return {
       ...state,
@@ -116,10 +79,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     ...state,
     [playerKey]: {
       ...state[playerKey],
-      endOfTurnEffects: [
-        ...state[playerKey].endOfTurnEffects,
-        { type: 'passive_attack', value },
-      ],
+      endOfTurnEffects: [...state[playerKey].endOfTurnEffects, {type: 'passive_attack', value}],
     },
   }),
   passive_attack: (state, playerKey, value) => [attack(value as number)],
@@ -141,30 +101,17 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       ],
     };
   },
-  consume_charge: (state, playerKey, value) => {
-    const instanceId = value as string;
-    const updatedPassiveEffects = state.passiveEffects
-      .map((pe) => {
-        if (pe.instanceId === instanceId && pe.remainingCharges !== undefined) {
-          return { ...pe, remainingCharges: pe.remainingCharges - 1 };
-        }
-        return pe;
-      })
-      .filter((pe) => pe.remainingCharges === undefined || pe.remainingCharges > 0);
-
-    return { ...state, passiveEffects: updatedPassiveEffects };
-  },
   decrement_passive_turns: (state, playerKey, value) => {
     const playerId = value as string;
     const updatedPassiveEffects = state.passiveEffects
       .map((pe) => {
         if (pe.playerId === playerId && pe.remainingTurns !== undefined) {
-          return { ...pe, remainingTurns: pe.remainingTurns - 1 };
+          return {...pe, remainingTurns: pe.remainingTurns - 1};
         }
         return pe;
       })
       .filter((pe) => pe.remainingTurns === undefined || pe.remainingTurns > 0);
 
-    return { ...state, passiveEffects: updatedPassiveEffects };
+    return {...state, passiveEffects: updatedPassiveEffects};
   },
 };

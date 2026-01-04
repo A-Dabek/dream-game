@@ -21,52 +21,70 @@ Create a new file `src/app/item/_<item_id_without_prefix>.behaviour.ts`.
 Implement the `ItemBehavior` interface.
 
 ```typescript
+import {active, attack} from './item.effects';
 import {ItemBehavior, ItemEffect} from './item.model';
-import {someEffect} from './item.effects';
 
 export class BlueprintNewItemBehaviour implements ItemBehavior {
   whenPlayed(): ItemEffect[] {
-    return [someEffect(10)];
+    return [active(attack(10))];
   }
 
   // Optional: implement if the item has passive effects while in the loadout
   passiveEffects(): PassiveEffect[] {
     return [
-      condition(onDamageTaken(), removeItemFromOpponent('_blueprint_new_item'))
+      passive({
+        condition: afterEffect('damage'),
+        action: removeItemFromOpponent('_blueprint_new_item'),
+      })
     ];
   }
 }
 ```
 
-### Passive Effects and Conditions
+### Active and Passive Effects
 
-Items can define passive effects that are active as long as the item is in the player's loadout.
-Passive effects consist of a **Condition** and one or more **Effects**.
+Items return a list of `ItemEffect` objects, which can be either **active** or **passive**.
 
-Common conditions:
+- `active(effect)`: An immediate effect that is applied when the item is played.
+- `passive({condition, action, duration})`: A reactive effect that is triggered by game events.
 
-- `onDamageTaken()`: Triggers when the player owning the item takes damage.
-- `onIncomingDamage()`: Triggers before damage is applied, allowing modification or conversion of damage.
+### Lifecycle and Conditions
 
-Use `condition(cond, effects)` factory to create them.
+The engine processes effects through a defined lifecycle. Passives can react to various stages:
+
+- `onPlay()`: Triggered when any item is played.
+- `beforeEffect(type?)`: Triggered before an effect is applied. Use this to modify or negate effects.
+- `afterEffect(type?)`: Triggered after an effect is successfully applied.
+- `onTurnEnd()`: Triggered when a player's turn ends.
+
+Example of a modifying passive:
+
+```typescript
+  whenPlayed()
+:
+ItemEffect[]
+{
+  return [
+    active(
+      addPassiveEffect(
+        passive({
+          condition: beforeEffect('damage'),
+          action: invertDamage(),
+          duration: charges(2),
+        })
+      )
+    ),
+  ];
+}
+```
+
+The `invertDamage()` action is a special modifier that converts incoming damage into healing.
 
 ### Persistent Passive Effects
 
-Items can add passive effects that persist even after the item is removed from the loadout. Use `addPassiveEffect(effect)` in `whenPlayed()`.
+Items can add passive effects that persist even after the item is removed from the loadout. Use `active(addPassiveEffect(passive({...})))` in `whenPlayed()`.
 
-To define how long a passive effect lasts, use the `duration()` factory along with `turns(n)`, `charges(n)`, or `permanent()`.
-
-Example:
-
-```text
-  whenPlayed(): ItemEffect[] {
-    return [
-      addPassiveEffect(
-        duration(charges(2), condition(onIncomingDamage(), [heal('VALUE_PLACEHOLDER')]))
-      ),
-    ];
-  }
-```
+To define how long a passive effect lasts, use `turns(n)`, `charges(n)`, or `permanent()` within the `duration` property.
 
 The engine scans for these effects at the start of the game and also manages them when they are added dynamically via `addPassiveEffect`.
 

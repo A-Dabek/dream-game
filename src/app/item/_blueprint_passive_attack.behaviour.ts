@@ -1,4 +1,4 @@
-import {passiveAttack} from './item.effects';
+import {active, passiveAttack} from './item.effects';
 import {ItemBehavior, ItemEffect} from './item.model';
 
 /**
@@ -9,6 +9,6 @@ export class BlueprintPassiveAttackBehaviour implements ItemBehavior {
    * Returns a passive damage effect when the item is played.
    */
   whenPlayed(): ItemEffect[] {
-    return [passiveAttack(5)];
+    return [active(passiveAttack(5))];
   }
 }
