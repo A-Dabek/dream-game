@@ -1,6 +1,7 @@
 import {computed, signal} from '@angular/core';
 import {Effect, getItemBehavior, ItemEffect, ItemId, Loadout, PassiveEffect, removeItem,} from '../item';
-import {EngineLoadout, EngineState, RegisteredPassiveEffect} from './engine.model';
+import {DefaultPassiveInstance, PassiveInstance} from './effects';
+import {EngineLoadout, EngineState} from './engine.model';
 import {PROCESSORS} from './processors';
 
 export class Engine {
@@ -31,7 +32,7 @@ export class Engine {
       const playerKey = state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
 
       // Lifecycle: item is played
-      let currentState = this.triggerHandlers(state, playerKey, 'on_play', itemId);
+      const currentState = this.triggerHandlers(state, playerKey, 'on_play', itemId);
 
       const effects: ItemEffect[] = [{kind: 'active', action: removeItem(itemId)}, ...behavior.whenPlayed()];
 
@@ -73,18 +74,14 @@ export class Engine {
     };
   }
 
-  private scanForPassiveEffects(player: EngineLoadout): RegisteredPassiveEffect[] {
+  private scanForPassiveEffects(player: EngineLoadout): PassiveInstance[] {
     return player.items.flatMap((item) => {
       const behavior = getItemBehavior(item.id);
       const effects = behavior.passiveEffects?.() ?? [];
-      return effects.map((effect) => ({
-        playerId: player.id,
-        itemId: item.id,
-        instanceId: item.instanceId!,
-        effect,
-        remainingCharges: effect.duration?.type === 'charges' ? effect.duration.value : undefined,
-        remainingTurns: effect.duration?.type === 'turns' ? effect.duration.value : undefined,
-      }));
+      return effects.map(
+        (effect) =>
+          DefaultPassiveInstance.create(item.instanceId!, player.id, effect)
+      );
     });
   }
 
@@ -113,14 +110,11 @@ export class Engine {
       ...state,
       passiveEffects: [
         ...state.passiveEffects,
-        {
-          playerId: player.id,
-          itemId: '_blueprint_status_effect',
-          instanceId: `buff-${player.id}-${Date.now()}-${Math.random()}`,
-          effect,
-          remainingCharges: effect.duration?.type === 'charges' ? effect.duration.value : undefined,
-          remainingTurns: effect.duration?.type === 'turns' ? effect.duration.value : undefined,
-        },
+        DefaultPassiveInstance.create(
+          `buff-${player.id}-${Date.now()}-${Math.random()}`,
+          player.id,
+          effect
+        ),
       ],
     };
   }
@@ -163,39 +157,26 @@ export class Engine {
   ): {state: EngineState; effect: Effect | null} {
     let currentEffect: Effect | null = effect;
     let currentState = state;
-
-    // We need to decide which passives apply. Usually it depends on the effect type.
-    // For damage, opponent passives apply. For healing, self passives apply.
-    const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
+    const actingPlayerId = state[playerKey].id;
 
     const passives = [...currentState.passiveEffects];
 
     for (const pe of passives) {
       if (!currentEffect) break;
+      if (!currentState.passiveEffects.find((p) => p.instanceId === pe.instanceId)) continue;
 
-      const isMatchingCondition =
-        pe.effect.condition.type === 'before_effect' &&
-        (pe.effect.condition.value === undefined || pe.effect.condition.value === currentEffect.type);
+      const event = {type: 'before_effect', actingPlayerId, effect: currentEffect} as any;
 
-      if (!isMatchingCondition) continue;
+      if (pe.shouldReact(event, currentState)) {
+        const result = pe.handle(event, currentState);
+        currentState = result.state;
+        currentEffect = result.modifiedEffect ?? currentEffect;
 
-      // Determine if this passive should trigger based on ownership and effect type
-      const isTargetingOwner =
-        (currentEffect.type === 'damage' && pe.playerId === currentState[opponentKey].id) ||
-        (currentEffect.type === 'healing' && pe.playerId === currentState[playerKey].id);
-
-      if (!isTargetingOwner) continue;
-
-      // Consume usage
-      currentState = this.consumePassiveUsage(currentState, pe.instanceId);
-
-      // Apply action
-      if (typeof pe.effect.action === 'function') {
-        currentEffect = pe.effect.action(currentEffect);
-      } else if (!Array.isArray(pe.effect.action)) {
-        currentEffect = pe.effect.action;
+        const updatedPassives = currentState.passiveEffects
+          .map((p) => (p.instanceId === pe.instanceId ? result.newInstance : p))
+          .filter((p): p is PassiveInstance => p !== null);
+        currentState = {...currentState, passiveEffects: updatedPassives};
       }
-      // Note: Array of effects in before_effect is not supported for modification, only for triggering (but before_effect is primarily for modification)
     }
 
     return {state: currentState, effect: currentEffect};
@@ -209,65 +190,39 @@ export class Engine {
     depth = 0
   ): EngineState {
     let currentState = state;
-    const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
+    const actingPlayerId = state[playerKey].id;
+
+    const event: any = {type: conditionType, actingPlayerId};
+    if (conditionType === 'after_effect') {
+      event.effect = value;
+    } else if (conditionType === 'on_play') {
+      event.itemId = value;
+    }
 
     const passives = [...currentState.passiveEffects];
 
     for (const pe of passives) {
-      const isMatchingCondition =
-        pe.effect.condition.type === conditionType &&
-        (pe.effect.condition.value === undefined ||
-          pe.effect.condition.value === (value && typeof value === 'object' ? value.type : value));
+      if (!currentState.passiveEffects.find((p) => p.instanceId === pe.instanceId)) continue;
 
-      if (!isMatchingCondition) continue;
+      if (pe.shouldReact(event, currentState)) {
+        const result = pe.handle(event, currentState);
+        currentState = result.state;
 
-      // Filter based on who should react
-      let shouldReact = false;
-      if (conditionType === 'after_effect') {
-        const effect = value as Effect;
-        shouldReact =
-          (effect.type === 'damage' && pe.playerId === currentState[opponentKey].id) ||
-          (effect.type === 'healing' && pe.playerId === currentState[playerKey].id);
-      } else if (conditionType === 'on_play') {
-        // React to opponent playing something
-        shouldReact = pe.playerId === currentState[opponentKey].id;
-      } else if (conditionType === 'on_turn_end') {
-        // React to own turn ending
-        shouldReact = pe.playerId === currentState[playerKey].id;
+        const updatedPassives = currentState.passiveEffects
+          .map((p) => (p.instanceId === pe.instanceId ? result.newInstance : p))
+          .filter((p): p is PassiveInstance => p !== null);
+        currentState = {...currentState, passiveEffects: updatedPassives};
+
+        if (result.additionalEffects) {
+          currentState = result.additionalEffects.reduce(
+            (accState, action) => this.processAtomicEffect(accState, playerKey, action, depth + 1),
+            currentState
+          );
+        }
       }
-
-      if (!shouldReact) continue;
-
-      // Consume usage
-      currentState = this.consumePassiveUsage(currentState, pe.instanceId);
-
-      // Trigger actions
-      const actions = Array.isArray(pe.effect.action)
-        ? pe.effect.action
-        : typeof pe.effect.action === 'function'
-        ? [] // functions are for modification
-        : [pe.effect.action];
-
-      currentState = actions.reduce(
-        (accState, action) => this.processAtomicEffect(accState, playerKey, action, depth + 1),
-        currentState
-      );
     }
 
     return currentState;
-  }
-
-  private consumePassiveUsage(state: EngineState, instanceId: string): EngineState {
-    const updatedPassiveEffects = state.passiveEffects
-      .map((pe) => {
-        if (pe.instanceId === instanceId && pe.remainingCharges !== undefined) {
-          return {...pe, remainingCharges: pe.remainingCharges - 1};
-        }
-        return pe;
-      })
-      .filter((pe) => pe.remainingCharges === undefined || pe.remainingCharges > 0);
-
-    return {...state, passiveEffects: updatedPassiveEffects};
   }
 }
 

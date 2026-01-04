@@ -1,4 +1,5 @@
 import {attack, Effect, ItemId, PassiveEffect} from '../item';
+import {DefaultPassiveInstance, PassiveInstance} from './effects';
 import {EngineState} from './engine.model';
 
 export type EffectProcessor = (
@@ -90,27 +91,19 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       ...state,
       passiveEffects: [
         ...state.passiveEffects,
-        {
-          playerId: player.id,
-          itemId: '_blueprint_status_effect',
-          instanceId: `buff-${player.id}-${Date.now()}-${Math.random()}`,
-          effect,
-          remainingCharges: effect.duration?.type === 'charges' ? effect.duration.value : undefined,
-          remainingTurns: effect.duration?.type === 'turns' ? effect.duration.value : undefined,
-        },
+        DefaultPassiveInstance.create(
+          `buff-${player.id}-${Date.now()}-${Math.random()}`,
+          player.id,
+          effect
+        ),
       ],
     };
   },
   decrement_passive_turns: (state, playerKey, value) => {
     const playerId = value as string;
     const updatedPassiveEffects = state.passiveEffects
-      .map((pe) => {
-        if (pe.playerId === playerId && pe.remainingTurns !== undefined) {
-          return {...pe, remainingTurns: pe.remainingTurns - 1};
-        }
-        return pe;
-      })
-      .filter((pe) => pe.remainingTurns === undefined || pe.remainingTurns > 0);
+      .map((pe) => pe.update({type: 'on_turn_end', actingPlayerId: playerId}))
+      .filter((pe): pe is PassiveInstance => pe !== null);
 
     return {...state, passiveEffects: updatedPassiveEffects};
   },

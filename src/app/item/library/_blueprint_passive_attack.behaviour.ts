@@ -1,5 +1,5 @@
-import {active, passiveAttack} from './item.effects';
-import {ItemBehavior, ItemEffect} from './item.model';
+import {active, passiveAttack} from '../item.effects';
+import {ItemBehavior, ItemEffect} from '../item.model';
 
 /**
  * Behavior for the _blueprint_passive_attack item.

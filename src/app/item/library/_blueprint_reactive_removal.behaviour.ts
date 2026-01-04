@@ -1,5 +1,5 @@
-import {afterEffect, passive, removeItemFromOpponent} from './item.effects';
-import {ItemBehavior, ItemEffect, PassiveEffect} from './item.model';
+import {afterEffect, passive, removeItemFromOpponent} from '../item.effects';
+import {ItemBehavior, ItemEffect, PassiveEffect} from '../item.model';
 
 /**
  * Behavior for the _blueprint_reactive_removal item.

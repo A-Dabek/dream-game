@@ -7,6 +7,7 @@ The core game engine that manages the game state and flow. It is a synchronous a
 ## Core Files
 
 - `engine.model.ts` - Type definitions for engine state and loadouts.
+- `effects/` - Object-oriented implementation of passive effects (conditions, durations, instances).
 - `processors.ts` - Implementation of all effect processors.
 - `engine.ts` - Core engine logic and state management.
 - `index.ts` - Public exports for the engine module.
@@ -17,9 +18,9 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 **EffectProcessors**: Pure functions that take the current state, the acting player, and a value, and return either a new `EngineState` or a list of further atomic `Effect` objects to be processed.
 
-**Lifecycle & Passive Effects**: The engine processes effects through a defined lifecycle: `on_play`, `before_effect`, `apply_effect`, `after_effect`, and `on_turn_end`. Passive effects can hook into these stages to trigger additional effects or modify the current one (e.g., inverting damage to healing). The engine maintains a list of `RegisteredPassiveEffect` objects and handles their durations (turns/charges) and cleanup.
+**Lifecycle & Passive Effects**: The engine processes effects through a defined lifecycle: `on_play`, `before_effect`, `apply_effect`, `after_effect`, and `on_turn_end`. Passive effects are managed as `PassiveInstance` objects that delegate their core logic to specialized `PassiveCondition` and `PassiveDuration` objects.
 
-**Conditions & Durations**: Logic layers that determine when and for how long a passive effect should trigger. Supported conditions include `on_play`, `before_effect`, `after_effect`, and `on_turn_end`.
+**Conditions & Durations**: Logic encapsulated within `PassiveCondition` and `PassiveDuration` implementations. `PassiveCondition` handles the "when" (e.g., `OnPlayCondition`, `EffectCondition`), while `PassiveDuration` handles the "how long" (e.g., `TurnsDuration`, `ChargesDuration`, `PermanentDuration`).
 
 ## API (`Engine` Class)
 
@@ -56,7 +57,6 @@ The core game engine that manages the game state and flow. It is a synchronous a
 - `remove_item_from_opponent`: Removes an item from the opponent's loadout and cleans up its passive effects.
 - `healing`: Increases the acting player's health.
 - `add_passive_effect`: Adds a persistent passive effect (with its defined `Duration`).
-- `consume_charge`: Decrements charges for a passive effect and removes it if it reaches zero.
 - `decrement_passive_turns`: Decrements turns for all passive effects of a player and removes expired ones.
 - `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
 - `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.

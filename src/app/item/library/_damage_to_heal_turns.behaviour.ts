@@ -1,5 +1,5 @@
-import {active, addPassiveEffect, beforeEffect, invertDamage, passive, turns} from './item.effects';
-import {ItemBehavior, ItemEffect} from './item.model';
+import {active, addPassiveEffect, beforeEffect, invertDamage, passive, turns} from '../item.effects';
+import {ItemBehavior, ItemEffect} from '../item.model';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_turns item.

@@ -11,7 +11,8 @@ This module defines the core data structures for items and player loadouts in th
 * **Effect Creators**: Factory functions that simplify the creation of `Effect` and `ItemEffect` objects, such as `attack(amount)`, `heal(amount)`, `active(effect)`, and `passive(config)`.
 * **Passive Effects**: Items can define passive effects that react to game events based on a `Condition` (e.g., `beforeEffect('damage')`, `afterEffect('damage')`, `onPlay()`, `onTurnEnd()`), an action (Effect, list of Effects, or a modifier function), and an optional `Duration`.
 * **ItemBehavior**: An interface responsible for defining item logic, returning `ItemEffect[]` from `whenPlayed()` and `PassiveEffect[]` from `passiveEffects()`.
-* **Item Implementations**: Concrete classes following the `<item name>.behaviour.ts` convention that implement `ItemBehavior` for specific items (e.g., `BlueprintAttackBehaviour`, `BlueprintPassiveAttackBehaviour`).
+* **Item Implementations**: Concrete classes located in the `library` directory following the `<item name>.behaviour.ts` convention that implement `ItemBehavior` for specific items (e.g., `BlueprintAttackBehaviour`, `BlueprintPassiveAttackBehaviour`).
+* **Library**: The `library` directory contains all concrete item behaviors and a guide on how to add new ones.
 * **Loadout**: An interface representing a player's set of items and base attributes like health and speed.
 
 ## Responsibility
@@ -19,4 +20,4 @@ This module defines the core data structures for items and player loadouts in th
 The `item` module serves as a base for other modules, providing the fundamental types used by the engine and the board.
 It is designed to be independent and unaware of other modules.
 
-For detailed instructions on how to add a new item, see [ADDING_NEW_ITEM.md](./ADDING_NEW_ITEM.md).
+For detailed instructions on how to add a new item, see [ADDING_NEW_ITEM.md](library/ADDING_NEW_ITEM.md).

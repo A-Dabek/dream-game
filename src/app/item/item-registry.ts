@@ -1,10 +1,10 @@
-import {BlueprintAttackBehaviour} from './_blueprint_attack.behaviour';
-import {BlueprintPassiveAttackBehaviour} from './_blueprint_passive_attack.behaviour';
-import {BlueprintReactiveRemovalBehaviour} from './_blueprint_reactive_removal.behaviour';
-import {BlueprintDamageToHealChargesBehaviour} from './_damage_to_heal_charges.behaviour';
-import {BlueprintDamageToHealPermanentBehaviour} from './_damage_to_heal_permanent.behaviour';
-import {BlueprintDamageToHealTurnsBehaviour} from './_damage_to_heal_turns.behaviour';
 import {ItemBehavior, ItemId} from './item.model';
+import {BlueprintAttackBehaviour} from './library/_blueprint_attack.behaviour';
+import {BlueprintPassiveAttackBehaviour} from './library/_blueprint_passive_attack.behaviour';
+import {BlueprintReactiveRemovalBehaviour} from './library/_blueprint_reactive_removal.behaviour';
+import {BlueprintDamageToHealChargesBehaviour} from './library/_damage_to_heal_charges.behaviour';
+import {BlueprintDamageToHealPermanentBehaviour} from './library/_damage_to_heal_permanent.behaviour';
+import {BlueprintDamageToHealTurnsBehaviour} from './library/_damage_to_heal_turns.behaviour';
 
 /**
  * Registry of item behaviors.

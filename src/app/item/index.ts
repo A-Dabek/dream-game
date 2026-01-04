@@ -10,12 +10,12 @@ export {
   type Loadout,
   type PassiveEffect,
 } from './item.model';
-export {BlueprintAttackBehaviour} from './_blueprint_attack.behaviour';
-export {BlueprintPassiveAttackBehaviour} from './_blueprint_passive_attack.behaviour';
-export {BlueprintReactiveRemovalBehaviour} from './_blueprint_reactive_removal.behaviour';
-export {BlueprintDamageToHealChargesBehaviour} from './_damage_to_heal_charges.behaviour';
-export {BlueprintDamageToHealTurnsBehaviour} from './_damage_to_heal_turns.behaviour';
-export {BlueprintDamageToHealPermanentBehaviour} from './_damage_to_heal_permanent.behaviour';
+export {BlueprintAttackBehaviour} from './library/_blueprint_attack.behaviour';
+export {BlueprintPassiveAttackBehaviour} from './library/_blueprint_passive_attack.behaviour';
+export {BlueprintReactiveRemovalBehaviour} from './library/_blueprint_reactive_removal.behaviour';
+export {BlueprintDamageToHealChargesBehaviour} from './library/_damage_to_heal_charges.behaviour';
+export {BlueprintDamageToHealTurnsBehaviour} from './library/_damage_to_heal_turns.behaviour';
+export {BlueprintDamageToHealPermanentBehaviour} from './library/_damage_to_heal_permanent.behaviour';
 export {
   active,
   addPassiveEffect,
