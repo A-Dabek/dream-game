@@ -1,4 +1,4 @@
-import {attack, getItemBehavior, ItemEffect, ItemId} from '../item';
+import {attack, ItemEffect, ItemId} from '../item';
 import {EngineState} from './engine.model';
 
 export type EffectProcessor = (
@@ -25,12 +25,12 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   check_reactive_removal: (state, playerKey, value) => {
     const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
     const opponent = state[opponentKey];
-    const triggerEffect: ItemEffect = { type: 'damage', value: value as number };
 
-    return opponent.items.flatMap((item) => {
-      const behavior = getItemBehavior(item.id);
-      return behavior.onEffect ? behavior.onEffect(triggerEffect) : [];
-    });
+    return state.passiveEffects
+      .filter(
+        (pe) => pe.playerId === opponent.id && pe.effect.condition.type === 'on_damage_taken'
+      )
+      .flatMap((pe) => pe.effect.effects);
   },
   remove_item: (state, playerKey, value) => {
     const player = state[playerKey];
@@ -40,8 +40,13 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       return state;
     }
 
+    const itemToRemove = player.items[itemIndex];
     const updatedItems = [...player.items];
     updatedItems.splice(itemIndex, 1);
+
+    const updatedPassiveEffects = state.passiveEffects.filter(
+      (pe) => pe.instanceId !== itemToRemove.instanceId
+    );
 
     return {
       ...state,
@@ -49,6 +54,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...player,
         items: updatedItems,
       },
+      passiveEffects: updatedPassiveEffects,
     };
   },
   remove_item_from_opponent: (state, playerKey, value) => {
@@ -60,8 +66,13 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       return state;
     }
 
+    const itemToRemove = opponent.items[itemIndex];
     const updatedItems = [...opponent.items];
     updatedItems.splice(itemIndex, 1);
+
+    const updatedPassiveEffects = state.passiveEffects.filter(
+      (pe) => pe.instanceId !== itemToRemove.instanceId
+    );
 
     return {
       ...state,
@@ -69,6 +80,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...opponent,
         items: updatedItems,
       },
+      passiveEffects: updatedPassiveEffects,
     };
   },
   healing: (state, playerKey, value) => ({

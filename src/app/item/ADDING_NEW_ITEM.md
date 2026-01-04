@@ -29,22 +29,27 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
     return [someEffect(10)];
   }
 
-  // Optional: implement if the item should react to other effects
-  onEffect(effect: ItemEffect): ItemEffect[] {
-    if (effect.type === 'damage') {
-      // React to damage
-    }
-    return [];
+  // Optional: implement if the item has passive effects while in the loadout
+  passiveEffects(): PassiveEffect[] {
+    return [
+      condition(onDamageTaken(), removeItemFromOpponent('_blueprint_new_item'))
+    ];
   }
 }
 ```
 
-### Reactive Items
+### Passive Effects and Conditions
 
-If your item should react to being attacked (or other effects), implement the `onEffect` method.
-The engine will call `onEffect` for all items in the victim's loadout when they are targeted by a `damage` effect (via `check_reactive_removal`).
+Items can define passive effects that are active as long as the item is in the player's loadout.
+Passive effects consist of a **Condition** and one or more **Effects**.
 
-Use `removeItemFromOpponent(itemId)` if the item should be removed from its owner's loadout when reacting (since the acting player is the attacker).
+Common conditions:
+
+- `onDamageTaken()`: Triggers when the player owning the item takes damage.
+
+Use `condition(cond, effects)` factory to create them.
+
+The engine scans for these effects at the start of the game. If an item is removed from the loadout, its associated passive effects are also removed.
 
 ## 3. Register the Behavior
 

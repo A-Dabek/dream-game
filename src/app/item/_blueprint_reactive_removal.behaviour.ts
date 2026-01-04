@@ -1,5 +1,5 @@
-import {removeItemFromOpponent} from './item.effects';
-import {ItemBehavior, ItemEffect} from './item.model';
+import {condition, onDamageTaken, removeItemFromOpponent} from './item.effects';
+import {ItemBehavior, ItemEffect, PassiveEffect} from './item.model';
 
 /**
  * Behavior for the _blueprint_reactive_removal item.
@@ -14,12 +14,9 @@ export class BlueprintReactiveRemovalBehaviour implements ItemBehavior {
   }
 
   /**
-   * Removes itself from the victim's loadout when they are attacked.
+   * Returns passive effects that are active while the item is in the loadout.
    */
-  onEffect(effect: ItemEffect): ItemEffect[] {
-    if (effect.type === 'damage') {
-      return [removeItemFromOpponent('_blueprint_reactive_removal')];
-    }
-    return [];
+  passiveEffects(): PassiveEffect[] {
+    return [condition(onDamageTaken(), removeItemFromOpponent('_blueprint_reactive_removal'))];
   }
 }

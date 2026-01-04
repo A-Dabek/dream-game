@@ -1,4 +1,4 @@
-import {ItemEffect, ItemId} from './item.model';
+import {Condition, ItemEffect, ItemId, PassiveEffect} from './item.model';
 
 /**
  * Creates a damage effect targeting the opponent.
@@ -47,6 +47,23 @@ export function removeItemFromOpponent(itemId: ItemId): ItemEffect {
   return {
     type: 'remove_item_from_opponent',
     value: itemId,
+  };
+}
+
+/**
+ * Creates a condition that triggers when the player takes damage.
+ */
+export function onDamageTaken(): Condition {
+  return { type: 'on_damage_taken' };
+}
+
+/**
+ * Creates a passive effect from a condition and effects.
+ */
+export function condition(cond: Condition, effects: ItemEffect | ItemEffect[]): PassiveEffect {
+  return {
+    condition: cond,
+    effects: Array.isArray(effects) ? effects : [effects],
   };
 }
 

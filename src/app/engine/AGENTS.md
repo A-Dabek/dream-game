@@ -17,9 +17,11 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 **EffectProcessors**: Pure functions that take the current state, the acting player, and a value, and return either a new `EngineState` or a list of further `ItemEffect` objects to be processed. This allows for complex effect chains and logic reuse.
 
-**EndOfTurnEffects**: A list of effects stored within each player's state that are processed at the end of their turn.
+**EndOfTurnEffects**: A list of effects stored within each player's state that are processed at the end of their turn. These are usually one-off effects scheduled by playing an item.
 
-**Reactive Effects**: The engine supports effects that react to other events. For example, `damage` resolves into `apply_damage` and `check_reactive_removal`. `check_reactive_removal` checks the victim's loadout for items that should be removed when attacked.
+**Passive Effects**: A declarative way for items to react to game events. The engine scans all items in the loadout at initialization and stores their passive effects in a global list. Each passive effect is linked to its origin item via an `instanceId`. When an item is removed, its associated passive effects are automatically cleaned up.
+
+**Conditions**: A layer of logic that determines when a passive effect should trigger. For example, `on_damage_taken`.
 
 ## API (`Engine` Class)
 
@@ -52,9 +54,9 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 - `damage`: A high-level effect that resolves to `apply_damage` and `check_reactive_removal`.
 - `apply_damage`: Decreases the opponent's health.
-- `check_reactive_removal`: A generic hook that triggers reactive effects on the victim's loadout. It iterates over all items and calls their `onEffect` method.
-- `remove_item`: Removes an item from the acting player's loadout.
-- `remove_item_from_opponent`: Removes an item from the opponent's loadout.
+- `check_reactive_removal`: A hook that triggers reactive effects. It checks `passiveEffects` system (filtering for `on_damage_taken` condition).
+- `remove_item`: Removes an item from the acting player's loadout and cleans up its passive effects.
+- `remove_item_from_opponent`: Removes an item from the opponent's loadout and cleans up its passive effects.
 - `healing`: Increases the acting player's health.
 - `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
 - `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.

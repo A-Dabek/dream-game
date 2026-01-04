@@ -12,6 +12,22 @@ export interface ItemEffect {
 }
 
 /**
+ * Represents a condition that must be met for a passive effect to trigger.
+ */
+export interface Condition {
+  readonly type: string;
+  readonly value?: number | string;
+}
+
+/**
+ * Represents a passive effect that reacts to game conditions.
+ */
+export interface PassiveEffect {
+  readonly condition: Condition;
+  readonly effects: ItemEffect[];
+}
+
+/**
  * Defines the behavior and effects of an item.
  */
 export interface ItemBehavior {
@@ -21,10 +37,9 @@ export interface ItemBehavior {
   whenPlayed(): ItemEffect[];
 
   /**
-   * Returns effects to be applied in response to another effect.
-   * @param effect The effect to react to.
+   * Returns passive effects that are active while the item is in the loadout.
    */
-  onEffect?(effect: ItemEffect): ItemEffect[];
+  passiveEffects?(): PassiveEffect[];
 }
 
 /**
@@ -32,6 +47,7 @@ export interface ItemBehavior {
  */
 export interface Item {
   readonly id: ItemId;
+  readonly instanceId?: string;
 }
 
 /**

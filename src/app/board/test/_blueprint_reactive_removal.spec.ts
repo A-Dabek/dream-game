@@ -10,14 +10,14 @@ describe('_blueprint_reactive_removal Integration Test', () => {
     const board = new Board(player1, player2);
 
     // Initial check: Player 2 should have the reactive item
-    expect(board.gameState.opponent.items).toContainEqual({ id: '_blueprint_reactive_removal' });
+    expect(board.gameState.opponent.items.some(i => i.id === '_blueprint_reactive_removal')).toBe(true);
 
     // Player 1 attacks Player 2
     board.playItem('_blueprint_attack', 'p1');
 
     // Player 2 health should be reduced and the reactive item should be removed
     expect(board.gameState.opponent.health).toBe(90);
-    expect(board.gameState.opponent.items).not.toContainEqual({ id: '_blueprint_reactive_removal' });
+    expect(board.gameState.opponent.items.some(i => i.id === '_blueprint_reactive_removal')).toBe(false);
   });
 
   it('should not remove other items when player is attacked', () => {
@@ -30,7 +30,7 @@ describe('_blueprint_reactive_removal Integration Test', () => {
 
     board.playItem('_blueprint_attack', 'p1');
 
-    expect(board.gameState.opponent.items).not.toContainEqual({ id: '_blueprint_reactive_removal' });
-    expect(board.gameState.opponent.items).toContainEqual({ id: '_blueprint_attack' });
+    expect(board.gameState.opponent.items.some(i => i.id === '_blueprint_reactive_removal')).toBe(false);
+    expect(board.gameState.opponent.items.some(i => i.id === '_blueprint_attack')).toBe(true);
   });
 });

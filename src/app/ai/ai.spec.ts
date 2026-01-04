@@ -18,32 +18,32 @@ describe('FirstAvailableStrategy', () => {
   });
 
   it('should choose the leftmost item for the current player', () => {
-    const player1 = createMockPlayer('player1', 100, [{ id: 'sword' }, { id: 'shield' }]);
-    const player2 = createMockPlayer('player2', 1, [{ id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 100, [{ id: '_blueprint_attack' }, { id: '_blueprint_reactive_removal' }]);
+    const player2 = createMockPlayer('player2', 1, [{ id: '_blueprint_attack' }]);
     const board = new Board(player1, player2);
 
     const action = strategy.decide(board);
 
     expect(action.type).toBe(GameActionType.PLAY_ITEM);
     expect(action.playerId).toBe('player1');
-    expect(action.itemId).toBe('sword');
+    expect(action.itemId).toBe('_blueprint_attack');
   });
 
   it('should choose the leftmost item for player 2 when it is their turn', () => {
-    const player1 = createMockPlayer('player1', 1, [{ id: 'sword' }]);
-    const player2 = createMockPlayer('player2', 100, [{ id: 'shield' }, { id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 1, [{ id: '_blueprint_attack' }]);
+    const player2 = createMockPlayer('player2', 100, [{ id: '_blueprint_reactive_removal' }, { id: '_blueprint_attack' }]);
     const board = new Board(player1, player2);
 
     const action = strategy.decide(board);
 
     expect(action.type).toBe(GameActionType.PLAY_ITEM);
     expect(action.playerId).toBe('player2');
-    expect(action.itemId).toBe('shield');
+    expect(action.itemId).toBe('_blueprint_reactive_removal');
   });
 
   it('should return a pass action if the player has no items', () => {
     const player1 = createMockPlayer('player1', 100, []);
-    const player2 = createMockPlayer('player2', 1, [{ id: 'potion' }]);
+    const player2 = createMockPlayer('player2', 1, [{ id: '_blueprint_attack' }]);
     const board = new Board(player1, player2);
 
     const action = strategy.decide(board);
@@ -54,8 +54,8 @@ describe('FirstAvailableStrategy', () => {
   });
 
   it('should use board.clone() to avoid modifying the original board', () => {
-    const player1 = createMockPlayer('player1', 100, [{ id: 'sword' }]);
-    const player2 = createMockPlayer('player2', 1, [{ id: 'potion' }]);
+    const player1 = createMockPlayer('player1', 100, [{ id: '_blueprint_attack' }]);
+    const player2 = createMockPlayer('player2', 1, [{ id: '_blueprint_attack' }]);
     const board = new Board(player1, player2);
 
     const cloneSpy = vi.spyOn(board, 'clone');

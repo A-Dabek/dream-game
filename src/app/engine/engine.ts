@@ -1,6 +1,6 @@
 import {computed, signal} from '@angular/core';
 import {getItemBehavior, ItemEffect, ItemId, Loadout, removeItem} from '../item';
-import {EngineState} from './engine.model';
+import {EngineLoadout, EngineState, RegisteredPassiveEffect} from './engine.model';
 import {PROCESSORS} from './processors';
 
 export class Engine {
@@ -12,9 +12,15 @@ export class Engine {
     playerOne: Loadout & { id: string; endOfTurnEffects?: ItemEffect[] },
     playerTwo: Loadout & { id: string; endOfTurnEffects?: ItemEffect[] }
   ) {
+    const p1 = this.prepareLoadout(playerOne);
+    const p2 = this.prepareLoadout(playerTwo);
+
+    const passiveEffects = [...this.scanForPassiveEffects(p1), ...this.scanForPassiveEffects(p2)];
+
     this.engineStateSignal.set({
-      playerOne: { endOfTurnEffects: [], ...playerOne },
-      playerTwo: { endOfTurnEffects: [], ...playerTwo },
+      playerOne: p1,
+      playerTwo: p2,
+      passiveEffects,
     });
   }
 
@@ -41,6 +47,32 @@ export class Engine {
         (currentState, effect) => this.processEffect(currentState, playerKey, effect),
         state
       );
+    });
+  }
+
+  private prepareLoadout(
+    loadout: Loadout & { id: string; endOfTurnEffects?: ItemEffect[] }
+  ): EngineLoadout {
+    return {
+      ...loadout,
+      endOfTurnEffects: loadout.endOfTurnEffects ?? [],
+      items: loadout.items.map((item, index) => ({
+        ...item,
+        instanceId: item.instanceId ?? `${loadout.id}-${item.id}-${index}`,
+      })),
+    };
+  }
+
+  private scanForPassiveEffects(player: EngineLoadout): RegisteredPassiveEffect[] {
+    return player.items.flatMap((item) => {
+      const behavior = getItemBehavior(item.id);
+      const effects = behavior.passiveEffects?.() ?? [];
+      return effects.map((effect) => ({
+        playerId: player.id,
+        itemId: item.id,
+        instanceId: item.instanceId!,
+        effect,
+      }));
     });
   }
 
