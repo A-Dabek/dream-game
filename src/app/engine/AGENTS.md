@@ -19,6 +19,8 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 **EndOfTurnEffects**: A list of effects stored within each player's state that are processed at the end of their turn.
 
+**Reactive Effects**: The engine supports effects that react to other events. For example, `damage` resolves into `apply_damage` and `check_reactive_removal`. `check_reactive_removal` checks the victim's loadout for items that should be removed when attacked.
+
 ## API (`Engine` Class)
 
 ### Initialization
@@ -48,7 +50,9 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 ## Supported Effects
 
-- `damage`: Deals damage to the opponent.
+- `damage`: A high-level effect that resolves to `apply_damage` and `check_reactive_removal`.
+- `apply_damage`: Decreases the opponent's health.
+- `check_reactive_removal`: Removes reactive items (like `_blueprint_reactive_removal`) from the victim's loadout.
 - `healing`: Increases the acting player's health.
 - `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
 - `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.

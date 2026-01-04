@@ -30,3 +30,4 @@ export function passiveAttack(value: number): ItemEffect {
     value,
   };
 }
+

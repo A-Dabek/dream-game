@@ -1,14 +1,14 @@
 /**
  * Represents the unique identifier for an item.
  */
-export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack';
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal';
 
 /**
  * Represents an effect that an item can have on the game state.
  */
 export interface ItemEffect {
   readonly type: string;
-  readonly value: number;
+  readonly value: number | string;
 }
 
 /**

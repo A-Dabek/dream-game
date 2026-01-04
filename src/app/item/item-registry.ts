@@ -1,5 +1,6 @@
 import {BlueprintAttackBehaviour} from './_blueprint_attack.behaviour';
 import {BlueprintPassiveAttackBehaviour} from './_blueprint_passive_attack.behaviour';
+import {BlueprintReactiveRemovalBehaviour} from './_blueprint_reactive_removal.behaviour';
 import {ItemBehavior, ItemId} from './item.model';
 
 /**
@@ -8,6 +9,7 @@ import {ItemBehavior, ItemId} from './item.model';
 const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   _blueprint_attack: BlueprintAttackBehaviour,
   _blueprint_passive_attack: BlueprintPassiveAttackBehaviour,
+  _blueprint_reactive_removal: BlueprintReactiveRemovalBehaviour,
 };
 
 /**
