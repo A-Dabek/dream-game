@@ -183,7 +183,10 @@ describe('Board', () => {
 
     it('should allow multiple moves on a clone', () => {
       const boardInstance = new Board(
-        createMockPlayer('player1', { speed: 100 }),
+        createMockPlayer('player1', {
+          speed: 100,
+          items: [{ id: '_blueprint_attack' }, { id: '_blueprint_attack' }],
+        }),
         createMockPlayer('player2', { speed: 1 })
       );
 

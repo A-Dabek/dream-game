@@ -49,4 +49,14 @@ describe('Engine', () => {
     expect(state.playerOne.health).toBe(90);
     expect(state.playerTwo.health).toBe(90);
   });
+
+  it('should remove item from player loadout after it is played', () => {
+    const engine = new Engine(player1, player2);
+
+    expect(engine.state().playerOne.items.length).toBe(1);
+
+    engine.play('p1', '_blueprint_attack');
+
+    expect(engine.state().playerOne.items.length).toBe(0);
+  });
 });

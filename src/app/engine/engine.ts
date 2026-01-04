@@ -51,7 +51,27 @@ export class Engine {
 
     this.engineStateSignal.update((state) => {
       const playerKey = state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
-      return effects.reduce((currentState, effect) => this.processEffect(currentState, playerKey, effect), state);
+      const player = state[playerKey];
+
+      // Remove the played item from inventory
+      const itemIndex = player.items.findIndex((item) => item.id === itemId);
+      const updatedItems = [...player.items];
+      if (itemIndex !== -1) {
+        updatedItems.splice(itemIndex, 1);
+      }
+
+      const stateWithRemovedItem = {
+        ...state,
+        [playerKey]: {
+          ...player,
+          items: updatedItems,
+        },
+      };
+
+      return effects.reduce(
+        (currentState, effect) => this.processEffect(currentState, playerKey, effect),
+        stateWithRemovedItem
+      );
     });
   }
 

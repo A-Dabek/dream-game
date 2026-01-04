@@ -196,11 +196,13 @@ export class Board {
         ...state.player,
         health: updatedPlayer.health,
         damageMultiplier: updatedPlayer.damageMultiplier,
+        items: updatedPlayer.items,
       },
       opponent: {
         ...state.opponent,
         health: updatedOpponent.health,
         damageMultiplier: updatedOpponent.damageMultiplier,
+        items: updatedOpponent.items,
       },
       isGameOver: isGameOver || state.isGameOver,
       winnerId: winnerId || state.winnerId,

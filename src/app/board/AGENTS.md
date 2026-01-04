@@ -66,6 +66,7 @@ GameActionType enum: PLAY_ITEM, SURRENDER
 - Validates item exists in player inventory
 - Validates it's player's turn
 - Delegates item effect to engine
+- Removes item from player's inventory (one-time use)
 - Advances turn on success
 - Mutates the board state and returns GameActionResult
 
@@ -143,6 +144,7 @@ Action throws an error if:
 - `Board` is a plain class that maintains its own state.
 - `Board` creates a single `Engine` instance in its constructor and maintains it throughout its life.
 - Turn advances automatically after successful PLAY_ITEM or PASS.
+- Items are one-time use and are removed from player inventory after a successful PLAY_ITEM action.
 - Turn distribution is continuous and based on player speeds.
 - Invalid actions throw an error; state unchanged.
 - Action history tracks successful actions only with timestamps.
