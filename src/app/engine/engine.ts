@@ -43,10 +43,15 @@ export class Engine {
       const playerKey = state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
       const player = state[playerKey];
 
-      return player.endOfTurnEffects.reduce(
+      const nextState = player.endOfTurnEffects.reduce(
         (currentState, effect) => this.processEffect(currentState, playerKey, effect),
         state
       );
+
+      return this.processEffect(nextState, playerKey, {
+        type: 'decrement_passive_turns',
+        value: playerId,
+      });
     });
   }
 
@@ -72,6 +77,8 @@ export class Engine {
         itemId: item.id,
         instanceId: item.instanceId!,
         effect,
+        remainingCharges: effect.duration?.type === 'charges' ? effect.duration.value : undefined,
+        remainingTurns: effect.duration?.type === 'turns' ? effect.duration.value : undefined,
       }));
     });
   }

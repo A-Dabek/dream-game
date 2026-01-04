@@ -5,6 +5,8 @@ export interface RegisteredPassiveEffect {
   readonly itemId: ItemId;
   readonly instanceId: string;
   readonly effect: PassiveEffect;
+  readonly remainingCharges?: number;
+  readonly remainingTurns?: number;
 }
 
 export interface EngineLoadout extends Loadout {

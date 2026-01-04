@@ -21,7 +21,7 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 **Passive Effects**: A declarative way for items to react to game events. The engine scans all items in the loadout at initialization and stores their passive effects in a global list. Each passive effect is linked to its origin item via an `instanceId`. When an item is removed, its associated passive effects are automatically cleaned up.
 
-**Conditions**: A layer of logic that determines when a passive effect should trigger. For example, `on_damage_taken`.
+**Conditions & Durations**: Logic layers that determine when and for how long a passive effect should trigger. For example, `on_damage_taken` condition and `turns(2)` duration.
 
 ## API (`Engine` Class)
 
@@ -58,6 +58,9 @@ The core game engine that manages the game state and flow. It is a synchronous a
 - `remove_item`: Removes an item from the acting player's loadout and cleans up its passive effects.
 - `remove_item_from_opponent`: Removes an item from the opponent's loadout and cleans up its passive effects.
 - `healing`: Increases the acting player's health.
+- `add_passive_effect`: Adds a persistent passive effect (with its defined `Duration`).
+- `consume_charge`: Decrements charges for a passive effect and removes it if it reaches zero.
+- `decrement_passive_turns`: Decrements turns for all passive effects of a player and removes expired ones.
 - `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
 - `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.
 

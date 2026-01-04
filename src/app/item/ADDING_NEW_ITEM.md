@@ -46,10 +46,29 @@ Passive effects consist of a **Condition** and one or more **Effects**.
 Common conditions:
 
 - `onDamageTaken()`: Triggers when the player owning the item takes damage.
+- `onIncomingDamage()`: Triggers before damage is applied, allowing modification or conversion of damage.
 
 Use `condition(cond, effects)` factory to create them.
 
-The engine scans for these effects at the start of the game. If an item is removed from the loadout, its associated passive effects are also removed.
+### Persistent Passive Effects
+
+Items can add passive effects that persist even after the item is removed from the loadout. Use `addPassiveEffect(effect)` in `whenPlayed()`.
+
+To define how long a passive effect lasts, use the `duration()` factory along with `turns(n)`, `charges(n)`, or `permanent()`.
+
+Example:
+
+```text
+  whenPlayed(): ItemEffect[] {
+    return [
+      addPassiveEffect(
+        duration(charges(2), condition(onIncomingDamage(), [heal('VALUE_PLACEHOLDER')]))
+      ),
+    ];
+  }
+```
+
+The engine scans for these effects at the start of the game and also manages them when they are added dynamically via `addPassiveEffect`.
 
 ## 3. Register the Behavior
 

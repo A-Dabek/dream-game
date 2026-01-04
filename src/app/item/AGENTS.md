@@ -6,9 +6,9 @@ This module defines the core data structures for items and player loadouts in th
 
 * **ItemId**: A union type of unique string identifiers for all items in the game. All items currently follow the `_blueprint_` prefix convention (e.g., `_blueprint_attack`, `_blueprint_reactive_removal`).
 * **Item**: An interface representing a single item, characterized by its `ItemId`.
-* **ItemEffect**: An interface describing an effect an item can have (e.g., damage, healing, adding end-of-turn or reactive effects). `value` can be `number` or `string`.
+* **ItemEffect**: An interface describing an effect an item can have (e.g., damage, healing, adding end-of-turn or reactive effects). `value` can be any type (often `number` or `string`).
 * **Effect Creators**: Factory functions that simplify the creation of `ItemEffect` objects, such as `attack(amount)`, `heal(amount)`, and `passiveAttack(amount)`.
-* **Passive Effects**: Items can define passive effects that are active while in the loadout. They consist of a `Condition` (e.g., `onDamageTaken()`) and one or more `ItemEffect`s.
+* **Passive Effects**: Items can define passive effects that are active while in the loadout. They consist of a `Condition` (e.g., `onDamageTaken()`, `onIncomingDamage()`), one or more `ItemEffect`s, and an optional `Duration` (`turns(n)`, `charges(n)`, or `permanent()`). Passive effects can also be added dynamically and persist with their defined duration.
 * **ItemBehavior**: An interface responsible for defining item logic, such as `whenPlayed()` effects and `passiveEffects()`.
 * **Item Implementations**: Concrete classes following the `<item name>.behaviour.ts` convention that implement `ItemBehavior` for specific items (e.g., `BlueprintAttackBehaviour`, `BlueprintPassiveAttackBehaviour`).
 * **Loadout**: An interface representing a player's set of items and base attributes like health and speed.
