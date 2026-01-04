@@ -1,32 +1,13 @@
 import {beforeEach, describe, expect, it} from 'vitest';
 import {Board} from './board';
-import {BoardLoadout, GameActionType, GameState} from './board.model';
+import {GameActionType} from './board.model';
+import {createMockPlayer} from './test/test-utils';
 
 describe('Board', () => {
-  const createMockPlayer = (id: string, speed = id === 'player1' ? 2 : 1): BoardLoadout => ({
-    id,
-    health: 100,
-    speed,
-    items: [{id: 'sword'}, {id: 'shield'}, {id: 'potion'}],
-    damageMultiplier: 1,
-  });
-
-  const createMockGameState = (p1Speed = 2, p2Speed = 1): GameState => ({
-    player: createMockPlayer('player1', p1Speed),
-    opponent: createMockPlayer('player2', p2Speed),
-    turnInfo: {
-      currentPlayerId: 'player1',
-      nextPlayerId: 'player2',
-      turnQueue: ['player1', 'player2'],
-    },
-    isGameOver: false,
-    actionHistory: [],
-  });
-
   describe('initialization', () => {
     it('should initialize with turn order based on speed (13 vs 16)', () => {
-      const p1 = createMockPlayer('player1', 13);
-      const p2 = createMockPlayer('player2', 16);
+      const p1 = createMockPlayer('player1', { speed: 13 });
+      const p2 = createMockPlayer('player2', { speed: 16 });
 
       const board = new Board(p1, p2);
 
@@ -38,8 +19,8 @@ describe('Board', () => {
     });
 
     it('should distribute turns according to speed (1 vs 1)', () => {
-      const p1 = createMockPlayer('player1', 1);
-      const p2 = createMockPlayer('player2', 1);
+      const p1 = createMockPlayer('player1', { speed: 1 });
+      const p2 = createMockPlayer('player2', { speed: 1 });
 
       const board = new Board(p1, p2);
 
@@ -55,30 +36,30 @@ describe('Board', () => {
 
     beforeEach(() => {
       board = new Board(
-        createMockPlayer('player1'),
-        createMockPlayer('player2')
+        createMockPlayer('player1', { speed: 2 }),
+        createMockPlayer('player2', { speed: 1 })
       );
     });
 
     it('should successfully play an item that player owns', () => {
       const boardInstance = new Board(
-        createMockPlayer('player1', 100),
-        createMockPlayer('player2', 1)
+        createMockPlayer('player1', { speed: 100 }),
+        createMockPlayer('player2', { speed: 1 })
       );
-      const result = boardInstance.playItem('sword', 'player1');
+      const result = boardInstance.playItem('_blueprint_attack', 'player1');
 
       expect(result.success).toBe(true);
       expect(result.action.type).toBe(GameActionType.PLAY_ITEM);
       expect(result.action.playerId).toBe('player1');
-      expect(result.action.itemId).toBe('sword');
+      expect(result.action.itemId).toBe('_blueprint_attack');
     });
 
     it('should add action to history on successful play', () => {
       const boardInstance = new Board(
-        createMockPlayer('player1', 100),
-        createMockPlayer('player2', 1)
+        createMockPlayer('player1', { speed: 100 }),
+        createMockPlayer('player2', { speed: 1 })
       );
-      boardInstance.playItem('sword', 'player1');
+      boardInstance.playItem('_blueprint_attack', 'player1');
 
       expect(boardInstance.gameState.actionHistory.length).toBe(1);
       expect(boardInstance.gameState.actionHistory[0].type).toBe(GameActionType.PLAY_ITEM);
@@ -89,12 +70,12 @@ describe('Board', () => {
       // So player 1 cannot play on index 0.
       // Let's use speed where player 1 starts.
       const boardInstance = new Board(
-        createMockPlayer('player1', 100),
-        createMockPlayer('player2', 1)
+        createMockPlayer('player1', { speed: 100 }),
+        createMockPlayer('player2', { speed: 1 })
       );
 
       const initialHealth = boardInstance.opponentHealth;
-      boardInstance.playItem('sword', 'player1');
+      boardInstance.playItem('_blueprint_attack', 'player1');
 
       expect(boardInstance.opponentHealth).toBeLessThan(initialHealth);
     });
@@ -105,13 +86,13 @@ describe('Board', () => {
     });
 
     it('should fail if not player\'s turn', () => {
-      expect(() => board.playItem('sword', 'player2')).toThrow('Not your turn');
+      expect(() => board.playItem('_blueprint_attack', 'player2')).toThrow('Not your turn');
       expect(board.gameState.actionHistory.length).toBe(0);
     });
 
     it('should fail if game is over', () => {
       board.surrender('player1');
-      expect(() => board.playItem('sword', 'player1')).toThrow('Game is already over');
+      expect(() => board.playItem('_blueprint_attack', 'player1')).toThrow('Game is already over');
     });
   });
 
@@ -120,8 +101,8 @@ describe('Board', () => {
 
     beforeEach(() => {
       board = new Board(
-        createMockPlayer('player1'),
-        createMockPlayer('player2')
+        createMockPlayer('player1', { speed: 2 }),
+        createMockPlayer('player2', { speed: 1 })
       );
     });
 
@@ -140,8 +121,10 @@ describe('Board', () => {
     let board: Board;
 
     beforeEach(() => {
-      const state = createMockGameState();
-      board = new Board(state.player, state.opponent);
+      board = new Board(
+        createMockPlayer('player1', { speed: 2 }),
+        createMockPlayer('player2', { speed: 1 })
+      );
     });
 
     it('should successfully surrender', () => {
@@ -181,14 +164,14 @@ describe('Board', () => {
 
     it('should allow exploring future scenarios using clones without affecting original', () => {
       const boardInstance = new Board(
-        createMockPlayer('player1', 100),
-        createMockPlayer('player2', 1)
+        createMockPlayer('player1', { speed: 100 }),
+        createMockPlayer('player2', { speed: 1 })
       );
 
       const boardSnapshot = boardInstance.clone();
       const initialOpponentHealth = boardInstance.opponentHealth;
 
-      const result = boardSnapshot.playItem('sword', 'player1');
+      const result = boardSnapshot.playItem('_blueprint_attack', 'player1');
 
       expect(result.success).toBe(true);
       expect(boardSnapshot.opponentHealth).toBeLessThan(initialOpponentHealth);
@@ -200,15 +183,15 @@ describe('Board', () => {
 
     it('should allow multiple moves on a clone', () => {
       const boardInstance = new Board(
-        createMockPlayer('player1', 100),
-        createMockPlayer('player2', 1)
+        createMockPlayer('player1', { speed: 100 }),
+        createMockPlayer('player2', { speed: 1 })
       );
 
       const boardSnapshot = boardInstance.clone();
       // index 0: p1
-      boardSnapshot.playItem('sword', 'player1');
+      boardSnapshot.playItem('_blueprint_attack', 'player1');
       // index 1: p1 still? floor(2*100/101) = 1, floor(1*100/101) = 0. Yes.
-      boardSnapshot.playItem('sword', 'player1');
+      boardSnapshot.playItem('_blueprint_attack', 'player1');
 
       expect(boardSnapshot.gameState.actionHistory.length).toBe(2);
       expect(boardInstance.gameState.actionHistory.length).toBe(0);
@@ -220,8 +203,8 @@ describe('Board', () => {
 
     beforeEach(() => {
       board = new Board(
-        createMockPlayer('player1'),
-        createMockPlayer('player2')
+        createMockPlayer('player1', { speed: 2 }),
+        createMockPlayer('player2', { speed: 1 })
       );
     });
 

@@ -1,18 +1,11 @@
-import {damageMultiplier} from './item.effects';
+import {BlueprintAttackBehaviour} from './_blueprint_attack.behaviour';
 import {ItemBehavior, ItemId} from './item.model';
-import {SwordBehaviour} from './sword.behaviour';
 
 /**
  * Registry of item behaviors.
  */
 const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
-  sword: SwordBehaviour,
-  shield: class implements ItemBehavior { whenPlayed() { return []; } }, // Placeholder
-  potion: class implements ItemBehavior { whenPlayed() { return []; } }, // Placeholder
-  first: class implements ItemBehavior { whenPlayed() { return []; } }, // Placeholder
-  second: class implements ItemBehavior { whenPlayed() { return []; } }, // Placeholder
-  third: class implements ItemBehavior { whenPlayed() { return []; } }, // Placeholder
-  double: class implements ItemBehavior { whenPlayed() { return [damageMultiplier(2)]; } },
+  _blueprint_attack: BlueprintAttackBehaviour,
 };
 
 /**

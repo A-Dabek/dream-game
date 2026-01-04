@@ -11,6 +11,7 @@ history, and coordinates turn management. The core logic is encapsulated in the 
 - `board.ts` - Core game logic and state management
 - `turn-manager.ts` - Infinite turn sequence generator based on player speed
 - `test/` - Integration and unit tests for board behavior
+- `test/test-utils.ts` - Shared utilities for creating mock players in tests
 - `index.ts` - Public export
 
 ## Key Concepts
@@ -146,3 +147,9 @@ Action throws an error if:
 - Invalid actions throw an error; state unchanged.
 - Action history tracks successful actions only with timestamps.
 - Simulation is supported via the `clone()` method.
+- Faster player starts the turn by default when no explicit starting player is provided to `TurnManager`.
+
+## Testing
+
+Use `createMockPlayer` from `test/test-utils.ts` to create player loadouts for tests.
+When testing item effects, give the acting player a higher speed to ensure they start the turn.

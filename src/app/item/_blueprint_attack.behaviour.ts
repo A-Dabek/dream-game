@@ -2,11 +2,11 @@ import {attack} from './item.effects';
 import {ItemBehavior, ItemEffect} from './item.model';
 
 /**
- * Behavior for the Sword item.
+ * Behavior for the _blueprint_attack item.
  */
-export class SwordBehaviour implements ItemBehavior {
+export class BlueprintAttackBehaviour implements ItemBehavior {
   /**
-   * Returns a single damage effect when the sword is played.
+   * Returns a single damage effect when the item is played.
    */
   whenPlayed(): ItemEffect[] {
     return [attack(10)];
