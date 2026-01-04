@@ -1,7 +1,7 @@
 /**
  * Represents the unique identifier for an item.
  */
-export type ItemId = '_blueprint_attack';
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack';
 
 /**
  * Represents an effect that an item can have on the game state.

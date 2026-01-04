@@ -7,14 +7,14 @@ describe('Engine', () => {
     id: 'p1',
     health: 100,
     speed: 10,
-    items: [{ id: '_blueprint_attack' }]
+    items: [{ id: '_blueprint_attack' }],
   };
 
   const player2: Loadout & { id: string } = {
     id: 'p2',
     health: 100,
     speed: 5,
-    items: []
+    items: [],
   };
 
   it('should initialize with two players', () => {

@@ -63,6 +63,7 @@ export class Board {
     this.validateAction(playerId, GameActionType.PLAY_ITEM, itemId);
 
     this.engine.play(playerId, itemId);
+    this.engine.processEndOfTurn(playerId);
 
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
     const action = this.createAction(GameActionType.PLAY_ITEM, playerId, itemId);
@@ -80,8 +81,11 @@ export class Board {
   pass(playerId: string): GameActionResult {
     this.validateAction(playerId, GameActionType.PLAY_ITEM);
 
+    this.engine.processEndOfTurn(playerId);
+
     const action = this.createAction(GameActionType.PLAY_ITEM, playerId);
-    const nextGameState = this.advanceTurn(this._gameState);
+    let nextGameState = this.syncWithEngine(this.engine, this._gameState);
+    nextGameState = this.advanceTurn(nextGameState);
 
     this._gameState = {
       ...nextGameState,

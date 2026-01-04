@@ -1,47 +1,20 @@
 import {computed, signal} from '@angular/core';
 import {getItemBehavior, ItemEffect, ItemId, Loadout} from '../item';
 import {EngineState} from './engine.model';
-
-type EffectProcessor = (state: EngineState, playerKey: 'playerOne' | 'playerTwo', value: number) => EngineState;
-
-const PROCESSORS: Record<string, EffectProcessor> = {
-  damage: (state, playerKey, value) => {
-    const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
-    const multiplier = state[playerKey].damageMultiplier || 1;
-    const finalDamage = value * multiplier;
-    return {
-      ...state,
-      [opponentKey]: {
-        ...state[opponentKey],
-        health: state[opponentKey].health - finalDamage,
-      },
-    };
-  },
-  healing: (state, playerKey, value) => ({
-    ...state,
-    [playerKey]: {
-      ...state[playerKey],
-      health: state[playerKey].health + value,
-    },
-  }),
-  damageMultiplier: (state, playerKey, value) => ({
-    ...state,
-    [playerKey]: {
-      ...state[playerKey],
-      damageMultiplier: state[playerKey].damageMultiplier * value,
-    },
-  }),
-};
+import {PROCESSORS} from './processors';
 
 export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);
 
   readonly state = computed(() => this.engineStateSignal());
 
-  constructor(playerOne: Loadout & { id: string; damageMultiplier?: number }, playerTwo: Loadout & { id: string; damageMultiplier?: number }) {
+  constructor(
+    playerOne: Loadout & { id: string; damageMultiplier?: number; endOfTurnEffects?: ItemEffect[] },
+    playerTwo: Loadout & { id: string; damageMultiplier?: number; endOfTurnEffects?: ItemEffect[] }
+  ) {
     this.engineStateSignal.set({
-      playerOne: { damageMultiplier: 1, ...playerOne },
-      playerTwo: { damageMultiplier: 1, ...playerTwo },
+      playerOne: { damageMultiplier: 1, endOfTurnEffects: [], ...playerOne },
+      playerTwo: { damageMultiplier: 1, endOfTurnEffects: [], ...playerTwo },
     });
   }
 
@@ -75,9 +48,34 @@ export class Engine {
     });
   }
 
-  private processEffect(state: EngineState, playerKey: 'playerOne' | 'playerTwo', effect: ItemEffect): EngineState {
+  processEndOfTurn(playerId: string): void {
+    this.engineStateSignal.update((state) => {
+      const playerKey = state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
+      const player = state[playerKey];
+
+      return player.endOfTurnEffects.reduce(
+        (currentState, effect) => this.processEffect(currentState, playerKey, effect),
+        state
+      );
+    });
+  }
+
+  private processEffect(
+    state: EngineState,
+    playerKey: 'playerOne' | 'playerTwo',
+    effect: ItemEffect
+  ): EngineState {
     const processor = PROCESSORS[effect.type];
-    return processor ? processor(state, playerKey, effect.value) : state;
+    if (!processor) return state;
+
+    const result = processor(state, playerKey, effect.value);
+    if (Array.isArray(result)) {
+      return result.reduce(
+        (currentState, nextEffect) => this.processEffect(currentState, playerKey, nextEffect),
+        state
+      );
+    }
+    return result;
   }
 }
 

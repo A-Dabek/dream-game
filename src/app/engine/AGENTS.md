@@ -2,64 +2,61 @@
 
 ## Overview
 
-Game state management system that calculates and tracks game state after items are played. Uses Angular signals for reactive state updates without side effects.
+The core game engine that manages the game state and flow. It is a synchronous and deterministic state machine built using Angular signals for reactive state updates.
 
 ## Core Files
 
-- `engine.model.ts` - Type definitions
-- `engine.ts` - Game state calculation and management
-- `index.ts` - Public exports
+- `engine.model.ts` - Type definitions for engine state and loadouts.
+- `processors.ts` - Implementation of all effect processors.
+- `engine.ts` - Core engine logic and state management.
+- `index.ts` - Public exports for the engine module.
 
 ## Key Concepts
 
-**EngineState**: Immutable snapshot containing both players and their properties.
+**EngineState**: An immutable snapshot of the game state, containing state for both players.
 
-**Signal-Based State**: Angular signals (`signal()` and `computed()`) provide reactive state management with no side effects.
+**EffectProcessors**: Pure functions that take the current state, the acting player, and a value, and return either a new `EngineState` or a list of further `ItemEffect` objects to be processed. This allows for complex effect chains and logic reuse.
 
-**State Transitions**: Game state updates only through three public methods: `initializeGame()`, `play()`, and `resetGame()`.
+**EndOfTurnEffects**: A list of effects stored within each player's state that are processed at the end of their turn.
 
-## Data Models
+## API (`Engine` Class)
 
-EngineState contains:
+### Initialization
 
-- `playerOne: Player`
-- `playerTwo: Player`
+**new Engine(playerOne: Loadout & { id: string }, playerTwo: Loadout & { id: string })**
 
-Each Player contains `health` and `items` properties.
+- Initializes the engine with two player loadouts.
+- Sets initial `damageMultiplier` to 1 and `endOfTurnEffects` to an empty array for both players.
 
-## API
+### Actions
 
-### EngineService Methods
+**play(playerId: string, itemId: ItemId): void**
 
-**initializeGame(playerOne: Player, playerTwo: Player): void**
+- Retrieves the behavior for the given item.
+- Removes the item from the player's inventory (one-time use).
+- Processes all effects returned by the item's behavior.
+- Updates the engine state reactively.
 
-- Sets initial game state with two players
-- Called before game starts
+**processEndOfTurn(playerId: string): void**
 
-**play(itemName: string): void**
+- Processes all effects in the given player's `endOfTurnEffects` list.
+- Updates the engine state reactively.
 
-- Processes item effect on current game state
-- Calculates new EngineState based on item rules
-- Updates `engineStateSignal` with new state
-- Currently a placeholder; delegates to future item effect handlers
+### State Queries
 
-**resetGame(): void**
+- `state` - A computed signal returning the current `EngineState`.
 
-- Clears game state to null
-- Used when game ends or resets
+## Supported Effects
 
-### Computed Signals (Read-Only)
-
-- `engineState` - Current complete game state snapshot
-- `playerOneHealth` - Player one's current health (defaults to 0 if null)
-- `playerTwoHealth` - Player two's current health (defaults to 0 if null)
-- `playerOneItems` - Player one's available items (defaults to empty array)
-- `playerTwoItems` - Player two's available items (defaults to empty array)
+- `damage`: Deals damage to the opponent, adjusted by the acting player's `damageMultiplier`.
+- `healing`: Increases the acting player's health.
+- `damageMultiplier`: Multiplies the acting player's `damageMultiplier`.
+- `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
+- `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.
 
 ## Implementation Notes
 
-- All state updates are immutable; new EngineState objects are created rather than mutated
-- Service uses pure functions with no side effects
-- Computed signals derive state reactively from `engineStateSignal`
-- Use `set()` for signal updates, not `mutate()`
-- Item effect logic not yet implemented; will be added as external handlers
+- The engine is deterministic and side-effect free.
+- State updates are immutable, leveraging Angular's `signal.update()`.
+- Effect processing is recursive, allowing high-level effects to resolve into low-level ones (e.g., `passive_attack` -> `attack` -> `damage`).
+- The engine only depends on the `item` module.

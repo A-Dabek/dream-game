@@ -1,6 +1,8 @@
-import {EngineLoadout} from '../engine';
+import {Loadout} from '../item';
 
-export interface BoardLoadout extends EngineLoadout {
+export interface BoardLoadout extends Loadout {
+  readonly id: string;
+  readonly damageMultiplier: number;
 }
 
 export interface TurnInfo {
