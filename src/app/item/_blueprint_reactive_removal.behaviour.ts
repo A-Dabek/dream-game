@@ -1,3 +1,4 @@
+import {removeItemFromOpponent} from './item.effects';
 import {ItemBehavior, ItemEffect} from './item.model';
 
 /**
@@ -9,6 +10,16 @@ export class BlueprintReactiveRemovalBehaviour implements ItemBehavior {
    * Returns no effects when played.
    */
   whenPlayed(): ItemEffect[] {
+    return [];
+  }
+
+  /**
+   * Removes itself from the victim's loadout when they are attacked.
+   */
+  onEffect(effect: ItemEffect): ItemEffect[] {
+    if (effect.type === 'damage') {
+      return [removeItemFromOpponent('_blueprint_reactive_removal')];
+    }
     return [];
   }
 }

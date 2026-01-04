@@ -1,5 +1,5 @@
 import {computed, signal} from '@angular/core';
-import {getItemBehavior, ItemEffect, ItemId, Loadout} from '../item';
+import {getItemBehavior, ItemEffect, ItemId, Loadout, removeItem} from '../item';
 import {EngineState} from './engine.model';
 import {PROCESSORS} from './processors';
 
@@ -20,30 +20,14 @@ export class Engine {
 
   play(playerId: string, itemId: ItemId): void {
     const behavior = getItemBehavior(itemId);
-    const effects = behavior.whenPlayed();
+    const effects = [removeItem(itemId), ...behavior.whenPlayed()];
 
     this.engineStateSignal.update((state) => {
       const playerKey = state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
-      const player = state[playerKey];
-
-      // Remove the played item from inventory
-      const itemIndex = player.items.findIndex((item) => item.id === itemId);
-      const updatedItems = [...player.items];
-      if (itemIndex !== -1) {
-        updatedItems.splice(itemIndex, 1);
-      }
-
-      const stateWithRemovedItem = {
-        ...state,
-        [playerKey]: {
-          ...player,
-          items: updatedItems,
-        },
-      };
 
       return effects.reduce(
         (currentState, effect) => this.processEffect(currentState, playerKey, effect),
-        stateWithRemovedItem
+        state
       );
     });
   }

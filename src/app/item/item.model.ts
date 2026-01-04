@@ -19,6 +19,12 @@ export interface ItemBehavior {
    * Returns the effects to be applied when the item is played.
    */
   whenPlayed(): ItemEffect[];
+
+  /**
+   * Returns effects to be applied in response to another effect.
+   * @param effect The effect to react to.
+   */
+  onEffect?(effect: ItemEffect): ItemEffect[];
 }
 
 /**

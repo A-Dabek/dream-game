@@ -8,10 +8,10 @@ Add the new item ID to the `ItemId` union type in `src/app/item/item.model.ts`.
 Every item should follow the `_blueprint_` prefix convention.
 
 ```typescript
-export type ItemId = 
-  | '_blueprint_attack' 
-  | '_blueprint_passive_attack' 
-  | '_blueprint_reactive_removal' 
+export type ItemId =
+  | '_blueprint_attack'
+  | '_blueprint_passive_attack'
+  | '_blueprint_reactive_removal'
   | '_blueprint_new_item'; // Add yours here
 ```
 
@@ -28,8 +28,23 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
   whenPlayed(): ItemEffect[] {
     return [someEffect(10)];
   }
+
+  // Optional: implement if the item should react to other effects
+  onEffect(effect: ItemEffect): ItemEffect[] {
+    if (effect.type === 'damage') {
+      // React to damage
+    }
+    return [];
+  }
 }
 ```
+
+### Reactive Items
+
+If your item should react to being attacked (or other effects), implement the `onEffect` method.
+The engine will call `onEffect` for all items in the victim's loadout when they are targeted by a `damage` effect (via `check_reactive_removal`).
+
+Use `removeItemFromOpponent(itemId)` if the item should be removed from its owner's loadout when reacting (since the acting player is the attacker).
 
 ## 3. Register the Behavior
 
@@ -47,7 +62,7 @@ const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
 Export the new behavior class in `src/app/item/index.ts`.
 
 ```typescript
-export { BlueprintNewItemBehaviour } from './_blueprint_new_item.behaviour';
+export {BlueprintNewItemBehaviour} from './_blueprint_new_item.behaviour';
 ```
 
 ## 5. Implement New Effects (If Needed)
@@ -60,7 +75,7 @@ In `src/app/item/item.effects.ts`, add a factory function for the new effect.
 
 ```typescript
 export function newEffect(value: number): ItemEffect {
-  return { type: 'new_effect', value };
+  return {type: 'new_effect', value};
 }
 ```
 
@@ -94,8 +109,8 @@ import {createMockPlayer} from './test-utils';
 
 describe('_blueprint_new_item Integration Test', () => {
   it('should apply effects correctly', () => {
-    const player1 = createMockPlayer('p1', { speed: 10, items: [{ id: '_blueprint_new_item' }] });
-    const player2 = createMockPlayer('p2', { speed: 1 });
+    const player1 = createMockPlayer('p1', {speed: 10, items: [{id: '_blueprint_new_item'}]});
+    const player2 = createMockPlayer('p2', {speed: 1});
     const board = new Board(player1, player2);
 
     board.playItem('_blueprint_new_item', 'p1');

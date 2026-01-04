@@ -1,4 +1,4 @@
-import {ItemEffect} from './item.model';
+import {ItemEffect, ItemId} from './item.model';
 
 /**
  * Creates a damage effect targeting the opponent.
@@ -20,7 +20,6 @@ export function heal(value: number): ItemEffect {
   };
 }
 
-
 /**
  * Creates a passive damage effect that deals damage at the end of the turn.
  */
@@ -28,6 +27,26 @@ export function passiveAttack(value: number): ItemEffect {
   return {
     type: 'add_passive_attack',
     value,
+  };
+}
+
+/**
+ * Creates an effect that removes an item from the acting player's loadout.
+ */
+export function removeItem(itemId: ItemId): ItemEffect {
+  return {
+    type: 'remove_item',
+    value: itemId,
+  };
+}
+
+/**
+ * Creates an effect that removes an item from the opponent's loadout.
+ */
+export function removeItemFromOpponent(itemId: ItemId): ItemEffect {
+  return {
+    type: 'remove_item_from_opponent',
+    value: itemId,
   };
 }
 

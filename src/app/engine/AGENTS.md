@@ -52,7 +52,9 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 - `damage`: A high-level effect that resolves to `apply_damage` and `check_reactive_removal`.
 - `apply_damage`: Decreases the opponent's health.
-- `check_reactive_removal`: Removes reactive items (like `_blueprint_reactive_removal`) from the victim's loadout.
+- `check_reactive_removal`: A generic hook that triggers reactive effects on the victim's loadout. It iterates over all items and calls their `onEffect` method.
+- `remove_item`: Removes an item from the acting player's loadout.
+- `remove_item_from_opponent`: Removes an item from the opponent's loadout.
 - `healing`: Increases the acting player's health.
 - `add_passive_attack`: Adds a `passive_attack` effect to the player's `endOfTurnEffects`.
 - `passive_attack`: A high-level effect that resolves to an `attack` effect during processing.

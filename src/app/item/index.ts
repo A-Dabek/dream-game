@@ -2,5 +2,5 @@ export { type Item, type ItemBehavior, type ItemEffect, type ItemId, type Loadou
 export { BlueprintAttackBehaviour } from './_blueprint_attack.behaviour';
 export { BlueprintPassiveAttackBehaviour } from './_blueprint_passive_attack.behaviour';
 export { BlueprintReactiveRemovalBehaviour } from './_blueprint_reactive_removal.behaviour';
-export { attack, heal, passiveAttack } from './item.effects';
+export { attack, heal, passiveAttack, removeItem, removeItemFromOpponent } from './item.effects';
 export { getItemBehavior } from './item-registry';
