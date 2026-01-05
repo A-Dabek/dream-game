@@ -23,11 +23,27 @@ abstract class BaseCondition implements PassiveCondition {
 }
 
 class EffectCondition extends BaseCondition {
+  override shouldReact(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
+    if (this.condition.type !== event.type) return false;
+
+    if (this.condition.value !== undefined) {
+      const eventValue = 'effect' in event ? event.effect.type : undefined;
+      const isMatch =
+        this.condition.value === eventValue ||
+        (this.condition.value === 'damage' && eventValue === 'self_damage');
+
+      if (!isMatch) return false;
+    }
+
+    return this.checkSpecific(event, playerId);
+  }
+
   protected checkSpecific(event: LifecycleEvent, playerId: string): boolean {
     if (event.type !== 'before_effect' && event.type !== 'after_effect') return false;
     const effect = event.effect;
     return (
       (effect.type === 'damage' && playerId !== event.actingPlayerId) ||
+      (effect.type === 'self_damage' && playerId === event.actingPlayerId) ||
       (effect.type === 'healing' && playerId === event.actingPlayerId)
     );
   }

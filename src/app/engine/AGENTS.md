@@ -53,6 +53,8 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 - `damage`: A high-level effect that resolves to `apply_damage`.
 - `apply_damage`: Decreases the opponent's health.
+- `self_damage`: A high-level effect that resolves to `apply_self_damage`.
+- `apply_self_damage`: Decreases the acting player's health.
 - `remove_item`: Removes an item from the acting player's loadout and cleans up its passive effects.
 - `remove_item_from_opponent`: Removes an item from the opponent's loadout and cleans up its passive effects.
 - `healing`: Increases the acting player's health.

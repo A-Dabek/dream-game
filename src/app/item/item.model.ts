@@ -8,6 +8,7 @@ export type ItemId =
   | '_blueprint_damage_to_heal_charges'
   | '_blueprint_damage_to_heal_turns'
   | '_blueprint_damage_to_heal_permanent'
+  | '_blueprint_self_damage'
   | '_blueprint_status_effect';
 
 /**

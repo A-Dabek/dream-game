@@ -11,6 +11,16 @@ export function attack(value: number | string): Effect {
 }
 
 /**
+ * Creates a damage effect targeting self.
+ */
+export function selfDamage(value: number | string): Effect {
+  return {
+    type: 'self_damage',
+    value,
+  };
+}
+
+/**
  * Creates a healing effect targeting self.
  */
 export function heal(value: number | string): Effect {

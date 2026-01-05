@@ -214,8 +214,9 @@ export class Engine {
         currentState = {...currentState, passiveEffects: updatedPassives};
 
         if (result.additionalEffects) {
+          const passiveOwnerKey = currentState.playerOne.id === pe.playerId ? 'playerOne' : 'playerTwo';
           currentState = result.additionalEffects.reduce(
-            (accState, action) => this.processAtomicEffect(accState, playerKey, action, depth + 1),
+            (accState, action) => this.processAtomicEffect(accState, passiveOwnerKey, action, depth + 1),
             currentState
           );
         }

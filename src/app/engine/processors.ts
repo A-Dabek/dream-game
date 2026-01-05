@@ -12,6 +12,9 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, value) => {
     return [{type: 'apply_damage', value}];
   },
+  self_damage: (state, playerKey, value) => {
+    return [{type: 'apply_self_damage', value}];
+  },
   apply_damage: (state, playerKey, value) => {
     const opponentKey = playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
     return {
@@ -19,6 +22,15 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       [opponentKey]: {
         ...state[opponentKey],
         health: state[opponentKey].health - (value as number),
+      },
+    };
+  },
+  apply_self_damage: (state, playerKey, value) => {
+    return {
+      ...state,
+      [playerKey]: {
+        ...state[playerKey],
+        health: state[playerKey].health - (value as number),
       },
     };
   },
