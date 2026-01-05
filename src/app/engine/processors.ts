@@ -10,9 +10,6 @@ export type EffectProcessor = (
 
 export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, effect) => {
-    return [{...effect, type: 'apply_damage'}];
-  },
-  apply_damage: (state, playerKey, effect) => {
     const targetKey = effect.target === 'self' ? playerKey : (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne');
     return {
       ...state,

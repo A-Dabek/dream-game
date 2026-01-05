@@ -36,8 +36,6 @@ export {
   passiveAttack,
   permanent,
   removeItem,
-  removeItemFromOpponent,
-  selfDamage,
   turns,
 } from './item.effects';
 export {getItemBehavior} from './item-registry';

@@ -51,8 +51,7 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 ## Supported Effects
 
-- `damage`: A high-level effect that resolves to `apply_damage`.
-- `apply_damage`: Decreases the targeted player's health.
+- `damage`: Decreases the targeted player's health.
 - `remove_item`: Removes an item from the targeted player's loadout and cleans up its passive effects.
 - `healing`: Increases the targeted player's health.
 - `add_passive_effect`: Adds a persistent passive effect (with its defined `Duration`) to the targeted player.

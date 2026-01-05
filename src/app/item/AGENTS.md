@@ -10,7 +10,7 @@ This module defines the core data structures for items and player loadouts in th
 * **Effect**: An interface representing an atomic effect (e.g., damage, healing). Each effect has a `target` property (`self` or `enemy`) to explicitly define whom it affects.
 * **ItemEffect**: A union type representing either an `ActiveEffect` (immediate) or a `PassiveEffect` (reactive).
 * **Effect Creators**: Factory functions that simplify the creation of `Effect` and `ItemEffect` objects. Examples include
-  `attack(amount)` (targets enemy), `selfDamage(amount)` (targets self), `heal(amount)` (targets self), `active(effect)`, and `passive(config)`.
+  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(itemId, target?)`, `active(effect)`, and `passive(config)`.
 * **Passive Effects**: Items can define passive effects that react to game events based on a `Condition` (e.g.,
   `beforeEffect('damage')`, `afterEffect('damage')`, `onPlay()`, `onTurnEnd()`), an action (Effect, list of Effects, or
   a modifier function), and an optional `Duration`.

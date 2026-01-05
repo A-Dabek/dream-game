@@ -34,7 +34,7 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
     return [
       passive({
         condition: afterEffect('damage'),
-        action: removeItemFromOpponent('_blueprint_new_item'),
+        action: removeItem('_blueprint_new_item', 'enemy'),
       })
     ];
   }
@@ -60,22 +60,21 @@ The engine processes effects through a defined lifecycle. Passives can react to 
 Example of a modifying passive:
 
 ```typescript
-  whenPlayed()
-:
-ItemEffect[]
-{
-  return [
-    active(
-      addPassiveEffect(
-        passive({
-          condition: beforeEffect('damage'),
-          action: invertDamage(),
-          duration: charges(2),
-        })
-      )
-    ),
-  ];
-}
+class ExampleItemBehaviour implements ItemBehavior {
+  whenPlayed(): ItemEffect[] {
+    return [
+      active(
+        addPassiveEffect(
+          passive({
+            condition: beforeEffect('damage'),
+            action: invertDamage(),
+            duration: charges(2),
+          })
+        )
+      ),
+    ];
+  }
+} 
 ```
 
 The `invertDamage()` action is a special modifier that converts incoming damage into healing.
@@ -116,8 +115,8 @@ If your item requires a new type of effect:
 In `src/app/item/item.effects.ts`, add a factory function for the new effect.
 
 ```typescript
-export function newEffect(value: number): ItemEffect {
-  return {type: 'new_effect', value};
+export function newEffect(value: number, target: 'self' | 'enemy' = 'self'): Effect {
+  return {type: 'new_effect', value, target};
 }
 ```
 

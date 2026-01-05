@@ -1,68 +1,46 @@
 import {ActiveEffect, Condition, Duration, Effect, ItemId, PassiveEffect,} from './item.model';
 
 /**
- * Creates a damage effect targeting the opponent.
+ * Creates a damage effect.
  */
-export function attack(value: number | string): Effect {
+export function attack(value: number | string, target: 'self' | 'enemy' = 'enemy'): Effect {
   return {
     type: 'damage',
     value,
-    target: 'enemy',
+    target,
   };
 }
 
 /**
- * Creates a damage effect targeting self.
+ * Creates a healing effect.
  */
-export function selfDamage(value: number | string): Effect {
-  return {
-    type: 'damage',
-    value,
-    target: 'self',
-  };
-}
-
-/**
- * Creates a healing effect targeting self.
- */
-export function heal(value: number | string): Effect {
+export function heal(value: number | string, target: 'self' | 'enemy' = 'self'): Effect {
   return {
     type: 'healing',
     value,
-    target: 'self',
+    target,
   };
 }
 
 /**
  * Creates a passive damage effect that deals damage at the end of the turn.
  */
-export function passiveAttack(value: number | string): Effect {
+export function passiveAttack(value: number | string, target: 'self' | 'enemy' = 'self'): Effect {
   return {
     type: 'add_passive_attack',
     value,
-    target: 'self',
+    target,
   };
 }
 
 /**
- * Creates an effect that removes an item from the acting player's loadout.
+ * Creates an effect that removes an item from a loadout.
  */
-export function removeItem(itemId: ItemId): Effect {
+export function removeItem(itemId: ItemId, target: 'self' | 'enemy' = 'self'): Effect {
   return {
     type: 'remove_item',
     value: itemId,
-    target: 'self',
-  };
-}
-
-/**
- * Creates an effect that removes an item from the opponent's loadout.
- */
-export function removeItemFromOpponent(itemId: ItemId): Effect {
-  return {
-    type: 'remove_item',
-    value: itemId,
-    target: 'enemy',
+    target,
   };
 }
 
@@ -177,11 +155,11 @@ export function duration(dur: Duration, pe: PassiveEffect): PassiveEffect {
 /**
  * Creates an effect that adds a persistent passive effect to the engine.
  */
-export function addPassiveEffect(effect: PassiveEffect): Effect {
+export function addPassiveEffect(effect: PassiveEffect, target: 'self' | 'enemy' = 'self'): Effect {
   return {
     type: 'add_passive_effect',
     value: effect,
-    target: 'self',
+    target,
   };
 }
 
