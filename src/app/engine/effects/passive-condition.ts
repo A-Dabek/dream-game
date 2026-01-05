@@ -28,36 +28,33 @@ class EffectCondition extends BaseCondition {
 
     if (this.condition.value !== undefined) {
       const eventValue = 'effect' in event ? event.effect.type : undefined;
-      const isMatch =
-        this.condition.value === eventValue ||
-        (this.condition.value === 'damage' && eventValue === 'self_damage');
-
-      if (!isMatch) return false;
+      if (this.condition.value !== eventValue) return false;
     }
 
-    return this.checkSpecific(event, playerId);
+    return this.checkSpecific(event, playerId, state);
   }
 
-  protected checkSpecific(event: LifecycleEvent, playerId: string): boolean {
+  protected checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
     if (event.type !== 'before_effect' && event.type !== 'after_effect') return false;
     const effect = event.effect;
-    return (
-      (effect.type === 'damage' && playerId !== event.actingPlayerId) ||
-      (effect.type === 'self_damage' && playerId === event.actingPlayerId) ||
-      (effect.type === 'healing' && playerId === event.actingPlayerId)
-    );
+
+    const isTargetMe = effect.target === 'self'
+      ? event.actingPlayerId === playerId
+      : event.actingPlayerId !== playerId;
+
+    return isTargetMe;
   }
 }
 
 class OnPlayCondition extends BaseCondition {
-  protected checkSpecific(event: LifecycleEvent, playerId: string): boolean {
+  protected checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
     if (event.type !== 'on_play') return false;
     return playerId !== event.actingPlayerId;
   }
 }
 
 class OnTurnEndCondition extends BaseCondition {
-  protected checkSpecific(event: LifecycleEvent, playerId: string): boolean {
+  protected checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
     if (event.type !== 'on_turn_end') return false;
     return playerId === event.actingPlayerId;
   }

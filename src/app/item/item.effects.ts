@@ -7,6 +7,7 @@ export function attack(value: number | string): Effect {
   return {
     type: 'damage',
     value,
+    target: 'enemy',
   };
 }
 
@@ -15,8 +16,9 @@ export function attack(value: number | string): Effect {
  */
 export function selfDamage(value: number | string): Effect {
   return {
-    type: 'self_damage',
+    type: 'damage',
     value,
+    target: 'self',
   };
 }
 
@@ -27,6 +29,7 @@ export function heal(value: number | string): Effect {
   return {
     type: 'healing',
     value,
+    target: 'self',
   };
 }
 
@@ -37,6 +40,7 @@ export function passiveAttack(value: number | string): Effect {
   return {
     type: 'add_passive_attack',
     value,
+    target: 'self',
   };
 }
 
@@ -47,6 +51,7 @@ export function removeItem(itemId: ItemId): Effect {
   return {
     type: 'remove_item',
     value: itemId,
+    target: 'self',
   };
 }
 
@@ -55,8 +60,9 @@ export function removeItem(itemId: ItemId): Effect {
  */
 export function removeItemFromOpponent(itemId: ItemId): Effect {
   return {
-    type: 'remove_item_from_opponent',
+    type: 'remove_item',
     value: itemId,
+    target: 'enemy',
   };
 }
 
@@ -175,6 +181,7 @@ export function addPassiveEffect(effect: PassiveEffect): Effect {
   return {
     type: 'add_passive_effect',
     value: effect,
+    target: 'self',
   };
 }
 

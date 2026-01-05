@@ -17,6 +17,7 @@ export type ItemId =
 export interface Effect {
   readonly type: string;
   readonly value: any;
+  readonly target?: 'self' | 'enemy';
 }
 
 /**

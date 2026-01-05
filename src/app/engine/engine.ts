@@ -59,6 +59,7 @@ export class Engine {
       return this.processAtomicEffect(nextState, playerKey, {
         type: 'decrement_passive_turns',
         value: playerId,
+        target: 'self',
       });
     });
   }
@@ -135,7 +136,7 @@ export class Engine {
     // 2. APPLY Effect
     const processor = PROCESSORS[finalEffect.type];
     if (processor) {
-      const result = processor(nextState, playerKey, finalEffect.value);
+      const result = processor(nextState, playerKey, finalEffect);
       if (Array.isArray(result)) {
         nextState = result.reduce(
           (accState, nextEffect) => this.processAtomicEffect(accState, playerKey, nextEffect, depth + 1),
