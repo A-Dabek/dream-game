@@ -45,17 +45,19 @@ The engine uses several specialized listener implementations:
 
 ### Actions
 
-**play(playerId: string, itemId: ItemId): void**
+**play(playerId: string, itemId: ItemId): LogEntry[]**
 
 - Retrieves the behavior for the given item.
 - Removes the item from the player's inventory (one-time use).
 - Processes all effects returned by the item's behavior.
 - Updates the engine state reactively.
+- Returns a log of all events, reactions, and processors triggered by the action.
 
-**processEndOfTurn(playerId: string): void**
+**processEndOfTurn(playerId: string): LogEntry[]**
 
 - Emits `on_turn_end` event to trigger reactive behaviors and lifecycle updates.
 - Updates the engine state reactively.
+- Returns a log of all events, reactions, and processors triggered by the end of turn.
 
 ### State Queries
 
@@ -68,9 +70,19 @@ The engine uses several specialized listener implementations:
 - `remove_item`: Removes an item from the targeted player's loadout and cleans up its passive effects.
 - `add_passive_effect`: Adds a persistent passive effect (with its defined `Duration`) to the targeted player.
 
+## Logging
+
+The engine generates a log of all significant occurrences during event processing. This log is returned by the primary action methods (`play`, `processEndOfTurn`) and can be used by the UI to represent high-level game actions or for verification in integration tests.
+
+The log contains three types of entries:
+
+- `event`: High-level game events like `on_play`, `on_turn_end`, and initial effects triggered by items.
+- `reaction`: Recorded when a `Listener` modifies, consumes, or expands an event.
+- `processor`: Recorded when an atomic effect is finally applied to the state by a processor.
+
 ## Implementation Notes
 
 - The engine is deterministic and side-effect free.
-- State updates are immutable, leveraging Angular's `signal.update()`.
+- State updates are immutable.
 - Effect processing is recursive, allowing high-level effects to resolve into low-level ones.
 - The engine only depends on the `item` module.

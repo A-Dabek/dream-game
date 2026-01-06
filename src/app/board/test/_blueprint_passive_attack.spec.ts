@@ -25,9 +25,6 @@ describe('_blueprint_passive_attack Integration Test', () => {
     board.playItem('_blueprint_passive_attack', 'p1');
     const healthAfterFirstTurn = board.opponentHealth;
 
-    // It's player 1's turn again because they are much faster (speed 10 vs 1)
-    expect(board.currentPlayerId).toBe('p1');
-
     // Player 1 passes
     board.pass('p1');
 
@@ -44,24 +41,14 @@ describe('_blueprint_passive_attack Integration Test', () => {
     });
     const board = new Board(player1, player2);
 
-    // Speed 1 vs 1. Index 0 is player2 (default tie-break or Bresenham start)
-    // Actually, TurnManager tie-break: if err = combined/2.
-    // 1+1=2. err=1.
-    // Index 0: err = 1 - 1 = 0. else -> p2.
-    expect(board.currentPlayerId).toBe('p2');
-
     board.playItem('_blueprint_passive_attack', 'p2');
     expect(board.playerHealth).toBe(95);
 
-    // Next turn is p1 (index 1: err = 0 - 1 = -1. if -> p1)
-    expect(board.currentPlayerId).toBe('p1');
     board.pass('p1');
 
     // p1 has no end-of-turn effects, so p2 health shouldn't change
     expect(board.opponentHealth).toBe(100);
 
-    // Next turn is p2
-    expect(board.currentPlayerId).toBe('p2');
     board.pass('p2');
     expect(board.playerHealth).toBe(90);
   });

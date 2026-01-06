@@ -158,3 +158,4 @@ Action throws an error if:
 
 Use `createMockPlayer` from `test/test-utils.ts` to create player loadouts for tests.
 When testing item effects, give the acting player a higher speed to ensure they start the turn.
+Integration tests (using `Board`) should focus on game state outcomes (health, inventory, turns) and logs, and should not assert on internal engine details like `listeners`.

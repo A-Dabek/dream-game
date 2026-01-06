@@ -10,6 +10,11 @@ export interface EngineState {
   readonly listeners: Listener[];
 }
 
+export type LogEntry =
+  | { type: 'event'; event: GameEvent }
+  | { type: 'reaction'; instanceId: string; playerId: string; event: GameEvent }
+  | { type: 'processor'; effect: Effect; targetPlayerId: string };
+
 export type GameEvent =
   | { type: 'on_play'; playerId: string; itemId: ItemId }
   | { type: 'on_turn_end'; playerId: string }

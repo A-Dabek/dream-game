@@ -1,7 +1,7 @@
 import {computed, signal} from '@angular/core';
 import {Effect, getItemBehavior, ItemId, Loadout, removeItem,} from '../item';
 import {ListenerFactory} from './effects';
-import {EngineLoadout, EngineState, GameEvent, Listener} from './engine.model';
+import {EngineLoadout, EngineState, GameEvent, Listener, LogEntry} from './engine.model';
 import {PROCESSORS} from './processors';
 
 export class Engine {
@@ -25,38 +25,49 @@ export class Engine {
     });
   }
 
-  play(playerId: string, itemId: ItemId): void {
+  play(playerId: string, itemId: ItemId): LogEntry[] {
     const behavior = getItemBehavior(itemId);
+    const onPlayEvent: GameEvent = {type: 'on_play', playerId, itemId};
 
-    this.engineStateSignal.update((state) => {
-      // 1. Emit on_play event
-      let currentState = this.processEvent(
-        {type: 'on_play', playerId, itemId},
-        state.listeners,
-        state
-      );
+    const state = this.engineStateSignal();
+    const {state: stateAfterOnPlay, log: onPlayLog} = this.processEvent(
+      onPlayEvent,
+      state.listeners,
+      state
+    );
 
-      // 2. Process item effects
-      const effects: Effect[] = [
-        removeItem(itemId),
-        ...behavior.whenPlayed(),
-      ];
+    const effects: Effect[] = [removeItem(itemId), ...behavior.whenPlayed()];
 
-      return effects.reduce((accState, effect) => {
-        return this.processEvent(
-          {...effect, actingPlayerId: playerId},
-          accState.listeners,
-          accState
+    const finalResult = effects.reduce<{state: EngineState; log: LogEntry[]}>(
+      (acc, effect) => {
+        const effectEvent: GameEvent = {...effect, actingPlayerId: playerId};
+        const {state: nextState, log: effectLog} = this.processEvent(
+          effectEvent,
+          acc.state.listeners,
+          acc.state
         );
-      }, currentState);
-    });
+        return {
+          state: nextState,
+          log: [...acc.log, {type: 'event', event: effectEvent}, ...effectLog],
+        };
+      },
+      {
+        state: stateAfterOnPlay,
+        log: [{type: 'event', event: onPlayEvent}, ...onPlayLog],
+      }
+    );
+
+    this.engineStateSignal.set(finalResult.state);
+    return finalResult.log;
   }
 
-  processEndOfTurn(playerId: string): void {
-    this.engineStateSignal.update((state) => {
-      // Emit on_turn_end event. Turns decrement is handled by listeners reacting to this event.
-      return this.processEvent({type: 'on_turn_end', playerId}, state.listeners, state);
-    });
+  processEndOfTurn(playerId: string): LogEntry[] {
+    const turnEndEvent: GameEvent = {type: 'on_turn_end', playerId};
+    const state = this.engineStateSignal();
+    const {state: nextState, log} = this.processEvent(turnEndEvent, state.listeners, state);
+
+    this.engineStateSignal.set(nextState);
+    return [{type: 'event', event: turnEndEvent}, ...log];
   }
 
   private prepareLoadout(loadout: Loadout & {id: string}): EngineLoadout {
@@ -85,18 +96,32 @@ export class Engine {
     listenersToProcess: Listener[],
     state: EngineState,
     depth = 0
-  ): EngineState {
-    if (depth > 50) return state;
+  ): {state: EngineState; log: LogEntry[]} {
+    if (depth > 50) return {state, log: []};
 
     if (listenersToProcess.length === 0) {
       // Basic effect processing via processors
       const processor = PROCESSORS[event.type];
       if (processor) {
-        const actingPlayerId = 'actingPlayerId' in event ? event.actingPlayerId : (event as any).playerId;
+        const actingPlayerId =
+          'actingPlayerId' in event ? event.actingPlayerId : (event as any).playerId;
         const playerKey = state.playerOne.id === actingPlayerId ? 'playerOne' : 'playerTwo';
-        return processor(state, playerKey, event as Effect);
+
+        const effect = event as Effect;
+        const targetKey =
+          effect.target === 'self'
+            ? playerKey
+            : playerKey === 'playerOne'
+            ? 'playerTwo'
+            : 'playerOne';
+        const targetPlayerId = state[targetKey].id;
+
+        return {
+          state: processor(state, playerKey, effect),
+          log: [{type: 'processor', effect, targetPlayerId}],
+        };
       }
-      return state;
+      return {state, log: []};
     }
 
     const [current, ...remaining] = listenersToProcess;
@@ -111,18 +136,37 @@ export class Engine {
       nextState = {...state, listeners: updatedListeners};
     }
 
+    let reactionLog: LogEntry[] = [];
+    if (resultEvent !== event) {
+      reactionLog.push({
+        type: 'reaction',
+        instanceId: current.instanceId,
+        playerId: current.playerId,
+        event,
+      });
+    }
+
     if (resultEvent === undefined) {
-      return nextState;
+      return {state: nextState, log: reactionLog};
     }
 
     if (Array.isArray(resultEvent)) {
-      return resultEvent.reduce(
-        (accState, e) => this.processEvent(e, remaining, accState, depth),
-        nextState
+      return resultEvent.reduce<{state: EngineState; log: LogEntry[]}>(
+        (acc, e) => {
+          const {state: s, log: l} = this.processEvent(e, remaining, acc.state, depth + 1);
+          return {state: s, log: [...acc.log, ...l]};
+        },
+        {state: nextState, log: reactionLog}
       );
     }
 
-    return this.processEvent(resultEvent, remaining, nextState, depth);
+    const {state: finalState, log: finalLog} = this.processEvent(
+      resultEvent,
+      remaining,
+      nextState,
+      depth + 1
+    );
+    return {state: finalState, log: [...reactionLog, ...finalLog]};
   }
 }
 

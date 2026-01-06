@@ -62,8 +62,8 @@ export class Board {
   playItem(itemId: ItemId, playerId: string): GameActionResult {
     this.validateAction(playerId, GameActionType.PLAY_ITEM, itemId);
 
-    this.engine.play(playerId, itemId);
-    this.engine.processEndOfTurn(playerId);
+    const log = this.engine.play(playerId, itemId);
+    const endOfTurnLog = this.engine.processEndOfTurn(playerId);
 
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
     const action = this.createAction(GameActionType.PLAY_ITEM, playerId, itemId);
@@ -75,13 +75,13 @@ export class Board {
       actionHistory: [...nextGameState.actionHistory, action],
     };
 
-    return { success: true, action, newGameState: this._gameState };
+    return { success: true, action, newGameState: this._gameState, log: [...log, ...endOfTurnLog] };
   }
 
   pass(playerId: string): GameActionResult {
     this.validateAction(playerId, GameActionType.PLAY_ITEM);
 
-    this.engine.processEndOfTurn(playerId);
+    const log = this.engine.processEndOfTurn(playerId);
 
     const action = this.createAction(GameActionType.PLAY_ITEM, playerId);
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
@@ -92,7 +92,7 @@ export class Board {
       actionHistory: [...nextGameState.actionHistory, action],
     };
 
-    return { success: true, action, newGameState: this._gameState };
+    return { success: true, action, newGameState: this._gameState, log };
   }
 
   surrender(playerId: string): GameActionResult {

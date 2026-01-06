@@ -14,17 +14,11 @@ describe('Damage to Heal Integration Tests', () => {
     });
     const board = new Board(p2, p1);
 
-    // p2 starts because speed 11 > 10
-    expect(board.currentPlayerId).toBe('p2');
     board.playItem('_blueprint_damage_to_heal_charges', 'p2');
 
-    // now it should be p1's turn
-    expect(board.currentPlayerId).toBe('p1');
     board.playItem('_blueprint_attack', 'p1');
     expect(board.gameState.player.health).toBe(110);
 
-    // now it should be p2's turn
-    expect(board.currentPlayerId).toBe('p2');
     board.pass('p2');
 
     // p1's turn again

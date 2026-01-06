@@ -1,3 +1,4 @@
+import {LogEntry} from '../engine/engine.model';
 import {Loadout} from '../item';
 
 export interface BoardLoadout extends Loadout {
@@ -36,5 +37,6 @@ export interface GameActionResult {
   action: GameAction;
   error?: string;
   newGameState?: GameState;
+  log?: LogEntry[];
 }
 

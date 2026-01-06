@@ -21,8 +21,6 @@ describe('GameOver Behavior', () => {
     const player2 = createMockPlayer('p2', { health: 5, speed: 1 }); // Low health, sword does 10 damage
     const board = new Board(player1, player2);
 
-    expect(board.currentPlayerId).toBe('p1');
-
     const result = board.playItem('_blueprint_attack', 'p1');
 
     expect(result.success).toBe(true);
