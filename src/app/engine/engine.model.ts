@@ -24,7 +24,6 @@ export interface Listener {
   readonly instanceId: string;
   readonly playerId: string;
   handle(event: GameEvent, state: EngineState): {
-    event: GameEvent | GameEvent[] | void;
-    nextListener: Listener | null;
+    event: GameEvent[];
   };
 }

@@ -1,6 +1,6 @@
 import {beforeEffect, onTurnEnd} from './conditions';
 import {permanent} from './durations';
-import {Condition, Duration, Effect, ItemId, PassiveEffect} from './item.model';
+import {Condition, Duration, Effect, PassiveEffect} from './item.model';
 
 /**
  * Creates a damage effect.
@@ -20,7 +20,7 @@ export function passiveAttack(value: number | string, target: 'self' | 'enemy' =
   return addPassiveEffect(
     passive({
       condition: onTurnEnd(),
-      action: attack(value),
+      action: [attack(value)],
       duration: permanent(),
     }),
     target
@@ -30,10 +30,10 @@ export function passiveAttack(value: number | string, target: 'self' | 'enemy' =
 /**
  * Creates an effect that removes an item from a loadout.
  */
-export function removeItem(itemId: ItemId, target: 'self' | 'enemy' = 'self'): Effect {
+export function removeItem(value: string, target: 'self' | 'enemy' = 'self'): Effect {
   return {
     type: 'remove_item',
-    value: itemId,
+    value,
     target,
   };
 }
@@ -45,7 +45,7 @@ export function invert(targetType: string, duration?: Duration): PassiveEffect {
   return passive({
     type: 'invert',
     condition: beforeEffect(targetType),
-    action: {type: 'invert', value: targetType},
+    action: [{type: 'invert', value: targetType}],
     duration,
   });
 }
@@ -57,7 +57,7 @@ export function negate(targetType: string, duration?: Duration): PassiveEffect {
   return passive({
     type: 'negate',
     condition: beforeEffect(targetType),
-    action: {type: 'negate', value: targetType},
+    action: [{type: 'negate', value: targetType}],
     duration,
   });
 }
@@ -67,7 +67,7 @@ export function negate(targetType: string, duration?: Duration): PassiveEffect {
  */
 export function passive(config: {
   condition: Condition;
-  action: Effect | Effect[];
+  action: Effect[];
   duration?: Duration;
   type?: string;
 }): PassiveEffect {

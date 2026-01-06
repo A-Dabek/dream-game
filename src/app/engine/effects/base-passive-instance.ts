@@ -22,34 +22,86 @@ export abstract class BasePassiveInstance implements Listener {
     this.duration = duration ?? createDuration(effect.duration);
   }
 
-  abstract handle(
+  /**
+   * Main entry point for event processing.
+   * Handles the lifecycle of the listener (reaction, charges, duration, removal).
+   */
+  handle(event: GameEvent, state: EngineState): { event: GameEvent[] } {
+    const reaction = this.handleReaction(event, state);
+    const resultEvents = reaction ?? [event];
+
+    if (reaction) {
+      this.duration.onHandle();
+    }
+
+    this.duration.update(event, this.playerId);
+
+    return this.wrapResult({ event: resultEvents });
+  }
+
+  /**
+   * Subclasses should implement this to define their reaction logic.
+   * Return an array of events if the listener reacts, or null if it doesn't.
+   */
+  protected abstract handleReaction(
     event: GameEvent,
     state: EngineState
-  ): {
-    event: GameEvent | GameEvent[] | void;
-    nextListener: Listener | null;
-  };
-
-  public update(event: GameEvent): this | null {
-    const nextDuration = this.duration.update(event, this.playerId);
-    if (!nextDuration) return null;
-    if (nextDuration === this.duration) return this;
-    return this.clone(this.condition, nextDuration);
-  }
+  ): GameEvent[] | null;
 
   protected shouldReact(event: GameEvent, state: EngineState): boolean {
     return this.condition.shouldReact(event, this.playerId, state);
   }
 
-  protected onHandle(): this | null {
-    const nextDuration = this.duration.onHandle();
-    if (!nextDuration) return null;
-    return this.clone(this.condition, nextDuration);
+  private wrapResult(result: {
+    event: GameEvent[];
+  }): {
+    event: GameEvent[];
+  } {
+    let finalEvents = result.event;
+
+    // Check for item removal
+    for (const e of result.event) {
+      const removalEvent = this.checkRemoveItem(e);
+      if (removalEvent) {
+        finalEvents = this.addEvent(finalEvents, removalEvent);
+        break;
+      }
+    }
+
+    // Check for duration expiration
+    if (this.duration.isExpired) {
+      const removeEvent: GameEvent = {
+        type: 'remove_listener',
+        value: this.instanceId,
+        actingPlayerId: this.playerId,
+      };
+      finalEvents = this.addEvent(finalEvents, removeEvent);
+    }
+
+    return {
+      event: finalEvents,
+    };
   }
 
-  /**
-   * Creates a new instance of the listener with updated state.
-   * Subclasses must implement this to return their own type.
-   */
-  protected abstract clone(condition: PassiveCondition, duration: PassiveDuration): this;
+  private addEvent(
+    base: GameEvent[],
+    newEvent: GameEvent
+  ): GameEvent[] {
+    if (base.some((e) => e.type === 'remove_listener' && (e as any).value === this.instanceId)) {
+      return base;
+    }
+    return [...base, newEvent];
+  }
+
+
+  private checkRemoveItem(event: GameEvent): GameEvent | null {
+    if (event && event.type === 'remove_item' && event.value === this.instanceId) {
+      return {
+        type: 'remove_listener',
+        value: this.instanceId,
+        actingPlayerId: this.playerId,
+      };
+    }
+    return null;
+  }
 }

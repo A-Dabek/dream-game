@@ -30,13 +30,13 @@ describe('Engine Log', () => {
     // 2. remove_item event (every item play triggers remove_item effect)
     expect(log[1]).toMatchObject({
       type: 'event',
-      event: { type: 'remove_item', value: '_blueprint_attack', target: 'self', actingPlayerId: 'p1' }
+      event: { type: 'remove_item', value: expect.any(String), target: 'self', actingPlayerId: 'p1' }
     });
 
     // 3. remove_item processor
     expect(log[2]).toMatchObject({
       type: 'processor',
-      effect: { type: 'remove_item', value: '_blueprint_attack', target: 'self' },
+      effect: { type: 'remove_item', value: expect.any(String), target: 'self' },
       targetPlayerId: 'p1'
     });
 

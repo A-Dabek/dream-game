@@ -27,16 +27,21 @@ export class Engine {
 
   play(playerId: string, itemId: ItemId): LogEntry[] {
     const behavior = getItemBehavior(itemId);
+    const state = this.engineStateSignal();
+
+    const player = state.playerOne.id === playerId ? state.playerOne : state.playerTwo;
+    const item = player.items.find((i) => i.id === itemId);
+    const instanceId = item?.instanceId ?? itemId;
+
     const onPlayEvent: GameEvent = {type: 'on_play', playerId, itemId};
 
-    const state = this.engineStateSignal();
     const {state: stateAfterOnPlay, log: onPlayLog} = this.processEvent(
       onPlayEvent,
       state.listeners,
       state
     );
 
-    const effects: Effect[] = [removeItem(itemId), ...behavior.whenPlayed()];
+    const effects: Effect[] = [removeItem(instanceId), ...behavior.whenPlayed()];
 
     const finalResult = effects.reduce<{state: EngineState; log: LogEntry[]}>(
       (acc, effect) => {
@@ -125,19 +130,12 @@ export class Engine {
     }
 
     const [current, ...remaining] = listenersToProcess;
-    const {event: resultEvent, nextListener} = current.handle(event, state);
-
-    // Update state with next version of the listener
-    let nextState = state;
-    if (nextListener !== current) {
-      const updatedListeners = state.listeners
-        .map((l) => (l.instanceId === current.instanceId ? nextListener : l))
-        .filter((l): l is Listener => l !== null);
-      nextState = {...state, listeners: updatedListeners};
-    }
+    const {event: resultEvent} = current.handle(event, state);
 
     let reactionLog: LogEntry[] = [];
-    if (resultEvent !== event) {
+    const isSameEvent = resultEvent.length === 1 && resultEvent[0] === event;
+
+    if (!isSameEvent) {
       reactionLog.push({
         type: 'reaction',
         instanceId: current.instanceId,
@@ -146,27 +144,13 @@ export class Engine {
       });
     }
 
-    if (resultEvent === undefined) {
-      return {state: nextState, log: reactionLog};
-    }
-
-    if (Array.isArray(resultEvent)) {
-      return resultEvent.reduce<{state: EngineState; log: LogEntry[]}>(
-        (acc, e) => {
-          const {state: s, log: l} = this.processEvent(e, remaining, acc.state, depth + 1);
-          return {state: s, log: [...acc.log, ...l]};
-        },
-        {state: nextState, log: reactionLog}
-      );
-    }
-
-    const {state: finalState, log: finalLog} = this.processEvent(
-      resultEvent,
-      remaining,
-      nextState,
-      depth + 1
+    return resultEvent.reduce<{state: EngineState; log: LogEntry[]}>(
+      (acc, e) => {
+        const {state: s, log: l} = this.processEvent(e, remaining, acc.state, depth + 1);
+        return {state: s, log: [...acc.log, ...l]};
+      },
+      {state, log: reactionLog}
     );
-    return {state: finalState, log: [...reactionLog, ...finalLog]};
   }
 }
 

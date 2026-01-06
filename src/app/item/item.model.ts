@@ -43,7 +43,7 @@ export interface Duration {
 export interface PassiveEffect {
   readonly type?: string;
   readonly condition: Condition;
-  readonly action: Effect | Effect[];
+  readonly action: Effect[];
   readonly duration?: Duration;
 }
 

@@ -1,4 +1,4 @@
-import {Effect, ItemId, PassiveEffect} from '../item';
+import {Effect, PassiveEffect} from '../item';
 import {ListenerFactory} from './effects';
 import {EngineState} from './engine.model';
 
@@ -28,19 +28,14 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     const targetKey =
       effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
     const target = state[targetKey];
-    const itemIndex = target.items.findIndex((item) => item.id === (effect.value as ItemId));
+    const itemIndex = target.items.findIndex((item) => item.instanceId === (effect.value as string));
 
     if (itemIndex === -1) {
       return state;
     }
 
-    const itemToRemove = target.items[itemIndex];
     const updatedItems = [...target.items];
     updatedItems.splice(itemIndex, 1);
-
-    const updatedListeners = state.listeners.filter(
-      (l) => l.instanceId !== itemToRemove.instanceId
-    );
 
     return {
       ...state,
@@ -48,6 +43,13 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...target,
         items: updatedItems,
       },
+    };
+  },
+  remove_listener: (state, playerKey, effect) => {
+    const instanceId = effect.value as string;
+    const updatedListeners = state.listeners.filter((l) => l.instanceId !== instanceId);
+    return {
+      ...state,
       listeners: updatedListeners,
     };
   },

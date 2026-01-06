@@ -34,7 +34,7 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
     return [
       passive({
         condition: afterEffect('damage'),
-        action: removeItem('_blueprint_new_item', 'enemy'),
+        action: [removeItem('some_item_id')],
       })
     ];
   }
