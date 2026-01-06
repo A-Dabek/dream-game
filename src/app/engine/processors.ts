@@ -1,16 +1,21 @@
-import {attack, Effect, ItemId, PassiveEffect} from '../item';
-import {DefaultPassiveInstance, PassiveInstance} from './effects';
+import {Effect, ItemId, PassiveEffect} from '../item';
+import {DefaultPassiveInstance} from './effects';
 import {EngineState} from './engine.model';
 
 export type EffectProcessor = (
   state: EngineState,
   playerKey: 'playerOne' | 'playerTwo',
   effect: Effect
-) => EngineState | Effect[];
+) => EngineState;
 
 export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, effect) => {
-    const targetKey = effect.target === 'self' ? playerKey : (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne');
+    const targetKey =
+      effect.target === 'self'
+        ? playerKey
+        : playerKey === 'playerOne'
+        ? 'playerTwo'
+        : 'playerOne';
     return {
       ...state,
       [targetKey]: {
@@ -20,7 +25,8 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     };
   },
   remove_item: (state, playerKey, effect) => {
-    const targetKey = effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
+    const targetKey =
+      effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
     const target = state[targetKey];
     const itemIndex = target.items.findIndex((item) => item.id === (effect.value as ItemId));
 
@@ -32,7 +38,9 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     const updatedItems = [...target.items];
     updatedItems.splice(itemIndex, 1);
 
-    const updatedPassiveEffects = state.passiveEffects.filter((pe) => pe.instanceId !== itemToRemove.instanceId);
+    const updatedListeners = state.listeners.filter(
+      (l) => l.instanceId !== itemToRemove.instanceId
+    );
 
     return {
       ...state,
@@ -40,11 +48,12 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...target,
         items: updatedItems,
       },
-      passiveEffects: updatedPassiveEffects,
+      listeners: updatedListeners,
     };
   },
   healing: (state, playerKey, effect) => {
-    const targetKey = effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
+    const targetKey =
+      effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
     return {
       ...state,
       [targetKey]: {
@@ -53,39 +62,21 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       },
     };
   },
-  add_passive_attack: (state, playerKey, effect) => {
-    const targetKey = effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
-    return {
-      ...state,
-      [targetKey]: {
-        ...state[targetKey],
-        endOfTurnEffects: [...state[targetKey].endOfTurnEffects, {...effect, type: 'passive_attack'}],
-      },
-    };
-  },
-  passive_attack: (state, playerKey, effect) => [attack(effect.value as number)],
   add_passive_effect: (state, playerKey, effect) => {
-    const targetKey = effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
+    const targetKey =
+      effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
     const passiveEffect = effect.value as PassiveEffect;
     const targetPlayer = state[targetKey];
     return {
       ...state,
-      passiveEffects: [
-        ...state.passiveEffects,
+      listeners: [
         DefaultPassiveInstance.create(
           `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
           targetPlayer.id,
           passiveEffect
         ),
+        ...state.listeners,
       ],
     };
-  },
-  decrement_passive_turns: (state, playerKey, effect) => {
-    const playerId = effect.value as string;
-    const updatedPassiveEffects = state.passiveEffects
-      .map((pe) => pe.update({type: 'on_turn_end', actingPlayerId: playerId}))
-      .filter((pe): pe is PassiveInstance => pe !== null);
-
-    return {...state, passiveEffects: updatedPassiveEffects};
   },
 };

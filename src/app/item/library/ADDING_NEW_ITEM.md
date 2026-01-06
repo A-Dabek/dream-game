@@ -123,13 +123,13 @@ export function newEffect(value: number, target: 'self' | 'enemy' = 'self'): Eff
 ### B. Add Effect Processor
 
 In `src/app/engine/processors.ts`, add a processor for the new effect in the `PROCESSORS` object.
-Processors can either return a new state or a list of further effects to be processed.
+Processors must return the updated state.
 
 ```typescript
 export const PROCESSORS: Record<string, EffectProcessor> = {
   // ...
-  new_effect: (state, playerKey, value) => {
-    // Return updated state or more effects
+  new_effect: (state, playerKey, effect) => {
+    // Return updated state
   },
 };
 ```

@@ -49,6 +49,7 @@ export interface ActiveEffect {
  */
 export interface PassiveEffect {
   readonly kind: 'passive';
+  readonly type?: string;
   readonly condition: Condition;
   readonly action: Effect | Effect[] | ((effect: Effect) => Effect | null);
   readonly duration?: Duration;

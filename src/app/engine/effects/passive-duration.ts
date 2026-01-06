@@ -1,8 +1,8 @@
 import {Duration} from '../../item';
-import {LifecycleEvent} from '../engine.model';
+import {GameEvent} from '../engine.model';
 
 export interface PassiveDuration {
-  update(event: LifecycleEvent, playerId: string): PassiveDuration | null;
+  update(event: GameEvent, playerId: string): PassiveDuration | null;
   onHandle(): PassiveDuration | null;
 }
 
@@ -28,8 +28,8 @@ class ChargesDuration implements PassiveDuration {
 
 class TurnsDuration implements PassiveDuration {
   constructor(private readonly remainingTurns: number) {}
-  update(event: LifecycleEvent, playerId: string): PassiveDuration | null {
-    if (event.type === 'on_turn_end' && playerId === event.actingPlayerId) {
+  update(event: GameEvent, playerId: string): PassiveDuration | null {
+    if (event.type === 'on_turn_end' && (event as any).playerId === playerId) {
       const next = this.remainingTurns - 1;
       return next > 0 ? new TurnsDuration(next) : null;
     }

@@ -26,11 +26,14 @@ export function heal(value: number | string, target: 'self' | 'enemy' = 'self'):
  * Creates a passive damage effect that deals damage at the end of the turn.
  */
 export function passiveAttack(value: number | string, target: 'self' | 'enemy' = 'self'): Effect {
-  return {
-    type: 'add_passive_attack',
-    value,
-    target,
-  };
+  return addPassiveEffect(
+    passive({
+      condition: onTurnEnd(),
+      action: attack(value),
+      duration: permanent(),
+    }),
+    target
+  );
 }
 
 /**
@@ -112,6 +115,7 @@ export function passive(config: {
   condition: Condition;
   action: Effect | Effect[] | ((effect: Effect) => Effect | null);
   duration?: Duration;
+  type?: string;
 }): PassiveEffect {
   return { kind: 'passive', ...config };
 }

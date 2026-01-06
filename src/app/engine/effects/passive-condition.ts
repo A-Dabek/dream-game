@@ -1,66 +1,64 @@
 import {Condition} from '../../item';
-import {EngineState, LifecycleEvent} from '../engine.model';
+import {EngineState, GameEvent} from '../engine.model';
 
 export interface PassiveCondition {
-  shouldReact(event: LifecycleEvent, playerId: string, state: EngineState): boolean;
+  readonly type: string;
+  shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean;
 }
 
 abstract class BaseCondition implements PassiveCondition {
   constructor(protected readonly condition: Condition) {}
 
-  shouldReact(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
-    if (this.condition.type !== event.type) return false;
+  get type(): string {
+    return this.condition.type;
+  }
+
+  shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean {
+    const isEffectType = event.type !== 'on_play' && event.type !== 'on_turn_end';
+    const conditionTypeMatches = this.condition.type === event.type ||
+      (isEffectType && (this.condition.type === 'before_effect' || this.condition.type === 'after_effect'));
+
+    if (!conditionTypeMatches) return false;
 
     if (this.condition.value !== undefined) {
-      const eventValue = 'effect' in event ? event.effect.type : undefined;
+      const eventValue = event.type;
       if (this.condition.value !== eventValue) return false;
     }
 
     return this.checkSpecific(event, playerId, state);
   }
 
-  protected abstract checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean;
+  protected abstract checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean;
 }
 
 class EffectCondition extends BaseCondition {
-  override shouldReact(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
-    if (this.condition.type !== event.type) return false;
+  protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
+    if (!('actingPlayerId' in event)) return false;
+    const effect = event;
 
-    if (this.condition.value !== undefined) {
-      const eventValue = 'effect' in event ? event.effect.type : undefined;
-      if (this.condition.value !== eventValue) return false;
-    }
-
-    return this.checkSpecific(event, playerId, state);
-  }
-
-  protected checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
-    if (event.type !== 'before_effect' && event.type !== 'after_effect') return false;
-    const effect = event.effect;
-
-    const isTargetMe = effect.target === 'self'
-      ? event.actingPlayerId === playerId
-      : event.actingPlayerId !== playerId;
+    const isTargetMe =
+      effect.target === 'self' ? event.actingPlayerId === playerId : event.actingPlayerId !== playerId;
 
     return isTargetMe;
   }
 }
 
 class OnPlayCondition extends BaseCondition {
-  protected checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
+  protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
     if (event.type !== 'on_play') return false;
-    return playerId !== event.actingPlayerId;
+    return playerId !== (event as any).playerId;
   }
 }
 
 class OnTurnEndCondition extends BaseCondition {
-  protected checkSpecific(event: LifecycleEvent, playerId: string, state: EngineState): boolean {
+  protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
     if (event.type !== 'on_turn_end') return false;
-    return playerId === event.actingPlayerId;
+    return playerId === (event as any).playerId;
   }
 }
 
 class DefaultCondition implements PassiveCondition {
+  readonly type = 'default';
   shouldReact(): boolean {
     return false;
   }
