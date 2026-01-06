@@ -9,7 +9,8 @@ export type ItemId =
   | '_blueprint_damage_to_heal_turns'
   | '_blueprint_damage_to_heal_permanent'
   | '_blueprint_self_damage'
-  | '_blueprint_status_effect';
+  | '_blueprint_status_effect'
+  | '_blueprint_negate_damage';
 
 /**
  * Represents an atomic effect that can be applied to the game state.
@@ -37,29 +38,14 @@ export interface Duration {
 }
 
 /**
- * Represents an active effect that is applied immediately.
- */
-export interface ActiveEffect {
-  readonly kind: 'active';
-  readonly action: Effect;
-}
-
-/**
  * Represents a passive effect that reacts to game conditions.
  */
 export interface PassiveEffect {
-  readonly kind: 'passive';
   readonly type?: string;
   readonly condition: Condition;
-  readonly action: Effect | Effect[] | ((effect: Effect) => Effect | null);
+  readonly action: Effect | Effect[];
   readonly duration?: Duration;
 }
-
-/**
- * Represents an effect that an item can have on the game state.
- * Can be either active (immediate) or passive (reactive).
- */
-export type ItemEffect = ActiveEffect | PassiveEffect;
 
 /**
  * Defines the behavior and effects of an item.
@@ -68,7 +54,7 @@ export interface ItemBehavior {
   /**
    * Returns the effects to be applied when the item is played.
    */
-  whenPlayed(): ItemEffect[];
+  whenPlayed(): Effect[];
 
   /**
    * Returns passive effects that are active while the item is in the loadout.

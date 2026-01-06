@@ -8,13 +8,11 @@ This module defines the core data structures for items and player loadouts in th
   `_blueprint_` prefix convention (e.g., `_blueprint_attack`, `_blueprint_reactive_removal`).
 * **Item**: An interface representing a single item, characterized by its `ItemId`.
 * **Effect**: An interface representing an atomic effect (e.g., damage, healing). Each effect has a `target` property (`self` or `enemy`) to explicitly define whom it affects.
-* **ItemEffect**: A union type representing either an `ActiveEffect` (immediate) or a `PassiveEffect` (reactive).
-* **Effect Creators**: Factory functions that simplify the creation of `Effect` and `ItemEffect` objects. Examples include
-  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(itemId, target?)`, `active(effect)`, and `passive(config)`.
+* **Effect Creators**: Factory functions that simplify the creation of `Effect` and `PassiveEffect` objects. Examples include
+  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(itemId, target?)`, and `passive(config)`.
 * **Passive Effects**: Items can define passive effects that react to game events based on a `Condition` (e.g.,
-  `beforeEffect('damage')`, `afterEffect('damage')`, `onPlay()`, `onTurnEnd()`), an action (Effect, list of Effects, or
-  a modifier function), and an optional `Duration`.
-* **ItemBehavior**: An interface responsible for defining item logic, returning `ItemEffect[]` from `whenPlayed()` and
+  `beforeEffect('damage')`, `afterEffect('damage')`, `onPlay()`, `onTurnEnd()`), an action (Effect or list of Effects), and an optional `Duration`.
+* **ItemBehavior**: An interface responsible for defining item logic, returning `Effect[]` from `whenPlayed()` and
   `PassiveEffect[]` from `passiveEffects()`.
 * **Item Implementations**: Concrete classes located in the `library` directory following the `<item name>.behaviour.ts`
   convention that implement `ItemBehavior` for specific items (e.g., `BlueprintAttackBehaviour`,

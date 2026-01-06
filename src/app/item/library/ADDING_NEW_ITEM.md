@@ -21,12 +21,12 @@ Create a new file `src/app/item/_<item_id_without_prefix>.behaviour.ts`.
 Implement the `ItemBehavior` interface.
 
 ```typescript
-import {active, attack} from './item.effects';
-import {ItemBehavior, ItemEffect} from './item.model';
+import {attack} from '..';
+import {Effect, ItemBehavior} from '../item.model';
 
 export class BlueprintNewItemBehaviour implements ItemBehavior {
-  whenPlayed(): ItemEffect[] {
-    return [active(attack(10))];
+  whenPlayed(): Effect[] {
+    return [attack(10)];
   }
 
   // Optional: implement if the item has passive effects while in the loadout
@@ -41,12 +41,11 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
 }
 ```
 
-### Active and Passive Effects
+### Effects
 
-Items return a list of `ItemEffect` objects, which can be either **active** or **passive**.
+Items return a list of `Effect` objects from `whenPlayed()`, which are applied immediately.
 
-- `active(effect)`: An immediate effect that is applied when the item is played.
-- `passive({condition, action, duration})`: A reactive effect that is triggered by game events.
+Items can also return a list of `PassiveEffect` objects from `passiveEffects()`, which are reactive and active while the item is in the loadout.
 
 ### Lifecycle and Conditions
 
@@ -61,27 +60,21 @@ Example of a modifying passive:
 
 ```typescript
 class ExampleItemBehaviour implements ItemBehavior {
-  whenPlayed(): ItemEffect[] {
+  whenPlayed(): Effect[] {
     return [
-      active(
-        addPassiveEffect(
-          passive({
-            condition: beforeEffect('damage'),
-            action: invertDamage(),
-            duration: charges(2),
-          })
-        )
+      addPassiveEffect(
+        invert('damage', charges(2))
       ),
     ];
   }
-} 
+}
 ```
 
-The `invertDamage()` action is a special modifier that converts incoming damage into healing.
+The `invert('damage', duration)` creator adds a passive effect that converts incoming damage into healing. `negate('damage', duration)` is another helper that consumes the effect entirely. Both are high-level wrappers that create specialized listeners in the engine.
 
 ### Persistent Passive Effects
 
-Items can add passive effects that persist even after the item is removed from the loadout. Use `active(addPassiveEffect(passive({...})))` in `whenPlayed()`.
+Items can add passive effects that persist even after the item is removed from the loadout. Use `addPassiveEffect(passive({...}))` in `whenPlayed()`.
 
 To define how long a passive effect lasts, use `turns(n)`, `charges(n)`, or `permanent()` within the `duration` property.
 
@@ -112,7 +105,7 @@ If your item requires a new type of effect:
 
 ### A. Add Effect Creator
 
-In `src/app/item/item.effects.ts`, add a factory function for the new effect.
+In `src/app/item/effects.ts` (or `conditions.ts` / `durations.ts`), add a factory function for the new effect.
 
 ```typescript
 export function newEffect(value: number, target: 'self' | 'enemy' = 'self'): Effect {

@@ -1,5 +1,5 @@
-import {active, attack} from '../item.effects';
-import {ItemBehavior, ItemEffect} from '../item.model';
+import {attack} from '..';
+import {Effect, ItemBehavior} from '../item.model';
 
 /**
  * Behavior for the _blueprint_self_damage item.
@@ -9,7 +9,7 @@ export class BlueprintSelfDamageBehaviour implements ItemBehavior {
   /**
    * Returns a self-damage effect when played.
    */
-  whenPlayed(): ItemEffect[] {
-    return [active(attack(10, 'self'))];
+  whenPlayed(): Effect[] {
+    return [attack(10, 'self')];
   }
 }

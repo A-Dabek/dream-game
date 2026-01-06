@@ -1,22 +1,12 @@
-import {active, addPassiveEffect, beforeEffect, charges, invertDamage, passive} from '../item.effects';
-import {ItemBehavior, ItemEffect} from '../item.model';
+import {addPassiveEffect, charges, invert} from '..';
+import {Effect, ItemBehavior} from '../item.model';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_charges item.
  * When played, it adds a passive effect that converts the next 2 instances of damage into healing.
  */
 export class BlueprintDamageToHealChargesBehaviour implements ItemBehavior {
-  whenPlayed(): ItemEffect[] {
-    return [
-      active(
-        addPassiveEffect(
-          passive({
-            condition: beforeEffect('damage'),
-            action: invertDamage(),
-            duration: charges(2),
-          })
-        )
-      ),
-    ];
+  whenPlayed(): Effect[] {
+    return [addPassiveEffect(invert('damage', charges(2)))];
   }
 }

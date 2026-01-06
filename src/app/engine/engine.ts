@@ -1,5 +1,5 @@
 import {computed, signal} from '@angular/core';
-import {Effect, getItemBehavior, ItemEffect, ItemId, Loadout, PassiveEffect, removeItem,} from '../item';
+import {Effect, getItemBehavior, ItemId, Loadout, removeItem,} from '../item';
 import {ListenerFactory} from './effects';
 import {EngineLoadout, EngineState, GameEvent, Listener} from './engine.model';
 import {PROCESSORS} from './processors';
@@ -37,21 +37,17 @@ export class Engine {
       );
 
       // 2. Process item effects
-      const effects: ItemEffect[] = [
-        {kind: 'active', action: removeItem(itemId)},
+      const effects: Effect[] = [
+        removeItem(itemId),
         ...behavior.whenPlayed(),
       ];
 
       return effects.reduce((accState, effect) => {
-        if (effect.kind === 'active') {
-          return this.processEvent(
-            {...effect.action, actingPlayerId: playerId},
-            accState.listeners,
-            accState
-          );
-        } else {
-          return this.registerPassiveEffect(accState, playerId, effect);
-        }
+        return this.processEvent(
+          {...effect, actingPlayerId: playerId},
+          accState.listeners,
+          accState
+        );
       }, currentState);
     });
   }
@@ -83,23 +79,6 @@ export class Engine {
     });
   }
 
-  private registerPassiveEffect(
-    state: EngineState,
-    playerId: string,
-    effect: PassiveEffect
-  ): EngineState {
-    return {
-      ...state,
-      listeners: [
-        ListenerFactory.createFromPassive(
-          `buff-${playerId}-${Date.now()}-${Math.random()}`,
-          playerId,
-          effect
-        ),
-        ...state.listeners,
-      ],
-    };
-  }
 
   private processEvent(
     event: GameEvent,

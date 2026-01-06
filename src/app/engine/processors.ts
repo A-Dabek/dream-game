@@ -1,5 +1,5 @@
 import {Effect, ItemId, PassiveEffect} from '../item';
-import {DefaultPassiveInstance} from './effects';
+import {ListenerFactory} from './effects';
 import {EngineState} from './engine.model';
 
 export type EffectProcessor = (
@@ -70,7 +70,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     return {
       ...state,
       listeners: [
-        DefaultPassiveInstance.create(
+        ListenerFactory.createFromPassive(
           `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
           targetPlayer.id,
           passiveEffect

@@ -1,5 +1,6 @@
 import {PassiveEffect} from '../../item';
 import {Listener} from '../engine.model';
+import {InvertListener, NegateListener} from './modifier-listeners';
 import {DefaultPassiveInstance} from './passive-instance';
 
 export class ListenerFactory {
@@ -8,8 +9,12 @@ export class ListenerFactory {
     playerId: string,
     effect: PassiveEffect
   ): Listener {
-    // In the future, we can switch based on effect.type
-    // if (effect.type === 'custom_listener') return new CustomListener(...);
+    if (effect.type === 'negate') {
+      return new NegateListener(instanceId, playerId, effect);
+    }
+    if (effect.type === 'invert') {
+      return new InvertListener(instanceId, playerId, effect);
+    }
 
     return DefaultPassiveInstance.create(instanceId, playerId, effect);
   }

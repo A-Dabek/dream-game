@@ -1,5 +1,5 @@
-import {afterEffect, passive, removeItem} from '../item.effects';
-import {ItemBehavior, ItemEffect, PassiveEffect} from '../item.model';
+import {afterEffect, passive, removeItem} from '..';
+import {Effect, ItemBehavior, PassiveEffect} from '../item.model';
 
 /**
  * Behavior for the _blueprint_reactive_removal item.
@@ -9,7 +9,7 @@ export class BlueprintReactiveRemovalBehaviour implements ItemBehavior {
   /**
    * Returns no effects when played.
    */
-  whenPlayed(): ItemEffect[] {
+  whenPlayed(): Effect[] {
     return [];
   }
 

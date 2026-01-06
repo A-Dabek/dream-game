@@ -1,22 +1,12 @@
-import {active, addPassiveEffect, beforeEffect, invertDamage, passive, permanent} from '../item.effects';
-import {ItemBehavior, ItemEffect} from '../item.model';
+import {addPassiveEffect, invert, permanent} from '..';
+import {Effect, ItemBehavior} from '../item.model';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_permanent item.
  * When played, it adds a passive effect that converts all incoming damage into healing for the rest of the game.
  */
 export class BlueprintDamageToHealPermanentBehaviour implements ItemBehavior {
-  whenPlayed(): ItemEffect[] {
-    return [
-      active(
-        addPassiveEffect(
-          passive({
-            condition: beforeEffect('damage'),
-            action: invertDamage(),
-            duration: permanent(),
-          })
-        )
-      ),
-    ];
+  whenPlayed(): Effect[] {
+    return [addPassiveEffect(invert('damage', permanent()))];
   }
 }
