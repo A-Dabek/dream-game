@@ -1,4 +1,4 @@
-import {PassiveEffect} from '../../item';
+import {BEFORE_EFFECT, isLifecycleEvent, PassiveEffect} from '../../item';
 import {EngineState, GameEvent, Listener} from '../engine.model';
 import {BasePassiveInstance} from './base-passive-instance';
 
@@ -27,27 +27,21 @@ export class DefaultPassiveInstance extends BasePassiveInstance implements Passi
       return null;
     }
 
-    const isBeforeEffect =
-      this.condition.type === 'before_effect' &&
-      !('type' in event && (event.type === 'on_play' || event.type === 'on_turn_end'));
+    const isReplacement = this.condition.type === BEFORE_EFFECT && !isLifecycleEvent(event.type);
 
-    let nextEvent: GameEvent[];
-
-    if (isBeforeEffect) {
-      const actingPlayerId =
-        'actingPlayerId' in event ? event.actingPlayerId : (event as any).playerId;
-      nextEvent = this.effect.action.map((e) => ({
+    if (isReplacement) {
+      const playerId = event.playerId;
+      return this.effect.action.map((e) => ({
         ...e,
-        actingPlayerId,
+        playerId,
       }));
-    } else {
-      const mappedAdditions = this.effect.action.map((e) => ({
-        ...e,
-        actingPlayerId: this.playerId,
-      }));
-      nextEvent = [event, ...mappedAdditions];
     }
 
-    return nextEvent;
+    const reactions = this.effect.action.map((e) => ({
+      ...e,
+      playerId: this.playerId,
+    }));
+
+    return [event, ...reactions];
   }
 }

@@ -34,7 +34,7 @@ export class ReactiveRemovalListener extends BasePassiveInstance {
           type: 'remove_item',
           value: this.instanceId,
           target: 'self',
-          actingPlayerId: this.playerId,
+          playerId: this.playerId,
         },
       ];
     }

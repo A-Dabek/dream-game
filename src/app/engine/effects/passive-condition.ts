@@ -1,4 +1,4 @@
-import {Condition} from '../../item';
+import {AFTER_EFFECT, BEFORE_EFFECT, Condition, Effect, isLifecycleEvent, ON_PLAY, ON_TURN_END,} from '../../item';
 import {EngineState, GameEvent} from '../engine.model';
 
 export interface PassiveCondition {
@@ -14,9 +14,9 @@ abstract class BaseCondition implements PassiveCondition {
   }
 
   shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean {
-    const isEffectType = event.type !== 'on_play' && event.type !== 'on_turn_end';
+    const isEffectType = !isLifecycleEvent(event.type);
     const conditionTypeMatches = this.condition.type === event.type ||
-      (isEffectType && (this.condition.type === 'before_effect' || this.condition.type === 'after_effect'));
+      (isEffectType && (this.condition.type === BEFORE_EFFECT || this.condition.type === AFTER_EFFECT));
 
     if (!conditionTypeMatches) return false;
 
@@ -33,11 +33,10 @@ abstract class BaseCondition implements PassiveCondition {
 
 class EffectCondition extends BaseCondition {
   protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
-    if (!('actingPlayerId' in event)) return false;
-    const effect = event;
+    const effect = event as Effect;
 
     const isTargetMe =
-      effect.target === 'self' ? event.actingPlayerId === playerId : event.actingPlayerId !== playerId;
+      effect.target === 'self' ? event.playerId === playerId : event.playerId !== playerId;
 
     return isTargetMe;
   }
@@ -45,15 +44,15 @@ class EffectCondition extends BaseCondition {
 
 class OnPlayCondition extends BaseCondition {
   protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
-    if (event.type !== 'on_play') return false;
-    return playerId !== (event as any).playerId;
+    if (event.type !== ON_PLAY) return false;
+    return playerId !== event.playerId;
   }
 }
 
 class OnTurnEndCondition extends BaseCondition {
   protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
-    if (event.type !== 'on_turn_end') return false;
-    return playerId === (event as any).playerId;
+    if (event.type !== ON_TURN_END) return false;
+    return playerId === event.playerId;
   }
 }
 
@@ -66,12 +65,12 @@ class DefaultCondition implements PassiveCondition {
 
 export function createCondition(condition: Condition): PassiveCondition {
   switch (condition.type) {
-    case 'before_effect':
-    case 'after_effect':
+    case BEFORE_EFFECT:
+    case AFTER_EFFECT:
       return new EffectCondition(condition);
-    case 'on_play':
+    case ON_PLAY:
       return new OnPlayCondition(condition);
-    case 'on_turn_end':
+    case ON_TURN_END:
       return new OnTurnEndCondition(condition);
     default:
       return new DefaultCondition();

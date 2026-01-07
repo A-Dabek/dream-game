@@ -73,7 +73,7 @@ export abstract class BasePassiveInstance implements Listener {
       const removeEvent: GameEvent = {
         type: 'remove_listener',
         value: this.instanceId,
-        actingPlayerId: this.playerId,
+        playerId: this.playerId,
       };
       finalEvents = this.addEvent(finalEvents, removeEvent);
     }
@@ -99,7 +99,7 @@ export abstract class BasePassiveInstance implements Listener {
       return {
         type: 'remove_listener',
         value: this.instanceId,
-        actingPlayerId: this.playerId,
+        playerId: this.playerId,
       };
     }
     return null;

@@ -45,7 +45,7 @@ export class Engine {
 
     const finalResult = effects.reduce<{state: EngineState; log: LogEntry[]}>(
       (acc, effect) => {
-        const effectEvent: GameEvent = {...effect, actingPlayerId: playerId};
+        const effectEvent: GameEvent = {...effect, playerId: playerId};
         const {state: nextState, log: effectLog} = this.processEvent(
           effectEvent,
           acc.state.listeners,
@@ -108,9 +108,8 @@ export class Engine {
       // Basic effect processing via processors
       const processor = PROCESSORS[event.type];
       if (processor) {
-        const actingPlayerId =
-          'actingPlayerId' in event ? event.actingPlayerId : (event as any).playerId;
-        const playerKey = state.playerOne.id === actingPlayerId ? 'playerOne' : 'playerTwo';
+        const playerId = event.playerId;
+        const playerKey = state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
 
         const effect = event as Effect;
         const targetKey =
