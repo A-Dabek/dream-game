@@ -17,6 +17,7 @@ export {BlueprintDamageToHealChargesBehaviour} from './library/_damage_to_heal_c
 export {BlueprintDamageToHealTurnsBehaviour} from './library/_damage_to_heal_turns.behaviour';
 export {BlueprintDamageToHealPermanentBehaviour} from './library/_damage_to_heal_permanent.behaviour';
 export {BlueprintNegateDamageBehaviour} from './library/_negate_damage.behaviour';
+export {TripleThreatBehaviour} from './library/_triple_threat.behaviour';
 export * from './effects';
 export * from './conditions';
 export * from './durations';

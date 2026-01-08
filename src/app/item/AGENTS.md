@@ -18,7 +18,7 @@ This module defines the core data structures for items and player loadouts in th
   `PassiveEffect[]` from `passiveEffects()`.
 * **Item Implementations**: Concrete classes located in the `library` directory following the `<item name>.behaviour.ts`
   convention that implement `ItemBehavior` for specific items (e.g., `BlueprintAttackBehaviour`,
-  `BlueprintPassiveAttackBehaviour`).
+  `BlueprintPassiveAttackBehaviour`, `TripleThreatBehaviour`).
 * **Library**: The `library` directory contains all concrete item behaviors and a guide on how to add new ones.
 * **Loadout**: An interface representing a player's set of items and base attributes like health and speed.
 

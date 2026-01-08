@@ -8,7 +8,7 @@ A turn-based game implementation where players use items to defeat opponents. Th
 
 The foundation module. Defines core data structures:
 
-- **Items & Effects**: Atomic actions (damage, heal) and reactive passives.
+- **Items & Effects**: Atomic actions (damage, heal) and reactive passives/status effects.
 - **Library**: Concrete item behaviors (blueprints).
 - **Independent**: No dependencies on other modules.
 
