@@ -40,6 +40,7 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 - `DefaultStatusEffectInstance`: A concrete implementation of `BaseStatusEffectInstance` that uses standard reaction logic.
 - `NegateListener`: Consumes triggering events entirely (e.g. negating damage). Inherits from `BaseStatusEffectInstance`.
 - `InvertListener`: Modifies triggering events by inverting their value (e.g. converting damage to healing). Inherits from `BaseStatusEffectInstance`.
+- `FatigueListener`: Applies damage to the player at the end of their turn if they have no items. Inherits from `BaseStatusEffectInstance`.
 - `ReactiveRemovalListener`: Removes its parent item from the loadout when triggered. Inherits from `BasePassiveInstance`.
 
 **EffectProcessors**: Pure functions that apply atomic effects to the `EngineState` once they have passed through all listeners.

@@ -25,6 +25,8 @@ export class Engine {
     const listeners = [
       ...this.scanForListeners(p1),
       ...this.scanForListeners(p2),
+      ListenerFactory.createFatigue(p1.id),
+      ListenerFactory.createFatigue(p2.id),
     ];
 
     this.engineStateSignal.set({

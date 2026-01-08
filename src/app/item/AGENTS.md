@@ -4,8 +4,8 @@ This module defines the core data structures for items and player loadouts in th
 
 ## Key Components
 
-- **ItemId**: A union type of unique string identifiers for all items in the game. All items currently follow the
-  `_blueprint_` prefix convention (e.g., `_blueprint_attack`, `_blueprint_reactive_removal`).
+- **ItemId**: A union type of unique string identifiers for all items in the game. Most items follow the
+  `_blueprint_` prefix convention (e.g., `_blueprint_attack`, `_blueprint_reactive_removal`), except for utility items like `_dummy`.
 - **Item**: An interface representing a single item, characterized by its `ItemId`.
 - **Effect**: An interface representing an atomic effect (e.g., damage, healing). Each effect has a `target` property (`self` or `enemy`) to explicitly define whom it affects.
 - **Effect Creators**: Factory functions that simplify the creation of `Effect` and `StatusEffect` objects. Examples include

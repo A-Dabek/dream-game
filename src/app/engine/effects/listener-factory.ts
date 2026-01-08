@@ -3,11 +3,19 @@ import { Listener } from '../engine.model';
 import { DefaultPassiveInstance, ReactiveRemovalListener } from './passive';
 import {
   DefaultStatusEffectInstance,
+  FatigueListener,
   InvertListener,
   NegateListener,
 } from './status';
 
 export class ListenerFactory {
+  /**
+   * Creates a listener for a fatigue effect.
+   */
+  static createFatigue(playerId: string): Listener {
+    return new FatigueListener(`fatigue-${playerId}`, playerId);
+  }
+
   /**
    * Creates a listener for a passive effect tied to an item.
    */

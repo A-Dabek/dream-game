@@ -27,10 +27,10 @@ describe('_blueprint_attack Integration Test', () => {
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
 
-    expect(board.gameState.player.items.length).toBe(1);
+    expect(board.gameState.player.items.length).toBe(2);
 
     board.playItem('_blueprint_attack', 'p1');
 
-    expect(board.gameState.player.items.length).toBe(0);
+    expect(board.gameState.player.items.length).toBe(1);
   });
 });
