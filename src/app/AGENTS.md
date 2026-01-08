@@ -38,3 +38,19 @@ Decision-making algorithms for CPU players:
 ### [Rating](./rating)
 
 A self-contained Elo-like system to track player performance.
+
+### [Player](./player)
+
+Integrates identity, rating, loadout, and AI:
+
+- **Composite Object**: Wraps modules into a cohesive `Player` entity.
+- **CPU Factory**: Includes a factory for generating randomized CPU opponents with 5 items and varying base attributes.
+- **Dependency**: Orchestrates `Rating`, `Item`, and `AI`.
+
+### [Game](./game)
+
+The high-level orchestration module:
+
+- **Game Lifecycle**: Managed by `GameService`, handles starting a game and running the game loop.
+- **Rating Synchronization**: Updates player ratings automatically upon game completion.
+- **Orchestration**: Connects `Player` and `Board` modules.

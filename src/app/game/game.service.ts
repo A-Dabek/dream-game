@@ -1,108 +1,77 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { BoardService } from '../board';
-import { EngineService } from '../engine';
-import { MatchResult, ScoringService } from '../scoring';
-import { GameConfig, GameResult, PlayerIntelligence } from './game.model';
+import { Injectable } from '@angular/core';
+import { Board, GameAction, GameActionType } from '../board';
+import { ItemId } from '../item';
+import { Player } from '../player';
 
-/**
- * Determines match result for a player based on the winner ID
- */
-function determineMatchResult(playerId: string, winnerId: string | null): MatchResult {
-  if (winnerId === null) {
-    return MatchResult.DRAW;
-  }
-
-  return playerId === winnerId ? MatchResult.WIN : MatchResult.LOSS;
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class GameService {
-  private readonly boardService = inject(BoardService);
-  private readonly engineService = inject(EngineService);
-  private readonly scoringService = inject(ScoringService);
-
-  private readonly gameInProgressSignal = signal(false);
-
   /**
-   * Runs a game between two player intelligences
+   * Starts a game between two players and runs the game loop until it's over.
+   * Updates player ratings after the game concludes.
+   *
+   * @param player1 The first player.
+   * @param player2 The second player.
+   * @returns The board state after the game is over.
    */
-  async runGame(config: GameConfig): Promise<GameResult> {
-    // Initialize the board with players from PlayerIntelligence instances
-    this.boardService.initializeGame({
-      player: config.playerOne.player,
-      opponent: config.playerTwo.player,
-      turnInfo: {
-        currentPlayerId: '',  // Will be determined by speed
-        nextPlayerId: '',     // Will be determined by speed
-        turnQueue: []         // Will be populated based on player speed
-      },
-      isGameOver: false
-    });
-
-    // Initialize engine with both players
-    this.engineService.initializeGame(
-      config.playerOne.player,
-      config.playerTwo.player
+  startGame(player1: Player, player2: Player): Board {
+    const board = new Board(
+      { ...player1.loadout, id: player1.id },
+      { ...player2.loadout, id: player2.id },
     );
 
-    this.gameInProgressSignal.set(true);
+    // Basic game loop
+    while (!board.isGameOver) {
+      const currentPlayerId = board.currentPlayerId;
+      const currentPlayer = currentPlayerId === player1.id ? player1 : player2;
 
-    // Map player IDs to PlayerIntelligence objects for easier lookup
-    const playerMap = new Map<string, PlayerIntelligence>([
-      [config.playerOne.player.id, config.playerOne],
-      [config.playerTwo.player.id, config.playerTwo]
-    ]);
-
-    // Game loop - continue until game is over
-    while (!this.boardService.isGameOver()) {
-      // Get current player ID from board
-      const currentPlayerId = this.boardService.currentPlayerId();
-
-      // Get the PlayerIntelligence for current player
-      const currentIntelligence = playerMap.get(currentPlayerId);
-
-      if (currentIntelligence) {
-        // Let the current player make a decision
-        await currentIntelligence.makeDecision(this.boardService);
-      }
+      const action = currentPlayer.strategy.decide(board);
+      this.executeAction(board, action);
     }
 
-    this.gameInProgressSignal.set(false);
+    this.updateRatings(board, player1, player2);
 
-    // Game is over, prepare result
-    const gameState = this.boardService.gameState();
-    const winnerId = gameState.winnerId;
+    return board;
+  }
 
-    // Determine match result for each player
-    const playerOneResult = determineMatchResult(config.playerOne.player.id, winnerId);
-    const playerTwoResult = determineMatchResult(config.playerTwo.player.id, winnerId);
+  /**
+   * Executes a game action on the board.
+   */
+  private executeAction(board: Board, action: GameAction): void {
+    switch (action.type) {
+      case GameActionType.PLAY_ITEM:
+        if (action.itemId) {
+          board.playItem(action.itemId as ItemId, action.playerId);
+        } else {
+          board.pass(action.playerId);
+        }
+        break;
+      case GameActionType.SURRENDER:
+        board.surrender(action.playerId);
+        break;
+      default:
+        throw new Error(`Unsupported action type: ${action.type}`);
+    }
+  }
 
-    // Update player scores
-    const updatedPlayerOneScore = this.scoringService.calculateNewRating(
-      config.playerOne.score,
-      config.playerTwo.score,
-      playerOneResult
-    );
+  /**
+   * Updates player ratings based on the game result.
+   */
+  private updateRatings(board: Board, player1: Player, player2: Player): void {
+    const winnerId = board.gameState.winnerId;
+    if (!winnerId) {
+      return;
+    }
 
-    const updatedPlayerTwoScore = this.scoringService.calculateNewRating(
-      config.playerTwo.score,
-      config.playerOne.score,
-      playerTwoResult
-    );
-
-    // Update scores in player intelligence objects
-    config.playerOne.score = updatedPlayerOneScore;
-    config.playerTwo.score = updatedPlayerTwoScore;
-
-    // Reset game state in services
-    this.boardService.resetGame();
-    this.engineService.resetGame();
-
-    return {
-      playerOne: config.playerOne,
-      playerTwo: config.playerTwo,
-      winnerId,
-      outcome: playerOneResult // Return from player one's perspective
-    };
+    const rating1 = player1.rating.value;
+    const rating2 = player2.rating.value;
+    if (winnerId === player1.id) {
+      player1.rating.win(rating2);
+      player2.rating.lose(rating1);
+    } else if (winnerId === player2.id) {
+      player2.rating.win(rating1);
+      player1.rating.lose(rating2);
+    }
   }
 }
