@@ -3,6 +3,7 @@ import { Condition } from './item.model';
 export const BEFORE_EFFECT = 'before_effect';
 export const AFTER_EFFECT = 'after_effect';
 export const ON_TURN_END = 'on_turn_end';
+export const HAS_NO_ITEMS = 'has_no_items';
 export const ON_PLAY = 'on_play';
 
 /**
@@ -27,6 +28,13 @@ export function onTurnEnd(): Condition {
 }
 
 /**
+ * Checks if the player has no items in their loadout.
+ */
+export function hasNoItems(): Condition {
+  return { type: HAS_NO_ITEMS };
+}
+
+/**
  * Triggered when an item is played.
  */
 export function onPlay(): Condition {
@@ -38,4 +46,25 @@ export function onPlay(): Condition {
  */
 export function isLifecycleEvent(type: string): boolean {
   return type === ON_PLAY || type === ON_TURN_END;
+}
+
+/**
+ * Combines multiple conditions with AND logic.
+ */
+export function and(...conditions: Condition[]): Condition {
+  return { type: 'and', subConditions: conditions };
+}
+
+/**
+ * Combines multiple conditions with OR logic.
+ */
+export function or(...conditions: Condition[]): Condition {
+  return { type: 'or', subConditions: conditions };
+}
+
+/**
+ * Negates a condition.
+ */
+export function not(condition: Condition): Condition {
+  return { type: 'not', subConditions: [condition] };
 }

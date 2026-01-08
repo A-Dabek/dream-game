@@ -29,6 +29,7 @@ export interface Effect {
 export interface Condition {
   readonly type: string;
   readonly value?: any;
+  readonly subConditions?: Condition[];
 }
 
 /**

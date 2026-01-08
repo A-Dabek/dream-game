@@ -3,6 +3,7 @@ import {
   BEFORE_EFFECT,
   Condition,
   Effect,
+  HAS_NO_ITEMS,
   isLifecycleEvent,
   ON_PLAY,
   ON_TURN_END,
@@ -14,76 +15,105 @@ export interface ReactiveCondition {
   shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean;
 }
 
-abstract class BaseCondition implements ReactiveCondition {
-  constructor(protected readonly condition: Condition) {}
+export type ConditionPredicate = (
+  event: GameEvent,
+  playerId: string,
+  state: EngineState,
+) => boolean;
 
-  get type(): string {
-    return this.condition.type;
-  }
+/**
+ * Generic implementation of a reactive condition that uses a predicate for logic.
+ */
+class ComposableCondition implements ReactiveCondition {
+  constructor(
+    readonly type: string,
+    private readonly predicate: ConditionPredicate,
+  ) {}
 
   shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean {
+    return this.predicate(event, playerId, state);
+  }
+}
+
+/**
+ * Predicate that matches the event type and optionally its value.
+ * Handles BEFORE_EFFECT and AFTER_EFFECT logic.
+ */
+const matchType =
+  (expectedType: string, conditionValue?: any): ConditionPredicate =>
+  (event) => {
     const isEffectType = !isLifecycleEvent(event.type);
-    const conditionTypeMatches =
-      this.condition.type === event.type ||
+    const typeMatches =
+      expectedType === event.type ||
       (isEffectType &&
-        (this.condition.type === BEFORE_EFFECT ||
-          this.condition.type === AFTER_EFFECT));
+        (expectedType === BEFORE_EFFECT || expectedType === AFTER_EFFECT));
 
-    if (!conditionTypeMatches) return false;
+    if (!typeMatches) return false;
 
-    if (this.condition.value !== undefined) {
-      const eventValue = event.type;
-      if (this.condition.value !== eventValue) return false;
+    if (conditionValue !== undefined) {
+      return event.type === conditionValue;
     }
 
-    return this.checkSpecific(event, playerId, state);
-  }
+    return true;
+  };
 
-  protected abstract checkSpecific(
-    event: GameEvent,
-    playerId: string,
-    state: EngineState,
-  ): boolean;
-}
+/**
+ * Predicate that checks if the event was triggered by the player.
+ */
+const isEventOwner: ConditionPredicate = (event, playerId) =>
+  event.playerId === playerId;
 
-class EffectCondition extends BaseCondition {
-  protected checkSpecific(
-    event: GameEvent,
-    playerId: string,
-    state: EngineState,
-  ): boolean {
-    const effect = event as Effect;
+/**
+ * Predicate that checks if the event was NOT triggered by the player.
+ */
+const isNotEventOwner: ConditionPredicate = (event, playerId) =>
+  event.playerId !== playerId;
 
-    const isTargetMe =
-      effect.target === 'self'
-        ? event.playerId === playerId
-        : event.playerId !== playerId;
+/**
+ * Predicate that checks if the player is the target of the effect.
+ */
+const isTargetMe: ConditionPredicate = (event, playerId) => {
+  const effect = event as Effect;
+  const isTargetMe =
+    effect.target === 'self'
+      ? event.playerId === playerId
+      : event.playerId !== playerId;
 
-    return isTargetMe;
-  }
-}
+  return isTargetMe;
+};
 
-class OnPlayCondition extends BaseCondition {
-  protected checkSpecific(
-    event: GameEvent,
-    playerId: string,
-    state: EngineState,
-  ): boolean {
-    if (event.type !== ON_PLAY) return false;
-    return playerId !== event.playerId;
-  }
-}
+/**
+ * Predicate that checks if the player has no items in their loadout.
+ */
+const hasNoItems: ConditionPredicate = (event, playerId, state) => {
+  const player =
+    state.playerOne.id === playerId ? state.playerOne : state.playerTwo;
+  return player.items.length === 0;
+};
 
-class OnTurnEndCondition extends BaseCondition {
-  protected checkSpecific(
-    event: GameEvent,
-    playerId: string,
-    state: EngineState,
-  ): boolean {
-    if (event.type !== ON_TURN_END) return false;
-    return playerId === event.playerId;
-  }
-}
+/**
+ * Combines multiple predicates with AND logic.
+ */
+const and =
+  (...predicates: ConditionPredicate[]): ConditionPredicate =>
+  (event, playerId, state) =>
+    predicates.every((p) => p(event, playerId, state));
+
+/**
+ * Combines multiple predicates with OR logic.
+ */
+const or =
+  (...predicates: ConditionPredicate[]): ConditionPredicate =>
+  (event, playerId, state) =>
+    predicates.some((p) => p(event, playerId, state));
+
+/**
+ * Negates a predicate.
+ */
+const not =
+  (predicate: ConditionPredicate): ConditionPredicate =>
+  (event, playerId, state) =>
+    !predicate(event, playerId, state);
 
 class DefaultCondition implements ReactiveCondition {
   readonly type = 'default';
@@ -96,11 +126,42 @@ export function createCondition(condition: Condition): ReactiveCondition {
   switch (condition.type) {
     case BEFORE_EFFECT:
     case AFTER_EFFECT:
-      return new EffectCondition(condition);
+      return new ComposableCondition(
+        condition.type,
+        and(matchType(condition.type, condition.value), isTargetMe),
+      );
     case ON_PLAY:
-      return new OnPlayCondition(condition);
+      return new ComposableCondition(
+        ON_PLAY,
+        and(matchType(ON_PLAY), isNotEventOwner),
+      );
     case ON_TURN_END:
-      return new OnTurnEndCondition(condition);
+      return new ComposableCondition(
+        ON_TURN_END,
+        and(matchType(ON_TURN_END), isEventOwner),
+      );
+    case HAS_NO_ITEMS:
+      return new ComposableCondition(HAS_NO_ITEMS, hasNoItems);
+    case 'and': {
+      const subs = (condition.subConditions || []).map(createCondition);
+      return new ComposableCondition(
+        subs[0]?.type ?? 'and',
+        and(...subs.map((s) => s.shouldReact.bind(s))),
+      );
+    }
+    case 'or': {
+      const subs = (condition.subConditions || []).map(createCondition);
+      return new ComposableCondition(
+        subs[0]?.type ?? 'or',
+        or(...subs.map((s) => s.shouldReact.bind(s))),
+      );
+    }
+    case 'not': {
+      const sub = condition.subConditions?.[0]
+        ? createCondition(condition.subConditions[0])
+        : new DefaultCondition();
+      return new ComposableCondition(sub.type, not(sub.shouldReact.bind(sub)));
+    }
     default:
       return new DefaultCondition();
   }

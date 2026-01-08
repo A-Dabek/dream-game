@@ -13,11 +13,20 @@ The primary interface for reactive effects in the engine. It encapsulates the st
 
 ### ReactiveCondition
 
-Handles the logic for when a reactive effect should react to a game event.
+Handles the logic for when a reactive effect should react to a game event. It uses a functional composition approach, combining small, reusable predicates.
 
-- `EffectCondition`: Reacts to `before_effect` or `after_effect` events (e.g., damage, healing).
-- `OnPlayCondition`: Reacts when an item is played.
-- `OnTurnEndCondition`: Reacts when a turn ends.
+- `matchType(type, value?)`: Matches the event type and optionally its value. Handles `before_effect` and `after_effect` logic.
+- `isEventOwner`: Matches if the event was triggered by the player.
+- `isNotEventOwner`: Matches if the event was NOT triggered by the player.
+- `isTargetMe`: Matches if the player is the target of the effect.
+- `hasNoItems`: Matches if the player has no items in their loadout.
+
+Logical combinators:
+- `and(...predicates)`: All predicates must match.
+- `or(...predicates)`: At least one predicate must match.
+- `not(predicate)`: Negates the predicate.
+
+These building blocks are assembled in `createCondition` to implement high-level triggers like `ON_PLAY`, `ON_TURN_END`, etc.
 
 ### ReactiveDuration
 

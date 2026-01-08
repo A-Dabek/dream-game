@@ -1,4 +1,4 @@
-import { ON_TURN_END, StatusEffect } from '../../../item';
+import { and, hasNoItems, onTurnEnd, StatusEffect } from '../../../item';
 import { EngineState, GameEvent } from '../../engine.model';
 import { BaseStatusEffectInstance } from './base-status-effect-instance';
 
@@ -8,7 +8,7 @@ import { BaseStatusEffectInstance } from './base-status-effect-instance';
 export class FatigueListener extends BaseStatusEffectInstance {
   constructor(instanceId: string, playerId: string) {
     const effect: StatusEffect = {
-      condition: { type: ON_TURN_END },
+      condition: and(onTurnEnd(), hasNoItems()),
       action: [{ type: 'damage', value: 1, target: 'self' }],
       duration: { type: 'permanent' },
     };
@@ -19,23 +19,6 @@ export class FatigueListener extends BaseStatusEffectInstance {
     event: GameEvent,
     state: EngineState,
   ): GameEvent[] | null {
-    if (this.shouldReact(event, state)) {
-      const player =
-        state.playerOne.id === this.playerId
-          ? state.playerOne
-          : state.playerTwo;
-      if (player.items.length === 0) {
-        return [
-          event,
-          {
-            type: 'damage',
-            value: 1,
-            target: 'self',
-            playerId: this.playerId,
-          } as GameEvent,
-        ];
-      }
-    }
-    return null;
+    return this.defaultHandleReaction(event, state);
   }
 }
