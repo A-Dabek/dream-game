@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {Loadout} from '../item';
-import {Engine} from './engine';
+import { describe, expect, it } from 'vitest';
+import { Loadout } from '../item';
+import { Engine } from './engine';
 
 describe('Engine', () => {
   const player1: Loadout & { id: string } = {
@@ -36,7 +36,6 @@ describe('Engine', () => {
     expect(state.playerTwo.health).toBe(90); // Deals 10 damage
     expect(state.playerOne.health).toBe(100);
   });
-
 
   it('should handle multiple effects', () => {
     // We only have _blueprint_attack for now, which has one effect.
@@ -82,7 +81,8 @@ describe('Engine', () => {
 
     expect(engine.state().listeners).toHaveLength(0);
     const hasRemoveListener = log.some(
-      (entry) => entry.type === 'processor' && entry.effect.type === 'remove_listener'
+      (entry) =>
+        entry.type === 'processor' && entry.effect.type === 'remove_listener',
     );
     expect(hasRemoveListener).toBe(true);
   });
@@ -110,7 +110,8 @@ describe('Engine', () => {
 
     expect(engine.state().listeners).toHaveLength(0);
     const hasRemoveListener = log.some(
-      (entry) => entry.type === 'processor' && entry.effect.type === 'remove_listener'
+      (entry) =>
+        entry.type === 'processor' && entry.effect.type === 'remove_listener',
     );
     expect(hasRemoveListener).toBe(true);
   });

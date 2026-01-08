@@ -1,6 +1,5 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {PlayerRating} from './rating';
-
+import { beforeEach, describe, expect, it } from 'vitest';
+import { PlayerRating } from './rating';
 
 describe('PlayerRating', () => {
   let playerRating: PlayerRating;

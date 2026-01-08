@@ -1,4 +1,4 @@
-import {Board, GameAction, GameActionType} from '../board';
+import { Board, GameAction, GameActionType } from '../board';
 
 /**
  * Interface for AI decision-making strategies.
@@ -29,7 +29,8 @@ export class FirstAvailableStrategy implements Strategy {
     const state = simulationBoard.gameState;
     const currentPlayerId = state.turnInfo.currentPlayerId;
 
-    const player = state.player.id === currentPlayerId ? state.player : state.opponent;
+    const player =
+      state.player.id === currentPlayerId ? state.player : state.opponent;
 
     // Primitive implementation: just play the first (leftmost) available item
     if (player.items && player.items.length > 0) {

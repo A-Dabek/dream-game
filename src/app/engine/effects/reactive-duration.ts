@@ -1,5 +1,5 @@
-import {Duration} from '../../item';
-import {GameEvent} from '../engine.model';
+import { Duration } from '../../item';
+import { GameEvent } from '../engine.model';
 
 export interface ReactiveDuration {
   readonly isExpired: boolean;
@@ -10,7 +10,9 @@ export interface ReactiveDuration {
 }
 
 class PermanentDuration implements ReactiveDuration {
-  get isExpired(): boolean { return false; }
+  get isExpired(): boolean {
+    return false;
+  }
 
   update(): void {}
 

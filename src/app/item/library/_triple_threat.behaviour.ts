@@ -1,4 +1,13 @@
-import {addStatusEffect, attack, Effect, ItemBehavior, onTurnEnd, PassiveEffect, permanent, statusEffect} from '..';
+import {
+  addStatusEffect,
+  attack,
+  Effect,
+  ItemBehavior,
+  onTurnEnd,
+  PassiveEffect,
+  permanent,
+  statusEffect,
+} from '..';
 
 export class TripleThreatBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
@@ -9,7 +18,7 @@ export class TripleThreatBehaviour implements ItemBehavior {
           condition: onTurnEnd(),
           action: [attack(3)],
           duration: permanent(),
-        })
+        }),
       ),
     ];
   }

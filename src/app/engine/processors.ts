@@ -1,11 +1,11 @@
-import {Effect, StatusEffect} from '../item';
-import {ListenerFactory} from './effects';
-import {EngineState} from './engine.model';
+import { Effect, StatusEffect } from '../item';
+import { ListenerFactory } from './effects';
+import { EngineState } from './engine.model';
 
 export type EffectProcessor = (
   state: EngineState,
   playerKey: 'playerOne' | 'playerTwo',
-  effect: Effect
+  effect: Effect,
 ) => EngineState;
 
 export const PROCESSORS: Record<string, EffectProcessor> = {
@@ -14,8 +14,8 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       effect.target === 'self'
         ? playerKey
         : playerKey === 'playerOne'
-        ? 'playerTwo'
-        : 'playerOne';
+          ? 'playerTwo'
+          : 'playerOne';
     return {
       ...state,
       [targetKey]: {
@@ -26,9 +26,15 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   },
   remove_item: (state, playerKey, effect) => {
     const targetKey =
-      effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
+      effect.target === 'enemy'
+        ? playerKey === 'playerOne'
+          ? 'playerTwo'
+          : 'playerOne'
+        : playerKey;
     const target = state[targetKey];
-    const itemIndex = target.items.findIndex((item) => item.instanceId === (effect.value as string));
+    const itemIndex = target.items.findIndex(
+      (item) => item.instanceId === (effect.value as string),
+    );
 
     if (itemIndex === -1) {
       return state;
@@ -47,7 +53,9 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   },
   remove_listener: (state, playerKey, effect) => {
     const instanceId = effect.value as string;
-    const updatedListeners = state.listeners.filter((l) => l.instanceId !== instanceId);
+    const updatedListeners = state.listeners.filter(
+      (l) => l.instanceId !== instanceId,
+    );
     return {
       ...state,
       listeners: updatedListeners,
@@ -55,7 +63,11 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   },
   healing: (state, playerKey, effect) => {
     const targetKey =
-      effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
+      effect.target === 'enemy'
+        ? playerKey === 'playerOne'
+          ? 'playerTwo'
+          : 'playerOne'
+        : playerKey;
     return {
       ...state,
       [targetKey]: {
@@ -66,7 +78,11 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   },
   add_status_effect: (state, playerKey, effect) => {
     const targetKey =
-      effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
+      effect.target === 'enemy'
+        ? playerKey === 'playerOne'
+          ? 'playerTwo'
+          : 'playerOne'
+        : playerKey;
     const statusEffect = effect.value as StatusEffect;
     const targetPlayer = state[targetKey];
     return {
@@ -75,7 +91,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ListenerFactory.createStatusEffect(
           `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
           targetPlayer.id,
-          statusEffect
+          statusEffect,
         ),
         ...state.listeners,
       ],

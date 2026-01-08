@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {Board} from '../board';
-import {createMockPlayer} from './test-utils';
+import { describe, expect, it } from 'vitest';
+import { Board } from '../board';
+import { createMockPlayer } from './test-utils';
 
 describe('_blueprint_attack Integration Test', () => {
   it('should reduce opponent health when _blueprint_attack is played', () => {
@@ -20,7 +20,10 @@ describe('_blueprint_attack Integration Test', () => {
   });
 
   it('should remove _blueprint_attack from player loadout after it is played', () => {
-    const player1 = createMockPlayer('p1', { speed: 10, items: [{ id: '_blueprint_attack' }] });
+    const player1 = createMockPlayer('p1', {
+      speed: 10,
+      items: [{ id: '_blueprint_attack' }],
+    });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
 

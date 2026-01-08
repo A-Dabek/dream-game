@@ -1,5 +1,5 @@
-import {addStatusEffect, charges, negate} from '..';
-import {Effect, ItemBehavior} from '../item.model';
+import { addStatusEffect, charges, negate } from '..';
+import { Effect, ItemBehavior } from '../item.model';
 
 /**
  * Behavior for the _blueprint_negate_damage item.

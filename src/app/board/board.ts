@@ -1,7 +1,13 @@
-import {Engine} from '../engine';
-import {ItemId} from '../item';
-import {BoardLoadout, GameAction, GameActionResult, GameActionType, GameState} from './board.model';
-import {TurnManager} from './turn-manager';
+import { Engine } from '../engine';
+import { ItemId } from '../item';
+import {
+  BoardLoadout,
+  GameAction,
+  GameActionResult,
+  GameActionType,
+  GameState,
+} from './board.model';
+import { TurnManager } from './turn-manager';
 
 export class Board {
   private turnManager: TurnManager;
@@ -22,13 +28,10 @@ export class Board {
 
     this.turnManager = new TurnManager(
       { id: player.id, speed: player.speed },
-      { id: opponent.id, speed: opponent.speed }
+      { id: opponent.id, speed: opponent.speed },
     );
 
-    this.engine = new Engine(
-      { ...player },
-      { ...opponent }
-    );
+    this.engine = new Engine({ ...player }, { ...opponent });
 
     this._gameState = this.updateTurnInfo(this._gameState);
   }
@@ -66,7 +69,11 @@ export class Board {
     const endOfTurnLog = this.engine.processEndOfTurn(playerId);
 
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
-    const action = this.createAction(GameActionType.PLAY_ITEM, playerId, itemId);
+    const action = this.createAction(
+      GameActionType.PLAY_ITEM,
+      playerId,
+      itemId,
+    );
 
     nextGameState = this.advanceTurn(nextGameState);
 
@@ -75,7 +82,12 @@ export class Board {
       actionHistory: [...nextGameState.actionHistory, action],
     };
 
-    return { success: true, action, newGameState: this._gameState, log: [...log, ...endOfTurnLog] };
+    return {
+      success: true,
+      action,
+      newGameState: this._gameState,
+      log: [...log, ...endOfTurnLog],
+    };
   }
 
   pass(playerId: string): GameActionResult {
@@ -106,7 +118,9 @@ export class Board {
     }
 
     const winnerId =
-      this._gameState.player.id === playerId ? this._gameState.opponent.id : this._gameState.player.id;
+      this._gameState.player.id === playerId
+        ? this._gameState.opponent.id
+        : this._gameState.player.id;
 
     const nextGameState: GameState = {
       ...this._gameState,
@@ -125,15 +139,20 @@ export class Board {
   }
 
   clone(): Board {
-    const clonedBoard = new Board(this._gameState.player, this._gameState.opponent);
+    const clonedBoard = new Board(
+      this._gameState.player,
+      this._gameState.opponent,
+    );
     clonedBoard._gameState = JSON.parse(JSON.stringify(this._gameState));
     clonedBoard.turnManager = this.turnManager.clone();
     return clonedBoard;
   }
 
   getOpponentId(playerId: string): string | null {
-    if (this._gameState.player.id === playerId) return this._gameState.opponent.id;
-    if (this._gameState.opponent.id === playerId) return this._gameState.player.id;
+    if (this._gameState.player.id === playerId)
+      return this._gameState.opponent.id;
+    if (this._gameState.opponent.id === playerId)
+      return this._gameState.player.id;
     return null;
   }
 
@@ -159,7 +178,11 @@ export class Board {
     };
   }
 
-  private validateAction(playerId: string, type: GameActionType, itemId?: ItemId): void {
+  private validateAction(
+    playerId: string,
+    type: GameActionType,
+    itemId?: ItemId,
+  ): void {
     if (this._gameState.isGameOver) {
       throw new Error('Game is already over');
     }
@@ -174,7 +197,7 @@ export class Board {
     }
 
     if (type === GameActionType.PLAY_ITEM && itemId) {
-      const hasItem = player.items.some(item => item.id === itemId);
+      const hasItem = player.items.some((item) => item.id === itemId);
       if (!hasItem) {
         throw new Error(`Item '${itemId}' not found in player's inventory`);
       }
@@ -184,8 +207,12 @@ export class Board {
   private syncWithEngine(engine: Engine, state: GameState): GameState {
     const engineState = engine.state();
     const isActingPlayerOne = engineState.playerOne.id === state.player.id;
-    const updatedPlayer = isActingPlayerOne ? engineState.playerOne : engineState.playerTwo;
-    const updatedOpponent = isActingPlayerOne ? engineState.playerTwo : engineState.playerOne;
+    const updatedPlayer = isActingPlayerOne
+      ? engineState.playerOne
+      : engineState.playerTwo;
+    const updatedOpponent = isActingPlayerOne
+      ? engineState.playerTwo
+      : engineState.playerOne;
 
     const isGameOver = updatedPlayer.health <= 0 || updatedOpponent.health <= 0;
     const winnerId = isGameOver
@@ -218,16 +245,21 @@ export class Board {
 
   private getPlayerById(playerId: string): BoardLoadout | null {
     if (this._gameState.player.id === playerId) return this._gameState.player;
-    if (this._gameState.opponent.id === playerId) return this._gameState.opponent;
+    if (this._gameState.opponent.id === playerId)
+      return this._gameState.opponent;
     return null;
   }
 
-  private createAction(type: GameActionType, playerId: string, itemId?: string): GameAction {
+  private createAction(
+    type: GameActionType,
+    playerId: string,
+    itemId?: string,
+  ): GameAction {
     return {
       type,
       playerId,
       itemId,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 }

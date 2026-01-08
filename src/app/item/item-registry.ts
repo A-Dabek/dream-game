@@ -1,13 +1,13 @@
-import {ItemBehavior, ItemId} from './item.model';
-import {BlueprintAttackBehaviour} from './library/_blueprint_attack.behaviour';
-import {BlueprintPassiveAttackBehaviour} from './library/_blueprint_passive_attack.behaviour';
-import {BlueprintReactiveRemovalBehaviour} from './library/_blueprint_reactive_removal.behaviour';
-import {BlueprintSelfDamageBehaviour} from './library/_blueprint_self_damage.behaviour';
-import {BlueprintDamageToHealChargesBehaviour} from './library/_damage_to_heal_charges.behaviour';
-import {BlueprintDamageToHealPermanentBehaviour} from './library/_damage_to_heal_permanent.behaviour';
-import {BlueprintDamageToHealTurnsBehaviour} from './library/_damage_to_heal_turns.behaviour';
-import {BlueprintNegateDamageBehaviour} from './library/_negate_damage.behaviour';
-import {TripleThreatBehaviour} from './library/_triple_threat.behaviour';
+import { ItemBehavior, ItemId } from './item.model';
+import { BlueprintAttackBehaviour } from './library/_blueprint_attack.behaviour';
+import { BlueprintPassiveAttackBehaviour } from './library/_blueprint_passive_attack.behaviour';
+import { BlueprintReactiveRemovalBehaviour } from './library/_blueprint_reactive_removal.behaviour';
+import { BlueprintSelfDamageBehaviour } from './library/_blueprint_self_damage.behaviour';
+import { BlueprintDamageToHealChargesBehaviour } from './library/_damage_to_heal_charges.behaviour';
+import { BlueprintDamageToHealPermanentBehaviour } from './library/_damage_to_heal_permanent.behaviour';
+import { BlueprintDamageToHealTurnsBehaviour } from './library/_damage_to_heal_turns.behaviour';
+import { BlueprintNegateDamageBehaviour } from './library/_negate_damage.behaviour';
+import { TripleThreatBehaviour } from './library/_triple_threat.behaviour';
 
 /**
  * Registry of item behaviors.

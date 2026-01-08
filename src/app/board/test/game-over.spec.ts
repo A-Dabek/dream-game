@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {Board} from '../board';
-import {createMockPlayer} from './test-utils';
+import { describe, expect, it } from 'vitest';
+import { Board } from '../board';
+import { createMockPlayer } from './test-utils';
 
 describe('GameOver Behavior', () => {
   it('should end game when a player surrenders', () => {

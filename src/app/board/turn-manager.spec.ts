@@ -1,5 +1,5 @@
-import {describe, expect, it} from 'vitest';
-import {TurnManager} from './turn-manager';
+import { describe, expect, it } from 'vitest';
+import { TurnManager } from './turn-manager';
 
 describe('TurnManager', () => {
   const p1 = { id: 'p1', speed: 10 };
@@ -46,7 +46,10 @@ describe('TurnManager', () => {
   });
 
   it('should clone correctly', () => {
-    const tm = new TurnManager({ id: 'p1', speed: 13 }, { id: 'p2', speed: 16 });
+    const tm = new TurnManager(
+      { id: 'p1', speed: 13 },
+      { id: 'p2', speed: 16 },
+    );
     tm.advanceTurn();
     tm.advanceTurn();
 

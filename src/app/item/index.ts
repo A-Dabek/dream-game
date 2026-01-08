@@ -7,18 +7,18 @@ export {
   type ItemId,
   type Loadout,
   type PassiveEffect,
-  type StatusEffect
+  type StatusEffect,
 } from './item.model';
-export {BlueprintAttackBehaviour} from './library/_blueprint_attack.behaviour';
-export {BlueprintPassiveAttackBehaviour} from './library/_blueprint_passive_attack.behaviour';
-export {BlueprintReactiveRemovalBehaviour} from './library/_blueprint_reactive_removal.behaviour';
-export {BlueprintSelfDamageBehaviour} from './library/_blueprint_self_damage.behaviour';
-export {BlueprintDamageToHealChargesBehaviour} from './library/_damage_to_heal_charges.behaviour';
-export {BlueprintDamageToHealTurnsBehaviour} from './library/_damage_to_heal_turns.behaviour';
-export {BlueprintDamageToHealPermanentBehaviour} from './library/_damage_to_heal_permanent.behaviour';
-export {BlueprintNegateDamageBehaviour} from './library/_negate_damage.behaviour';
-export {TripleThreatBehaviour} from './library/_triple_threat.behaviour';
+export { BlueprintAttackBehaviour } from './library/_blueprint_attack.behaviour';
+export { BlueprintPassiveAttackBehaviour } from './library/_blueprint_passive_attack.behaviour';
+export { BlueprintReactiveRemovalBehaviour } from './library/_blueprint_reactive_removal.behaviour';
+export { BlueprintSelfDamageBehaviour } from './library/_blueprint_self_damage.behaviour';
+export { BlueprintDamageToHealChargesBehaviour } from './library/_damage_to_heal_charges.behaviour';
+export { BlueprintDamageToHealTurnsBehaviour } from './library/_damage_to_heal_turns.behaviour';
+export { BlueprintDamageToHealPermanentBehaviour } from './library/_damage_to_heal_permanent.behaviour';
+export { BlueprintNegateDamageBehaviour } from './library/_negate_damage.behaviour';
+export { TripleThreatBehaviour } from './library/_triple_threat.behaviour';
 export * from './effects';
 export * from './conditions';
 export * from './durations';
-export {getItemBehavior} from './item-registry';
+export { getItemBehavior } from './item-registry';

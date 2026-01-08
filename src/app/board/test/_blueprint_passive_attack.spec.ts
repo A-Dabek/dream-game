@@ -1,10 +1,13 @@
-import {describe, expect, it} from 'vitest';
-import {Board} from '../board';
-import {createMockPlayer} from './test-utils';
+import { describe, expect, it } from 'vitest';
+import { Board } from '../board';
+import { createMockPlayer } from './test-utils';
 
 describe('_blueprint_passive_attack Integration Test', () => {
   it('should add status effect and deal damage at the end of the turn when played', () => {
-    const player1 = createMockPlayer('p1', { speed: 10, items: [{ id: '_blueprint_passive_attack' }] });
+    const player1 = createMockPlayer('p1', {
+      speed: 10,
+      items: [{ id: '_blueprint_passive_attack' }],
+    });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
 
@@ -18,7 +21,10 @@ describe('_blueprint_passive_attack Integration Test', () => {
   });
 
   it('should deal damage again at the end of the next turn (after passing)', () => {
-    const player1 = createMockPlayer('p1', { speed: 10, items: [{ id: '_blueprint_passive_attack' }] });
+    const player1 = createMockPlayer('p1', {
+      speed: 10,
+      items: [{ id: '_blueprint_passive_attack' }],
+    });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
 
@@ -35,9 +41,9 @@ describe('_blueprint_passive_attack Integration Test', () => {
   it('should deal damage when player with end-of-turn effects passes', () => {
     const player1 = createMockPlayer('p1', { speed: 1 });
     const player2 = createMockPlayer('p2', {
-        speed: 1,
-        items: [{ id: '_blueprint_passive_attack' }],
-        health: 100
+      speed: 1,
+      items: [{ id: '_blueprint_passive_attack' }],
+      health: 100,
     });
     const board = new Board(player1, player2);
 

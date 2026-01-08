@@ -1,1 +1,1 @@
-export {type Strategy, FirstAvailableStrategy} from './ai';
+export { type Strategy, FirstAvailableStrategy } from './ai';

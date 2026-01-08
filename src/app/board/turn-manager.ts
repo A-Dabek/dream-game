@@ -1,4 +1,3 @@
-
 /**
  * Responsible for calculating and managing the turn order based on player speeds.
  * Uses a Bresenham-like algorithm to distribute turns as equally as possible.
@@ -10,7 +9,10 @@ export class TurnManager {
   private turnQueue: string[] = [];
   private accumulatedError: number = 0;
 
-  constructor(playerOne: { id: string; speed: number }, playerTwo: { id: string; speed: number }) {
+  constructor(
+    playerOne: { id: string; speed: number },
+    playerTwo: { id: string; speed: number },
+  ) {
     this.playerOne = { ...playerOne };
     this.playerTwo = { ...playerTwo };
     this.reset();
@@ -49,7 +51,11 @@ export class TurnManager {
   /**
    * Refreshes the turn sequence with new speeds and specifies who should go first.
    */
-  refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void {
+  refresh(
+    playerOneSpeed: number,
+    playerTwoSpeed: number,
+    firstPlayerId: string,
+  ): void {
     this.playerOne.speed = playerOneSpeed;
     this.playerTwo.speed = playerTwoSpeed;
     this.reset(firstPlayerId);

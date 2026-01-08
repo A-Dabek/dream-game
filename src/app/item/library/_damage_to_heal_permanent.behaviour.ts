@@ -1,5 +1,5 @@
-import {addStatusEffect, invert, permanent} from '..';
-import {Effect, ItemBehavior} from '../item.model';
+import { addStatusEffect, invert, permanent } from '..';
+import { Effect, ItemBehavior } from '../item.model';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_permanent item.

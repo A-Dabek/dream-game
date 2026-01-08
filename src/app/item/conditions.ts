@@ -1,4 +1,4 @@
-import {Condition} from './item.model';
+import { Condition } from './item.model';
 
 export const BEFORE_EFFECT = 'before_effect';
 export const AFTER_EFFECT = 'after_effect';

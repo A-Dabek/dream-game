@@ -1,4 +1,4 @@
-import {Effect, ItemId, Loadout} from '../item';
+import { Effect, ItemId, Loadout } from '../item';
 
 export interface EngineLoadout extends Loadout {
   readonly id: string;
@@ -23,7 +23,10 @@ export type GameEvent =
 export interface Listener {
   readonly instanceId: string;
   readonly playerId: string;
-  handle(event: GameEvent, state: EngineState): {
+  handle(
+    event: GameEvent,
+    state: EngineState,
+  ): {
     event: GameEvent[];
   };
 }

@@ -1,5 +1,5 @@
-import {attack} from '..';
-import {Effect, ItemBehavior} from '../item.model';
+import { attack } from '..';
+import { Effect, ItemBehavior } from '../item.model';
 
 /**
  * Behavior for the _blueprint_attack item.

@@ -1,7 +1,7 @@
-import {BEFORE_EFFECT, isLifecycleEvent, StatusEffect} from '../../item';
-import {EngineState, GameEvent, Listener} from '../engine.model';
-import {createCondition, ReactiveCondition} from './reactive-condition';
-import {createDuration, ReactiveDuration} from './reactive-duration';
+import { BEFORE_EFFECT, isLifecycleEvent, StatusEffect } from '../../item';
+import { EngineState, GameEvent, Listener } from '../engine.model';
+import { createCondition, ReactiveCondition } from './reactive-condition';
+import { createDuration, ReactiveDuration } from './reactive-duration';
 
 /**
  * Base class for status effect listeners.
@@ -16,7 +16,7 @@ export abstract class BaseEffectInstance implements Listener {
     readonly playerId: string,
     readonly effect: StatusEffect,
     condition?: ReactiveCondition,
-    duration?: ReactiveDuration
+    duration?: ReactiveDuration,
   ) {
     this.condition = condition ?? createCondition(effect.condition);
     this.duration = duration ?? createDuration(effect.duration);
@@ -45,7 +45,7 @@ export abstract class BaseEffectInstance implements Listener {
    */
   protected abstract handleReaction(
     event: GameEvent,
-    state: EngineState
+    state: EngineState,
   ): GameEvent[] | null;
 
   /**
@@ -61,12 +61,16 @@ export abstract class BaseEffectInstance implements Listener {
    * Default reaction logic that either replaces the event (for 'before_effect')
    * or adds new effects to the queue.
    */
-  protected defaultHandleReaction(event: GameEvent, state: EngineState): GameEvent[] | null {
+  protected defaultHandleReaction(
+    event: GameEvent,
+    state: EngineState,
+  ): GameEvent[] | null {
     if (!this.shouldReact(event, state)) {
       return null;
     }
 
-    const isReplacement = this.condition.type === BEFORE_EFFECT && !isLifecycleEvent(event.type);
+    const isReplacement =
+      this.condition.type === BEFORE_EFFECT && !isLifecycleEvent(event.type);
 
     if (isReplacement) {
       const playerId = event.playerId;
@@ -84,18 +88,24 @@ export abstract class BaseEffectInstance implements Listener {
     return [event, ...reactions];
   }
 
-  protected addEvent(
-    base: GameEvent[],
-    newEvent: GameEvent
-  ): GameEvent[] {
-    if (base.some((e) => e.type === 'remove_listener' && (e as any).value === this.instanceId)) {
+  protected addEvent(base: GameEvent[], newEvent: GameEvent): GameEvent[] {
+    if (
+      base.some(
+        (e) =>
+          e.type === 'remove_listener' && (e as any).value === this.instanceId,
+      )
+    ) {
       return base;
     }
     return [...base, newEvent];
   }
 
   protected checkRemoveItem(event: GameEvent): GameEvent | null {
-    if (event && event.type === 'remove_item' && event.value === this.instanceId) {
+    if (
+      event &&
+      event.type === 'remove_item' &&
+      event.value === this.instanceId
+    ) {
       return {
         type: 'remove_listener',
         value: this.instanceId,
@@ -105,4 +115,3 @@ export abstract class BaseEffectInstance implements Listener {
     return null;
   }
 }
-

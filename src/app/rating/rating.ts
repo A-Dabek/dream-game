@@ -32,7 +32,8 @@ export class PlayerRating implements Rating {
   }
 
   private updateRating(opponentRating: number, outcome: number): number {
-    const expectedOutcome = 1 / (1 + Math.pow(10, (opponentRating - this.rating) / 400));
+    const expectedOutcome =
+      1 / (1 + Math.pow(10, (opponentRating - this.rating) / 400));
     const ratingChange = Math.round(this.kFactor * (outcome - expectedOutcome));
     this.rating += ratingChange;
     return this.rating;

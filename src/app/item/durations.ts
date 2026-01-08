@@ -1,4 +1,4 @@
-import {Duration} from './item.model';
+import { Duration } from './item.model';
 
 /**
  * Creates a duration based on turns.

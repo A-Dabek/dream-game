@@ -1,5 +1,5 @@
-import {LogEntry} from '../engine/engine.model';
-import {Loadout} from '../item';
+import { LogEntry } from '../engine/engine.model';
+import { Loadout } from '../item';
 
 export interface BoardLoadout extends Loadout {
   readonly id: string;
@@ -22,7 +22,7 @@ export interface GameState {
 
 export enum GameActionType {
   PLAY_ITEM = 'PLAY_ITEM',
-  SURRENDER = 'SURRENDER'
+  SURRENDER = 'SURRENDER',
 }
 
 export interface GameAction {
@@ -39,4 +39,3 @@ export interface GameActionResult {
   newGameState?: GameState;
   log?: LogEntry[];
 }
-

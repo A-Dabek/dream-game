@@ -1,1 +1,1 @@
-export {type Rating, PlayerRating} from './rating';
+export { type Rating, PlayerRating } from './rating';

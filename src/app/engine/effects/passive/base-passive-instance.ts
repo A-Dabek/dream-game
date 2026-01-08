@@ -1,5 +1,5 @@
-import {GameEvent} from '../../engine.model';
-import {BaseEffectInstance} from '../base-effect-instance';
+import { GameEvent } from '../../engine.model';
+import { BaseEffectInstance } from '../base-effect-instance';
 
 /**
  * Base class for passive effects tied to an item.

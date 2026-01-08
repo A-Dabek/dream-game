@@ -22,7 +22,7 @@ Implementation of the Rating interface with:
 ## Usage Example
 
 ```typescript
-import {PlayerRating} from './rating';
+import { PlayerRating } from "./rating";
 
 // Create rating instances for players
 const playerRating = new PlayerRating();

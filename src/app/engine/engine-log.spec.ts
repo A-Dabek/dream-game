@@ -1,6 +1,6 @@
-import {describe, expect, it} from 'vitest';
-import {Loadout} from '../item';
-import {Engine} from './engine';
+import { describe, expect, it } from 'vitest';
+import { Loadout } from '../item';
+import { Engine } from './engine';
 
 describe('Engine Log', () => {
   const player1: Loadout & { id: string } = {
@@ -24,33 +24,42 @@ describe('Engine Log', () => {
     // 1. on_play event
     expect(log[0]).toMatchObject({
       type: 'event',
-      event: { type: 'on_play', playerId: 'p1', itemId: '_blueprint_attack' }
+      event: { type: 'on_play', playerId: 'p1', itemId: '_blueprint_attack' },
     });
 
     // 2. remove_item event (every item play triggers remove_item effect)
     expect(log[1]).toMatchObject({
       type: 'event',
-      event: { type: 'remove_item', value: expect.any(String), target: 'self', playerId: 'p1' }
+      event: {
+        type: 'remove_item',
+        value: expect.any(String),
+        target: 'self',
+        playerId: 'p1',
+      },
     });
 
     // 3. remove_item processor
     expect(log[2]).toMatchObject({
       type: 'processor',
-      effect: { type: 'remove_item', value: expect.any(String), target: 'self' },
-      targetPlayerId: 'p1'
+      effect: {
+        type: 'remove_item',
+        value: expect.any(String),
+        target: 'self',
+      },
+      targetPlayerId: 'p1',
     });
 
     // 4. damage event
     expect(log[3]).toMatchObject({
       type: 'event',
-      event: { type: 'damage', value: 10, target: 'enemy', playerId: 'p1' }
+      event: { type: 'damage', value: 10, target: 'enemy', playerId: 'p1' },
     });
 
     // 5. damage processor
     expect(log[4]).toMatchObject({
       type: 'processor',
       effect: { type: 'damage', value: 10, target: 'enemy' },
-      targetPlayerId: 'p2'
+      targetPlayerId: 'p2',
     });
   });
 
@@ -71,12 +80,16 @@ describe('Engine Log', () => {
     // - reaction: from negate damage listener
     // (no damage processor because it was negated/cancelled)
 
-    expect(playLog).toContainEqual(expect.objectContaining({
-      type: 'reaction',
-      playerId: 'p2'
-    }));
+    expect(playLog).toContainEqual(
+      expect.objectContaining({
+        type: 'reaction',
+        playerId: 'p2',
+      }),
+    );
 
-    const damageProcessorLog = playLog.find(l => l.type === 'processor' && l.effect.type === 'damage');
+    const damageProcessorLog = playLog.find(
+      (l) => l.type === 'processor' && l.effect.type === 'damage',
+    );
     expect(damageProcessorLog).toBeUndefined();
   });
 
@@ -86,7 +99,7 @@ describe('Engine Log', () => {
 
     expect(log[0]).toMatchObject({
       type: 'event',
-      event: { type: 'on_turn_end', playerId: 'p1' }
+      event: { type: 'on_turn_end', playerId: 'p1' },
     });
   });
 });

@@ -1,7 +1,7 @@
-import {beforeEach, describe, expect, it} from 'vitest';
-import {Board} from './board';
-import {GameActionType} from './board.model';
-import {createMockPlayer} from './test/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { Board } from './board';
+import { GameActionType } from './board.model';
+import { createMockPlayer } from './test/test-utils';
 
 describe('Board', () => {
   describe('initialization', () => {
@@ -37,14 +37,14 @@ describe('Board', () => {
     beforeEach(() => {
       board = new Board(
         createMockPlayer('player1', { speed: 2 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
     });
 
     it('should successfully play an item that player owns', () => {
       const boardInstance = new Board(
         createMockPlayer('player1', { speed: 100 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
       const result = boardInstance.playItem('_blueprint_attack', 'player1');
 
@@ -57,12 +57,14 @@ describe('Board', () => {
     it('should add action to history on successful play', () => {
       const boardInstance = new Board(
         createMockPlayer('player1', { speed: 100 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
       boardInstance.playItem('_blueprint_attack', 'player1');
 
       expect(boardInstance.gameState.actionHistory.length).toBe(1);
-      expect(boardInstance.gameState.actionHistory[0].type).toBe(GameActionType.PLAY_ITEM);
+      expect(boardInstance.gameState.actionHistory[0].type).toBe(
+        GameActionType.PLAY_ITEM,
+      );
     });
 
     it('should update gameState on successful play', () => {
@@ -71,7 +73,7 @@ describe('Board', () => {
       // Let's use speed where player 1 starts.
       const boardInstance = new Board(
         createMockPlayer('player1', { speed: 100 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
 
       const initialHealth = boardInstance.opponentHealth;
@@ -81,18 +83,24 @@ describe('Board', () => {
     });
 
     it('should fail if item does not exist in player inventory', () => {
-      expect(() => board.playItem('nonexistent' as any, 'player1')).toThrow("Item 'nonexistent' not found in player's inventory");
+      expect(() => board.playItem('nonexistent' as any, 'player1')).toThrow(
+        "Item 'nonexistent' not found in player's inventory",
+      );
       expect(board.gameState.actionHistory.length).toBe(0);
     });
 
-    it('should fail if not player\'s turn', () => {
-      expect(() => board.playItem('_blueprint_attack', 'player2')).toThrow('Not your turn');
+    it("should fail if not player's turn", () => {
+      expect(() => board.playItem('_blueprint_attack', 'player2')).toThrow(
+        'Not your turn',
+      );
       expect(board.gameState.actionHistory.length).toBe(0);
     });
 
     it('should fail if game is over', () => {
       board.surrender('player1');
-      expect(() => board.playItem('_blueprint_attack', 'player1')).toThrow('Game is already over');
+      expect(() => board.playItem('_blueprint_attack', 'player1')).toThrow(
+        'Game is already over',
+      );
     });
   });
 
@@ -102,7 +110,7 @@ describe('Board', () => {
     beforeEach(() => {
       board = new Board(
         createMockPlayer('player1', { speed: 2 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
     });
 
@@ -112,7 +120,7 @@ describe('Board', () => {
       expect(board.currentPlayerId).toBe('player2');
     });
 
-    it('should throw error if passing when it is not player\'s turn', () => {
+    it("should throw error if passing when it is not player's turn", () => {
       expect(() => board.pass('player2')).toThrow('Not your turn');
     });
   });
@@ -123,7 +131,7 @@ describe('Board', () => {
     beforeEach(() => {
       board = new Board(
         createMockPlayer('player1', { speed: 2 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
     });
 
@@ -148,7 +156,9 @@ describe('Board', () => {
       board.surrender('player1');
 
       expect(board.gameState.actionHistory.length).toBe(1);
-      expect(board.gameState.actionHistory[0].type).toBe(GameActionType.SURRENDER);
+      expect(board.gameState.actionHistory[0].type).toBe(
+        GameActionType.SURRENDER,
+      );
     });
   });
 
@@ -158,14 +168,14 @@ describe('Board', () => {
     beforeEach(() => {
       board = new Board(
         createMockPlayer('player1'),
-        createMockPlayer('player2')
+        createMockPlayer('player2'),
       );
     });
 
     it('should allow exploring future scenarios using clones without affecting original', () => {
       const boardInstance = new Board(
         createMockPlayer('player1', { speed: 100 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
 
       const boardSnapshot = boardInstance.clone();
@@ -187,7 +197,7 @@ describe('Board', () => {
           speed: 100,
           items: [{ id: '_blueprint_attack' }, { id: '_blueprint_attack' }],
         }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
 
       const boardSnapshot = boardInstance.clone();
@@ -207,7 +217,7 @@ describe('Board', () => {
     beforeEach(() => {
       board = new Board(
         createMockPlayer('player1', { speed: 2 }),
-        createMockPlayer('player2', { speed: 1 })
+        createMockPlayer('player2', { speed: 1 }),
       );
     });
 
@@ -216,7 +226,7 @@ describe('Board', () => {
       expect(board.getOpponentId('player2')).toBe('player1');
     });
 
-    it('should check if it\'s a player\'s turn', () => {
+    it("should check if it's a player's turn", () => {
       expect(board.isPlayersTurn('player1')).toBe(true);
       expect(board.isPlayersTurn('player2')).toBe(false);
     });

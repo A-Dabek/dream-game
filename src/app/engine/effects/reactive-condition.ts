@@ -1,5 +1,13 @@
-import {AFTER_EFFECT, BEFORE_EFFECT, Condition, Effect, isLifecycleEvent, ON_PLAY, ON_TURN_END,} from '../../item';
-import {EngineState, GameEvent} from '../engine.model';
+import {
+  AFTER_EFFECT,
+  BEFORE_EFFECT,
+  Condition,
+  Effect,
+  isLifecycleEvent,
+  ON_PLAY,
+  ON_TURN_END,
+} from '../../item';
+import { EngineState, GameEvent } from '../engine.model';
 
 export interface ReactiveCondition {
   readonly type: string;
@@ -15,8 +23,11 @@ abstract class BaseCondition implements ReactiveCondition {
 
   shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean {
     const isEffectType = !isLifecycleEvent(event.type);
-    const conditionTypeMatches = this.condition.type === event.type ||
-      (isEffectType && (this.condition.type === BEFORE_EFFECT || this.condition.type === AFTER_EFFECT));
+    const conditionTypeMatches =
+      this.condition.type === event.type ||
+      (isEffectType &&
+        (this.condition.type === BEFORE_EFFECT ||
+          this.condition.type === AFTER_EFFECT));
 
     if (!conditionTypeMatches) return false;
 
@@ -28,29 +39,47 @@ abstract class BaseCondition implements ReactiveCondition {
     return this.checkSpecific(event, playerId, state);
   }
 
-  protected abstract checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean;
+  protected abstract checkSpecific(
+    event: GameEvent,
+    playerId: string,
+    state: EngineState,
+  ): boolean;
 }
 
 class EffectCondition extends BaseCondition {
-  protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
+  protected checkSpecific(
+    event: GameEvent,
+    playerId: string,
+    state: EngineState,
+  ): boolean {
     const effect = event as Effect;
 
     const isTargetMe =
-      effect.target === 'self' ? event.playerId === playerId : event.playerId !== playerId;
+      effect.target === 'self'
+        ? event.playerId === playerId
+        : event.playerId !== playerId;
 
     return isTargetMe;
   }
 }
 
 class OnPlayCondition extends BaseCondition {
-  protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
+  protected checkSpecific(
+    event: GameEvent,
+    playerId: string,
+    state: EngineState,
+  ): boolean {
     if (event.type !== ON_PLAY) return false;
     return playerId !== event.playerId;
   }
 }
 
 class OnTurnEndCondition extends BaseCondition {
-  protected checkSpecific(event: GameEvent, playerId: string, state: EngineState): boolean {
+  protected checkSpecific(
+    event: GameEvent,
+    playerId: string,
+    state: EngineState,
+  ): boolean {
     if (event.type !== ON_TURN_END) return false;
     return playerId === event.playerId;
   }
