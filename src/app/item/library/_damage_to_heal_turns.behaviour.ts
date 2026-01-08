@@ -1,12 +1,12 @@
-import {addPassiveEffect, invert, turns} from '..';
+import {addStatusEffect, invert, turns} from '..';
 import {Effect, ItemBehavior} from '../item.model';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_turns item.
- * When played, it adds a passive effect that converts all incoming damage into healing for 2 turns.
+ * When played, it adds a statusEffect effect that converts all incoming damage into healing for 2 turns.
  */
 export class BlueprintDamageToHealTurnsBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
-    return [addPassiveEffect(invert('damage', turns(2)))];
+    return [addStatusEffect(invert('damage', turns(2)))];
   }
 }

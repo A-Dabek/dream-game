@@ -90,7 +90,7 @@ export class Engine {
       const behavior = getItemBehavior(item.id);
       const effects = behavior.passiveEffects?.() ?? [];
       return effects.map((effect) =>
-        ListenerFactory.createFromPassive(item.instanceId!, player.id, effect)
+        ListenerFactory.createFromStatusEffect(item.instanceId!, player.id, effect)
       );
     });
   }

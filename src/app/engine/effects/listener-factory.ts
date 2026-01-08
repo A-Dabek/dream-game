@@ -1,13 +1,13 @@
-import {PassiveEffect} from '../../item';
+import {StatusEffect} from '../../item/item.model';
 import {Listener} from '../engine.model';
 import {InvertListener, NegateListener, ReactiveRemovalListener} from './modifier-listeners';
 import {DefaultPassiveInstance} from './passive-instance';
 
 export class ListenerFactory {
-  static createFromPassive(
+  static createFromStatusEffect(
     instanceId: string,
     playerId: string,
-    effect: PassiveEffect
+    effect: StatusEffect
   ): Listener {
     if (effect.type === 'negate') {
       return new NegateListener(instanceId, playerId, effect);

@@ -7,7 +7,7 @@ The core game engine that manages the game state and flow. It is a synchronous a
 ## Core Files
 
 - `engine.model.ts` - Type definitions for engine state, events, and listeners.
-- `effects/` - Implementation of passive effect listeners (conditions, durations, instances) and the `ListenerFactory`.
+- `effects/` - Implementation of status and passive effect listeners (conditions, durations, instances) and the `ListenerFactory`.
 - `processors.ts` - Implementation of all atomic effect processors.
 - `engine.ts` - Core engine logic, event processing loop, and state management.
 - `index.ts` - Public exports for the engine module.
@@ -71,7 +71,7 @@ The engine uses several specialized listener implementations:
 - `healing`: Increases the targeted player's health.
 - `remove_item`: Removes an item from the targeted player's loadout. Listeners of the removed item are responsible for emitting a `remove_listener` event to clean themselves up.
 - `remove_listener`: Explicitly removes a listener from the engine state by its `instanceId`.
-- `add_passive_effect`: Adds a persistent passive effect (with its defined `Duration`) to the targeted player.
+- `add_status_effect`: Adds a persistent status effect (with its defined `Duration`) to the targeted player.
 
 ## Logging
 

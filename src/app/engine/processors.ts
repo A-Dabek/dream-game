@@ -1,4 +1,4 @@
-import {Effect, PassiveEffect} from '../item';
+import {Effect, StatusEffect} from '../item';
 import {ListenerFactory} from './effects';
 import {EngineState} from './engine.model';
 
@@ -64,18 +64,18 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       },
     };
   },
-  add_passive_effect: (state, playerKey, effect) => {
+  add_status_effect: (state, playerKey, effect) => {
     const targetKey =
       effect.target === 'enemy' ? (playerKey === 'playerOne' ? 'playerTwo' : 'playerOne') : playerKey;
-    const passiveEffect = effect.value as PassiveEffect;
+    const statusEffect = effect.value as StatusEffect;
     const targetPlayer = state[targetKey];
     return {
       ...state,
       listeners: [
-        ListenerFactory.createFromPassive(
+        ListenerFactory.createFromStatusEffect(
           `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
           targetPlayer.id,
-          passiveEffect
+          statusEffect
         ),
         ...state.listeners,
       ],

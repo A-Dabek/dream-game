@@ -8,9 +8,11 @@ This module defines the core data structures for items and player loadouts in th
   `_blueprint_` prefix convention (e.g., `_blueprint_attack`, `_blueprint_reactive_removal`).
 * **Item**: An interface representing a single item, characterized by its `ItemId`.
 * **Effect**: An interface representing an atomic effect (e.g., damage, healing). Each effect has a `target` property (`self` or `enemy`) to explicitly define whom it affects.
-* **Effect Creators**: Factory functions that simplify the creation of `Effect` and `PassiveEffect` objects. Examples include
-  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(value, target?)`, and `passive(config)`.
-* **Passive Effects**: Items can define passive effects that react to game events based on a `Condition` (e.g.,
+* **Effect Creators**: Factory functions that simplify the creation of `Effect` and `StatusEffect` objects. Examples include
+  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(value, target?)`, and `statusEffect(config)`.
+* **Passive Effects**: Effects that are active while an item is in the loadout. Defined via `passiveEffects()` in `ItemBehavior`.
+* **Status Effects**: Lingering effects that are applied when an item is played. Defined via `whenPlayed()` using `addStatusEffect()`.
+* **Passive/Status Logic**: Both use the same underlying structure consisting of a `Condition` (e.g.,
   `beforeEffect('damage')`, `afterEffect('damage')`, `onPlay()`, `onTurnEnd()`), an action (Effect or list of Effects), and an optional `Duration`.
 * **ItemBehavior**: An interface responsible for defining item logic, returning `Effect[]` from `whenPlayed()` and
   `PassiveEffect[]` from `passiveEffects()`.

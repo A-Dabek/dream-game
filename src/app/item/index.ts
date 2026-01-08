@@ -7,6 +7,7 @@ export {
   type ItemId,
   type Loadout,
   type PassiveEffect,
+  type StatusEffect
 } from './item.model';
 export {BlueprintAttackBehaviour} from './library/_blueprint_attack.behaviour';
 export {BlueprintPassiveAttackBehaviour} from './library/_blueprint_passive_attack.behaviour';

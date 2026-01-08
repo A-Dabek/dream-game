@@ -1,20 +1,20 @@
-import {BEFORE_EFFECT, isLifecycleEvent, PassiveEffect} from '../../item';
+import {BEFORE_EFFECT, isLifecycleEvent, StatusEffect} from '../../item';
 import {EngineState, GameEvent, Listener} from '../engine.model';
 import {BasePassiveInstance} from './base-passive-instance';
 
 export interface PassiveInstance extends Listener {
-  readonly effect: PassiveEffect;
+  readonly effect: StatusEffect;
 }
 
 /**
- * Default implementation of a passive effect instance.
+ * Default implementation of a status effect instance.
  * Replaces events for 'before_effect' conditions and adds effects otherwise.
  */
 export class DefaultPassiveInstance extends BasePassiveInstance implements PassiveInstance {
   static create(
     instanceId: string,
     playerId: string,
-    effect: PassiveEffect
+    effect: StatusEffect
   ): DefaultPassiveInstance {
     return new DefaultPassiveInstance(instanceId, playerId, effect);
   }

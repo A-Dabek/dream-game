@@ -29,7 +29,7 @@ describe('Negate Damage Integration Tests', () => {
     expect(board.gameState.player.health).toBe(90);
   });
 
-  it('should negate end-of-turn damage from opponent if negate was played BEFORE opponent played passive attack', () => {
+  it('should negate end-of-turn damage from opponent if negate was played BEFORE opponent played status attack', () => {
       const p1 = createMockPlayer('p1', {
         speed: 100,
         items: [{id: '_blueprint_negate_damage'}],
@@ -48,7 +48,7 @@ describe('Negate Damage Integration Tests', () => {
         board.pass(board.currentPlayerId);
       }
 
-      // p2 plays passive attack
+      // p2 plays status attack
       board.playItem('_blueprint_passive_attack', 'p2');
 
       // p2 end-of-turn damage to p1 was negated.
@@ -64,7 +64,7 @@ describe('Negate Damage Integration Tests', () => {
       expect(board.gameState.player.health).toBe(95);
   });
 
-  it('should NOT negate end-of-turn damage if negate was played AFTER passive attack, but charge should remain', () => {
+  it('should NOT negate end-of-turn damage if negate was played AFTER status attack, but charge should remain', () => {
       const p1 = createMockPlayer('p1', {
         speed: 100,
         items: [{id: '_blueprint_negate_damage'}, {id: '_blueprint_attack'}],
@@ -75,7 +75,7 @@ describe('Negate Damage Integration Tests', () => {
       });
       const board = new Board(p1, p2);
 
-      // 1. p2 plays passive attack (older listener)
+      // 1. p2 plays status attack (older listener)
       while ((board.currentPlayerId as string) !== 'p2') {
         board.pass(board.currentPlayerId);
       }
@@ -94,11 +94,11 @@ describe('Negate Damage Integration Tests', () => {
       }
       board.pass('p2');
 
-      // passive attack (older) triggers and its damage is NOT seen by negate (newer).
+      // status attack (older) triggers and its damage is NOT seen by negate (newer).
       expect(board.gameState.player.health).toBe(90);
   });
 
-  it('should verify negate is still active after being skipped by older passive attack', () => {
+  it('should verify negate is still active after being skipped by older status attack', () => {
       const p1 = createMockPlayer('p1', {
         speed: 100,
         items: [{id: '_blueprint_negate_damage'}],
@@ -109,7 +109,7 @@ describe('Negate Damage Integration Tests', () => {
       });
       const board = new Board(p1, p2);
 
-      // 1. Setup p2's passive attack (Older)
+      // 1. Setup p2's status attack (Older)
       while ((board.currentPlayerId as string) !== 'p2') board.pass(board.currentPlayerId);
       board.playItem('_blueprint_passive_attack', 'p2');
       expect(board.gameState.player.health).toBe(95);
@@ -128,7 +128,7 @@ describe('Negate Damage Integration Tests', () => {
       while ((board.currentPlayerId as string) !== 'p2') board.pass(board.currentPlayerId);
       board.playItem('_blueprint_attack', 'p2');
       // The active attack is negated (90 -> 90),
-      // but p2's end-of-turn passive attack still triggers (90 -> 85).
+      // but p2's end-of-turn status attack still triggers (90 -> 85).
       // If negate didn't work, it would be 80.
       expect(board.gameState.player.health).toBe(85);
   });

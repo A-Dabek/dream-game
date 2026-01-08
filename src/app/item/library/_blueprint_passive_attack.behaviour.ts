@@ -6,7 +6,7 @@ import {Effect, ItemBehavior} from '../item.model';
  */
 export class BlueprintPassiveAttackBehaviour implements ItemBehavior {
   /**
-   * Returns a passive damage effect when the item is played.
+   * Returns a status damage effect when the item is played.
    */
   whenPlayed(): Effect[] {
     return [passiveAttack(5)];

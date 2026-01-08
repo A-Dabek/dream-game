@@ -32,7 +32,7 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
   // Optional: implement if the item has passive effects while in the loadout
   passiveEffects(): PassiveEffect[] {
     return [
-      passive({
+      statusEffect({
         condition: afterEffect('damage'),
         action: [removeItem('some_item_id')],
       })
@@ -45,24 +45,24 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
 
 Items return a list of `Effect` objects from `whenPlayed()`, which are applied immediately.
 
-Items can also return a list of `PassiveEffect` objects from `passiveEffects()`, which are reactive and active while the item is in the loadout.
+Items can also return a list of `PassiveEffect` objects from `passiveEffects()`, which are reactive and active while the item is in the loadout. When an item is played, any lingering effects it applies are called `StatusEffect`s.
 
 ### Lifecycle and Conditions
 
-The engine processes effects through a defined lifecycle. Passives can react to various stages:
+The engine processes effects through a defined lifecycle. Effects can react to various stages:
 
 - `onPlay()`: Triggered when any item is played.
 - `beforeEffect(type?)`: Triggered before an effect is applied. Use this to modify or negate effects.
 - `afterEffect(type?)`: Triggered after an effect is successfully applied.
 - `onTurnEnd()`: Triggered when a player's turn ends.
 
-Example of a modifying passive:
+Example of a modifying status effect:
 
 ```typescript
 class ExampleItemBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
     return [
-      addPassiveEffect(
+      addStatusEffect(
         invert('damage', charges(2))
       ),
     ];
@@ -70,15 +70,15 @@ class ExampleItemBehaviour implements ItemBehavior {
 }
 ```
 
-The `invert('damage', duration)` creator adds a passive effect that converts incoming damage into healing. `negate('damage', duration)` is another helper that consumes the effect entirely. Both are high-level wrappers that create specialized listeners in the engine.
+The `invert('damage', duration)` creator adds a status effect that converts incoming damage into healing. `negate('damage', duration)` is another helper that consumes the effect entirely. Both are high-level wrappers that create specialized listeners in the engine.
 
-### Persistent Passive Effects
+### Status Effects
 
-Items can add passive effects that persist even after the item is removed from the loadout. Use `addPassiveEffect(passive({...}))` in `whenPlayed()`.
+Items can add status effects that persist even after the item is removed from the loadout. Use `addStatusEffect(statusEffect({...}))` in `whenPlayed()`.
 
-To define how long a passive effect lasts, use `turns(n)`, `charges(n)`, or `permanent()` within the `duration` property.
+To define how long a status effect lasts, use `turns(n)`, `charges(n)`, or `permanent()` within the `duration` property.
 
-The engine scans for these effects at the start of the game and also manages them when they are added dynamically via `addPassiveEffect`.
+The engine scans for passive effects at the start of the game and also manages status effects when they are added dynamically via `addStatusEffect`.
 
 ## 3. Register the Behavior
 

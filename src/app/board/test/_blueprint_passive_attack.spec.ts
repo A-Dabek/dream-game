@@ -3,7 +3,7 @@ import {Board} from '../board';
 import {createMockPlayer} from './test-utils';
 
 describe('_blueprint_passive_attack Integration Test', () => {
-  it('should add passive effect and deal damage at the end of the turn when played', () => {
+  it('should add status effect and deal damage at the end of the turn when played', () => {
     const player1 = createMockPlayer('p1', { speed: 10, items: [{ id: '_blueprint_passive_attack' }] });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);

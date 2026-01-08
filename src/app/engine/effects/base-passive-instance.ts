@@ -1,10 +1,10 @@
-import {PassiveEffect} from '../../item';
+import {StatusEffect} from '../../item/item.model';
 import {EngineState, GameEvent, Listener} from '../engine.model';
 import {createCondition, PassiveCondition} from './passive-condition';
 import {createDuration, PassiveDuration} from './passive-duration';
 
 /**
- * Base class for passive effect listeners.
+ * Base class for status effect listeners.
  * Handles condition checking, duration updates, and basic state management.
  */
 export abstract class BasePassiveInstance implements Listener {
@@ -14,7 +14,7 @@ export abstract class BasePassiveInstance implements Listener {
   constructor(
     readonly instanceId: string,
     readonly playerId: string,
-    readonly effect: PassiveEffect,
+    readonly effect: StatusEffect,
     condition?: PassiveCondition,
     duration?: PassiveDuration
   ) {

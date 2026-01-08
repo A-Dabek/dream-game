@@ -22,7 +22,7 @@ export interface Effect {
 }
 
 /**
- * Represents a condition that must be met for a passive effect to trigger.
+ * Represents a condition that must be met for a status effect to trigger.
  */
 export interface Condition {
   readonly type: string;
@@ -30,7 +30,7 @@ export interface Condition {
 }
 
 /**
- * Represents the duration of a passive effect.
+ * Represents the duration of a status effect.
  */
 export interface Duration {
   readonly type: 'turns' | 'charges' | 'permanent';
@@ -38,14 +38,19 @@ export interface Duration {
 }
 
 /**
- * Represents a passive effect that reacts to game conditions.
+ * Represents a status effect that reacts to game conditions.
  */
-export interface PassiveEffect {
+export interface StatusEffect {
   readonly type?: string;
   readonly condition: Condition;
   readonly action: Effect[];
   readonly duration?: Duration;
 }
+
+/**
+ * Represents a passive effect that is active while the item is in the loadout.
+ */
+export type PassiveEffect = StatusEffect;
 
 /**
  * Defines the behavior and effects of an item.

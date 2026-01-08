@@ -1,4 +1,4 @@
-import {afterEffect, passive} from '..';
+import {afterEffect, statusEffect} from '..';
 import {Effect, ItemBehavior, PassiveEffect} from '../item.model';
 
 /**
@@ -18,7 +18,7 @@ export class BlueprintReactiveRemovalBehaviour implements ItemBehavior {
    */
   passiveEffects(): PassiveEffect[] {
     return [
-      passive({
+      statusEffect({
         type: 'reactive_removal',
         condition: afterEffect('damage'),
         action: [],
