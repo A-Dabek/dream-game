@@ -1,22 +1,22 @@
-import {StatusEffect} from '../../item/item.model';
+import {BEFORE_EFFECT, isLifecycleEvent, StatusEffect} from '../../item';
 import {EngineState, GameEvent, Listener} from '../engine.model';
-import {createCondition, PassiveCondition} from './passive-condition';
-import {createDuration, PassiveDuration} from './passive-duration';
+import {createCondition, ReactiveCondition} from './reactive-condition';
+import {createDuration, ReactiveDuration} from './reactive-duration';
 
 /**
  * Base class for status effect listeners.
  * Handles condition checking, duration updates, and basic state management.
  */
-export abstract class BasePassiveInstance implements Listener {
-  protected readonly condition: PassiveCondition;
-  protected readonly duration: PassiveDuration;
+export abstract class BaseEffectInstance implements Listener {
+  protected readonly condition: ReactiveCondition;
+  protected readonly duration: ReactiveDuration;
 
   constructor(
     readonly instanceId: string,
     readonly playerId: string,
     readonly effect: StatusEffect,
-    condition?: PassiveCondition,
-    duration?: PassiveDuration
+    condition?: ReactiveCondition,
+    duration?: ReactiveDuration
   ) {
     this.condition = condition ?? createCondition(effect.condition);
     this.duration = duration ?? createDuration(effect.duration);
@@ -36,7 +36,7 @@ export abstract class BasePassiveInstance implements Listener {
 
     this.duration.update(event, this.playerId);
 
-    return this.wrapResult({ event: resultEvents });
+    return this.wrapResult(resultEvents);
   }
 
   /**
@@ -48,42 +48,43 @@ export abstract class BasePassiveInstance implements Listener {
     state: EngineState
   ): GameEvent[] | null;
 
+  /**
+   * Wraps the result events with lifecycle-related events (like removal).
+   */
+  protected abstract wrapResult(events: GameEvent[]): { event: GameEvent[] };
+
   protected shouldReact(event: GameEvent, state: EngineState): boolean {
     return this.condition.shouldReact(event, this.playerId, state);
   }
 
-  private wrapResult(result: {
-    event: GameEvent[];
-  }): {
-    event: GameEvent[];
-  } {
-    let finalEvents = result.event;
-
-    // Check for item removal
-    for (const e of result.event) {
-      const removalEvent = this.checkRemoveItem(e);
-      if (removalEvent) {
-        finalEvents = this.addEvent(finalEvents, removalEvent);
-        break;
-      }
+  /**
+   * Default reaction logic that either replaces the event (for 'before_effect')
+   * or adds new effects to the queue.
+   */
+  protected defaultHandleReaction(event: GameEvent, state: EngineState): GameEvent[] | null {
+    if (!this.shouldReact(event, state)) {
+      return null;
     }
 
-    // Check for duration expiration
-    if (this.duration.isExpired) {
-      const removeEvent: GameEvent = {
-        type: 'remove_listener',
-        value: this.instanceId,
-        playerId: this.playerId,
-      };
-      finalEvents = this.addEvent(finalEvents, removeEvent);
+    const isReplacement = this.condition.type === BEFORE_EFFECT && !isLifecycleEvent(event.type);
+
+    if (isReplacement) {
+      const playerId = event.playerId;
+      return this.effect.action.map((e) => ({
+        ...e,
+        playerId,
+      }));
     }
 
-    return {
-      event: finalEvents,
-    };
+    const reactions = this.effect.action.map((e) => ({
+      ...e,
+      playerId: this.playerId,
+    }));
+
+    return [event, ...reactions];
   }
 
-  private addEvent(
+  protected addEvent(
     base: GameEvent[],
     newEvent: GameEvent
   ): GameEvent[] {
@@ -93,8 +94,7 @@ export abstract class BasePassiveInstance implements Listener {
     return [...base, newEvent];
   }
 
-
-  private checkRemoveItem(event: GameEvent): GameEvent | null {
+  protected checkRemoveItem(event: GameEvent): GameEvent | null {
     if (event && event.type === 'remove_item' && event.value === this.instanceId) {
       return {
         type: 'remove_listener',
@@ -105,3 +105,4 @@ export abstract class BasePassiveInstance implements Listener {
     return null;
   }
 }
+

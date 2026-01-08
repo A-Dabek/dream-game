@@ -1,30 +1,27 @@
 # Engine Effects Module
 
-This module provides an object-oriented implementation of passive effects, following a strategy pattern to handle
-different trigger conditions and expiration rules.
+This module provides an object-oriented implementation of reactive effects (passives and status effects), following a strategy pattern to handle different trigger conditions and expiration rules.
 
 ## Core Components
 
-### PassiveInstance
+### EffectInstance
 
-The primary interface for passive effects in the engine. It encapsulates the state and behavior of a single passive
-effect.
+The primary interface for reactive effects in the engine. It encapsulates the state and behavior of a single effect.
 
-- `DefaultPassiveInstance`: The standard implementation that delegates logic to `PassiveCondition` and
-  `PassiveDuration`.
+- `passive/`: Contains listeners tied to an item's existence in the loadout. They are automatically cleaned up when the item is removed.
+- `status/`: Contains listeners tied to a duration (buffs/debuffs). They are automatically cleaned up when their duration expires.
 
-### PassiveCondition
+### ReactiveCondition
 
-Handles the logic for when a passive effect should react to a game event.
+Handles the logic for when a reactive effect should react to a game event.
 
 - `EffectCondition`: Reacts to `before_effect` or `after_effect` events (e.g., damage, healing).
 - `OnPlayCondition`: Reacts when an item is played.
 - `OnTurnEndCondition`: Reacts when a turn ends.
-- `DefaultCondition`: A fallback condition.
 
-### PassiveDuration
+### ReactiveDuration
 
-Manages the lifecycle and expiration of a passive effect.
+Manages the lifecycle and expiration of a reactive effect.
 
 - `PermanentDuration`: The effect never expires.
 - `TurnsDuration`: The effect expires after a specific number of turns.
@@ -32,9 +29,6 @@ Manages the lifecycle and expiration of a passive effect.
 
 ## Key Patterns
 
-- **Delegation**: `DefaultPassiveInstance` delegates `shouldReact` and `handle` logic to `PassiveCondition`, and
-  `update` (expiration) logic to `PassiveDuration`.
-- **Immutability**: All classes are designed to be immutable. State updates (like decrementing turns or charges) return
-  a new instance of the object.
-- **Factory Functions**: `createCondition` and `createDuration` are used to instantiate concrete classes from plain data
-  objects (the `Condition` and `Duration` interfaces from the `item` module).
+- **Specialization**: Listeners are organized into `passive` and `status` subdirectories to reflect their different cleanup lifecycles.
+- **Delegation**: Listener instances delegate `shouldReact` logic to `ReactiveCondition`, and `update` or expiration logic to `ReactiveDuration`.
+- **Factory Functions**: `ListenerFactory`, `createCondition`, and `createDuration` are used to instantiate the correct concrete classes from data configurations.

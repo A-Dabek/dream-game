@@ -1,7 +1,7 @@
 import {Duration} from '../../item';
 import {GameEvent} from '../engine.model';
 
-export interface PassiveDuration {
+export interface ReactiveDuration {
   readonly isExpired: boolean;
 
   update(event: GameEvent, playerId: string): void;
@@ -9,7 +9,7 @@ export interface PassiveDuration {
   onHandle(): void;
 }
 
-class PermanentDuration implements PassiveDuration {
+class PermanentDuration implements ReactiveDuration {
   get isExpired(): boolean { return false; }
 
   update(): void {}
@@ -17,7 +17,7 @@ class PermanentDuration implements PassiveDuration {
   onHandle(): void {}
 }
 
-class ChargesDuration implements PassiveDuration {
+class ChargesDuration implements ReactiveDuration {
   constructor(public remainingCharges: number) {}
 
   get isExpired(): boolean {
@@ -31,7 +31,7 @@ class ChargesDuration implements PassiveDuration {
   }
 }
 
-class TurnsDuration implements PassiveDuration {
+class TurnsDuration implements ReactiveDuration {
   constructor(public remainingTurns: number) {}
 
   get isExpired(): boolean {
@@ -47,7 +47,7 @@ class TurnsDuration implements PassiveDuration {
   onHandle(): void {}
 }
 
-export function createDuration(duration?: Duration): PassiveDuration {
+export function createDuration(duration?: Duration): ReactiveDuration {
   if (!duration) return new PermanentDuration();
   switch (duration.type) {
     case 'charges':

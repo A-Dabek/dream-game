@@ -72,7 +72,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     return {
       ...state,
       listeners: [
-        ListenerFactory.createFromStatusEffect(
+        ListenerFactory.createStatusEffect(
           `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
           targetPlayer.id,
           statusEffect

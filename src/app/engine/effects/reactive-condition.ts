@@ -1,12 +1,12 @@
 import {AFTER_EFFECT, BEFORE_EFFECT, Condition, Effect, isLifecycleEvent, ON_PLAY, ON_TURN_END,} from '../../item';
 import {EngineState, GameEvent} from '../engine.model';
 
-export interface PassiveCondition {
+export interface ReactiveCondition {
   readonly type: string;
   shouldReact(event: GameEvent, playerId: string, state: EngineState): boolean;
 }
 
-abstract class BaseCondition implements PassiveCondition {
+abstract class BaseCondition implements ReactiveCondition {
   constructor(protected readonly condition: Condition) {}
 
   get type(): string {
@@ -56,14 +56,14 @@ class OnTurnEndCondition extends BaseCondition {
   }
 }
 
-class DefaultCondition implements PassiveCondition {
+class DefaultCondition implements ReactiveCondition {
   readonly type = 'default';
   shouldReact(): boolean {
     return false;
   }
 }
 
-export function createCondition(condition: Condition): PassiveCondition {
+export function createCondition(condition: Condition): ReactiveCondition {
   switch (condition.type) {
     case BEFORE_EFFECT:
     case AFTER_EFFECT:
