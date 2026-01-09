@@ -8,14 +8,19 @@ export type EffectProcessor = (
   effect: Effect,
 ) => EngineState;
 
+function getTargetPlayerKey(
+  playerKey: 'playerOne' | 'playerTwo',
+  target?: 'self' | 'enemy',
+): 'playerOne' | 'playerTwo' {
+  if (target === 'self') {
+    return playerKey;
+  }
+  return playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
+}
+
 export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, effect) => {
-    const targetKey =
-      effect.target === 'self'
-        ? playerKey
-        : playerKey === 'playerOne'
-          ? 'playerTwo'
-          : 'playerOne';
+    const targetKey = getTargetPlayerKey(playerKey, effect.target);
     return {
       ...state,
       [targetKey]: {
@@ -25,12 +30,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     };
   },
   remove_item: (state, playerKey, effect) => {
-    const targetKey =
-      effect.target === 'enemy'
-        ? playerKey === 'playerOne'
-          ? 'playerTwo'
-          : 'playerOne'
-        : playerKey;
+    const targetKey = getTargetPlayerKey(playerKey, effect.target);
     const target = state[targetKey];
     const itemIndex = target.items.findIndex(
       (item) => item.instanceId === (effect.value as string),
@@ -62,12 +62,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     };
   },
   healing: (state, playerKey, effect) => {
-    const targetKey =
-      effect.target === 'enemy'
-        ? playerKey === 'playerOne'
-          ? 'playerTwo'
-          : 'playerOne'
-        : playerKey;
+    const targetKey = getTargetPlayerKey(playerKey, effect.target);
     return {
       ...state,
       [targetKey]: {
@@ -77,12 +72,7 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     };
   },
   add_status_effect: (state, playerKey, effect) => {
-    const targetKey =
-      effect.target === 'enemy'
-        ? playerKey === 'playerOne'
-          ? 'playerTwo'
-          : 'playerOne'
-        : playerKey;
+    const targetKey = getTargetPlayerKey(playerKey, effect.target);
     const statusEffect = effect.value as StatusEffect;
     const targetPlayer = state[targetKey];
     return {

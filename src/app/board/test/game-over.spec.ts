@@ -8,11 +8,11 @@ describe('GameOver Behavior', () => {
     const player2 = createMockPlayer('p2');
     const board = new Board(player1, player2);
 
-    const result = board.surrender('p1');
+    const result = board.surrender('p2');
 
     expect(result.success).toBe(true);
     expect(board.isGameOver).toBe(true);
-    expect(board.gameState.winnerId).toBe('p2');
+    expect(board.gameState.winnerId).toBe('p1');
   });
 
   it('should end game when a player plays attack card and kills the opponent immediately', () => {

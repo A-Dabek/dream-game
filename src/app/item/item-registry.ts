@@ -13,7 +13,7 @@ import { DummyBehavior } from './library/_dummy.behaviour';
 /**
  * Registry of item behaviors.
  */
-const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
+export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   _blueprint_attack: BlueprintAttackBehaviour,
   _blueprint_passive_attack: BlueprintPassiveAttackBehaviour,
   _blueprint_reactive_removal: BlueprintReactiveRemovalBehaviour,

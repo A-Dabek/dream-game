@@ -51,7 +51,6 @@ describe('GameService', () => {
       decide: (board: Board) => ({
         type: GameActionType.SURRENDER,
         playerId: board.currentPlayerId,
-        timestamp: Date.now(),
       }),
     };
 

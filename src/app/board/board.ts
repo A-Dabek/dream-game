@@ -2,7 +2,6 @@ import { Engine } from '../engine';
 import { ItemId } from '../item';
 import {
   BoardLoadout,
-  GameAction,
   GameActionResult,
   GameActionType,
   GameState,
@@ -10,8 +9,9 @@ import {
 import { TurnManager } from './turn-manager';
 
 export class Board {
+  private _gameState: GameState;
   private turnManager: TurnManager;
-  private engine: Engine;
+  private readonly engine: Engine;
 
   constructor(player: BoardLoadout, opponent: BoardLoadout) {
     this._gameState = {
@@ -35,8 +35,6 @@ export class Board {
 
     this._gameState = this.updateTurnInfo(this._gameState);
   }
-
-  private _gameState: GameState;
 
   get gameState(): GameState {
     return this._gameState;
@@ -69,11 +67,11 @@ export class Board {
     const endOfTurnLog = this.engine.processEndOfTurn(playerId);
 
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
-    const action = this.createAction(
-      GameActionType.PLAY_ITEM,
+    const action = {
+      type: GameActionType.PLAY_ITEM,
       playerId,
       itemId,
-    );
+    };
 
     nextGameState = this.advanceTurn(nextGameState);
 
@@ -95,7 +93,11 @@ export class Board {
 
     const log = this.engine.processEndOfTurn(playerId);
 
-    const action = this.createAction(GameActionType.PLAY_ITEM, playerId);
+    const action = {
+      type: GameActionType.PLAY_ITEM,
+      playerId,
+      itemId: undefined,
+    };
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
     nextGameState = this.advanceTurn(nextGameState);
 
@@ -108,14 +110,7 @@ export class Board {
   }
 
   surrender(playerId: string): GameActionResult {
-    if (this._gameState.isGameOver) {
-      throw new Error('Game is already over');
-    }
-
-    const player = this.getPlayerById(playerId);
-    if (!player) {
-      throw new Error('Player not found');
-    }
+    this.validateAction(playerId, GameActionType.SURRENDER);
 
     const winnerId =
       this._gameState.player.id === playerId
@@ -128,7 +123,11 @@ export class Board {
       winnerId,
     };
 
-    const action = this.createAction(GameActionType.SURRENDER, playerId);
+    const action = {
+      type: GameActionType.SURRENDER,
+      playerId,
+      itemId: undefined,
+    };
 
     this._gameState = {
       ...nextGameState,
@@ -146,23 +145,6 @@ export class Board {
     clonedBoard._gameState = JSON.parse(JSON.stringify(this._gameState));
     clonedBoard.turnManager = this.turnManager.clone();
     return clonedBoard;
-  }
-
-  getOpponentId(playerId: string): string | null {
-    if (this._gameState.player.id === playerId)
-      return this._gameState.opponent.id;
-    if (this._gameState.opponent.id === playerId)
-      return this._gameState.player.id;
-    return null;
-  }
-
-  isPlayersTurn(playerId: string): boolean {
-    return this.currentPlayerId === playerId;
-  }
-
-  getPlayerHealth(playerId: string): number | null {
-    const player = this.getPlayerById(playerId);
-    return player?.health ?? null;
   }
 
   private updateTurnInfo(state: GameState): GameState {
@@ -187,13 +169,18 @@ export class Board {
       throw new Error('Game is already over');
     }
 
-    if (this._gameState.turnInfo.currentPlayerId !== playerId) {
-      throw new Error('Not your turn');
-    }
-
-    const player = this.getPlayerById(playerId);
+    const player =
+      this._gameState.player.id === playerId
+        ? this._gameState.player
+        : this._gameState.opponent.id === playerId
+          ? this._gameState.opponent
+          : null;
     if (!player) {
       throw new Error('Player not found');
+    }
+
+    if (this._gameState.turnInfo.currentPlayerId !== playerId) {
+      throw new Error('Not your turn');
     }
 
     if (type === GameActionType.PLAY_ITEM && itemId) {
@@ -241,25 +228,5 @@ export class Board {
   private advanceTurn(state: GameState): GameState {
     this.turnManager.advanceTurn();
     return this.updateTurnInfo(state);
-  }
-
-  private getPlayerById(playerId: string): BoardLoadout | null {
-    if (this._gameState.player.id === playerId) return this._gameState.player;
-    if (this._gameState.opponent.id === playerId)
-      return this._gameState.opponent;
-    return null;
-  }
-
-  private createAction(
-    type: GameActionType,
-    playerId: string,
-    itemId?: string,
-  ): GameAction {
-    return {
-      type,
-      playerId,
-      itemId,
-      timestamp: Date.now(),
-    };
   }
 }

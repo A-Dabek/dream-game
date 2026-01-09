@@ -33,12 +33,11 @@ export class FirstAvailableStrategy implements Strategy {
       state.player.id === currentPlayerId ? state.player : state.opponent;
 
     // Primitive implementation: just play the first (leftmost) available item
-    if (player.items && player.items.length > 0) {
+    if (player.items.length > 0) {
       return {
         type: GameActionType.PLAY_ITEM,
         playerId: currentPlayerId,
         itemId: player.items[0].id,
-        timestamp: Date.now(),
       };
     }
 
@@ -47,7 +46,6 @@ export class FirstAvailableStrategy implements Strategy {
     return {
       type: GameActionType.PLAY_ITEM,
       playerId: currentPlayerId,
-      timestamp: Date.now(),
     };
   }
 }

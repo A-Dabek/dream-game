@@ -210,30 +210,4 @@ describe('Board', () => {
       expect(boardInstance.gameState.actionHistory.length).toBe(0);
     });
   });
-
-  describe('helpers', () => {
-    let board: Board;
-
-    beforeEach(() => {
-      board = new Board(
-        createMockPlayer('player1', { speed: 2 }),
-        createMockPlayer('player2', { speed: 1 }),
-      );
-    });
-
-    it('should get opponent ID correctly', () => {
-      expect(board.getOpponentId('player1')).toBe('player2');
-      expect(board.getOpponentId('player2')).toBe('player1');
-    });
-
-    it("should check if it's a player's turn", () => {
-      expect(board.isPlayersTurn('player1')).toBe(true);
-      expect(board.isPlayersTurn('player2')).toBe(false);
-    });
-
-    it('should get player health', () => {
-      expect(board.getPlayerHealth('player1')).toBe(100);
-      expect(board.getPlayerHealth('player2')).toBe(100);
-    });
-  });
 });

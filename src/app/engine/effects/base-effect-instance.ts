@@ -101,11 +101,7 @@ export abstract class BaseEffectInstance implements Listener {
   }
 
   protected checkRemoveItem(event: GameEvent): GameEvent | null {
-    if (
-      event &&
-      event.type === 'remove_item' &&
-      event.value === this.instanceId
-    ) {
+    if (event.type === 'remove_item' && event.value === this.instanceId) {
       return {
         type: 'remove_listener',
         value: this.instanceId,

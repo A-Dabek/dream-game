@@ -29,7 +29,6 @@ export interface GameAction {
   type: GameActionType;
   playerId: string;
   itemId?: string;
-  timestamp: number;
 }
 
 export interface GameActionResult {
