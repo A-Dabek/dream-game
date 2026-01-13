@@ -28,6 +28,14 @@ The orchestration layer on top of the Engine:
 - **Validation**: Ensures actions (Play Item, Pass, Surrender) are legal before delegating to the Engine.
 - **Simulation**: Supports `clone()` for exploring future game states.
 
+### [UI](./ui)
+
+Angular components for displaying the game:
+
+- **Mobile First**: Layout optimized for mobile (player at bottom, opponent at top, turn order on left).
+- **Reactive**: Built with Angular signals for high performance.
+- **Modular**: Independent UI components for items, hands, and turn queues.
+
 ### [AI](./ai)
 
 Decision-making algorithms for CPU players:
