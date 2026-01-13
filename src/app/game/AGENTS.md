@@ -8,7 +8,9 @@ Responsible for orchestrating games between players.
 
 A singleton service that manages the game lifecycle:
 
-- **Game Loop**: Executes a synchronous loop that asks players for actions until the game is over.
+- **Game Loop**: Executes an asynchronous loop that asks players for actions until the game is over. Supports both synchronous AI and asynchronous human strategies.
+- **State Management**: Exposes the current game state via the `gameState` signal.
+- **Logging**: Provides a `logs$` stream (Observable) of `LogEntry[]` for UI animations and event tracking.
 - **Rating Updates**: Automatically updates player ratings (Elo-like) based on the game outcome.
 - **Board Integration**: Uses the `Board` module to maintain and advance the game state.
 
@@ -16,11 +18,11 @@ A singleton service that manages the game lifecycle:
 
 ```typescript
 const gameService = inject(GameService);
-const player1 = createCpuPlayer('cpu1', 'CPU 1');
-const player2 = createCpuPlayer('cpu2', 'CPU 2');
+const player1 = { ...humanPlayer, strategy: new HumanStrategy() }; // HumanStrategy from UI module
+const player2 = createCpuPlayer('cpu', 'CPU');
 
-const finalBoard = gameService.startGame(player1, player2);
-console.log('Winner:', finalBoard.gameState.winnerId);
+// Starts the async loop
+gameService.startGame(player1, player2);
 ```
 
 ## Dependencies

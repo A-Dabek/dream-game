@@ -1,12 +1,13 @@
 import {
-  Component,
   ChangeDetectionStrategy,
-  input,
-  output,
+  Component,
   computed,
+  inject,
+  input,
 } from '@angular/core';
-import { GameState } from '../board';
+import { GameActionType, GameState } from '../board';
 import { Item } from '../item';
+import { HumanInputService } from './human-input.service';
 import { PlayerHandComponent } from './player-hand.component';
 import { TurnQueueComponent } from './turn-queue.component';
 
@@ -132,14 +133,23 @@ import { TurnQueueComponent } from './turn-queue.component';
       <app-player-hand
         [items]="gameState().player.items"
         [interactive]="isPlayerTurn() && !gameState().isGameOver"
-        (itemSelected)="itemPlayed.emit($event)"
+        (itemSelected)="onItemPlayed($event)"
       />
     </div>
   `,
 })
 export class BoardUiComponent {
+  private readonly humanInputService = inject(HumanInputService);
+
   readonly gameState = input.required<GameState>();
-  readonly itemPlayed = output<Item>();
+
+  onItemPlayed(item: Item) {
+    this.humanInputService.submitAction({
+      type: GameActionType.PLAY_ITEM,
+      playerId: this.gameState().player.id,
+      itemId: item.id,
+    });
+  }
 
   readonly isPlayerTurn = computed(
     () =>

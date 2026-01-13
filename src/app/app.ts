@@ -1,27 +1,25 @@
 import {
-  Component,
-  signal,
-  OnInit,
   ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
 } from '@angular/core';
-import { Board, GameState } from './board';
-import { Player, createCpuPlayer } from './player';
-import { Item, ItemId } from './item';
-import { BoardUiComponent } from './ui';
+import { GameService } from './game/game.service';
+import { createCpuPlayer, Player } from './player';
 import { PlayerRating } from './rating';
-import { FirstAvailableStrategy } from './ai';
+import { BoardUiComponent, HumanStrategy } from './ui';
 
 @Component({
   selector: 'app-root',
   imports: [BoardUiComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `@if (gameState(); as state) {
-    <app-board-ui [gameState]="state" (itemPlayed)="onItemPlayed($event)" />
+  template: `@if (gameService.gameState(); as state) {
+    <app-board-ui [gameState]="state" />
   } `,
 })
 export class App implements OnInit {
-  private board!: Board;
-  protected readonly gameState = signal<GameState | null>(null);
+  protected readonly gameService = inject(GameService);
+  private readonly humanStrategy = new HumanStrategy();
 
   private humanPlayer!: Player;
   private cpuPlayer!: Player;
@@ -31,7 +29,7 @@ export class App implements OnInit {
       id: 'player',
       name: 'You',
       rating: new PlayerRating(),
-      strategy: new FirstAvailableStrategy(),
+      strategy: this.humanStrategy,
       loadout: {
         health: 20,
         speed: 8,
@@ -47,44 +45,6 @@ export class App implements OnInit {
 
     this.cpuPlayer = createCpuPlayer('cpu', 'CPU');
 
-    this.board = new Board(
-      { ...this.humanPlayer.loadout, id: this.humanPlayer.id },
-      { ...this.cpuPlayer.loadout, id: this.cpuPlayer.id },
-    );
-
-    this.gameState.set(this.board.gameState);
-
-    // If CPU goes first, process its turn
-    this.processCpuTurns();
-  }
-
-  onItemPlayed(item: Item) {
-    if (this.board.isGameOver) {
-      return;
-    }
-
-    try {
-      this.board.playItem(item.id, this.humanPlayer.id);
-      this.gameState.set(this.board.gameState);
-
-      this.processCpuTurns();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  private processCpuTurns() {
-    while (
-      !this.board.isGameOver &&
-      this.board.currentPlayerId === this.cpuPlayer.id
-    ) {
-      const action = this.cpuPlayer.strategy.decide(this.board);
-      if (action.itemId) {
-        this.board.playItem(action.itemId as ItemId, action.playerId);
-      } else {
-        this.board.pass(action.playerId);
-      }
-      this.gameState.set(this.board.gameState);
-    }
+    this.gameService.startGame(this.humanPlayer, this.cpuPlayer);
   }
 }

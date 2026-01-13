@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Board, GameAction, GameActionType } from '../board';
+import { computed, Injectable, signal } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Board, GameAction, GameActionResult, GameActionType } from '../board';
+import { LogEntry } from '../engine/engine.model';
 import { ItemId } from '../item';
 import { Player } from '../player';
 
@@ -7,6 +9,13 @@ import { Player } from '../player';
   providedIn: 'root',
 })
 export class GameService {
+  private _board = signal<Board | null>(null, { equal: () => false });
+  private _logs$ = new Subject<LogEntry[]>();
+  private _players: Player[] = [];
+
+  readonly gameState = computed(() => this._board()?.gameState ?? null);
+  readonly logs$ = this._logs$.asObservable();
+
   /**
    * Starts a game between two players and runs the game loop until it's over.
    * Updates player ratings after the game concludes.
@@ -15,19 +24,36 @@ export class GameService {
    * @param player2 The second player.
    * @returns The board state after the game is over.
    */
-  startGame(player1: Player, player2: Player): Board {
+  async startGame(player1: Player, player2: Player): Promise<Board> {
+    this._players = [player1, player2];
     const board = new Board(
       { ...player1.loadout, id: player1.id },
       { ...player2.loadout, id: player2.id },
     );
 
+    this._board.set(board);
+
     // Basic game loop
     while (!board.isGameOver) {
       const currentPlayerId = board.currentPlayerId;
-      const currentPlayer = currentPlayerId === player1.id ? player1 : player2;
+      const currentPlayer = this._players.find((p) => p.id === currentPlayerId);
 
-      const action = currentPlayer.strategy.decide(board);
-      this.executeAction(board, action);
+      if (!currentPlayer) {
+        throw new Error(`Player with id ${currentPlayerId} not found`);
+      }
+
+      // Decide action asynchronously
+      const action = await currentPlayer.strategy.decide(board);
+
+      const result = this.executeAction(board, action);
+
+      // Emit logs for the UI to animate or display
+      if (result.log) {
+        this._logs$.next(result.log);
+      }
+
+      // Update the board signal to trigger UI updates
+      this._board.set(board);
     }
 
     this.updateRatings(board, player1, player2);
@@ -38,18 +64,16 @@ export class GameService {
   /**
    * Executes a game action on the board.
    */
-  private executeAction(board: Board, action: GameAction): void {
+  private executeAction(board: Board, action: GameAction): GameActionResult {
     switch (action.type) {
       case GameActionType.PLAY_ITEM:
         if (action.itemId) {
-          board.playItem(action.itemId as ItemId, action.playerId);
+          return board.playItem(action.itemId as ItemId, action.playerId);
         } else {
-          board.pass(action.playerId);
+          return board.pass(action.playerId);
         }
-        break;
       case GameActionType.SURRENDER:
-        board.surrender(action.playerId);
-        break;
+        return board.surrender(action.playerId);
       default:
         throw new Error(`Unsupported action type: ${action.type}`);
     }

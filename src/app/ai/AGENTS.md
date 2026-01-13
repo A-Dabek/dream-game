@@ -9,8 +9,8 @@
 
 ## Architecture
 
-- The module uses the `Strategy` interface to define decision-making algorithms.
-- `FirstAvailableStrategy` is the current default implementation.
+- The module uses the `Strategy` interface to define decision-making algorithms. `Strategy#decide` is asynchronous to support human input and potentially long-running AI calculations.
+- `FirstAvailableStrategy` is a basic AI implementation.
 - Strategies accept a `Board` instance and use its `clone()` method to explore possible future states.
 - The module is built on top of the `Board` module and is unaware of the `Engine` or `Item` modules directly, relying on the `Board`'s abstraction.
 

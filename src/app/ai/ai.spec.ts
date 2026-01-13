@@ -21,7 +21,7 @@ describe('FirstAvailableStrategy', () => {
     strategy = new FirstAvailableStrategy();
   });
 
-  it('should choose the leftmost item for the current player', () => {
+  it('should choose the leftmost item for the current player', async () => {
     const player1 = createMockPlayer('player1', 100, [
       { id: '_blueprint_attack' },
       { id: '_blueprint_reactive_removal' },
@@ -31,14 +31,14 @@ describe('FirstAvailableStrategy', () => {
     ]);
     const board = new Board(player1, player2);
 
-    const action = strategy.decide(board);
+    const action = await strategy.decide(board);
 
     expect(action.type).toBe(GameActionType.PLAY_ITEM);
     expect(action.playerId).toBe('player1');
     expect(action.itemId).toBe('_blueprint_attack');
   });
 
-  it('should choose the leftmost item for player 2 when it is their turn', () => {
+  it('should choose the leftmost item for player 2 when it is their turn', async () => {
     const player1 = createMockPlayer('player1', 1, [
       { id: '_blueprint_attack' },
     ]);
@@ -48,28 +48,28 @@ describe('FirstAvailableStrategy', () => {
     ]);
     const board = new Board(player1, player2);
 
-    const action = strategy.decide(board);
+    const action = await strategy.decide(board);
 
     expect(action.type).toBe(GameActionType.PLAY_ITEM);
     expect(action.playerId).toBe('player2');
     expect(action.itemId).toBe('_blueprint_reactive_removal');
   });
 
-  it('should return a pass action if the player has no items', () => {
+  it('should return a pass action if the player has no items', async () => {
     const player1 = createMockPlayer('player1', 100, []);
     const player2 = createMockPlayer('player2', 1, [
       { id: '_blueprint_attack' },
     ]);
     const board = new Board(player1, player2);
 
-    const action = strategy.decide(board);
+    const action = await strategy.decide(board);
 
     expect(action.type).toBe(GameActionType.PLAY_ITEM);
     expect(action.playerId).toBe('player1');
     expect(action.itemId).toBeUndefined();
   });
 
-  it('should use board.clone() to avoid modifying the original board', () => {
+  it('should use board.clone() to avoid modifying the original board', async () => {
     const player1 = createMockPlayer('player1', 100, [
       { id: '_blueprint_attack' },
     ]);
@@ -80,7 +80,7 @@ describe('FirstAvailableStrategy', () => {
 
     const cloneSpy = vi.spyOn(board, 'clone');
 
-    strategy.decide(board);
+    await strategy.decide(board);
 
     expect(cloneSpy).toHaveBeenCalled();
   });

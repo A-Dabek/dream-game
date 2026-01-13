@@ -59,6 +59,8 @@ Integrates identity, rating, loadout, and AI:
 
 The high-level orchestration module:
 
-- **Game Lifecycle**: Managed by `GameService`, handles starting a game and running the game loop.
+- **Game Lifecycle**: Managed by `GameService`, handles starting a game and running the asynchronous game loop.
+- **Asynchronous Flow**: Support for asynchronous player strategies (human and AI).
+- **Logging**: Emits engine logs for UI animation.
 - **Rating Synchronization**: Updates player ratings automatically upon game completion.
 - **Orchestration**: Connects `Player` and `Board` modules.

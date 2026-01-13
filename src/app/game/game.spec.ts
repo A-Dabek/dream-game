@@ -1,29 +1,53 @@
 import { TestBed } from '@angular/core/testing';
-import { GameService } from './game.service';
-import { createCpuPlayer } from '../player';
-import { Board, GameActionType } from '../board';
 import { Strategy } from '../ai';
+import { Board, GameActionType } from '../board';
+import { createCpuPlayer } from '../player';
+import { HumanInputService, HumanStrategy } from '../ui';
+import { GameService } from './game.service';
 
 describe('GameService', () => {
   let service: GameService;
+  let humanInputService: HumanInputService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(GameService);
+    humanInputService = TestBed.inject(HumanInputService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should run a game until completion and update ratings', () => {
+  it('should allow human players to make decisions via HumanInputService', async () => {
+    const p1 = createCpuPlayer('p1', 'Human');
+    // Ensure p1 is very fast so it goes first
+    (p1.loadout as any).speed = 1000;
+    (p1 as any).strategy = TestBed.runInInjectionContext(
+      () => new HumanStrategy(),
+    );
+    const p2 = createCpuPlayer('p2', 'CPU');
+    (p2.loadout as any).speed = 1;
+
+    // Resolve human decision IN ADVANCE using ReplaySubject
+    humanInputService.submitAction({
+      type: GameActionType.SURRENDER,
+      playerId: 'p1',
+    });
+
+    const board = await service.startGame(p1, p2);
+    expect(board.isGameOver).toBe(true);
+    expect(board.gameState.winnerId).toBe('p2');
+  });
+
+  it('should run a game until completion and update ratings', async () => {
     const p1 = createCpuPlayer('p1', 'Player 1');
     const p2 = createCpuPlayer('p2', 'Player 2');
 
     const initialRating1 = p1.rating.value;
     const initialRating2 = p2.rating.value;
 
-    const board = service.startGame(p1, p2);
+    const board = await service.startGame(p1, p2);
 
     expect(board.isGameOver).toBe(true);
     expect(board.gameState.winnerId).toBeDefined();
@@ -42,13 +66,13 @@ describe('GameService', () => {
     }
   });
 
-  it('should handle a player surrendering immediately', () => {
+  it('should handle a player surrendering immediately', async () => {
     const p1 = createCpuPlayer('p1', 'Player 1');
     const p2 = createCpuPlayer('p2', 'Player 2');
 
     // Force p1 to surrender
     const surrenderStrategy: Strategy = {
-      decide: (board: Board) => ({
+      decide: async (board: Board) => ({
         type: GameActionType.SURRENDER,
         playerId: board.currentPlayerId,
       }),
@@ -58,7 +82,7 @@ describe('GameService', () => {
     (p1 as any).strategy = surrenderStrategy;
     (p2 as any).strategy = surrenderStrategy;
 
-    const board = service.startGame(p1, p2);
+    const board = await service.startGame(p1, p2);
 
     expect(board.isGameOver).toBe(true);
     expect(board.gameState.actionHistory[0].type).toBe(

@@ -3,3 +3,5 @@ export * from './item-display.component';
 export * from './player-hand.component';
 export * from './turn-queue.component';
 export * from './board-ui.component';
+export * from './human-input.service';
+export * from './human-strategy';

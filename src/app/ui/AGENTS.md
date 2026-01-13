@@ -8,7 +8,9 @@ The UI module provides Angular components for displaying the game state and faci
 - **ItemDisplayComponent**: Renders a single item with its icon and label.
 - **PlayerHandComponent**: Displays a list of items (either the player's or opponent's). Supports interactivity for the player's hand.
 - **TurnQueueComponent**: Shows a vertical list of upcoming turns on the left side of the screen.
-- **BoardUiComponent**: The main container component that orchestrates the overall game layout for mobile view.
+- **BoardUiComponent**: The main container component that orchestrates the overall game layout for mobile view. It uses `HumanInputService` to submit player decisions.
+- **HumanInputService**: Facilitates communication between UI components and `HumanStrategy`.
+- **HumanStrategy**: Implementation of `Strategy` that waits for UI input via `HumanInputService`.
 
 ## Features
 

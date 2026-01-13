@@ -8,9 +8,9 @@ export interface Strategy {
    * Decides the next action to take for the current player on the given board.
    *
    * @param board The current game board.
-   * @returns The chosen game action.
+   * @returns A promise that resolves to the chosen game action.
    */
-  decide(board: Board): GameAction;
+  decide(board: Board): Promise<GameAction>;
 }
 
 /**
@@ -21,9 +21,9 @@ export class FirstAvailableStrategy implements Strategy {
    * Decides the next action to take for the current player on the given board.
    *
    * @param board The current game board.
-   * @returns The chosen game action.
+   * @returns A promise that resolves to the chosen game action.
    */
-  decide(board: Board): GameAction {
+  async decide(board: Board): Promise<GameAction> {
     // Clone the board to interact with it without modifying the original state
     const simulationBoard = board.clone();
     const state = simulationBoard.gameState;
