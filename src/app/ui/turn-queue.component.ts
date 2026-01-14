@@ -15,37 +15,36 @@ import { IconComponent } from './icon.component';
       :host {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
-        padding: 0.5rem;
-        background: rgba(0, 0, 0, 0.05);
-        border-right: 1px solid #ddd;
+        gap: 0.4rem;
+        padding: 0.6rem;
+        background: #222;
+        border-right: 1px solid #333;
         height: 100%;
-        overflow-y: auto;
+        overflow: hidden;
       }
       .turn-item {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 2.5rem;
-        height: 2.5rem;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid #ccc;
-        font-size: 0.8rem;
-        font-weight: bold;
-        transition: all 0.2s;
+        width: 2.2rem;
+        height: 2.2rem;
+        border-radius: 4px;
+        background: #2a2a2a;
+        border: 1px solid #444;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .turn-item.player {
-        border-color: #007bff;
-        color: #007bff;
+        border-color: #4a7c59;
+        background: #2d3d32;
       }
       .turn-item.opponent {
-        border-color: #dc3545;
-        color: #dc3545;
+        border-color: #a05252;
+        background: #3d2d2d;
       }
       .current {
-        transform: scale(1.1);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        border-width: 2px;
         z-index: 1;
       }
     </style>

@@ -17,4 +17,5 @@ The UI module provides Angular components for displaying the game state and faci
 - **Mobile First**: Designed with a layout optimized for mobile screens.
 - **Signal-based**: Uses Angular signals (`input`, `computed`) for efficient state management and change detection.
 - **OnPush Change Detection**: Ensures optimal performance by only re-rendering when inputs change.
+- **Dark Themed**: Features a sleek, minimalistic dark theme with low-saturation colors.
 - **WCAG AA Compliant**: Follows accessibility standards for color contrast and ARIA attributes.

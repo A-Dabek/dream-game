@@ -25,18 +25,29 @@ import { TurnQueueComponent } from './turn-queue.component';
         max-width: 500px;
         margin: 0 auto;
         position: relative;
-        background: #fff;
+        background: #1a1a1a;
+        color: #e0e0e0;
         overflow: hidden;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       }
+
       .opponent-area {
         flex: 0 0 auto;
+        transition: background-color 0.3s ease;
       }
+
+      .opponent-area.active {
+        background: #251d1d;
+        box-shadow: inset 0 -4px 10px rgba(160, 82, 82, 0.1);
+      }
+
       .main-area {
         flex: 1 1 auto;
         display: flex;
         flex-direction: row;
         overflow: hidden;
       }
+
       .center-content {
         flex: 1;
         display: flex;
@@ -45,52 +56,102 @@ import { TurnQueueComponent } from './turn-queue.component';
         justify-content: center;
         position: relative;
       }
+
       .player-area {
         flex: 0 0 auto;
+        transition: background-color 0.3s ease;
       }
-      .health-bar {
+
+      .player-area.active {
+        background: #4c6b56;
+        box-shadow: inset 0 4px 10px rgba(74, 124, 89, 0.1);
+      }
+
+      .health-bar-container {
         width: 80%;
-        height: 1rem;
-        background: #eee;
-        border-radius: 0.5rem;
         margin: 0.5rem 0;
-        overflow: hidden;
-        border: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
       }
+
+      .health-bar {
+        width: 100%;
+        height: 1.2rem;
+        background: #333;
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid #444;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       .health-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
         height: 100%;
         transition: width 0.3s ease-out;
       }
+
       .player-health {
-        background: #28a745;
+        background: #4a7c59;
       }
+
       .opponent-health {
-        background: #dc3545;
+        background: #a05252;
       }
-      .turn-indicator {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        padding: 0.5rem;
-        border-radius: 4px;
-        background: rgba(0, 0, 0, 0.1);
+
+      .health-text {
+        position: relative;
+        z-index: 1;
+        font-size: 0.8rem;
         font-weight: bold;
+        color: #fff;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .game-over {
+        text-align: center;
+        padding: 2rem;
+        background: #2a2a2a;
+        border-radius: 8px;
+        border: 1px solid #444;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      }
+
+      .game-over h2 {
+        margin-top: 0;
+        color: #fff;
+      }
+
+      .game-over p {
+        font-size: 1.2rem;
+        margin-bottom: 0;
       }
     </style>
 
-    <div class="opponent-area">
+    <div
+      class="opponent-area"
+      [class.active]="!isPlayerTurn() && !gameState().isGameOver"
+    >
       <app-player-hand
         [items]="gameState().opponent.items"
         [interactive]="false"
       />
       <div class="center-content">
-        <div class="health-bar">
-          <div
-            class="health-fill opponent-health"
-            [style.width.%]="opponentHealthPercent()"
-          ></div>
+        <div class="health-bar-container">
+          <div class="health-bar">
+            <div
+              class="health-fill opponent-health"
+              [style.width.%]="opponentHealthPercent()"
+            ></div>
+            <span class="health-text">{{ gameState().opponent.health }}</span>
+          </div>
         </div>
-        <div>Opponent HP: {{ gameState().opponent.health }}</div>
       </div>
     </div>
 
@@ -112,22 +173,23 @@ import { TurnQueueComponent } from './turn-queue.component';
               }}
             </p>
           </div>
-        } @else {
-          <div class="turn-indicator">
-            {{ isPlayerTurn() ? 'Your Turn' : "Opponent's Turn" }}
-          </div>
         }
       </div>
     </div>
 
-    <div class="player-area">
+    <div
+      class="player-area"
+      [class.active]="isPlayerTurn() && !gameState().isGameOver"
+    >
       <div class="center-content">
-        <div>Your HP: {{ gameState().player.health }}</div>
-        <div class="health-bar">
-          <div
-            class="health-fill player-health"
-            [style.width.%]="playerHealthPercent()"
-          ></div>
+        <div class="health-bar-container">
+          <div class="health-bar">
+            <div
+              class="health-fill player-health"
+              [style.width.%]="playerHealthPercent()"
+            ></div>
+            <span class="health-text">{{ gameState().player.health }}</span>
+          </div>
         </div>
       </div>
       <app-player-hand

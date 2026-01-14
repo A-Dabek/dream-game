@@ -21,14 +21,16 @@ import iconCollection from '../../../assets/icons.json';
       viewBox="0 0 512 512"
       [style.width]="size() + 'rem'"
       [style.height]="size() + 'rem'"
+      [style.fill]="color()"
     >
-      <path fill="fff" [attr.d]="shape()" />
+      <path [attr.d]="shape()" />
     </svg>
   `,
 })
 export class IconComponent {
   readonly name = input('');
   readonly size = input(1);
+  readonly color = input('currentColor');
 
   readonly shape = computed(
     () =>
