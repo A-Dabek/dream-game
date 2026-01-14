@@ -159,6 +159,7 @@ import { TurnQueueComponent } from './turn-queue.component';
       <app-turn-queue
         [turnQueue]="gameState().turnInfo.turnQueue || []"
         [playerId]="gameState().player.id"
+        (skipTurn)="onSkipTurn()"
       />
       <div class="center-content">
         @if (gameState().isGameOver) {
@@ -210,6 +211,13 @@ export class BoardUiComponent {
       type: GameActionType.PLAY_ITEM,
       playerId: this.gameState().player.id,
       itemId: item.id,
+    });
+  }
+
+  onSkipTurn() {
+    this.humanInputService.submitAction({
+      type: GameActionType.PLAY_ITEM,
+      playerId: this.gameState().player.id,
     });
   }
 
