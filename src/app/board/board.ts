@@ -1,4 +1,5 @@
 import { Engine } from '../engine';
+import { LogEntry } from '../engine/engine.model';
 import { ItemId } from '../item';
 import {
   BoardLoadout,
@@ -63,8 +64,8 @@ export class Board {
   playItem(itemId: ItemId, playerId: string): GameActionResult {
     this.validateAction(playerId, GameActionType.PLAY_ITEM, itemId);
 
-    const log = this.engine.play(playerId, itemId);
-    const endOfTurnLog = this.engine.processEndOfTurn(playerId);
+    this.engine.play(playerId, itemId);
+    this.engine.processEndOfTurn(playerId);
 
     let nextGameState = this.syncWithEngine(this.engine, this._gameState);
     const action = {
@@ -84,14 +85,13 @@ export class Board {
       success: true,
       action,
       newGameState: this._gameState,
-      log: [...log, ...endOfTurnLog],
     };
   }
 
   pass(playerId: string): GameActionResult {
     this.validateAction(playerId, GameActionType.PLAY_ITEM);
 
-    const log = this.engine.processEndOfTurn(playerId);
+    this.engine.processEndOfTurn(playerId);
 
     const action = {
       type: GameActionType.PLAY_ITEM,
@@ -106,7 +106,11 @@ export class Board {
       actionHistory: [...nextGameState.actionHistory, action],
     };
 
-    return { success: true, action, newGameState: this._gameState, log };
+    return { success: true, action, newGameState: this._gameState };
+  }
+
+  consumeLog(): LogEntry[] {
+    return this.engine.consumeLog();
   }
 
   surrender(playerId: string): GameActionResult {

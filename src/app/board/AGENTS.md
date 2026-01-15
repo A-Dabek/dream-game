@@ -70,6 +70,7 @@ GameActionType enum: PLAY_ITEM, SURRENDER
 - Removes item from player's inventory (one-time use)
 - Advances turn on success
 - Mutates the board state and returns GameActionResult
+- Depletes engine logs and returns them in the result
 
 **pass(playerId: string): GameActionResult**
 
@@ -77,6 +78,11 @@ GameActionType enum: PLAY_ITEM, SURRENDER
 - Triggers end-of-turn effects via engine
 - Skips to next player's turn based on speed distribution
 - Mutates the board state and returns GameActionResult
+- Depletes engine logs and returns them in the result
+
+**consumeLog(): LogEntry[]**
+
+- Depletes engine logs and returns them. Should be called after every interaction that might generate logs.
 
 **surrender(playerId: string): GameActionResult**
 

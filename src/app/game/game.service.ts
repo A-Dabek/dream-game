@@ -48,8 +48,9 @@ export class GameService {
       const result = this.executeAction(board, action);
 
       // Emit logs for the UI to animate or display
-      if (result.log) {
-        this._logs$.next(result.log);
+      const log = board.consumeLog();
+      if (log.length > 0) {
+        this._logs$.next(log);
       }
 
       // Update the board signal to trigger UI updates

@@ -56,23 +56,27 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 
 ### Actions
 
-**play(playerId: string, itemId: ItemId): LogEntry[]**
+**play(playerId: string, itemId: ItemId): void**
 
 - Retrieves the behavior for the given item.
 - Removes the item from the player's inventory (one-time use).
 - Processes all effects returned by the item's behavior.
 - Updates the engine state reactively.
-- Returns a log of all events, reactions, and processors triggered by the action.
+- Adds log entries to the `EngineState`.
 
-**processEndOfTurn(playerId: string): LogEntry[]**
+**processEndOfTurn(playerId: string): void**
 
 - Emits `on_turn_end` event to trigger reactive behaviors and lifecycle updates.
 - Updates the engine state reactively.
-- Returns a log of all events, reactions, and processors triggered by the end of turn.
+- Adds log entries to the `EngineState`.
+
+**consumeLog(): LogEntry[]**
+
+- Returns and clears all log entries from the current `EngineState`.
 
 ### State Queries
 
-- `state` - A computed signal returning the current `EngineState`.
+- `state` - A computed signal returning the current `EngineState`. `EngineState` now includes a `log` array.
 
 ## Supported Effects
 
@@ -82,9 +86,11 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 - `remove_listener`: Explicitly removes a listener from the engine state by its `instanceId`.
 - `add_status_effect`: Adds a persistent status effect (with its defined `Duration`) to the targeted player.
 
+All processors for these effects now automatically append a `processor` type entry to the engine's log.
+
 ## Logging
 
-The engine generates a log of all significant occurrences during event processing. This log is returned by the primary action methods (`play`, `processEndOfTurn`) and can be used by the UI to represent high-level game actions or for verification in integration tests.
+The engine maintains a log of all significant occurrences during event processing within its state. This log can be retrieved and cleared via `consumeLog()`.
 
 The log contains three types of entries:
 

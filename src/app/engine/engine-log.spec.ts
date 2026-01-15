@@ -17,9 +17,10 @@ describe('Engine Log', () => {
     items: [{ id: '_blueprint_negate_damage' }],
   };
 
-  it('should log on_play and effects', () => {
+  it('should og on_play and effects', () => {
     const engine = new Engine(player1, player2);
-    const log = engine.play('p1', '_blueprint_attack');
+    engine.play('p1', '_blueprint_attack');
+    const log = engine.consumeLog();
 
     // 1. on_play event
     expect(log[0]).toMatchObject({
@@ -70,7 +71,8 @@ describe('Engine Log', () => {
     engine.play('p2', '_blueprint_negate_damage');
 
     // P1 attacks
-    const playLog = engine.play('p1', '_blueprint_attack');
+    engine.play('p1', '_blueprint_attack');
+    const playLog = engine.consumeLog();
 
     // We expect:
     // - event: on_play
@@ -95,7 +97,8 @@ describe('Engine Log', () => {
 
   it('should log turn end', () => {
     const engine = new Engine(player1, player2);
-    const log = engine.processEndOfTurn('p1');
+    engine.processEndOfTurn('p1');
+    const log = engine.consumeLog();
 
     expect(log[0]).toMatchObject({
       type: 'event',

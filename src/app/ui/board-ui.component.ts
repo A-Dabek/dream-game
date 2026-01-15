@@ -5,7 +5,10 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { concatMap, delay, from, tap } from 'rxjs';
 import { GameActionType, GameState } from '../board';
+import { GameService } from '../game/game.service';
 import { Item } from '../item';
 import { HumanInputService } from './human-input.service';
 import { PlayerHandComponent } from './player-hand.component';
@@ -203,8 +206,21 @@ import { TurnQueueComponent } from './turn-queue.component';
 })
 export class BoardUiComponent {
   private readonly humanInputService = inject(HumanInputService);
+  private readonly gameService = inject(GameService);
 
   readonly gameState = input.required<GameState>();
+
+  constructor() {
+    this.gameService.logs$
+      .pipe(
+        concatMap((logs) => from(logs)),
+        concatMap((log) => from([log]).pipe(delay(500))),
+        takeUntilDestroyed(),
+      )
+      .subscribe((log) => {
+        console.log('Engine Log:', log);
+      });
+  }
 
   onItemPlayed(item: Item) {
     this.humanInputService.submitAction({
