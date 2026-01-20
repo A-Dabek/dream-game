@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { BoardUiComponent } from './board-ui.component';
 import { UiStateService } from './ui-state.service';
-import { GameService } from '../game/game.service';
+import { GameService } from '../game';
 import { HumanStrategy } from './human-strategy';
 import { createCpuPlayer, Player } from '../player';
 import { PlayerRating } from '../rating';
@@ -61,13 +61,7 @@ export class GameContainerComponent implements OnInit {
       loadout: {
         health: 20,
         speed: 8,
-        items: [
-          { id: '_blueprint_attack', instanceId: 'p1' },
-          { id: '_blueprint_attack', instanceId: 'p2' },
-          { id: '_blueprint_self_damage', instanceId: 'p3' },
-          { id: '_blueprint_negate_damage', instanceId: 'p4' },
-          { id: '_dummy', instanceId: 'p5' },
-        ],
+        items: [{ id: '_blueprint_attack', instanceId: 'p1' }],
       },
     };
 
