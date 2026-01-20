@@ -5,10 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { concatMap, delay, from, tap } from 'rxjs';
 import { GameActionType, GameState } from '../board';
-import { GameService } from '../game/game.service';
 import { Item } from '../item';
 import { HumanInputService } from './human-input.service';
 import { PlayerHandComponent } from './player-hand.component';
@@ -16,6 +13,7 @@ import { TurnQueueComponent } from './turn-queue.component';
 
 @Component({
   selector: 'app-board-ui',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PlayerHandComponent, TurnQueueComponent],
   template: `
@@ -137,14 +135,13 @@ import { TurnQueueComponent } from './turn-queue.component';
       }
     </style>
 
+    @let s = state();
+
     <div
       class="opponent-area"
-      [class.active]="!isPlayerTurn() && !gameState().isGameOver"
+      [class.active]="!isPlayerTurn() && !s.isGameOver"
     >
-      <app-player-hand
-        [items]="gameState().opponent.items"
-        [interactive]="false"
-      />
+      <app-player-hand [items]="s.opponent.items" [interactive]="false" />
       <div class="center-content">
         <div class="health-bar-container">
           <div class="health-bar">
@@ -152,7 +149,7 @@ import { TurnQueueComponent } from './turn-queue.component';
               class="health-fill opponent-health"
               [style.width.%]="opponentHealthPercent()"
             ></div>
-            <span class="health-text">{{ gameState().opponent.health }}</span>
+            <span class="health-text">{{ s.opponent.health }}</span>
           </div>
         </div>
       </div>
@@ -160,31 +157,24 @@ import { TurnQueueComponent } from './turn-queue.component';
 
     <div class="main-area">
       <app-turn-queue
-        [turnQueue]="gameState().turnInfo.turnQueue || []"
-        [playerId]="gameState().player.id"
+        [turnQueue]="s.turnInfo.turnQueue || []"
+        [playerId]="s.player.id"
         (skipTurn)="onSkipTurn()"
       />
       <div class="center-content">
-        @if (gameState().isGameOver) {
+        @if (s.isGameOver) {
           <div class="game-over">
             <h2>Game Over</h2>
             <p>
               Winner:
-              {{
-                gameState().winnerId === gameState().player.id
-                  ? 'You'
-                  : 'Opponent'
-              }}
+              {{ s.winnerId === s.player.id ? 'You' : 'Opponent' }}
             </p>
           </div>
         }
       </div>
     </div>
 
-    <div
-      class="player-area"
-      [class.active]="isPlayerTurn() && !gameState().isGameOver"
-    >
+    <div class="player-area" [class.active]="isPlayerTurn() && !s.isGameOver">
       <div class="center-content">
         <div class="health-bar-container">
           <div class="health-bar">
@@ -192,13 +182,13 @@ import { TurnQueueComponent } from './turn-queue.component';
               class="health-fill player-health"
               [style.width.%]="playerHealthPercent()"
             ></div>
-            <span class="health-text">{{ gameState().player.health }}</span>
+            <span class="health-text">{{ s.player.health }}</span>
           </div>
         </div>
       </div>
       <app-player-hand
-        [items]="gameState().player.items"
-        [interactive]="isPlayerTurn() && !gameState().isGameOver"
+        [items]="s.player.items"
+        [interactive]="isPlayerTurn() && !s.isGameOver"
         (itemSelected)="onItemPlayed($event)"
       />
     </div>
@@ -206,26 +196,13 @@ import { TurnQueueComponent } from './turn-queue.component';
 })
 export class BoardUiComponent {
   private readonly humanInputService = inject(HumanInputService);
-  private readonly gameService = inject(GameService);
 
-  readonly gameState = input.required<GameState>();
-
-  constructor() {
-    this.gameService.logs$
-      .pipe(
-        concatMap((logs) => from(logs)),
-        concatMap((log) => from([log]).pipe(delay(500))),
-        takeUntilDestroyed(),
-      )
-      .subscribe((log) => {
-        console.log('Engine Log:', log);
-      });
-  }
+  readonly state = input.required<GameState>();
 
   onItemPlayed(item: Item) {
     this.humanInputService.submitAction({
       type: GameActionType.PLAY_ITEM,
-      playerId: this.gameState().player.id,
+      playerId: this.state().player.id,
       itemId: item.id,
     });
   }
@@ -233,20 +210,19 @@ export class BoardUiComponent {
   onSkipTurn() {
     this.humanInputService.submitAction({
       type: GameActionType.PLAY_ITEM,
-      playerId: this.gameState().player.id,
+      playerId: this.state().player.id,
     });
   }
 
   readonly isPlayerTurn = computed(
-    () =>
-      this.gameState().turnInfo.currentPlayerId === this.gameState().player.id,
+    () => this.state().turnInfo.currentPlayerId === this.state().player.id,
   );
 
   readonly playerHealthPercent = computed(() =>
-    Math.max(0, Math.min(100, (this.gameState().player.health / 100) * 100)),
+    Math.max(0, Math.min(100, (this.state().player.health / 100) * 100)),
   );
 
   readonly opponentHealthPercent = computed(() =>
-    Math.max(0, Math.min(100, (this.gameState().opponent.health / 100) * 100)),
+    Math.max(0, Math.min(100, (this.state().opponent.health / 100) * 100)),
   );
 }

@@ -83,6 +83,6 @@ export interface Item {
  */
 export interface Loadout {
   readonly items: Item[];
-  readonly health: number;
+  health: number;
   readonly speed: number;
 }

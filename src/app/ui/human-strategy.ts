@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { filter, firstValueFrom } from 'rxjs';
 import { Strategy } from '../ai';
 import { Board, GameAction } from '../board';
@@ -7,6 +7,7 @@ import { HumanInputService } from './human-input.service';
 /**
  * Strategy for human players that waits for UI input via HumanInputService.
  */
+@Injectable({ providedIn: 'root' })
 export class HumanStrategy implements Strategy {
   private readonly inputService = inject(HumanInputService);
 
