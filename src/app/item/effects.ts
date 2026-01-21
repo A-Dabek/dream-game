@@ -17,6 +17,20 @@ export function attack(
 }
 
 /**
+ * Creates a healing effect.
+ */
+export function heal(
+  value: number | string,
+  target: 'self' | 'enemy' = 'self',
+): Effect {
+  return {
+    type: 'healing',
+    value,
+    target,
+  };
+}
+
+/**
  * Creates a status damage effect that deals damage at the end of the turn.
  */
 export function passiveAttack(

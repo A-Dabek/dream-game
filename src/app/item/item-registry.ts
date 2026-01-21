@@ -9,6 +9,7 @@ import { BlueprintDamageToHealTurnsBehaviour } from './library/_damage_to_heal_t
 import { BlueprintNegateDamageBehaviour } from './library/_negate_damage.behaviour';
 import { TripleThreatBehaviour } from './library/_triple_threat.behaviour';
 import { DummyBehavior } from './library/_dummy.behaviour';
+import { BlueprintHeal5Behaviour } from './library/_blueprint_heal_5.behaviour';
 
 /**
  * Registry of item behaviors.
@@ -29,6 +30,7 @@ export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
       return [];
     }
   },
+  _blueprint_heal_5: BlueprintHeal5Behaviour,
 };
 
 /**

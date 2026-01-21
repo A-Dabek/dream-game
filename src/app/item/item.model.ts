@@ -12,7 +12,8 @@ export type ItemId =
   | '_blueprint_status_effect'
   | '_blueprint_negate_damage'
   | '_blueprint_triple_threat'
-  | '_dummy';
+  | '_dummy'
+  | '_blueprint_heal_5';
 
 /**
  * Represents an atomic effect that can be applied to the game state.

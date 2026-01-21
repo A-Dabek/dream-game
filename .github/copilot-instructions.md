@@ -59,6 +59,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## General
 
+- This Angular repository is using vitest. Run tests via `ng` and `--include` flag to target specific files or directories.
 - Look for AGENTS.md files inside directories to find out what each module is responsible for.
 - When making changes in a module, update its AGENTS.md file to reflect the changes.
 - The less code the better, but the code must remain readable and maintainable.
