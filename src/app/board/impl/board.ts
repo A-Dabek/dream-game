@@ -1,15 +1,16 @@
-import { Engine } from '../engine';
-import { LogEntry } from '../engine/engine.model';
-import { ItemId } from '../item';
+import { Engine } from '@dream/engine';
+import { LogEntry } from '../../engine/engine.model';
+import { ItemId } from '@dream/item';
 import {
+  BoardInterface,
   BoardLoadout,
   GameActionResult,
   GameActionType,
   GameState,
-} from './board.model';
+} from '../board.model';
 import { TurnManager } from './turn-manager';
 
-export class Board {
+export class Board implements BoardInterface {
   private _gameState: GameState;
   private turnManager: TurnManager;
   private readonly engine: Engine;
@@ -143,8 +144,8 @@ export class Board {
 
   clone(): Board {
     const clonedBoard = new Board(
-      this._gameState.player,
-      this._gameState.opponent,
+      JSON.parse(JSON.stringify(this._gameState.player)),
+      JSON.parse(JSON.stringify(this._gameState.opponent)),
     );
     clonedBoard._gameState = JSON.parse(JSON.stringify(this._gameState));
     clonedBoard.turnManager = this.turnManager.clone();

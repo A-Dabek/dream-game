@@ -1,1 +1,2 @@
-export { GameService } from './game.service';
+export { GameService } from './impl/game.service';
+export type { GameServiceInterface } from './game.model';

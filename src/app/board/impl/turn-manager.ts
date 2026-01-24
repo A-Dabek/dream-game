@@ -1,8 +1,10 @@
+import { TurnManagerInterface } from '../board.model';
+
 /**
  * Responsible for calculating and managing the turn order based on player speeds.
  * Uses a Bresenham-like algorithm to distribute turns as equally as possible.
  */
-export class TurnManager {
+export class TurnManager implements TurnManagerInterface {
   private readonly playerOne: { id: string; speed: number };
   private readonly playerTwo: { id: string; speed: number };
   private turnGenerator!: Generator<string>;
@@ -18,16 +20,10 @@ export class TurnManager {
     this.reset();
   }
 
-  /**
-   * Getter to retrieve the next 10 turns.
-   */
   get nextTurns(): string[] {
     return this.getNextTurns(10);
   }
 
-  /**
-   * Returns the next X turns.
-   */
   getNextTurns(count: number): string[] {
     while (this.turnQueue.length < count) {
       const next = this.turnGenerator.next();
@@ -37,9 +33,6 @@ export class TurnManager {
     return this.turnQueue.slice(0, count);
   }
 
-  /**
-   * Advances to the next turn, removing the current one from the sequence.
-   */
   advanceTurn(): void {
     if (this.turnQueue.length === 0) {
       this.turnGenerator.next();
@@ -48,9 +41,6 @@ export class TurnManager {
     }
   }
 
-  /**
-   * Refreshes the turn sequence with new speeds and specifies who should go first.
-   */
   refresh(
     playerOneSpeed: number,
     playerTwoSpeed: number,
@@ -61,9 +51,6 @@ export class TurnManager {
     this.reset(firstPlayerId);
   }
 
-  /**
-   * Creates a deep clone of the TurnManager.
-   */
   clone(): TurnManager {
     const cloned = new TurnManager(this.playerOne, this.playerTwo);
     cloned.accumulatedError = this.accumulatedError;
@@ -72,7 +59,7 @@ export class TurnManager {
     return cloned;
   }
 
-  private reset(firstPlayerId?: string): void {
+  reset(firstPlayerId?: string): void {
     const speedOne = this.playerOne.speed;
     const speedTwo = this.playerTwo.speed;
     const combinedSpeed = speedOne + speedTwo;

@@ -10,9 +10,16 @@
 ## Architecture
 
 - The module uses the `Strategy` interface to define decision-making algorithms. `Strategy#decide` is asynchronous to support human input and potentially long-running AI calculations.
-- `FirstAvailableStrategy` is a basic AI implementation.
+- Each strategy implementation has a dedicated file (e.g., `first-available.strategy.ts`) with corresponding tests in `.spec.ts` files.
 - Strategies accept a `Board` instance and use its `clone()` method to explore possible future states.
 - The module is built on top of the `Board` module and is unaware of the `Engine` or `Item` modules directly, relying on the `Board`'s abstraction.
+
+## Module Structure
+
+- `index.ts` - Public API exports
+- `ai.model.ts` - Type definitions and interfaces
+- `impl/first-available.strategy.ts` - FirstAvailableStrategy implementation
+- `impl/first-available.strategy.spec.ts` - Tests for FirstAvailableStrategy
 
 ## Algorithms
 

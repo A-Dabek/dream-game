@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { createCpuPlayer } from './player';
 import { PlayerRating } from '../rating';
 import { FirstAvailableStrategy } from '../ai';

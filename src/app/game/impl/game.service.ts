@@ -1,29 +1,31 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
-import { Board, GameAction, GameActionResult, GameActionType } from '../board';
-import { LogEntry } from '../engine/engine.model';
-import { ItemId } from '../item';
-import { Player } from '../player';
+import type { GameState } from '@dream/board';
+import {
+  Board,
+  GameAction,
+  GameActionResult,
+  GameActionType,
+} from '@dream/board';
+import { LogEntry } from '../../engine/engine.model';
+import { ItemId } from '@dream/item';
+import { Player } from '@dream/player';
+import { GameServiceInterface } from '../game.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GameService {
-  private _board = signal<Board | null>(null, { equal: () => false });
+export class GameService implements GameServiceInterface {
+  private _gameState$ = new Subject<GameState>();
   private _logs$ = new Subject<LogEntry[]>();
   private _players: Player[] = [];
 
-  readonly gameState = computed(() => this._board()?.gameState ?? null);
+  readonly gameState = toSignal(
+    this._gameState$.asObservable(),
+  ) as Signal<GameState>;
   readonly logs$ = this._logs$.asObservable();
 
-  /**
-   * Starts a game between two players and runs the game loop until it's over.
-   * Updates player ratings after the game concludes.
-   *
-   * @param player1 The first player.
-   * @param player2 The second player.
-   * @returns The board state after the game is over.
-   */
   async startGame(player1: Player, player2: Player): Promise<Board> {
     this._players = [player1, player2];
     const board = new Board(
@@ -31,7 +33,7 @@ export class GameService {
       { ...player2.loadout, id: player2.id },
     );
 
-    this._board.set(board);
+    this._gameState$.next(board.gameState);
 
     // Basic game loop
     while (!board.isGameOver) {
@@ -43,9 +45,14 @@ export class GameService {
       }
 
       // Decide action asynchronously
-      const action = await currentPlayer.strategy.decide(board);
+      const action = await currentPlayer.strategy.decide(board.clone());
 
       const result = this.executeAction(board, action);
+      if (!result.success) {
+        throw new Error(
+          `[GameService] Action ${result.action} failed: ${result.error}`,
+        );
+      }
 
       // Emit logs for the UI to animate or display
       const log = board.consumeLog();
@@ -53,8 +60,8 @@ export class GameService {
         this._logs$.next(log);
       }
 
-      // Update the board signal to trigger UI updates
-      this._board.set(board);
+      // Emit the updated game state
+      this._gameState$.next(board.gameState);
     }
 
     this.updateRatings(board, player1, player2);

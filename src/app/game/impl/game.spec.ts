@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { Strategy } from '../ai';
-import { Board, GameActionType } from '../board';
-import { createCpuPlayer } from '../player';
-import { HumanInputService, HumanStrategy } from '../ui';
+import { Strategy } from '@dream/ai';
+import { Board, GameActionType } from '@dream/board';
+import { createCpuPlayer } from '@dream/player';
+import { HumanInputService, HumanStrategy } from '@dream/ui';
 import { GameService } from './game.service';
 
 describe('GameService', () => {

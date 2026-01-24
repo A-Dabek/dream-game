@@ -1,5 +1,4 @@
-export { Board } from './board';
-export { TurnManager } from './turn-manager';
+export { Board } from './impl/board';
 export {
   type GameAction,
   type GameActionResult,
@@ -7,4 +6,5 @@ export {
   type GameState,
   type BoardLoadout,
   type TurnInfo,
+  type BoardInterface,
 } from './board.model';

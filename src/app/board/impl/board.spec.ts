@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Board } from './board';
-import { GameActionType } from './board.model';
-import { createMockPlayer } from './test/test-utils';
+import { GameActionType } from '../board.model';
+import { createMockPlayer } from '../test/test-utils';
 
 describe('Board', () => {
   describe('initialization', () => {

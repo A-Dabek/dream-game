@@ -4,6 +4,13 @@
 
 The Rating Module provides an Elo-like rating system for players. It calculates and updates player ratings based on game outcomes.
 
+## Structure
+
+- `rating.model.ts`: Contains the `Rating` interface
+- `impl/player-rating.ts`: Contains the `PlayerRating` implementation
+- `impl/index.ts`: Public API for implementations
+- `index.ts`: Public API for the module
+
 ## API
 
 ### `Rating` (interface)

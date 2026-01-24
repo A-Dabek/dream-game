@@ -13,7 +13,19 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@dream/ai": ["src/app/ai/index.ts"],
+      "@dream/item": ["src/app/item/index.ts"],
+      "@dream/board": ["src/app/board/index.ts"],
+      "@dream/engine": ["src/app/engine/index.ts"],
+      "@dream/game": ["src/app/game/index.ts"],
+      "@dream/player": ["src/app/player/index.ts"],
+      "@dream/rating": ["src/app/rating/index.ts"],
+      "@dream/ui": ["src/app/ui/index.ts"],
+      "@test": ["test/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

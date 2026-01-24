@@ -46,7 +46,18 @@ Player contains:
 - `items: Item[]` - Available items to play
 - `speed: number` - Turn order priority (higher speed = more frequent turns)
 
-GameActionType enum: PLAY_ITEM, SURRENDER
+GameActionType enum: PLAY_ITEM, SURRENDER, PASS
+
+## API (`Board` Class)
+
+### Initialization
+
+**new Board(player: BoardLoadout, opponent: BoardLoadout)**
+
+- Initializes with two player loadouts.
+- Automatically calculates initial turn order based on player speeds.
+- Continuous turn order logic based on player speed.
+- Starts with empty action history within the game state.
 
 ## API (`Board` Class)
 
@@ -70,7 +81,6 @@ GameActionType enum: PLAY_ITEM, SURRENDER
 - Removes item from player's inventory (one-time use)
 - Advances turn on success
 - Mutates the board state and returns GameActionResult
-- Depletes engine logs and returns them in the result
 
 **pass(playerId: string): GameActionResult**
 
@@ -78,17 +88,16 @@ GameActionType enum: PLAY_ITEM, SURRENDER
 - Triggers end-of-turn effects via engine
 - Skips to next player's turn based on speed distribution
 - Mutates the board state and returns GameActionResult
-- Depletes engine logs and returns them in the result
-
-**consumeLog(): LogEntry[]**
-
-- Depletes engine logs and returns them. Should be called after every interaction that might generate logs.
 
 **surrender(playerId: string): GameActionResult**
 
 - Validates player exists
 - Ends game with surrendering player as loser
 - Mutates the board state and returns GameActionResult
+
+**consumeLog(): LogEntry[]**
+
+- Returns and depletes engine logs. Should be called after every action that might generate logs.
 
 ### State Queries (Properties/Getters)
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Board } from '../board';
+import { Board } from '../impl/board';
 import { createMockPlayer } from './test-utils';
 
 describe('GameOver Behavior', () => {
