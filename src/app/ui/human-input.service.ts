@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Subject } from 'rxjs';
+import { share, Subject } from 'rxjs';
 import { GameAction } from '../board';
 
 /**
@@ -9,8 +9,8 @@ import { GameAction } from '../board';
   providedIn: 'root',
 })
 export class HumanInputService {
-  private _actions$ = new ReplaySubject<GameAction>(1);
-  readonly actions$ = this._actions$.asObservable();
+  private _actions$ = new Subject<GameAction>();
+  readonly actions$ = this._actions$.pipe(share());
 
   /**
    * Submits an action from the UI.

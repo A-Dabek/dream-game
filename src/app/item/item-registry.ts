@@ -25,11 +25,6 @@ export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   _blueprint_negate_damage: BlueprintNegateDamageBehaviour,
   _blueprint_triple_threat: TripleThreatBehaviour,
   _dummy: DummyBehavior,
-  _blueprint_status_effect: class implements ItemBehavior {
-    whenPlayed() {
-      return [];
-    }
-  },
   _blueprint_heal_5: BlueprintHeal5Behaviour,
 };
 

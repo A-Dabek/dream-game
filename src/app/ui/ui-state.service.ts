@@ -1,9 +1,9 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { concatMap, delay, from } from 'rxjs';
+import { concatMap, delay, from, tap } from 'rxjs';
 import { GameState } from '../board';
 import { LogEntry } from '../engine/engine.model';
-import { GameService } from '../game/game.service';
+import { GameService } from '../game/impl/game.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,23 +16,25 @@ export class UiStateService {
   constructor() {
     this.gameService.logs$
       .pipe(
-        concatMap((logs) => from(logs)),
-        concatMap((log) => from([log]).pipe(delay(500))),
+        concatMap((logs) =>
+          from([
+            ...logs,
+            {
+              type: 'end_of_batch',
+              state: { ...this.gameService.gameState() },
+            },
+          ] as const),
+        ),
+        concatMap((log) => from([log]).pipe(delay(2000))),
         takeUntilDestroyed(),
       )
       .subscribe((log) => {
-        console.log(log);
-        this.applyLog(log);
-
-        const state = this._uiState();
-        const engineState = this.gameService.gameState();
-        if (
-          state &&
-          engineState &&
-          state.turnInfo.currentPlayerId === engineState.player.id
-        ) {
-          this.checkValidation(log);
+        console.log(log, this._uiState(), this.gameService.gameState());
+        if (log.type === 'end_of_batch') {
+          this.checkValidation(log.state);
+          return;
         }
+        this.applyLog(log);
       });
   }
 
@@ -44,7 +46,17 @@ export class UiStateService {
     const state = this._uiState();
     if (!state) return;
 
-    const nextState = { ...state };
+    const nextState = JSON.parse(JSON.stringify(state)) as GameState;
+
+    if (log.type === 'event' && log.event.type === 'on_turn_end') {
+      const queue = nextState.turnInfo.turnQueue || [];
+      if (queue.length > 0) {
+        nextState.turnInfo.currentPlayerId = queue[1];
+        nextState.turnInfo.nextPlayerId = queue[2];
+        nextState.turnInfo.turnQueue = queue.slice(1);
+      }
+      console.log('Changing turn. New queue:', nextState.turnInfo.turnQueue);
+    }
 
     if (log.type === 'processor') {
       const { effect, targetPlayerId } = log;
@@ -53,12 +65,15 @@ export class UiStateService {
 
       switch (effect.type) {
         case 'damage':
+          console.log('Applying damage:', effect.value);
           target.health -= effect.value as number;
           break;
         case 'healing':
+          console.log('Applying healing:', effect.value);
           target.health += effect.value as number;
           break;
         case 'remove_item': {
+          console.log('Removing item:', effect.value);
           const itemIndex = target.items.findIndex(
             (item) => item.instanceId === (effect.value as string),
           );
@@ -79,6 +94,7 @@ export class UiStateService {
       }
 
       if (nextState.player.health <= 0 || nextState.opponent.health <= 0) {
+        console.log('Game over detected');
         nextState.isGameOver = true;
         nextState.winnerId =
           nextState.player.health > 0
@@ -90,17 +106,23 @@ export class UiStateService {
     this._uiState.set(nextState);
   }
 
-  private checkValidation(log: LogEntry): void {
+  private checkValidation(engineState: GameState): void {
     const state = this._uiState();
-    const engineState = this.gameService.gameState();
 
     if (!state || !engineState) return;
 
-    if (log.type === 'event' && log.event.type === 'on_turn_end') {
-      state.turnInfo = { ...engineState.turnInfo };
-    }
-
     this.validateStates(state, engineState);
+
+    // Sync nextPlayerId and turnQueue from engine to UI if currentPlayerId validation passed
+    this._uiState.set({
+      ...state,
+      turnInfo: {
+        ...state.turnInfo,
+        turnQueue: engineState.turnInfo.turnQueue
+          ? [...engineState.turnInfo.turnQueue]
+          : undefined,
+      },
+    });
   }
 
   private validateStates(ui: GameState, engine: GameState): void {
@@ -123,6 +145,9 @@ export class UiStateService {
     }
     if (ui.winnerId !== engine.winnerId) {
       mismatches.push('winnerId');
+    }
+    if (ui.turnInfo.currentPlayerId !== engine.turnInfo.currentPlayerId) {
+      mismatches.push('turnInfo.currentPlayerId');
     }
 
     if (mismatches.length > 0) {

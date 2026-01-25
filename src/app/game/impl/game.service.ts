@@ -54,14 +54,14 @@ export class GameService implements GameServiceInterface {
         );
       }
 
+      // Emit the updated game state
+      this._gameState$.next(board.gameState);
+
       // Emit logs for the UI to animate or display
       const log = board.consumeLog();
       if (log.length > 0) {
         this._logs$.next(log);
       }
-
-      // Emit the updated game state
-      this._gameState$.next(board.gameState);
     }
 
     this.updateRatings(board, player1, player2);

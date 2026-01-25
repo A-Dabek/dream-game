@@ -12,7 +12,7 @@ export function createCpuPlayer(id: string, name: string): Player {
   return new CpuPlayerBuilder(id, name)
     .withRandomHealth(10, 15)
     .withRandomSpeed(5, 10)
-    .withRandomItems(5)
+    .withRandomItems(0)
     .withLeftMostStrategy()
     .build();
 }

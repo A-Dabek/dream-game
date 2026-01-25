@@ -19,7 +19,29 @@ export { BlueprintDamageToHealPermanentBehaviour } from './library/_damage_to_he
 export { BlueprintNegateDamageBehaviour } from './library/_negate_damage.behaviour';
 export { TripleThreatBehaviour } from './library/_triple_threat.behaviour';
 export { BlueprintHeal5Behaviour } from './library/_blueprint_heal_5.behaviour';
-export * from './effects';
-export * from './conditions';
-export * from './durations';
+export {
+  attack,
+  heal,
+  passiveAttack,
+  removeItem,
+  invert,
+  negate,
+  statusEffect,
+  addStatusEffect,
+} from './effects';
+export {
+  BEFORE_EFFECT,
+  AFTER_EFFECT,
+  ON_TURN_END,
+  HAS_NO_ITEMS,
+  ON_PLAY,
+  onTurnEnd,
+  onPlay,
+  afterEffect,
+  hasNoItems,
+  and,
+  or,
+  isLifecycleEvent,
+} from './conditions';
+export { turns, charges, permanent } from './durations';
 export { getItemBehavior } from './item-registry';

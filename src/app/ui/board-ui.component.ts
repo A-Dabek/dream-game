@@ -38,7 +38,7 @@ import { TurnQueueComponent } from './turn-queue.component';
       }
 
       .opponent-area.active {
-        background: #251d1d;
+        background: #7d1f1f;
         box-shadow: inset 0 -4px 10px rgba(160, 82, 82, 0.1);
       }
 
