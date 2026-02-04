@@ -96,7 +96,36 @@ export class Engine {
       stateWithEventLog.listeners,
       stateWithEventLog,
     );
+    this.engineStateSignal.set(nextState);
+  }
 
+  processGameStart(): void {
+    const gameStartEvent: GameEvent = { type: 'game_start' };
+    const state = this.engineStateSignal();
+    const stateWithEventLog = {
+      ...state,
+      log: [...state.log, { type: 'event', event: gameStartEvent } as LogEntry],
+    };
+    const nextState = this.processEvent(
+      gameStartEvent,
+      stateWithEventLog.listeners,
+      stateWithEventLog,
+    );
+    this.engineStateSignal.set(nextState);
+  }
+
+  processTurnStart(playerId: string): void {
+    const turnStartEvent: GameEvent = { type: 'on_turn_start', playerId };
+    const state = this.engineStateSignal();
+    const stateWithEventLog = {
+      ...state,
+      log: [...state.log, { type: 'event', event: turnStartEvent } as LogEntry],
+    };
+    const nextState = this.processEvent(
+      turnStartEvent,
+      stateWithEventLog.listeners,
+      stateWithEventLog,
+    );
     this.engineStateSignal.set(nextState);
   }
 
@@ -141,7 +170,7 @@ export class Engine {
     if (listenersToProcess.length === 0) {
       // Basic effect processing via processors
       const processor = PROCESSORS[event.type];
-      if (processor) {
+      if (processor && 'playerId' in event && event.playerId) {
         const playerId = event.playerId;
         const playerKey =
           state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';

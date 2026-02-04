@@ -19,6 +19,8 @@ export type LogEntry =
 export type GameEvent =
   | { type: 'on_play'; playerId: string; itemId: ItemId }
   | { type: 'on_turn_end'; playerId: string }
+  | { type: 'game_start' }
+  | { type: 'on_turn_start'; playerId: string }
   | (Effect & { playerId: string });
 
 export interface Listener {

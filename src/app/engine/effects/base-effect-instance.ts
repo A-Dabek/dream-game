@@ -73,6 +73,9 @@ export abstract class BaseEffectInstance implements Listener {
       this.condition.type === BEFORE_EFFECT && !isLifecycleEvent(event.type);
 
     if (isReplacement) {
+      if (!('playerId' in event && event.playerId)) {
+        return null;
+      }
       const playerId = event.playerId;
       return this.effect.action.map((e) => ({
         ...e,

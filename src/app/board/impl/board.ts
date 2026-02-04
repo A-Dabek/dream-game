@@ -34,8 +34,10 @@ export class Board implements BoardInterface {
     );
 
     this.engine = new Engine({ ...player }, { ...opponent });
+    this.engine.processGameStart();
 
     this._gameState = this.updateTurnInfo(this._gameState);
+    this.engine.processTurnStart(this._gameState.turnInfo.currentPlayerId);
   }
 
   get gameState(): GameState {
@@ -225,13 +227,15 @@ export class Board implements BoardInterface {
         health: updatedOpponent.health,
         items: updatedOpponent.items,
       },
-      isGameOver: isGameOver || state.isGameOver,
-      winnerId: winnerId || state.winnerId,
+      isGameOver: isGameOver ?? state.isGameOver,
+      winnerId: winnerId ?? state.winnerId,
     };
   }
 
   private advanceTurn(state: GameState): GameState {
     this.turnManager.advanceTurn();
+    const newTurns = this.turnManager.getNextTurns(1);
+    this.engine.processTurnStart(newTurns[0]);
     return this.updateTurnInfo(state);
   }
 }

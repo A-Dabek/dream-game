@@ -61,13 +61,13 @@ const matchType =
  * Predicate that checks if the event was triggered by the player.
  */
 const isEventOwner: ConditionPredicate = (event, playerId) =>
-  event.playerId === playerId;
+  'playerId' in event && event.playerId === playerId;
 
 /**
  * Predicate that checks if the event was NOT triggered by the player.
  */
 const isNotEventOwner: ConditionPredicate = (event, playerId) =>
-  event.playerId !== playerId;
+  'playerId' in event && event.playerId !== playerId;
 
 /**
  * Predicate that checks if the player is the target of the effect.
@@ -76,8 +76,8 @@ const isTargetMe: ConditionPredicate = (event, playerId) => {
   const effect = event as Effect;
   const isTargetMe =
     effect.target === 'self'
-      ? event.playerId === playerId
-      : event.playerId !== playerId;
+      ? 'playerId' in event && event.playerId === playerId
+      : 'playerId' in event && event.playerId !== playerId;
 
   return isTargetMe;
 };

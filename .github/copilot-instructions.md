@@ -2,8 +2,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Running tests and building code
 
-- Use command `ng test --include "<glob pattenr" --watch=false` to run tests for specific files or directories.
+- Use command `ng test --include "<glob pattern>" --watch=false` to run tests for specific files or directories.
+- Use command `ng test --watch=false` to run all tests 
 - Use command `ng build` to build the project.
+- Do NOT use tests via `npx vitest` command only.
 
 ## TypeScript Best Practices
 

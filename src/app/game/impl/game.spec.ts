@@ -16,10 +16,6 @@ describe('GameService', () => {
     humanInputService = TestBed.inject(HumanInputService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should allow human players to make decisions via HumanInputService', async () => {
     const p1 = createCpuPlayer('p1', 'Human');
     // Ensure p1 is very fast so it goes first
@@ -30,13 +26,14 @@ describe('GameService', () => {
     const p2 = createCpuPlayer('p2', 'CPU');
     (p2.loadout as any).speed = 1;
 
-    // Resolve human decision IN ADVANCE using ReplaySubject
+    const promise = service.startGame(p1, p2);
+
     humanInputService.submitAction({
       type: GameActionType.SURRENDER,
       playerId: 'p1',
     });
 
-    const board = await service.startGame(p1, p2);
+    const board = await promise;
     expect(board.isGameOver).toBe(true);
     expect(board.gameState.winnerId).toBe('p2');
   });
