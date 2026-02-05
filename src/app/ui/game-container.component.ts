@@ -12,30 +12,49 @@ import { BoardUiComponent } from './board-ui.component';
 import { HumanStrategy } from './human-strategy';
 import { UiStateService } from './ui-state.service';
 import { VsScreenComponent } from './vs-screen.component';
+import { PostGameScreenComponent } from './post-game-screen.component';
 
 @Component({
   selector: 'app-game-container',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BoardUiComponent, VsScreenComponent],
+  imports: [BoardUiComponent, VsScreenComponent, PostGameScreenComponent],
   template: `
     <div class="screens-container">
-      @if (vsHidden()) {
-        @if (state(); as state) {
-          <app-board-ui
+      @switch (stage()) {
+        @case ('pre') {
+          <app-vs-screen
             class="screen"
-            [state]="state"
+            [player]="humanPlayer.loadout"
+            [opponent]="cpuPlayer.loadout"
+            (onReady)="handleReady()"
             animate.enter="slide-in"
+            animate.leave="slide-out"
           />
         }
-      } @else {
-        <app-vs-screen
-          class="screen"
-          [player]="humanPlayer.loadout"
-          [opponent]="cpuPlayer.loadout"
-          (onReady)="handleReady()"
-          animate.leave="slide-out"
-        />
+        @case ('game') {
+          @if (state(); as s) {
+            <app-board-ui
+              class="screen"
+              [state]="s"
+              animate.enter="slide-in"
+              animate.leave="slide-out"
+            />
+          }
+        }
+        @case ('post') {
+          @if (state(); as s) {
+            <app-post-game-screen
+              class="screen"
+              [player]="humanPlayer.loadout"
+              [opponent]="cpuPlayer.loadout"
+              [winnerId]="s.winnerId!"
+              (restart)="handleRestart()"
+              animate.enter="slide-in"
+              animate.leave="slide-out"
+            />
+          }
+        }
       }
     </div>
   `,
@@ -43,7 +62,6 @@ import { VsScreenComponent } from './vs-screen.component';
     :host {
       position: relative;
       height: 100vh;
-      overflow: hidden;
     }
 
     .slide-out {
@@ -81,15 +99,15 @@ import { VsScreenComponent } from './vs-screen.component';
 export class GameContainerComponent {
   readonly uiStateService = inject(UiStateService);
 
-  readonly state = this.uiStateService.uiState;
-
-  readonly vsHidden = signal(false);
-
-  readonly cpuPlayer: Player = createCpuPlayer('cpu', 'CPU');
-
   private readonly gameService = inject(GameService);
 
   private readonly humanStrategy = inject(HumanStrategy);
+
+  readonly state = this.uiStateService.uiState;
+
+  readonly stage = signal<'pre' | 'game' | 'post'>('pre');
+
+  readonly cpuPlayer: Player = createCpuPlayer('cpu', 'CPU');
 
   readonly humanPlayer: Player = {
     id: 'player',
@@ -106,14 +124,26 @@ export class GameContainerComponent {
   constructor() {
     effect(() => {
       const initial = this.gameService.gameState();
+      console.log('initial', initial);
       if (initial) {
         this.uiStateService.initialize(initial);
+      }
+    });
+
+    effect(() => {
+      const s = this.state();
+      if (s?.isGameOver) {
+        this.stage.set('post');
       }
     });
   }
 
   handleReady() {
-    this.vsHidden.set(true);
+    this.stage.set('game');
     this.gameService.startGame(this.humanPlayer, this.cpuPlayer);
+  }
+
+  handleRestart() {
+    this.stage.set('pre');
   }
 }

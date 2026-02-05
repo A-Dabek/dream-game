@@ -35,6 +35,7 @@ Angular components for displaying the game:
 - **Mobile First**: Layout optimized for mobile (player at bottom, opponent at top, turn order on left).
 - **Reactive**: Built with Angular signals for high performance.
 - **Modular**: Independent UI components for items, hands, and turn queues.
+- **Screens**: Includes a pre-game `VsScreen` and post-game `PostGameScreen` with animated slide transitions orchestrated by `GameContainerComponent`.
 
 ### [AI](./ai)
 
