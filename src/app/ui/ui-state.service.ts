@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { concatMap, delay, from, Subject, takeUntil } from 'rxjs';
+import { concatMap, delay, from, Subject, Subscription, takeUntil } from 'rxjs';
 import { GameState } from '../board';
 import { LogEntry } from '../engine/engine.model';
 import { GameService } from '@dream/game';
@@ -12,10 +12,11 @@ export class UiStateService {
   private readonly gameService = inject(GameService);
   private readonly _uiState = signal<GameState | null>(null);
   readonly uiState = computed(() => this._uiState());
-  private readonly _complete$ = new Subject<void>();
+  private logSubscription = new Subscription();
 
-  constructor() {
-    this.gameService.logs$
+  initialize(initialState: GameState): void {
+    this._uiState.set(JSON.parse(JSON.stringify(initialState)));
+    this.logSubscription = this.gameService.logs$
       .pipe(
         concatMap((logs) =>
           from([
@@ -26,9 +27,7 @@ export class UiStateService {
             },
           ] as const),
         ),
-        concatMap((log) => from([log]).pipe(delay(2000))),
-        takeUntil(this._complete$),
-        takeUntilDestroyed(),
+        concatMap((log) => from([log]).pipe(delay(500))),
       )
       .subscribe((log) => {
         if (log.type === 'end_of_batch') {
@@ -37,10 +36,6 @@ export class UiStateService {
         }
         this.applyLog(log);
       });
-  }
-
-  initialize(initialState: GameState): void {
-    this._uiState.set(JSON.parse(JSON.stringify(initialState)));
   }
 
   private applyLog(log: LogEntry): void {
@@ -61,8 +56,7 @@ export class UiStateService {
     if (log.type === 'event' && log.event.type === 'game_over') {
       nextState.isGameOver = true;
       nextState.winnerId = log.event.playerId;
-      this._complete$.next();
-      this._complete$.complete();
+      this.logSubscription.unsubscribe();
     }
 
     if (log.type === 'processor') {

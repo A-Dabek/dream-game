@@ -117,19 +117,16 @@ export class GameContainerComponent {
     loadout: {
       health: 20,
       speed: 8,
-      items: [{ id: '_blueprint_attack', instanceId: 'p1' }],
+      items: [
+        { id: '_blueprint_attack', instanceId: 'p1-1' },
+        { id: '_blueprint_attack', instanceId: 'p1-2' },
+        { id: '_blueprint_attack', instanceId: 'p1-3' },
+        { id: '_blueprint_attack', instanceId: 'p1-4' },
+      ],
     },
   };
 
   constructor() {
-    effect(() => {
-      const initial = this.gameService.gameState();
-      console.log('initial', initial);
-      if (initial) {
-        this.uiStateService.initialize(initial);
-      }
-    });
-
     effect(() => {
       const s = this.state();
       if (s?.isGameOver) {
@@ -140,7 +137,9 @@ export class GameContainerComponent {
 
   handleReady() {
     this.stage.set('game');
-    this.gameService.startGame(this.humanPlayer, this.cpuPlayer);
+    void this.gameService.startGame(this.humanPlayer, this.cpuPlayer);
+    const initial = this.gameService.gameState();
+    this.uiStateService.initialize(initial);
   }
 
   handleRestart() {

@@ -8,23 +8,25 @@ import { Board } from '../board';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('UiStateService Black Box Fatigue Test', () => {
-  it('should correctly rebuild game state from fatigue damage events without mismatch', async () => {
+  let gameService: GameService;
+  let uiStateService: UiStateService;
+
+  beforeEach(() => {
     vi.useFakeTimers();
-    // Use runInInjectionContext to instantiate GameService since it uses toSignal
-    let gameService: GameService;
+
     TestBed.configureTestingModule({
       providers: [GameService, UiStateService],
     });
 
     gameService = TestBed.inject(GameService);
+    uiStateService = TestBed.inject(UiStateService);
+  });
 
-    let uiStateService: UiStateService;
-    try {
-      uiStateService = TestBed.inject(UiStateService);
-    } catch (e) {
-      throw new Error('Failed to instantiate UiStateService: ' + e);
-    }
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
+  it('should correctly rebuild game state from fatigue damage events without mismatch', async () => {
     // 1. Setup two players with 1 HP and zero items
     const player1: Player = {
       id: 'p1',
@@ -90,7 +92,5 @@ describe('UiStateService Black Box Fatigue Test', () => {
     expect(finalUiState?.opponent.health).toBe(
       finalEngineState.opponent.health,
     );
-
-    vi.useRealTimers();
   });
 });
