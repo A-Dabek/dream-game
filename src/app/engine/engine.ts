@@ -86,47 +86,17 @@ export class Engine {
 
   processEndOfTurn(playerId: string): void {
     const turnEndEvent: GameEvent = { type: 'on_turn_end', playerId };
-    const state = this.engineStateSignal();
-    const stateWithEventLog = {
-      ...state,
-      log: [...state.log, { type: 'event', event: turnEndEvent } as LogEntry],
-    };
-    const nextState = this.processEvent(
-      turnEndEvent,
-      stateWithEventLog.listeners,
-      stateWithEventLog,
-    );
-    this.engineStateSignal.set(nextState);
+    this.processSimpleEvent(turnEndEvent);
   }
 
   processGameStart(): void {
     const gameStartEvent: GameEvent = { type: 'game_start' };
-    const state = this.engineStateSignal();
-    const stateWithEventLog = {
-      ...state,
-      log: [...state.log, { type: 'event', event: gameStartEvent } as LogEntry],
-    };
-    const nextState = this.processEvent(
-      gameStartEvent,
-      stateWithEventLog.listeners,
-      stateWithEventLog,
-    );
-    this.engineStateSignal.set(nextState);
+    this.processSimpleEvent(gameStartEvent);
   }
 
   processTurnStart(playerId: string): void {
     const turnStartEvent: GameEvent = { type: 'on_turn_start', playerId };
-    const state = this.engineStateSignal();
-    const stateWithEventLog = {
-      ...state,
-      log: [...state.log, { type: 'event', event: turnStartEvent } as LogEntry],
-    };
-    const nextState = this.processEvent(
-      turnStartEvent,
-      stateWithEventLog.listeners,
-      stateWithEventLog,
-    );
-    this.engineStateSignal.set(nextState);
+    this.processSimpleEvent(turnStartEvent);
   }
 
   consumeLog(): LogEntry[] {
@@ -205,5 +175,20 @@ export class Engine {
     return resultEvent.reduce<EngineState>((acc, e) => {
       return this.processEvent(e, remaining, acc, depth + 1);
     }, nextState);
+  }
+
+  // DRY helper for simple top-level events that only need logging + processing
+  private processSimpleEvent(event: GameEvent): void {
+    const state = this.engineStateSignal();
+    const stateWithEventLog = {
+      ...state,
+      log: [...state.log, { type: 'event', event } as LogEntry],
+    };
+    const nextState = this.processEvent(
+      event,
+      stateWithEventLog.listeners,
+      stateWithEventLog,
+    );
+    this.engineStateSignal.set(nextState);
   }
 }
