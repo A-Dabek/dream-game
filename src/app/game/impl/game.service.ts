@@ -38,10 +38,7 @@ export class GameService implements GameServiceInterface {
     // Basic game loop
     while (!board.isGameOver) {
       // Emit logs for the UI to animate or display
-      const log = board.consumeLog();
-      if (log.length > 0) {
-        this._logs$.next(log);
-      }
+      this._logs$.next(board.consumeLog());
 
       const currentPlayerId = board.currentPlayerId;
       const currentPlayer = this._players.find((p) => p.id === currentPlayerId);
@@ -63,6 +60,7 @@ export class GameService implements GameServiceInterface {
       // Emit the updated game state
       this._gameState$.next(board.gameState);
     }
+    this._logs$.next(board.consumeLog());
 
     this.updateRatings(board, player1, player2);
 

@@ -34,10 +34,12 @@ export class Engine {
       playerTwo: p2,
       listeners,
       log: [],
+      gameOver: false,
     });
   }
 
   play(playerId: string, itemId: ItemId): void {
+    if (this.engineStateSignal().gameOver) return;
     const behavior = getItemBehavior(itemId);
     const state = this.engineStateSignal();
 
@@ -85,16 +87,19 @@ export class Engine {
   }
 
   processEndOfTurn(playerId: string): void {
+    if (this.engineStateSignal().gameOver) return;
     const turnEndEvent: GameEvent = { type: 'on_turn_end', playerId };
     this.processSimpleEvent(turnEndEvent);
   }
 
   processGameStart(): void {
+    if (this.engineStateSignal().gameOver) return;
     const gameStartEvent: GameEvent = { type: 'game_start' };
     this.processSimpleEvent(gameStartEvent);
   }
 
   processTurnStart(playerId: string): void {
+    if (this.engineStateSignal().gameOver) return;
     const turnStartEvent: GameEvent = { type: 'on_turn_start', playerId };
     this.processSimpleEvent(turnStartEvent);
   }
@@ -135,6 +140,7 @@ export class Engine {
     state: EngineState,
     depth = 0,
   ): EngineState {
+    if (state.gameOver) return state;
     if (depth > 50) return state;
 
     if (listenersToProcess.length === 0) {
@@ -180,6 +186,7 @@ export class Engine {
   // DRY helper for simple top-level events that only need logging + processing
   private processSimpleEvent(event: GameEvent): void {
     const state = this.engineStateSignal();
+    if (state.gameOver) return;
     const stateWithEventLog = {
       ...state,
       log: [...state.log, { type: 'event', event } as LogEntry],

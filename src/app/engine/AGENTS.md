@@ -19,9 +19,12 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 ## Key Concepts
 
-**EngineState**: An immutable snapshot of the game state, containing state for both players and active listeners.
+**EngineState**: An immutable snapshot of the game state, containing state for both players and active listeners. It also carries terminal game information:
 
-**GameEvent**: A unified representation of game actions, including lifecycle events (`on_play`, `on_turn_end`) and atomic effects (damage, healing, etc.).
+- `done: boolean` — set to `true` when the game is over
+- `winnerId?: string` — the winner's player ID when `done` is `true`
+
+**GameEvent**: A unified representation of game actions, including lifecycle events (`on_play`, `on_turn_start`, `on_turn_end`, `game_start`), atomic effects (damage, healing, etc.), and terminal events (`game_over`).
 
 **Listeners**: Reactive components that process `GameEvent`s in LIFO (Last-In-First-Out) order. A listener can:
 
@@ -76,7 +79,7 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 
 ### State Queries
 
-- `state` - A computed signal returning the current `EngineState`. `EngineState` now includes a `log` array.
+- `state` - A computed signal returning the current `EngineState`. `EngineState` includes a `log` array, `done` flag, and optional `winnerId`.
 
 ## Supported Effects
 
@@ -94,7 +97,7 @@ The engine maintains a log of all significant occurrences during event processin
 
 The log contains three types of entries:
 
-- `event`: High-level game events like `on_play`, `on_turn_end`, and initial effects triggered by items.
+- `event`: High-level game events like `on_play`, `on_turn_start`, `on_turn_end`, `game_start`, and terminal `game_over`.
 - `reaction`: Recorded when a `Listener` modifies, consumes, or expands an event.
 - `processor`: Recorded when an atomic effect is finally applied to the state by a processor.
 
@@ -104,6 +107,10 @@ The log contains three types of entries:
 - State updates are immutable for player attributes and items, though listeners are permitted to mutate their internal state (e.g., charges, duration) as an implementation detail.
 - Effect processing is recursive, allowing high-level effects to resolve into low-level ones.
 - The engine only depends on the `item` module.
+- When any player's health drops to zero or below via a processed `damage` effect (including fatigue), the engine:
+  - Appends an `event` log entry: `{ type: 'game_over', loserId, winnerId }`
+  - Sets `state.done = true` and `state.winnerId`
+  - Ignores any subsequent events (no further processing or logging)
 
 ## Testing
 

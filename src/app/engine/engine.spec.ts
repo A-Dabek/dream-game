@@ -137,4 +137,38 @@ describe('Engine', () => {
 
     expect(engine.state().playerOne.health).toBe(99);
   });
+
+  it('should mark game over and log event when health drops to zero or below', () => {
+    const p1: Loadout & { id: string } = {
+      id: 'p1',
+      health: 100,
+      speed: 10,
+      items: [{ id: '_blueprint_attack' }], // deals 10
+    };
+    const p2: Loadout & { id: string } = {
+      id: 'p2',
+      health: 5,
+      speed: 5,
+      items: [{ id: '_dummy' }],
+    };
+    const engine = new Engine(p1, p2);
+
+    engine.play('p1', '_blueprint_attack');
+
+    const state = engine.state();
+    expect(state.playerTwo.health).toBeLessThanOrEqual(0);
+    expect(state.gameOver).toBe(true);
+    expect(state.winnerId).toBe('p1');
+
+    const log = engine.consumeLog();
+    const hasGameOverEvent = log.some(
+      (e) => e.type === 'event' && e.event.type === 'game_over',
+    );
+    expect(hasGameOverEvent).toBe(true);
+
+    // Further events should be ignored
+    const prevHealthP1 = state.playerOne.health;
+    engine.processEndOfTurn('p1');
+    expect(engine.state().playerOne.health).toBe(prevHealthP1);
+  });
 });

@@ -208,12 +208,8 @@ export class Board implements BoardInterface {
       ? engineState.playerTwo
       : engineState.playerOne;
 
-    const isGameOver = updatedPlayer.health <= 0 || updatedOpponent.health <= 0;
-    const winnerId = isGameOver
-      ? updatedPlayer.health > 0
-        ? updatedPlayer.id
-        : updatedOpponent.id
-      : undefined;
+    const isGameOver = engineState.gameOver;
+    const winnerId = engineState.winnerId;
 
     return {
       ...state,

@@ -1,9 +1,9 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { concatMap, delay, from, tap } from 'rxjs';
+import { concatMap, delay, from, Subject, takeUntil } from 'rxjs';
 import { GameState } from '../board';
 import { LogEntry } from '../engine/engine.model';
-import { GameService } from '../game/impl/game.service';
+import { GameService } from '@dream/game';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,7 @@ export class UiStateService {
   private readonly gameService = inject(GameService);
   private readonly _uiState = signal<GameState | null>(null);
   readonly uiState = computed(() => this._uiState());
+  private readonly _complete$ = new Subject<void>();
 
   constructor() {
     this.gameService.logs$
@@ -26,10 +27,10 @@ export class UiStateService {
           ] as const),
         ),
         concatMap((log) => from([log]).pipe(delay(2000))),
+        takeUntil(this._complete$),
         takeUntilDestroyed(),
       )
       .subscribe((log) => {
-        console.log(log, this._uiState(), this.gameService.gameState());
         if (log.type === 'end_of_batch') {
           this.checkValidation(log.state);
           return;
@@ -55,7 +56,13 @@ export class UiStateService {
         nextState.turnInfo.nextPlayerId = queue[2];
         nextState.turnInfo.turnQueue = queue.slice(1);
       }
-      console.log('Changing turn. New queue:', nextState.turnInfo.turnQueue);
+    }
+
+    if (log.type === 'event' && log.event.type === 'game_over') {
+      nextState.isGameOver = true;
+      nextState.winnerId = log.event.playerId;
+      this._complete$.next();
+      this._complete$.complete();
     }
 
     if (log.type === 'processor') {
@@ -65,15 +72,12 @@ export class UiStateService {
 
       switch (effect.type) {
         case 'damage':
-          console.log('Applying damage:', effect.value);
           target.health -= effect.value as number;
           break;
         case 'healing':
-          console.log('Applying healing:', effect.value);
           target.health += effect.value as number;
           break;
         case 'remove_item': {
-          console.log('Removing item:', effect.value);
           const itemIndex = target.items.findIndex(
             (item) => item.instanceId === (effect.value as string),
           );
@@ -91,15 +95,6 @@ export class UiStateService {
           }
           break;
         }
-      }
-
-      if (nextState.player.health <= 0 || nextState.opponent.health <= 0) {
-        console.log('Game over detected');
-        nextState.isGameOver = true;
-        nextState.winnerId =
-          nextState.player.health > 0
-            ? nextState.player.id
-            : nextState.opponent.id;
       }
     }
 

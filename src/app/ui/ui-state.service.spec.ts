@@ -7,7 +7,7 @@ import { FirstAvailableStrategy } from '../ai/impl/first-available.strategy';
 import { Board } from '../board';
 import { describe, expect, it, vi } from 'vitest';
 
-describe.skip('UiStateService Black Box Fatigue Test', () => {
+describe('UiStateService Black Box Fatigue Test', () => {
   it('should correctly rebuild game state from fatigue damage events without mismatch', async () => {
     vi.useFakeTimers();
     // Use runInInjectionContext to instantiate GameService since it uses toSignal
@@ -58,7 +58,7 @@ describe.skip('UiStateService Black Box Fatigue Test', () => {
 
     uiStateService.initialize(initialBoard.gameState);
 
-    // 2. Start the game loop in background
+    // 2. Start the game loop in the background
     const gamePromise = gameService.startGame(player1, player2);
 
     // The game starts.
@@ -79,15 +79,18 @@ describe.skip('UiStateService Black Box Fatigue Test', () => {
     const finalEngineState = gameService.gameState();
 
     expect(finalUiState).toBeTruthy();
-    expect(finalUiState?.isGameOver).toBe(false); // FIXME needs to implement game over first
+    expect(finalUiState?.isGameOver).toBe(true);
+    // In this setup, opponent (p2) starts and takes fatigue on pass -> p2 loses
     expect(finalUiState?.player.health).toBe(1);
-    expect(finalUiState?.winnerId).toBe(undefined);
+    expect(finalUiState?.winnerId).toBe('p1');
 
     // Mismatches would have thrown an Error in the subscription,
     // which would cause the test to fail.
     expect(finalUiState?.player.health).toBe(finalEngineState.player.health);
-    expect(finalUiState?.opponent.health).toBe(0);
+    expect(finalUiState?.opponent.health).toBe(
+      finalEngineState.opponent.health,
+    );
 
     vi.useRealTimers();
-  }, 60000);
+  });
 });

@@ -9,6 +9,8 @@ export interface EngineState {
   readonly playerTwo: EngineLoadout;
   readonly listeners: Listener[];
   readonly log: LogEntry[];
+  readonly gameOver: boolean;
+  readonly winnerId?: string;
 }
 
 export type LogEntry =
@@ -21,6 +23,7 @@ export type GameEvent =
   | { type: 'on_turn_end'; playerId: string }
   | { type: 'game_start' }
   | { type: 'on_turn_start'; playerId: string }
+  | { type: 'game_over'; playerId: string }
   | (Effect & { playerId: string });
 
 export interface Listener {
