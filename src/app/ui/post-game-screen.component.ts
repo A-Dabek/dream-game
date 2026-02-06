@@ -16,31 +16,15 @@ import { PlayerHandComponent } from './player-hand.component';
   template: `
     <div class="container" role="region" aria-label="Game result">
       <section class="opponent-section">
-        <div class="header" aria-live="polite">
-          <h2 class="name">Opponent</h2>
-          <span
-            class="badge"
-            [class.win]="opponentWon()"
-            [class.lose]="!opponentWon()"
-          >
-            {{ opponentWon() ? 'Won' : 'Lost' }}
-          </span>
+        <div class="headline" aria-live="polite">
+          {{ opponentWon() ? 'Winner' : 'Loser' }}
         </div>
         <app-player-hand [items]="opponent().items" [interactive]="false" />
       </section>
 
-      <div class="vs" role="img" aria-label="game result separator">•</div>
-
       <section class="player-section">
-        <div class="header" aria-live="polite">
-          <h2 class="name">You</h2>
-          <span
-            class="badge"
-            [class.win]="playerWon()"
-            [class.lose]="!playerWon()"
-          >
-            {{ playerWon() ? 'Won' : 'Lost' }}
-          </span>
+        <div class="headline" aria-live="polite">
+          {{ playerWon() ? 'Winner' : 'Loser' }}
         </div>
         <app-player-hand [items]="player().items" [interactive]="false" />
       </section>
@@ -48,11 +32,11 @@ import { PlayerHandComponent } from './player-hand.component';
       <section class="actions">
         <button
           type="button"
-          class="restart-btn"
+          class="screen-btn"
           (click)="restart.emit()"
-          aria-label="Play again"
+          aria-label="Start a new game"
         >
-          Play again
+          New Game
         </button>
       </section>
     </div>

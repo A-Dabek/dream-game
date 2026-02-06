@@ -24,12 +24,12 @@ import { PlayerHandComponent } from './player-hand.component';
         />
       </section>
       <div
-        class="vs"
+        class="headline vs"
         [class.fade-out]="animating()"
         role="img"
         aria-label="versus"
       >
-        VS
+        VS.
       </div>
       <section class="player-section">
         <app-player-hand
@@ -39,14 +39,14 @@ import { PlayerHandComponent } from './player-hand.component';
           [class.show]="animating()"
         />
       </section>
-      <section class="ready-section">
+      <section class="actions">
         <button
-          class="ready-btn"
+          class="screen-btn"
           type="button"
           (click)="onReady.emit()"
-          aria-label="Ready to fight"
+          aria-label="Ready"
         >
-          Ready!
+          Ready
         </button>
       </section>
     </div>
