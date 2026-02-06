@@ -12,39 +12,6 @@ import { IconComponent } from './icon.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
-    <style>
-      :host {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem;
-        border: 1px solid #444;
-        border-radius: 4px;
-        background: #2a2a2a;
-        width: 4rem;
-        height: 4rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: all 0.2s ease;
-        color: #ccc;
-      }
-      .label {
-        font-size: 0.6rem;
-        text-align: center;
-        margin-top: 0.3rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 100%;
-        color: #aaa;
-        text-transform: capitalize;
-      }
-      :host(.active) {
-        border-color: #5c85d6;
-        background: #333a4d;
-        box-shadow: 0 0 12px rgba(92, 133, 214, 0.4);
-      }
-    </style>
     <app-icon [name]="iconName()" [size]="2" />
     <div class="label">{{ label() }}</div>
   `,

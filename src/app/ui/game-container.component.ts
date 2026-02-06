@@ -58,43 +58,6 @@ import { PostGameScreenComponent } from './post-game-screen.component';
       }
     </div>
   `,
-  styles: `
-    :host {
-      position: relative;
-      height: 100vh;
-    }
-
-    .slide-out {
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-      z-index: 2;
-      position: absolute;
-    }
-
-    .slide-in {
-      animation: slideRight 0.6s;
-      z-index: 1;
-      position: absolute;
-    }
-
-    @keyframes slideLeft {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-100%);
-      }
-    }
-
-    @keyframes slideRight {
-      from {
-        transform: translateX(100%);
-      }
-      to {
-        transform: translateX(0);
-      }
-    }
-  `,
 })
 export class GameContainerComponent {
   readonly uiStateService = inject(UiStateService);

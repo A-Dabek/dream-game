@@ -1,0 +1,529 @@
+/* Global styles consolidated from component styles and original styles.css */
+
+/* (from styles.css placeholder) */
+/* You can add global styles to this file, and also import other style files */
+
+/*
+  Design tokens (CSS custom properties)
+  Keep values in sync with visual design. These can be themed at runtime.
+*/
+:root {
+  /* Surface & text */
+  --color-bg: #1a1a1a;
+  --color-text: #e0e0e0;
+  --color-text-inverse: #ffffff;
+
+  /* Semantic */
+  --color-primary: #3b82f6; /* restart/primary button */
+  --color-focus: #40c4ff; /* high-contrast focus ring */
+  --color-win: #2e7d32;
+  --color-lose: #8b2e2e;
+
+  /* Accents */
+  --color-accent-1: #ff6b35; /* gradient start */
+  --color-accent-2: #f7931e; /* gradient end */
+
+  /* Shadows */
+  --shadow-strong: rgba(0, 0, 0, 0.8);
+  --shadow-accent-1: rgba(255, 107, 53, 0.4);
+  --shadow-accent-2: rgba(255, 107, 53, 0.6);
+}
+
+/* GameContainerComponent styles */
+app-game-container {
+  position: relative;
+  height: 100vh;
+
+  .slide-out {
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    z-index: 2;
+    position: absolute;
+  }
+
+  .slide-in {
+    animation: slideRight 0.6s;
+    z-index: 1;
+    position: absolute;
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* BoardUiComponent styles */
+app-board-ui {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  .opponent-area {
+    flex: 0 0 auto;
+    transition: background-color 0.3s ease;
+
+    &.active {
+      background: #7d1f1f;
+      box-shadow: inset 0 -4px 10px rgba(160, 82, 82, 0.1);
+    }
+  }
+
+  .main-area {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .center-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .player-area {
+    flex: 0 0 auto;
+    transition: background-color 0.3s ease;
+
+    &.active {
+      background: #4c6b56;
+      box-shadow: inset 0 4px 10px rgba(74, 124, 89, 0.1);
+    }
+  }
+
+  .health-bar-container {
+    width: 80%;
+    margin: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .health-bar {
+    width: 100%;
+    height: 1.2rem;
+    background: #333;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #444;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .health-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    transition: width 0.3s ease-out;
+  }
+
+  .player-health {
+    background: #4a7c59;
+  }
+
+  .opponent-health {
+    background: #a05252;
+  }
+
+  .health-text {
+    position: relative;
+    z-index: 1;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .game-over {
+    text-align: center;
+    padding: 2rem;
+    background: #2a2a2a;
+    border-radius: 8px;
+    border: 1px solid #444;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+
+    h2 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* IconComponent styles */
+app-icon {
+  display: flex;
+  padding: 0.25rem;
+}
+
+/* ItemDisplayComponent styles */
+app-item-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #2a2a2a;
+  width: 4rem;
+  height: 4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  color: #ccc;
+
+  &.active {
+    border-color: #5c85d6;
+    background: #333a4d;
+    box-shadow: 0 0 12px rgba(92, 133, 214, 0.4);
+  }
+
+  .label {
+    font-size: 0.6rem;
+    text-align: center;
+    margin-top: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    color: #aaa;
+    text-transform: capitalize;
+  }
+}
+
+/* PlayerHandComponent styles */
+app-player-hand {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  overflow-x: auto;
+  width: 100%;
+  justify-content: center;
+  background: #222;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+
+  .item-wrapper {
+    cursor: pointer;
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:active {
+      transform: scale(0.92);
+    }
+  }
+
+  .disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+}
+
+/* TurnQueueComponent styles */
+app-turn-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem;
+  background: #222;
+  border-right: 1px solid #333;
+  height: 100%;
+  overflow: hidden;
+
+  .turn-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 4px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+
+    &.player {
+      border-color: #4a7c59;
+      background: #2d3d32;
+    }
+
+    &.opponent {
+      border-color: #a05252;
+      background: #3d2d2d;
+    }
+
+    &.current {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      border-width: 2px;
+      z-index: 1;
+    }
+
+    .skip-button {
+      position: absolute;
+      bottom: -0.2rem;
+      right: -0.2rem;
+      background: #444;
+      border-radius: 50%;
+      width: 1rem;
+      height: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid #666;
+      animation: pulse 2s infinite ease-in-out;
+      transition: transform 0.1s;
+
+      &:hover {
+        background: #555;
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* PostGameScreenComponent styles */
+app-post-game-screen {
+  display: block;
+  height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+
+  .container {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr auto;
+    height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .name {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--color-text);
+  }
+
+  .badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &.win {
+      background: var(--color-win);
+      color: var(--color-text-inverse);
+    }
+
+    &.lose {
+      background: var(--color-lose);
+      color: var(--color-text-inverse);
+    }
+  }
+
+  .vs {
+    opacity: 0.6;
+    user-select: none;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .restart-btn {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    border: none;
+    padding: 0.9rem 1.4rem;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(1.1);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 3px;
+    }
+  }
+}
+
+/* VsScreenComponent styles */
+app-vs-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-bg);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .opponent-section,
+  .player-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .opponent-hand,
+  .player-hand {
+    opacity: 0;
+    transform: scale(0.5);
+    transition:
+      opacity 1s ease-out,
+      transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &.show {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .opponent-hand {
+    transform: scale(0.5) translateY(-20px);
+    transition-delay: 0.3s;
+  }
+
+  .player-hand {
+    transform: scale(0.5) translateY(20px);
+    transition-delay: 0.6s;
+  }
+
+  .vs {
+    font-size: clamp(3rem, 12vw, 6rem);
+    font-weight: 800;
+    color: var(--color-text);
+    text-shadow: 2px 2px 4px var(--shadow-strong);
+    opacity: 1;
+    transform: scale(1);
+    transition:
+      opacity 0.8s ease-in 1.2s,
+      transform 0.8s ease-in 1.2s;
+    letter-spacing: 0.1em;
+    user-select: none;
+
+    &.fade-out {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+  }
+
+  .ready-section {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem 1rem;
+    width: 100%;
+  }
+
+  .ready-btn {
+    background: linear-gradient(145deg, var(--color-accent-1), var(--color-accent-2));
+    color: var(--color-text-inverse);
+    border: none;
+    padding: 1.5rem 4rem;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px var(--shadow-accent-1);
+    transition: all 0.3s ease;
+    min-height: 60px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px var(--shadow-accent-2);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 3px;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}

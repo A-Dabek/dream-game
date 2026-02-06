@@ -37,6 +37,13 @@ Angular components for displaying the game:
 - **Modular**: Independent UI components for items, hands, and turn queues.
 - **Screens**: Includes a pre-game `VsScreen` and post-game `PostGameScreen` with animated slide transitions orchestrated by `GameContainerComponent`.
 
+Styling:
+
+- All component styles are consolidated into the global stylesheet `src/styles.scss`, referenced from `angular.json` under `projects.dream-project.architect.build.options.styles`.
+- Previous `:host` selectors were transformed to target component selectors (e.g., `app-vs-screen`, `app-post-game-screen`, `app-game-container`, `app-board-ui`, `app-player-hand`, `app-turn-queue`, `app-item-display`, `app-icon`) to preserve behavior without relying on encapsulation.
+- No component declares inline `<style>` anymore; all styles live in the global file to simplify theming and maintenance.
+- Shared colors and shadows are expressed as CSS custom properties under `:root` to enable easy theming.
+
 ### [AI](./ai)
 
 Decision-making algorithms for CPU players:

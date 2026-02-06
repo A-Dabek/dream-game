@@ -11,12 +11,6 @@ import iconCollection from '../../../assets/icons.json';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   template: `
-    <style>
-      :host {
-        display: flex;
-        padding: 0.25rem;
-      }
-    </style>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
