@@ -9,11 +9,13 @@ import {
   LogEntry,
 } from './engine.model';
 import { PROCESSORS } from './processors';
+import { TurnManager } from './turn-manager/turn-manager';
 
 export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);
   readonly state = computed(() => this.engineStateSignal());
   private readonly logBuffer: LogEntry[] = [];
+  private readonly turnManager: TurnManager;
 
   constructor(
     playerOne: Loadout & { id: string },
@@ -22,16 +24,25 @@ export class Engine {
     const p1 = this.prepareLoadout(playerOne);
     const p2 = this.prepareLoadout(playerTwo);
 
+    this.turnManager = new TurnManager(
+      { id: p1.id, speed: p1.speed },
+      { id: p2.id, speed: p2.speed },
+    );
+
     const listeners = [
       ...this.scanForListeners(p1),
       ...this.scanForListeners(p2),
       ListenerFactory.createFatigue(p1.id),
       ListenerFactory.createFatigue(p2.id),
+      ListenerFactory.createAdvanceTurn(p1.id),
+      ListenerFactory.createAdvanceTurn(p2.id),
     ];
 
     this.engineStateSignal.set({
       playerOne: p1,
       playerTwo: p2,
+      turnQueue: this.turnManager.getNextTurns(10),
+      turnError: this.turnManager.accumulatedError,
       listeners,
       gameOver: false,
     });
@@ -96,8 +107,8 @@ export class Engine {
     const state = this.engineStateSignal();
     const gameStartEvent: GameEvent = {
       type: 'lifecycle',
-      // use playerOne as the initiating player context for game start
-      playerId: state.playerOne.id,
+      // use the current player from the turn queue
+      playerId: state.turnQueue[0],
       phase: 'game_start',
     };
     this.processSimpleEvent(gameStartEvent);

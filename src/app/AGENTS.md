@@ -17,6 +17,7 @@ The foundation module. Defines core data structures:
 A synchronous, deterministic state machine built with Angular signals:
 
 - **Responsibility**: Applies item effects and manages immutable game state snapshots.
+- **Turn Management**: Calculates turn distribution based on player speed.
 - **Passive Effects**: Uses a strategy pattern ([Effects Submodule](./engine/effects)) to handle triggers and durations.
 - **Dependency**: Depends only on the `Item` module.
 
@@ -24,7 +25,6 @@ A synchronous, deterministic state machine built with Angular signals:
 
 The orchestration layer on top of the Engine:
 
-- **Turn Management**: Calculates turn distribution based on player speed.
 - **Validation**: Ensures actions (Play Item, Pass, Surrender) are legal before delegating to the Engine.
 - **Simulation**: Supports `clone()` for exploring future game states.
 

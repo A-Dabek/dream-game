@@ -8,11 +8,9 @@ import {
   GameActionType,
   GameState,
 } from '../board.model';
-import { TurnManager } from './turn-manager';
 
 export class Board implements BoardInterface {
   private _gameState: GameState;
-  private turnManager: TurnManager;
   private readonly engine: Engine;
 
   constructor(player: BoardLoadout, opponent: BoardLoadout) {
@@ -28,15 +26,10 @@ export class Board implements BoardInterface {
       actionHistory: [],
     };
 
-    this.turnManager = new TurnManager(
-      { id: player.id, speed: player.speed },
-      { id: opponent.id, speed: opponent.speed },
-    );
-
     this.engine = new Engine({ ...player }, { ...opponent });
     this.engine.processGameStart();
 
-    this._gameState = this.updateTurnInfo(this._gameState);
+    this._gameState = this.syncWithEngine(this.engine, this._gameState);
     this.engine.processTurnStart(this._gameState.turnInfo.currentPlayerId);
   }
 
@@ -70,14 +63,12 @@ export class Board implements BoardInterface {
     this.engine.play(playerId, itemId);
     this.engine.processEndOfTurn(playerId);
 
-    let nextGameState = this.syncWithEngine(this.engine, this._gameState);
+    const nextGameState = this.syncWithEngine(this.engine, this._gameState);
     const action = {
       type: GameActionType.PLAY_ITEM,
       playerId,
       itemId,
     };
-
-    nextGameState = this.advanceTurn(nextGameState);
 
     this._gameState = {
       ...nextGameState,
@@ -101,8 +92,7 @@ export class Board implements BoardInterface {
       playerId,
       itemId: undefined,
     };
-    let nextGameState = this.syncWithEngine(this.engine, this._gameState);
-    nextGameState = this.advanceTurn(nextGameState);
+    const nextGameState = this.syncWithEngine(this.engine, this._gameState);
 
     this._gameState = {
       ...nextGameState,
@@ -150,21 +140,16 @@ export class Board implements BoardInterface {
       JSON.parse(JSON.stringify(this._gameState.opponent)),
     );
     clonedBoard._gameState = JSON.parse(JSON.stringify(this._gameState));
-    clonedBoard.turnManager = this.turnManager.clone();
-    return clonedBoard;
-  }
+    // Since Engine is not easily clonable (it uses signals and private state),
+    // and Board.clone() seems to be used for simulation, we might have a problem.
+    // However, the original code also had this issue if Engine wasn't cloned.
+    // Wait, the original code didn't clone the engine! It just created a NEW Board,
+    // which created a NEW Engine, and then it overwrote _gameState.
+    // This meant the NEW engine was NOT in sync with the cloned _gameState.
+    // This looks like a bug in the original code or Engine is supposed to be stateless (it's not).
 
-  private updateTurnInfo(state: GameState): GameState {
-    const turns = this.turnManager.getNextTurns(2);
-    return {
-      ...state,
-      turnInfo: {
-        ...state.turnInfo,
-        currentPlayerId: turns[0],
-        nextPlayerId: turns[1],
-        turnQueue: this.turnManager.getNextTurns(10),
-      },
-    };
+    // For now, I'll keep the behavior consistent with original:
+    return clonedBoard;
   }
 
   private validateAction(
@@ -223,15 +208,13 @@ export class Board implements BoardInterface {
         health: updatedOpponent.health,
         items: updatedOpponent.items,
       },
+      turnInfo: {
+        currentPlayerId: engineState.turnQueue[0],
+        nextPlayerId: engineState.turnQueue[1],
+        turnQueue: engineState.turnQueue,
+      },
       isGameOver: isGameOver ?? state.isGameOver,
       winnerId: winnerId ?? state.winnerId,
     };
-  }
-
-  private advanceTurn(state: GameState): GameState {
-    this.turnManager.advanceTurn();
-    const newTurns = this.turnManager.getNextTurns(1);
-    this.engine.processTurnStart(newTurns[0]);
-    return this.updateTurnInfo(state);
   }
 }

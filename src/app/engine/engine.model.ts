@@ -7,6 +7,8 @@ export interface EngineLoadout extends Loadout {
 export interface EngineState {
   readonly playerOne: EngineLoadout;
   readonly playerTwo: EngineLoadout;
+  readonly turnQueue: string[];
+  readonly turnError: number;
   readonly listeners: Listener[];
   readonly gameOver: boolean;
   readonly winnerId?: string;
@@ -50,6 +52,24 @@ export function isEffectEvent(
 ): event is { type: 'effect'; effect: Effect; playerId: string } {
   // Effect events are now explicitly wrapped under the 'effect' discriminant
   return event.type === 'effect';
+}
+
+export interface TurnManagerInterface {
+  readonly nextTurns: string[];
+
+  getNextTurns(count: number): string[];
+
+  advanceTurn(): void;
+
+  refresh(
+    playerOneSpeed: number,
+    playerTwoSpeed: number,
+    firstPlayerId: string,
+  ): void;
+
+  clone(): TurnManagerInterface;
+
+  reset(firstPlayerId?: string): void;
 }
 
 export interface Listener {

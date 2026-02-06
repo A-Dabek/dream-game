@@ -7,8 +7,16 @@ import {
   InvertListener,
   NegateListener,
 } from './status';
+import { AdvanceTurnListener } from './status/advance-turn-listener';
 
 export class ListenerFactory {
+  /**
+   * Creates a listener for an advance turn effect.
+   */
+  static createAdvanceTurn(playerId: string): Listener {
+    return new AdvanceTurnListener(`advance_turn-${playerId}`, playerId);
+  }
+
   /**
    * Creates a listener for a fatigue effect.
    */

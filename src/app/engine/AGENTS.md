@@ -14,6 +14,7 @@ The core game engine that manages the game state and flow. It is a synchronous a
   - `reactive-duration.ts` - Shared duration logic.
   - `ListenerFactory.ts` - Factory for creating the appropriate listener instance.
 - `processors.ts` - Implementation of all atomic effect processors.
+- `turn-manager.ts` - Infinite turn sequence generator based on player speed.
 - `engine.ts` - Core engine logic, event processing loop, and state management.
 - `index.ts` - Public exports for the engine module.
 
@@ -21,8 +22,8 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 **EngineState**: An immutable snapshot of the game state, containing state for both players and active listeners. It also carries terminal game information:
 
-- `done: boolean` — set to `true` when the game is over
-- `winnerId?: string` — the winner's player ID when `done` is `true`
+- `gameOver: boolean` — set to `true` when the game is over
+- `winnerId?: string` — the winner's player ID when `gameOver` is `true`
 
 **GameEvent**: A unified representation of game actions, including lifecycle events (`on_play`, `on_turn_start`, `on_turn_end`, `game_start`), wrapped atomic effects, and terminal events (`game_over`).
 
@@ -85,11 +86,23 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 
 - `state` - A computed signal returning the current `EngineState`. `EngineState` includes a `log` array, `done` flag, and optional `winnerId`.
 
+## API (`TurnManager` Class)
+
+Responsible for calculating and managing the turn order. Uses a Bresenham-like algorithm for equal distribution based on
+player speed.
+
+- `getNextTurns(count: number): string[]` - Returns next X turns without advancing.
+- `nextTurns` - Getter returning next 10 turns.
+- `advanceTurn(): void` - Consumes current turn.
+- `refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void` - Resets distribution with new
+  speeds and starting player.
+- `clone(): TurnManager` - Creates a deep copy of the manager, preserving sequence state.
+
 ## Supported Effects
 
 - `damage`: Decreases the targeted player's health.
 - `healing`: Increases the targeted player's health.
-- `remove_item`: Removes an item from the targeted player's loadout. Listeners of the removed item are responsible for emitting a `remove_listener` event to clean themselves up.
+- `remove_item`: Removes an item from the targeted player's loadout. The processor also automatically removes any listeners associated with the removed item's `instanceId`. Listeners are still encouraged to emit `remove_listener` if they have complex cleanup, but for passive effects tied to item existence, it is handled by the processor.
 - `remove_listener`: Explicitly removes a listener from the engine state by its `instanceId`.
 - `add_status_effect`: Adds a persistent status effect (with its defined `Duration`) to the targeted player.
 
@@ -112,7 +125,7 @@ The log contains three types of entries:
 - The engine only depends on the `item` module.
 - When any player's health drops to zero or below via a processed `damage` effect (including fatigue), the engine:
   - Appends an `event` log entry: `{ type: 'game_over', loserId, winnerId }`
-  - Sets `state.done = true` and `state.winnerId`
+  - Sets `state.gameOver = true` and `state.winnerId`
   - Ignores any subsequent events (no further processing or logging)
 
 ## Testing

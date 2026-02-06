@@ -1,7 +1,6 @@
 import { LogEntry } from '../engine/engine.model';
 import { ItemId, Loadout } from '../item';
 import { Board } from './impl/board';
-import { TurnManager } from './impl/turn-manager';
 
 /**
  * Represents a player's loadout with a unique identifier.
@@ -16,7 +15,7 @@ export interface BoardLoadout extends Loadout {
 export interface TurnInfo {
   currentPlayerId: string;
   nextPlayerId: string;
-  turnQueue?: string[];
+  turnQueue: string[];
 }
 
 /**
@@ -56,27 +55,6 @@ export interface GameActionResult {
   action: GameAction;
   error?: string;
   newGameState?: GameState;
-}
-
-/**
- * Manages turn sequence distribution based on player speeds using a Bresenham-like algorithm.
- */
-export interface TurnManagerInterface {
-  readonly nextTurns: string[];
-
-  getNextTurns(count: number): string[];
-
-  advanceTurn(): void;
-
-  refresh(
-    playerOneSpeed: number,
-    playerTwoSpeed: number,
-    firstPlayerId: string,
-  ): void;
-
-  clone(): TurnManager;
-
-  reset(firstPlayerId?: string): void;
 }
 
 /**

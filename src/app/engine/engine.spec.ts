@@ -3,6 +3,7 @@ import { Loadout } from '../item';
 import { Engine } from './engine';
 
 describe('Engine', () => {
+  const baseNumberOfListeners = 4;
   const player1: Loadout & { id: string } = {
     id: 'p1',
     health: 100,
@@ -74,16 +75,17 @@ describe('Engine', () => {
     };
     const engine = new Engine(p1, p2);
 
-    expect(engine.state().listeners).toHaveLength(3);
+    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners + 1);
 
     // p1 attacks p2, triggering reactive removal which removes the item and thus the listener
     engine.play('p1', '_blueprint_attack');
     const log = engine.consumeLog();
 
-    expect(engine.state().listeners).toHaveLength(2);
+    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners);
     const hasRemoveListener = log.some(
       (entry) =>
-        entry.type === 'state-change' && entry.snapshot.listeners.length === 2,
+        entry.type === 'state-change' &&
+        entry.snapshot.listeners.length === baseNumberOfListeners,
     );
     expect(hasRemoveListener).toBe(true);
   });
@@ -104,16 +106,17 @@ describe('Engine', () => {
     const engine = new Engine(p1, p2);
 
     engine.play('p1', '_blueprint_negate_damage');
-    expect(engine.state().listeners).toHaveLength(3);
+    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners + 1);
 
     // p2 attacks p1, negate_damage triggers, charge expires, remove_listener emitted
     engine.play('p2', '_blueprint_attack');
     const log = engine.consumeLog();
 
-    expect(engine.state().listeners).toHaveLength(2);
+    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners);
     const hasRemoveListener = log.some(
       (entry) =>
-        entry.type === 'state-change' && entry.snapshot.listeners.length === 2,
+        entry.type === 'state-change' &&
+        entry.snapshot.listeners.length === baseNumberOfListeners,
     );
     expect(hasRemoveListener).toBe(true);
   });

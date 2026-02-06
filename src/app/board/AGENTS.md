@@ -9,7 +9,6 @@ history, and coordinates turn management. The core logic is encapsulated in the 
 
 - `board.model.ts` - Type definitions and enums
 - `board.ts` - Core game logic and state management
-- `turn-manager.ts` - Infinite turn sequence generator based on player speed
 - `test/` - Integration and unit tests for board behavior
 - `test/test-utils.ts` - Shared utilities for creating mock players in tests
 - `index.ts` - Public export
@@ -116,18 +115,6 @@ GameActionType enum: PLAY_ITEM, SURRENDER, PASS
 - Use `clone.playItem()`, `clone.pass()`, or `clone.surrender()` to explore future scenarios without affecting the
   original board.
 
-## API (`TurnManager` Class)
-
-Responsible for calculating and managing the turn order. Uses a Bresenham-like algorithm for equal distribution based on
-player speed.
-
-- `getNextTurns(count: number): string[]` - Returns next X turns without advancing.
-- `nextTurns` - Getter returning next 10 turns.
-- `advanceTurn(): void` - Consumes current turn.
-- `refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void` - Resets distribution with new
-  speeds and starting player.
-- `clone(): TurnManager` - Creates a deep copy of the manager, preserving sequence state.
-
 ### Helper Methods
 
 **getOpponentId(playerId: string): string | null**
@@ -167,7 +154,7 @@ Action throws an error if:
 - Invalid actions throw an error; state unchanged.
 - Action history tracks successful actions only with timestamps.
 - Simulation is supported via the `clone()` method.
-- Faster player starts the turn by default when no explicit starting player is provided to `TurnManager`.
+- Faster player starts the turn by default when no explicit starting player is provided.
 
 ## Testing
 

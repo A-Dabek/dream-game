@@ -1,4 +1,4 @@
-import { TurnManagerInterface } from '../board.model';
+import { TurnManagerInterface } from '../engine.model';
 
 /**
  * Responsible for calculating and managing the turn order based on player speeds.
@@ -9,15 +9,21 @@ export class TurnManager implements TurnManagerInterface {
   private readonly playerTwo: { id: string; speed: number };
   private turnGenerator!: Generator<string>;
   private turnQueue: string[] = [];
-  private accumulatedError: number = 0;
+  accumulatedError: number = 0;
 
   constructor(
     playerOne: { id: string; speed: number },
     playerTwo: { id: string; speed: number },
+    initialError?: number,
   ) {
     this.playerOne = { ...playerOne };
     this.playerTwo = { ...playerTwo };
-    this.reset();
+    if (initialError !== undefined) {
+      this.accumulatedError = initialError;
+      this.turnGenerator = this.createTurnGenerator(this.accumulatedError);
+    } else {
+      this.reset();
+    }
   }
 
   get nextTurns(): string[] {
