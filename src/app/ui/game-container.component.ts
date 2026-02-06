@@ -11,19 +11,19 @@ import { PlayerRating } from '../rating';
 import { BoardUiComponent } from './board-ui.component';
 import { HumanStrategy } from './human-strategy';
 import { UiStateService } from './ui-state.service';
-import { VsScreenComponent } from './vs-screen.component';
+import { PreGameScreenComponent } from './pre-game-screen.component';
 import { PostGameScreenComponent } from './post-game-screen.component';
 
 @Component({
   selector: 'app-game-container',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BoardUiComponent, VsScreenComponent, PostGameScreenComponent],
+  imports: [BoardUiComponent, PreGameScreenComponent, PostGameScreenComponent],
   template: `
     <div class="screens-container">
       @switch (stage()) {
         @case ('pre') {
-          <app-vs-screen
+          <app-pre-game-screen
             class="screen"
             [player]="humanPlayer.loadout"
             [opponent]="cpuPlayer.loadout"

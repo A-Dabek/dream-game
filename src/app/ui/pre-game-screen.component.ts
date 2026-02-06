@@ -9,7 +9,7 @@ import { Loadout } from '@dream/item';
 import { PlayerHandComponent } from './player-hand.component';
 
 @Component({
-  selector: 'app-vs-screen',
+  selector: 'app-pre-game-screen',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PlayerHandComponent],
@@ -52,7 +52,7 @@ import { PlayerHandComponent } from './player-hand.component';
     </div>
   `,
 })
-export class VsScreenComponent {
+export class PreGameScreenComponent {
   readonly player = input.required<Loadout>();
   readonly opponent = input.required<Loadout>();
   readonly animating = signal(true);
