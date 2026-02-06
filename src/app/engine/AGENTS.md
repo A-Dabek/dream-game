@@ -93,7 +93,7 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 - `remove_listener`: Explicitly removes a listener from the engine state by its `instanceId`.
 - `add_status_effect`: Adds a persistent status effect (with its defined `Duration`) to the targeted player.
 
-All processors for these effects now automatically append a `processor` type entry to the engine's log.
+All processors for these effects now automatically append a `state-change` type entry (a full `EngineState` snapshot) to the engine's log.
 
 ## Logging
 
@@ -102,8 +102,7 @@ The engine maintains a log of all significant occurrences during event processin
 The log contains three types of entries:
 
 - `event`: High-level game events like `on_play`, `on_turn_start`, `on_turn_end`, `game_start`, wrapped `effect` events, and terminal `game_over`.
-- `reaction`: Recorded when a `Listener` modifies, consumes, or expands an event.
-- `processor`: Recorded when an atomic effect is finally applied to the state by a processor.
+- `state-change`: Recorded when an atomic effect is finally applied to the state by a processor; contains a full `EngineState` snapshot.
 
 ## Implementation Notes
 

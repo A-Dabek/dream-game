@@ -12,9 +12,14 @@ export interface EngineState {
   readonly winnerId?: string;
 }
 
+export type StateChangeLogEntry = {
+  type: 'state-change';
+  snapshot: EngineState;
+};
+
 export type LogEntry =
   | { type: 'event'; event: GameEvent }
-  | { type: 'processor'; effect: Effect; targetPlayerId: string };
+  | StateChangeLogEntry;
 
 export type LifecyclePhase =
   | 'game_start'
@@ -38,12 +43,6 @@ export function isLifecycleGameEvent(
   event: GameEvent,
 ): event is LifecycleGameEvent {
   return event.type === 'lifecycle';
-}
-
-export function isOnPlayEvent(
-  event: GameEvent,
-): event is { type: 'on_play'; playerId: string; itemId: ItemId } {
-  return event.type === 'on_play';
 }
 
 export function isEffectEvent(

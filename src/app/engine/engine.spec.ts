@@ -83,7 +83,7 @@ describe('Engine', () => {
     expect(engine.state().listeners).toHaveLength(2);
     const hasRemoveListener = log.some(
       (entry) =>
-        entry.type === 'processor' && entry.effect.type === 'remove_listener',
+        entry.type === 'state-change' && entry.snapshot.listeners.length === 2,
     );
     expect(hasRemoveListener).toBe(true);
   });
@@ -113,7 +113,7 @@ describe('Engine', () => {
     expect(engine.state().listeners).toHaveLength(2);
     const hasRemoveListener = log.some(
       (entry) =>
-        entry.type === 'processor' && entry.effect.type === 'remove_listener',
+        entry.type === 'state-change' && entry.snapshot.listeners.length === 2,
     );
     expect(hasRemoveListener).toBe(true);
   });

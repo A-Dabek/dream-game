@@ -12,9 +12,8 @@ import { PROCESSORS } from './processors';
 
 export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);
-  private readonly logBuffer: LogEntry[] = [];
-
   readonly state = computed(() => this.engineStateSignal());
+  private readonly logBuffer: LogEntry[] = [];
 
   constructor(
     playerOne: Loadout & { id: string },
@@ -149,46 +148,42 @@ export class Engine {
     if (state.gameOver) return state;
     if (depth > 50) return state;
 
-    if (listenersToProcess.length === 0) {
-      // Basic effect processing via processors
-      if (event.type === 'effect') {
-        const processor =
-          PROCESSORS[event.effect.type as keyof typeof PROCESSORS];
-        if (processor) {
-          const playerId = event.playerId;
-          const playerKey =
-            state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
-
-          const effect = event.effect;
-          // Process the effect
-          const processed = processor(state, playerKey, effect);
-          // Log the processor application with the computed target
-          const targetKey = this.getTargetPlayerKey(playerKey, effect.target);
-          const targetPlayerId = processed[targetKey].id;
-          this.log({ type: 'processor', effect, targetPlayerId });
-          // If the processor resulted in game over, log the game_over event as processors used to do
-          if (!state.gameOver && processed.gameOver && processed.winnerId) {
-            this.log({
-              type: 'event',
-              event: {
-                type: 'lifecycle',
-                playerId: processed.winnerId,
-                phase: 'game_over',
-              },
-            });
-          }
-          return processed;
-        }
-      }
-      return state;
+    if (listenersToProcess.length !== 0) {
+      const [current, ...remaining] = listenersToProcess;
+      const { event: resultEvent } = current.handle(event, state);
+      return resultEvent.reduce<EngineState>((acc, e) => {
+        return this.processEvent(e, remaining, acc, depth + 1);
+      }, state);
     }
+    // Basic effect processing via processors
+    if (event.type === 'effect') {
+      const processor =
+        PROCESSORS[event.effect.type as keyof typeof PROCESSORS];
+      if (processor) {
+        const playerId = event.playerId;
+        const playerKey =
+          state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
 
-    const [current, ...remaining] = listenersToProcess;
-    const { event: resultEvent } = current.handle(event, state);
-
-    return resultEvent.reduce<EngineState>((acc, e) => {
-      return this.processEvent(e, remaining, acc, depth + 1);
-    }, state);
+        const effect = event.effect;
+        // Process the effect
+        const processed = processor(state, playerKey, effect);
+        // Log the engine state change snapshot after processor application
+        this.log({ type: 'state-change', snapshot: processed });
+        // If the processor resulted in game over, log the game_over event as processors used to do
+        if (!state.gameOver && processed.gameOver && processed.winnerId) {
+          this.log({
+            type: 'event',
+            event: {
+              type: 'lifecycle',
+              playerId: processed.winnerId,
+              phase: 'game_over',
+            },
+          });
+        }
+        return processed;
+      }
+    }
+    return state;
   }
 
   // DRY helper for simple top-level events that only need logging + processing
@@ -203,13 +198,5 @@ export class Engine {
 
   private log(entry: LogEntry): void {
     this.logBuffer.push(entry);
-  }
-
-  private getTargetPlayerKey(
-    playerKey: 'playerOne' | 'playerTwo',
-    target?: 'self' | 'enemy',
-  ): 'playerOne' | 'playerTwo' {
-    if (target === 'self') return playerKey;
-    return playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
   }
 }

@@ -69,7 +69,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
     const updatedListeners = state.listeners.filter(
       (l) => l.instanceId !== instanceId,
     );
-    const targetKey = getTargetPlayerKey(playerKey, effect.target);
     return {
       ...state,
       listeners: updatedListeners,

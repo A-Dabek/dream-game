@@ -12,7 +12,7 @@ The UI module provides Angular components for displaying the game state and faci
 - **BoardUiComponent**: Orchestrates the overall game layout for mobile view. It receives a non-nullable `GameState` from `GameContainerComponent`.
 - **VsScreenComponent**: Initial screen displaying "VS" centered with fade-in animations for opponent hand above and player hand below, plus Ready button to emit event for game start and slide left out.
  - **PreGameScreenComponent**: Initial screen displaying simplified "VS." text between opponent and player items with a minimal text-only "Ready" button. Uses subtle hand reveal animation. Unified style with the post-game screen.
-- **UiStateService**: Implements event-sourcing for the UI. It consumes `GameService.logs$`, reconstructs the `GameState` locally with a delay for animations, and validates it against the engine's state during human turns. Turn information is synchronized from the engine state after each turn. Verified by black-box fatigue tests in `ui-state.service.spec.ts`.
+- **UiStateService**: Consumes `GameService.logs$` and applies `state-change` snapshots directly to the UI `GameState` with a small delay for animations. Other log types are currently ignored. Previous validation and artificial batching have been removed.
 - **HumanInputService**: Facilitates communication between UI components and `HumanStrategy`.
 - **HumanStrategy**: Implementation of `Strategy` that waits for UI input via `HumanInputService`.
 

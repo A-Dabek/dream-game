@@ -158,7 +158,6 @@ describe('PlayerRating', () => {
       highRated.win(1264); // Raise rating to about 1280
       highRated.win(1280); // Raise rating to about 1296
 
-      const lowRatedInitial = lowRated.value;
       const highRatedInitial = highRated.value;
 
       // When high rated player wins (expected outcome)

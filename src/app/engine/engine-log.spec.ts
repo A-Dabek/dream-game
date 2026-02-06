@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Loadout } from '../item';
 import { Engine } from './engine';
+import { StateChangeLogEntry } from './engine.model';
 
 describe('Engine Log', () => {
   const player1: Loadout & { id: string } = {
@@ -42,16 +43,14 @@ describe('Engine Log', () => {
       },
     });
 
-    // 3. remove_item processor
+    // 3. state change after remove_item is processed
     expect(log[2]).toMatchObject({
-      type: 'processor',
-      effect: {
-        type: 'remove_item',
-        value: expect.any(String),
-        target: 'self',
-      },
-      targetPlayerId: 'p1',
+      type: 'state-change',
     });
+    // After remove_item, playerOne should have no items
+    expect(
+      (log[2] as StateChangeLogEntry).snapshot.playerOne.items.length,
+    ).toBe(0);
 
     // 4. damage event
     expect(log[3]).toMatchObject({
@@ -63,12 +62,11 @@ describe('Engine Log', () => {
       },
     });
 
-    // 5. damage processor
+    // 5. state change after damage is processed
     expect(log[4]).toMatchObject({
-      type: 'processor',
-      effect: { type: 'damage', value: 10, target: 'enemy' },
-      targetPlayerId: 'p2',
+      type: 'state-change',
     });
+    expect((log[4] as StateChangeLogEntry).snapshot.playerTwo.health).toBe(90);
   });
 
   it('should log turn end', () => {
