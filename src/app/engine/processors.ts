@@ -21,7 +21,6 @@ function getTargetPlayerKey(
 export const PROCESSORS: Record<string, EffectProcessor> = {
   damage: (state, playerKey, effect) => {
     const targetKey = getTargetPlayerKey(playerKey, effect.target);
-    const targetPlayerId = state[targetKey].id;
     const newHealth = state[targetKey].health - (effect.value as number);
     const updatedState: EngineState = {
       ...state,
@@ -29,7 +28,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...state[targetKey],
         health: newHealth,
       },
-      log: [...state.log, { type: 'processor', effect, targetPlayerId }],
     };
 
     if (newHealth <= 0 && !state.gameOver) {
@@ -39,17 +37,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...updatedState,
         gameOver: true,
         winnerId,
-        log: [
-          ...updatedState.log,
-          {
-            type: 'event',
-            event: {
-              type: 'game_over',
-              loserId: targetPlayerId,
-              playerId: winnerId,
-            },
-          },
-        ],
       };
     }
 
@@ -57,7 +44,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
   },
   remove_item: (state, playerKey, effect) => {
     const targetKey = getTargetPlayerKey(playerKey, effect.target);
-    const targetPlayerId = state[targetKey].id;
     const target = state[targetKey];
     const itemIndex = target.items.findIndex(
       (item) => item.instanceId === (effect.value as string),
@@ -76,7 +62,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
         ...target,
         items: updatedItems,
       },
-      log: [...state.log, { type: 'processor', effect, targetPlayerId }],
     };
   },
   remove_listener: (state, playerKey, effect) => {
@@ -85,23 +70,19 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
       (l) => l.instanceId !== instanceId,
     );
     const targetKey = getTargetPlayerKey(playerKey, effect.target);
-    const targetPlayerId = state[targetKey].id;
     return {
       ...state,
       listeners: updatedListeners,
-      log: [...state.log, { type: 'processor', effect, targetPlayerId }],
     };
   },
   healing: (state, playerKey, effect) => {
     const targetKey = getTargetPlayerKey(playerKey, effect.target);
-    const targetPlayerId = state[targetKey].id;
     return {
       ...state,
       [targetKey]: {
         ...state[targetKey],
         health: state[targetKey].health + (effect.value as number),
       },
-      log: [...state.log, { type: 'processor', effect, targetPlayerId }],
     };
   },
   add_status_effect: (state, playerKey, effect) => {
@@ -117,10 +98,6 @@ export const PROCESSORS: Record<string, EffectProcessor> = {
           statusEffect,
         ),
         ...state.listeners,
-      ],
-      log: [
-        ...state.log,
-        { type: 'processor', effect, targetPlayerId: targetPlayer.id },
       ],
     };
   },

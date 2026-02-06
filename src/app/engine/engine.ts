@@ -12,6 +12,7 @@ import { PROCESSORS } from './processors';
 
 export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);
+  private readonly logBuffer: LogEntry[] = [];
 
   readonly state = computed(() => this.engineStateSignal());
 
@@ -33,7 +34,6 @@ export class Engine {
       playerOne: p1,
       playerTwo: p2,
       listeners,
-      log: [],
       gameOver: false,
     });
   }
@@ -55,6 +55,8 @@ export class Engine {
       state.listeners,
       state,
     );
+    // Preserve previous ordering: reactions first, then the on_play event itself
+    this.log({ type: 'event', event: onPlayEvent } as LogEntry);
 
     const effects: Effect[] = [
       removeItem(instanceId),
@@ -64,22 +66,12 @@ export class Engine {
     const finalState = effects.reduce<EngineState>(
       (acc, effect) => {
         const effectEvent: GameEvent = { ...effect, playerId: playerId };
-        const stateWithEventLog = {
-          ...acc,
-          log: [...acc.log, { type: 'event', event: effectEvent } as LogEntry],
-        };
-        return this.processEvent(
-          effectEvent,
-          stateWithEventLog.listeners,
-          stateWithEventLog,
-        );
+        // For effects, previous behavior logged the event BEFORE processing
+        this.log({ type: 'event', event: effectEvent } as LogEntry);
+        return this.processEvent(effectEvent, acc.listeners, acc);
       },
       {
         ...stateAfterOnPlay,
-        log: [
-          ...stateAfterOnPlay.log,
-          { type: 'event', event: onPlayEvent } as LogEntry,
-        ],
       },
     );
 
@@ -105,13 +97,9 @@ export class Engine {
   }
 
   consumeLog(): LogEntry[] {
-    const state = this.engineStateSignal();
-    const log = [...state.log];
-    this.engineStateSignal.set({
-      ...state,
-      log: [],
-    });
-    return log;
+    const out = [...this.logBuffer];
+    this.logBuffer.length = 0;
+    return out;
   }
 
   private prepareLoadout(loadout: Loadout & { id: string }): EngineLoadout {
@@ -152,7 +140,20 @@ export class Engine {
           state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
 
         const effect = event as Effect;
-        return processor(state, playerKey, effect);
+        // Process the effect
+        const processed = processor(state, playerKey, effect);
+        // Log the processor application with the computed target
+        const targetKey = this.getTargetPlayerKey(playerKey, effect.target);
+        const targetPlayerId = processed[targetKey].id;
+        this.log({ type: 'processor', effect, targetPlayerId });
+        // If the processor resulted in game over, log the game_over event as processors used to do
+        if (!state.gameOver && processed.gameOver && processed.winnerId) {
+          this.log({
+            type: 'event',
+            event: { type: 'game_over', playerId: processed.winnerId },
+          });
+        }
+        return processed;
       }
       return state;
     }
@@ -164,18 +165,13 @@ export class Engine {
     const isSameEvent = resultEvent.length === 1 && resultEvent[0] === event;
 
     if (!isSameEvent) {
-      nextState = {
-        ...state,
-        log: [
-          ...state.log,
-          {
-            type: 'reaction',
-            instanceId: current.instanceId,
-            playerId: current.playerId,
-            event,
-          },
-        ],
-      };
+      // Log reactions outside of EngineState
+      this.log({
+        type: 'reaction',
+        instanceId: current.instanceId,
+        playerId: current.playerId,
+        event,
+      });
     }
 
     return resultEvent.reduce<EngineState>((acc, e) => {
@@ -187,15 +183,21 @@ export class Engine {
   private processSimpleEvent(event: GameEvent): void {
     const state = this.engineStateSignal();
     if (state.gameOver) return;
-    const stateWithEventLog = {
-      ...state,
-      log: [...state.log, { type: 'event', event } as LogEntry],
-    };
-    const nextState = this.processEvent(
-      event,
-      stateWithEventLog.listeners,
-      stateWithEventLog,
-    );
+    // Log first (previous behavior), then process
+    this.log({ type: 'event', event } as LogEntry);
+    const nextState = this.processEvent(event, state.listeners, state);
     this.engineStateSignal.set(nextState);
+  }
+
+  private log(entry: LogEntry): void {
+    this.logBuffer.push(entry);
+  }
+
+  private getTargetPlayerKey(
+    playerKey: 'playerOne' | 'playerTwo',
+    target?: 'self' | 'enemy',
+  ): 'playerOne' | 'playerTwo' {
+    if (target === 'self') return playerKey;
+    return playerKey === 'playerOne' ? 'playerTwo' : 'playerOne';
   }
 }

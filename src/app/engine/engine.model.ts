@@ -8,7 +8,6 @@ export interface EngineState {
   readonly playerOne: EngineLoadout;
   readonly playerTwo: EngineLoadout;
   readonly listeners: Listener[];
-  readonly log: LogEntry[];
   readonly gameOver: boolean;
   readonly winnerId?: string;
 }
