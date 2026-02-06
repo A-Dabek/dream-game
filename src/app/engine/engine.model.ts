@@ -32,7 +32,7 @@ export type LifecycleGameEvent = {
 export type GameEvent =
   | { type: 'on_play'; playerId: string; itemId: ItemId }
   | LifecycleGameEvent
-  | (Effect & { playerId: string });
+  | { type: 'effect'; effect: Effect; playerId: string };
 
 // Type guards for GameEvent variants to avoid `any` casts when handling events
 export function isLifecycleGameEvent(
@@ -49,9 +49,9 @@ export function isOnPlayEvent(
 
 export function isEffectEvent(
   event: GameEvent,
-): event is Effect & { playerId: string } {
-  // Effect events are the remaining discriminants within GameEvent that are not lifecycle nor on_play
-  return event.type !== 'lifecycle' && event.type !== 'on_play';
+): event is { type: 'effect'; effect: Effect; playerId: string } {
+  // Effect events are now explicitly wrapped under the 'effect' discriminant
+  return event.type === 'effect';
 }
 
 export interface Listener {

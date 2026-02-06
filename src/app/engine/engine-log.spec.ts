@@ -32,9 +32,12 @@ describe('Engine Log', () => {
     expect(log[1]).toMatchObject({
       type: 'event',
       event: {
-        type: 'remove_item',
-        value: expect.any(String),
-        target: 'self',
+        type: 'effect',
+        effect: {
+          type: 'remove_item',
+          value: expect.any(String),
+          target: 'self',
+        },
         playerId: 'p1',
       },
     });
@@ -53,7 +56,11 @@ describe('Engine Log', () => {
     // 4. damage event
     expect(log[3]).toMatchObject({
       type: 'event',
-      event: { type: 'damage', value: 10, target: 'enemy', playerId: 'p1' },
+      event: {
+        type: 'effect',
+        effect: { type: 'damage', value: 10, target: 'enemy' },
+        playerId: 'p1',
+      },
     });
 
     // 5. damage processor

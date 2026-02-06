@@ -24,7 +24,11 @@ The core game engine that manages the game state and flow. It is a synchronous a
 - `done: boolean` — set to `true` when the game is over
 - `winnerId?: string` — the winner's player ID when `done` is `true`
 
-**GameEvent**: A unified representation of game actions, including lifecycle events (`on_play`, `on_turn_start`, `on_turn_end`, `game_start`), atomic effects (damage, healing, etc.), and terminal events (`game_over`).
+**GameEvent**: A unified representation of game actions, including lifecycle events (`on_play`, `on_turn_start`, `on_turn_end`, `game_start`), wrapped atomic effects, and terminal events (`game_over`).
+
+- Lifecycle: `{ type: 'lifecycle', playerId, phase }`
+- On Play: `{ type: 'on_play', playerId, itemId }`
+- Effect: `{ type: 'effect', effect: Effect, playerId }` — all atomic effects (e.g., `damage`, `healing`, `remove_item`, `remove_listener`) are carried inside the `effect` field.
 
 **Listeners**: Reactive components that process `GameEvent`s in LIFO (Last-In-First-Out) order. A listener can:
 
@@ -97,7 +101,7 @@ The engine maintains a log of all significant occurrences during event processin
 
 The log contains three types of entries:
 
-- `event`: High-level game events like `on_play`, `on_turn_start`, `on_turn_end`, `game_start`, and terminal `game_over`.
+- `event`: High-level game events like `on_play`, `on_turn_start`, `on_turn_end`, `game_start`, wrapped `effect` events, and terminal `game_over`.
 - `reaction`: Recorded when a `Listener` modifies, consumes, or expands an event.
 - `processor`: Recorded when an atomic effect is finally applied to the state by a processor.
 

@@ -65,7 +65,11 @@ export class Engine {
 
     const finalState = effects.reduce<EngineState>(
       (acc, effect) => {
-        const effectEvent: GameEvent = { ...effect, playerId: playerId };
+        const effectEvent: GameEvent = {
+          type: 'effect',
+          effect,
+          playerId: playerId,
+        };
         // For effects, previous behavior logged the event BEFORE processing
         this.log({ type: 'event', event: effectEvent } as LogEntry);
         return this.processEvent(effectEvent, acc.listeners, acc);
@@ -147,31 +151,34 @@ export class Engine {
 
     if (listenersToProcess.length === 0) {
       // Basic effect processing via processors
-      const processor = PROCESSORS[event.type as keyof typeof PROCESSORS];
-      if (processor && 'playerId' in event && event.playerId) {
-        const playerId = event.playerId;
-        const playerKey =
-          state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
+      if (event.type === 'effect') {
+        const processor =
+          PROCESSORS[event.effect.type as keyof typeof PROCESSORS];
+        if (processor) {
+          const playerId = event.playerId;
+          const playerKey =
+            state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
 
-        const effect = event as Effect;
-        // Process the effect
-        const processed = processor(state, playerKey, effect);
-        // Log the processor application with the computed target
-        const targetKey = this.getTargetPlayerKey(playerKey, effect.target);
-        const targetPlayerId = processed[targetKey].id;
-        this.log({ type: 'processor', effect, targetPlayerId });
-        // If the processor resulted in game over, log the game_over event as processors used to do
-        if (!state.gameOver && processed.gameOver && processed.winnerId) {
-          this.log({
-            type: 'event',
-            event: {
-              type: 'lifecycle',
-              playerId: processed.winnerId,
-              phase: 'game_over',
-            },
-          });
+          const effect = event.effect;
+          // Process the effect
+          const processed = processor(state, playerKey, effect);
+          // Log the processor application with the computed target
+          const targetKey = this.getTargetPlayerKey(playerKey, effect.target);
+          const targetPlayerId = processed[targetKey].id;
+          this.log({ type: 'processor', effect, targetPlayerId });
+          // If the processor resulted in game over, log the game_over event as processors used to do
+          if (!state.gameOver && processed.gameOver && processed.winnerId) {
+            this.log({
+              type: 'event',
+              event: {
+                type: 'lifecycle',
+                playerId: processed.winnerId,
+                phase: 'game_over',
+              },
+            });
+          }
+          return processed;
         }
-        return processed;
       }
       return state;
     }

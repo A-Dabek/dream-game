@@ -9,13 +9,19 @@ export class InvertListener extends BaseStatusEffectInstance {
     event: GameEvent,
     state: EngineState,
   ): GameEvent[] | null {
-    if (
-      this.shouldReact(event, state) &&
-      'value' in event &&
-      typeof event.value === 'number'
-    ) {
-      return [{ ...event, value: -event.value }];
+    if (!(this.shouldReact(event, state) && event.type === 'effect')) {
+      return null;
     }
-    return null;
+    const value = event.effect.value;
+    if (typeof value !== 'number') {
+      return null;
+    }
+    return [
+      {
+        type: 'effect',
+        effect: { ...event.effect, value: -value },
+        playerId: event.playerId,
+      },
+    ];
   }
 }

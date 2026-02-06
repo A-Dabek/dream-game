@@ -52,7 +52,7 @@ const matchType =
       return lifecycle && event.phase === ON_TURN_END;
     }
 
-    const isEffectType = !lifecycle;
+    const isEffectType = event.type === 'effect';
     const typeMatches =
       event.type === expectedType ||
       (isEffectType &&
@@ -63,7 +63,7 @@ const matchType =
     if (conditionValue !== undefined) {
       // Only effect events carry atomic effect type discriminants
       if (isEffectEvent(event)) {
-        return event.type === conditionValue;
+        return event.effect.type === conditionValue;
       }
       return false;
     }
@@ -87,13 +87,11 @@ const isNotEventOwner: ConditionPredicate = (event, playerId) =>
  * Predicate that checks if the player is the target of the effect.
  */
 const isTargetMe: ConditionPredicate = (event, playerId) => {
-  const effect = event as Effect;
-  const isTargetMe =
-    effect.target === 'self'
-      ? 'playerId' in event && event.playerId === playerId
-      : 'playerId' in event && event.playerId !== playerId;
-
-  return isTargetMe;
+  if (event.type !== 'effect') return false;
+  const target = event.effect.target as 'self' | 'enemy' | undefined;
+  if (!target) return false;
+  const isMe = event.playerId === playerId;
+  return target === 'self' ? isMe : !isMe;
 };
 
 /**

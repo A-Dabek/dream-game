@@ -1,4 +1,4 @@
-import { BEFORE_EFFECT, isLifecycleEvent, StatusEffect } from '../../item';
+import { BEFORE_EFFECT, StatusEffect } from '../../item';
 import { EngineState, GameEvent, Listener } from '../engine.model';
 import { createCondition, ReactiveCondition } from './reactive-condition';
 import { createDuration, ReactiveDuration } from './reactive-duration';
@@ -70,21 +70,21 @@ export abstract class BaseEffectInstance implements Listener {
     }
 
     const isReplacement =
-      this.condition.type === BEFORE_EFFECT && !isLifecycleEvent(event.type);
+      this.condition.type === BEFORE_EFFECT && event.type === 'effect';
 
     if (isReplacement) {
-      if (!('playerId' in event && event.playerId)) {
-        return null;
-      }
       const playerId = event.playerId;
+
       return this.effect.action.map((e) => ({
-        ...e,
+        type: 'effect',
+        effect: e,
         playerId,
       }));
     }
 
-    const reactions = this.effect.action.map((e) => ({
-      ...e,
+    const reactions: GameEvent[] = this.effect.action.map((e) => ({
+      type: 'effect',
+      effect: e,
       playerId: this.playerId,
     }));
 
@@ -95,7 +95,9 @@ export abstract class BaseEffectInstance implements Listener {
     if (
       base.some(
         (e) =>
-          e.type === 'remove_listener' && (e as any).value === this.instanceId,
+          e.type === 'effect' &&
+          e.effect.type === 'remove_listener' &&
+          e.effect.value === this.instanceId,
       )
     ) {
       return base;
@@ -104,10 +106,17 @@ export abstract class BaseEffectInstance implements Listener {
   }
 
   protected checkRemoveItem(event: GameEvent): GameEvent | null {
-    if (event.type === 'remove_item' && event.value === this.instanceId) {
+    if (
+      event.type === 'effect' &&
+      event.effect.type === 'remove_item' &&
+      event.effect.value === this.instanceId
+    ) {
       return {
-        type: 'remove_listener',
-        value: this.instanceId,
+        type: 'effect',
+        effect: {
+          type: 'remove_listener',
+          value: this.instanceId,
+        },
         playerId: this.playerId,
       };
     }

@@ -9,8 +9,11 @@ export abstract class BaseStatusEffectInstance extends BaseEffectInstance {
     let finalEvents = events;
     if (this.duration.isExpired) {
       finalEvents = this.addEvent(finalEvents, {
-        type: 'remove_listener',
-        value: this.instanceId,
+        type: 'effect',
+        effect: {
+          type: 'remove_listener',
+          value: this.instanceId,
+        },
         playerId: this.playerId,
       });
     }
