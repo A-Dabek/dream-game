@@ -1,5 +1,5 @@
 import { Duration } from '../../item';
-import { GameEvent } from '../engine.model';
+import { GameEvent, isLifecycleGameEvent } from '../engine.model';
 
 export interface ReactiveDuration {
   readonly isExpired: boolean;
@@ -41,7 +41,11 @@ class TurnsDuration implements ReactiveDuration {
   }
 
   update(event: GameEvent, playerId: string): void {
-    if (event.type === 'on_turn_end' && (event as any).playerId === playerId) {
+    if (
+      isLifecycleGameEvent(event) &&
+      event.phase === 'on_turn_end' &&
+      event.playerId === playerId
+    ) {
       this.remainingTurns--;
     }
   }

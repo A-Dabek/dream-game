@@ -1,9 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { concatMap, delay, from, Subject, Subscription, takeUntil } from 'rxjs';
-import { GameState } from '../board';
-import { LogEntry } from '../engine/engine.model';
 import { GameService } from '@dream/game';
+import { concatMap, delay, from, Subscription } from 'rxjs';
+import { GameState } from '../board';
+import { isLifecycleGameEvent, LogEntry } from '../engine/engine.model';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +43,11 @@ export class UiStateService {
 
     const nextState = JSON.parse(JSON.stringify(state)) as GameState;
 
-    if (log.type === 'event' && log.event.type === 'on_turn_end') {
+    if (
+      log.type === 'event' &&
+      isLifecycleGameEvent(log.event) &&
+      log.event.phase === 'on_turn_end'
+    ) {
       const queue = nextState.turnInfo.turnQueue || [];
       if (queue.length > 0) {
         nextState.turnInfo.currentPlayerId = queue[1];
@@ -53,7 +56,11 @@ export class UiStateService {
       }
     }
 
-    if (log.type === 'event' && log.event.type === 'game_over') {
+    if (
+      log.type === 'event' &&
+      isLifecycleGameEvent(log.event) &&
+      log.event.phase === 'game_over'
+    ) {
       nextState.isGameOver = true;
       nextState.winnerId = log.event.playerId;
       this.logSubscription.unsubscribe();

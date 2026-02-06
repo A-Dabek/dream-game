@@ -102,7 +102,7 @@ describe('Engine Log', () => {
 
     expect(log[0]).toMatchObject({
       type: 'event',
-      event: { type: 'on_turn_end', playerId: 'p1' },
+      event: { type: 'lifecycle', playerId: 'p1', phase: 'on_turn_end' },
     });
   });
 });

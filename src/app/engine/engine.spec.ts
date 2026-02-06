@@ -162,7 +162,10 @@ describe('Engine', () => {
 
     const log = engine.consumeLog();
     const hasGameOverEvent = log.some(
-      (e) => e.type === 'event' && e.event.type === 'game_over',
+      (e) =>
+        e.type === 'event' &&
+        (e.event as any).type === 'lifecycle' &&
+        (e.event as any).phase === 'game_over',
     );
     expect(hasGameOverEvent).toBe(true);
 

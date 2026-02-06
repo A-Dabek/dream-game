@@ -80,19 +80,33 @@ export class Engine {
 
   processEndOfTurn(playerId: string): void {
     if (this.engineStateSignal().gameOver) return;
-    const turnEndEvent: GameEvent = { type: 'on_turn_end', playerId };
+    const turnEndEvent: GameEvent = {
+      type: 'lifecycle',
+      playerId,
+      phase: 'on_turn_end',
+    };
     this.processSimpleEvent(turnEndEvent);
   }
 
   processGameStart(): void {
     if (this.engineStateSignal().gameOver) return;
-    const gameStartEvent: GameEvent = { type: 'game_start' };
+    const state = this.engineStateSignal();
+    const gameStartEvent: GameEvent = {
+      type: 'lifecycle',
+      // use playerOne as the initiating player context for game start
+      playerId: state.playerOne.id,
+      phase: 'game_start',
+    };
     this.processSimpleEvent(gameStartEvent);
   }
 
   processTurnStart(playerId: string): void {
     if (this.engineStateSignal().gameOver) return;
-    const turnStartEvent: GameEvent = { type: 'on_turn_start', playerId };
+    const turnStartEvent: GameEvent = {
+      type: 'lifecycle',
+      playerId,
+      phase: 'on_turn_start',
+    };
     this.processSimpleEvent(turnStartEvent);
   }
 
@@ -133,7 +147,7 @@ export class Engine {
 
     if (listenersToProcess.length === 0) {
       // Basic effect processing via processors
-      const processor = PROCESSORS[event.type];
+      const processor = PROCESSORS[event.type as keyof typeof PROCESSORS];
       if (processor && 'playerId' in event && event.playerId) {
         const playerId = event.playerId;
         const playerKey =
@@ -150,7 +164,11 @@ export class Engine {
         if (!state.gameOver && processed.gameOver && processed.winnerId) {
           this.log({
             type: 'event',
-            event: { type: 'game_over', playerId: processed.winnerId },
+            event: {
+              type: 'lifecycle',
+              playerId: processed.winnerId,
+              phase: 'game_over',
+            },
           });
         }
         return processed;

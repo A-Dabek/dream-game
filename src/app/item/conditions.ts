@@ -45,7 +45,8 @@ export function onPlay(): Condition {
  * Checks if the given type is a lifecycle event (cannot be swallowed).
  */
 export function isLifecycleEvent(type: string): boolean {
-  return type === ON_PLAY || type === ON_TURN_END;
+  // Lifecycle events are now unified under the 'lifecycle' type
+  return type === 'lifecycle';
 }
 
 /**

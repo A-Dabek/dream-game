@@ -4,11 +4,15 @@ import {
   Condition,
   Effect,
   HAS_NO_ITEMS,
-  isLifecycleEvent,
   ON_PLAY,
   ON_TURN_END,
 } from '../../item';
-import { EngineState, GameEvent } from '../engine.model';
+import {
+  EngineState,
+  GameEvent,
+  isEffectEvent,
+  isLifecycleGameEvent,
+} from '../engine.model';
 
 export interface ReactiveCondition {
   readonly type: string;
@@ -40,18 +44,28 @@ class ComposableCondition implements ReactiveCondition {
  * Handles BEFORE_EFFECT and AFTER_EFFECT logic.
  */
 const matchType =
-  (expectedType: string, conditionValue?: any): ConditionPredicate =>
+  (expectedType: string, conditionValue?: unknown): ConditionPredicate =>
   (event) => {
-    const isEffectType = !isLifecycleEvent(event.type);
+    const lifecycle = isLifecycleGameEvent(event);
+    // Special handling for lifecycle phases
+    if (expectedType === ON_TURN_END) {
+      return lifecycle && event.phase === ON_TURN_END;
+    }
+
+    const isEffectType = !lifecycle;
     const typeMatches =
-      expectedType === event.type ||
+      event.type === expectedType ||
       (isEffectType &&
         (expectedType === BEFORE_EFFECT || expectedType === AFTER_EFFECT));
 
     if (!typeMatches) return false;
 
     if (conditionValue !== undefined) {
-      return event.type === conditionValue;
+      // Only effect events carry atomic effect type discriminants
+      if (isEffectEvent(event)) {
+        return event.type === conditionValue;
+      }
+      return false;
     }
 
     return true;
