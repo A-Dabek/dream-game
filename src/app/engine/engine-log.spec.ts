@@ -71,37 +71,6 @@ describe('Engine Log', () => {
     });
   });
 
-  it('should log reactions', () => {
-    const engine = new Engine(player1, player2);
-
-    // P2 plays negate damage
-    engine.play('p2', '_blueprint_negate_damage');
-
-    // P1 attacks
-    engine.play('p1', '_blueprint_attack');
-    const playLog = engine.consumeLog();
-
-    // We expect:
-    // - event: on_play
-    // - event: remove_item
-    // - processor: remove_item
-    // - event: damage
-    // - reaction: from negate damage listener
-    // (no damage processor because it was negated/cancelled)
-
-    expect(playLog).toContainEqual(
-      expect.objectContaining({
-        type: 'reaction',
-        playerId: 'p2',
-      }),
-    );
-
-    const damageProcessorLog = playLog.find(
-      (l) => l.type === 'processor' && l.effect.type === 'damage',
-    );
-    expect(damageProcessorLog).toBeUndefined();
-  });
-
   it('should log turn end', () => {
     const engine = new Engine(player1, player2);
     engine.processEndOfTurn('p1');

@@ -14,7 +14,6 @@ export interface EngineState {
 
 export type LogEntry =
   | { type: 'event'; event: GameEvent }
-  | { type: 'reaction'; instanceId: string; playerId: string; event: GameEvent }
   | { type: 'processor'; effect: Effect; targetPlayerId: string };
 
 export type LifecyclePhase =

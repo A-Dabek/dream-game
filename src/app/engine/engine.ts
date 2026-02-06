@@ -186,22 +186,9 @@ export class Engine {
     const [current, ...remaining] = listenersToProcess;
     const { event: resultEvent } = current.handle(event, state);
 
-    let nextState = state;
-    const isSameEvent = resultEvent.length === 1 && resultEvent[0] === event;
-
-    if (!isSameEvent) {
-      // Log reactions outside of EngineState
-      this.log({
-        type: 'reaction',
-        instanceId: current.instanceId,
-        playerId: current.playerId,
-        event,
-      });
-    }
-
     return resultEvent.reduce<EngineState>((acc, e) => {
       return this.processEvent(e, remaining, acc, depth + 1);
-    }, nextState);
+    }, state);
   }
 
   // DRY helper for simple top-level events that only need logging + processing
