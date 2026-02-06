@@ -30,3 +30,8 @@ The UI module provides Angular components for displaying the game state and faci
 - Global typography unified: a single system font stack is applied app-wide for consistent readability.
 - Readability improvements: larger headline and button font sizes with tighter letter spacing.
 - Responsive fix: prevent `.player-section` from overflowing the `.container` on small screens by constraining width and allowing shrink.
+- Board layout stabilized: reserved vertical space for player and opponent hands even when empty, and ensured the main board area (turn indicator + center) consumes leftover space with proper `min-height: 0` in flex containers to avoid overflow.
+- Top/bottom sections now have fixed heights (hand + status) using CSS custom properties; the center area flexes to fill leftover device height. Uses `svh/dvh/lvh` viewport units for mobile stability.
+ - Icon sizing moved from component input to CSS variables: `app-icon` SVG now sizes via `--icon-size` (default 1.6rem) and uses `currentColor`; consumers can control color with CSS or the optional `color` input.
+ - Hand/item size alignment: `app-item-display` width/height now use `--hand-item-size`, keeping wrappers and tiles consistent and preventing jumpiness.
+ - Fixed opponent/player status row overflow by removing outer margins inside fixed-height status rows and including borders in `app-player-hand` height via `box-sizing: border-box`.

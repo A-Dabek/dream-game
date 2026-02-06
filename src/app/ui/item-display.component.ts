@@ -12,7 +12,7 @@ import { IconComponent } from './icon.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
-    <app-icon [name]="iconName()" [size]="2" />
+    <app-icon [name]="iconName()" />
     <div class="label">{{ label() }}</div>
   `,
   host: {

@@ -20,7 +20,6 @@ import { IconComponent } from './icon.component';
       >
         <app-icon
           [name]="turn === playerId() ? 'police-badge' : 'brutal-helm'"
-          [size]="1.5"
         />
         @if ($first && turn === playerId()) {
           <div
@@ -32,7 +31,7 @@ import { IconComponent } from './icon.component';
             (keydown.enter)="skipTurn.emit()"
             (keydown.space)="$event.preventDefault(); skipTurn.emit()"
           >
-            <app-icon name="fast-forward-button" [size]="0.6" />
+            <app-icon name="fast-forward-button" />
           </div>
         }
       </div>

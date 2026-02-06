@@ -53,6 +53,17 @@
   --color-opponent-surface: #3d2d2d;
   --color-opponent-active: #7d1f1f;
   --shadow-opponent: rgba(160, 82, 82, 0.1);
+
+  /* Fixed layout sizes */
+  --hand-item-size: 4.2rem; /* height of a single item tile */
+  --hand-padding-y: 0.4rem; /* vertical padding used in app-player-hand */
+  --hand-height: calc(
+    var(--hand-item-size) + (var(--hand-padding-y) * 2)
+  ); /* total hand strip height */
+  --status-height: 2rem; /* health bar area: bar 1.2rem + vertical margins ~0.5rem*2 */
+  --side-area-height: calc(
+    var(--hand-height) + var(--status-height)
+  ); /* fixed height for player/opponent areas */
 }
 
 /* Global typography: single, consistent font stack across the app */
@@ -61,13 +72,20 @@ body {
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Ensure the root can stretch with the viewport and allow children using % heights */
+  height: 100%;
+  min-height: 100vh;
 }
 
 /* GameContainerComponent styles */
 app-game-container {
   display: block; /* custom elements are inline by default; ensure it can size itself */
   position: relative;
-  height: 100vh;
+  /* Use a cascade of viewport units for best cross-browser behavior */
+  height: 100vh; /* fallback */
+  height: 100svh; /* small viewport (Android Chrome stable on scroll) */
+  height: 100dvh; /* dynamic viewport (most modern browsers) */
+  max-height: 100lvh; /* do not exceed the largest viewport */
   overflow: hidden; /* prevent scrollbars during transitions */
 
   .screens-container {
@@ -82,7 +100,7 @@ app-game-container {
     inset: 0; /* top:0 right:0 bottom:0 left:0 */
     width: 100%;
     height: 100%;
-    display: block;
+    display: flex;
   }
 
   /* Use keyframe animations for both enter and leave to keep behavior consistent */
@@ -90,6 +108,10 @@ app-game-container {
     animation: slideRight 0.6s ease both;
     z-index: 1;
     will-change: transform;
+
+    @starting-style {
+      display: block;
+    }
   }
 
   .slide-out {
@@ -121,7 +143,11 @@ app-game-container {
 app-board-ui {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* Use a cascade of viewport units to remain responsive to browser chrome changes */
+  height: 100vh; /* fallback */
+  height: 100svh; /* small viewport */
+  height: 100dvh; /* dynamic viewport */
+  max-height: 100lvh; /* cap to largest viewport height */
   width: 100vw;
   max-width: 500px;
   margin: 0 auto;
@@ -131,21 +157,17 @@ app-board-ui {
   overflow: hidden;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
-  .opponent-area {
-    flex: 0 0 auto;
-    transition: background-color 0.3s ease;
-
-    &.active {
-      background: var(--color-opponent-active);
-      box-shadow: inset 0 -4px 10px var(--shadow-opponent);
-    }
-  }
-
   .main-area {
-    flex: 1 1 auto;
+    flex: 1 1 auto; /* take leftover vertical space between opponent and player sections */
     display: flex;
     flex-direction: row;
     overflow: hidden;
+    min-height: 0; /* allow children to shrink properly in flex layouts */
+
+    /* Ensure the turn queue does not grow and center takes remaining width */
+    > app-turn-queue {
+      flex: 0 0 auto;
+    }
   }
 
   .center-content {
@@ -155,10 +177,36 @@ app-board-ui {
     align-items: center;
     justify-content: center;
     position: relative;
+    min-height: 0; /* ensure it can shrink and not force overflow */
+    min-width: 0; /* prevent horizontal overflow in flex row */
+  }
+
+  /* Constrain status areas inside top/bottom sections to fixed height */
+  .opponent-area > .center-content,
+  .player-area > .center-content {
+    height: var(--status-height);
+    min-height: var(--status-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .opponent-area {
+    /* Fixed height for the opponent section (hand + status) */
+    flex: 0 0 var(--side-area-height);
+    height: var(--side-area-height);
+    transition: background-color 0.3s ease;
+
+    &.active {
+      background: var(--color-opponent-active);
+      box-shadow: inset 0 -4px 10px var(--shadow-opponent);
+    }
   }
 
   .player-area {
-    flex: 0 0 auto;
+    /* Fixed height for the player section (status + hand) */
+    flex: 0 0 var(--side-area-height);
+    height: var(--side-area-height);
     transition: background-color 0.3s ease;
 
     &.active {
@@ -174,6 +222,12 @@ app-board-ui {
     flex-direction: column;
     align-items: center;
     gap: 0.2rem;
+  }
+
+  /* In fixed-height status rows, avoid extra outer margins that would overflow */
+  .opponent-area .health-bar-container,
+  .player-area .health-bar-container {
+    margin: 0;
   }
 
   .health-bar {
@@ -238,6 +292,15 @@ app-board-ui {
 app-icon {
   display: flex;
   padding: 0.25rem;
+
+  /* Size icons via CSS variable; defaults to 1.6rem */
+  --icon-size: 1.6rem;
+
+  svg {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    display: block;
+  }
 }
 
 /* ItemDisplayComponent styles */
@@ -250,8 +313,8 @@ app-item-display {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   background: var(--color-surface-1);
-  width: 4rem;
-  height: 4rem;
+  width: var(--hand-item-size);
+  height: var(--hand-item-size);
   box-shadow: 0 4px 6px var(--shadow-soft);
   transition: all 0.2s ease;
   color: var(--color-text-muted);
@@ -280,7 +343,11 @@ app-player-hand {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  padding: 0.8rem;
+  padding: var(--hand-padding-y);
+  /* Fixed hand height for stable top/bottom sections */
+  height: var(--hand-height);
+  flex: 0 0 var(--hand-height);
+  box-sizing: border-box; /* include borders in fixed height */
   overflow-x: auto;
   width: 100%;
   justify-content: center;
@@ -289,6 +356,9 @@ app-player-hand {
   border-bottom: 1px solid var(--color-border-weak);
 
   .item-wrapper {
+    display: flex; /* match child height without extra line-box space */
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -370,6 +440,15 @@ app-turn-queue {
       }
     }
   }
+
+  /* Icon sizing via CSS variables (no TS size input) */
+  .turn-item app-icon {
+    --icon-size: 1.5rem;
+  }
+
+  .turn-item .skip-button app-icon {
+    --icon-size: 0.6rem;
+  }
 }
 
 @keyframes pulse {
@@ -391,7 +470,11 @@ app-turn-queue {
 app-pre-game-screen,
 app-post-game-screen {
   display: block;
-  height: 100vh;
+  /* Dynamic viewport to avoid jumpiness on mobile with broad support */
+  height: 100vh; /* fallback */
+  height: 100svh; /* small viewport */
+  height: 100dvh; /* dynamic viewport */
+  max-height: 100lvh; /* largest viewport */
   background: var(--color-bg);
   color: var(--color-text);
 
