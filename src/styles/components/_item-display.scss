@@ -1,0 +1,34 @@
+/* ItemDisplayComponent styles */
+app-item-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface-1);
+  width: var(--hand-item-size);
+  height: var(--hand-item-size);
+  box-shadow: 0 4px 6px var(--shadow-soft);
+  transition: all 0.2s ease;
+  color: var(--color-text-muted);
+
+  &.active {
+    border-color: var(--color-accent-active-border);
+    background: var(--color-accent-active-bg);
+    box-shadow: 0 0 12px rgba(92, 133, 214, 0.4);
+  }
+
+  .label {
+    font-size: 0.6rem;
+    text-align: center;
+    margin-top: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    color: var(--color-text-subtle);
+    text-transform: capitalize;
+  }
+}

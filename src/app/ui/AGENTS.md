@@ -18,21 +18,15 @@ The UI module provides Angular components for displaying the game state and faci
 
 ## Features
 
-- **Mobile First**: Designed with a layout optimized for mobile screens.
 - **Signal-based**: Uses Angular signals (`input`, `computed`) for efficient state management and change detection.
 - **OnPush Change Detection**: Ensures optimal performance by only re-rendering when inputs change.
-- **Dark Themed**: Features a sleek, minimalistic dark theme with low-saturation colors.
 - **WCAG AA Compliant**: Follows accessibility standards for color contrast and ARIA attributes.
+
+## Styling
+
+Global styles, design tokens, and layout-specific styling are documented in [src/styles/AGENTS.md](../../styles/AGENTS.md).
 
 ## Recent UI Updates
 
 - Pre- and post-game screens now use a unified, minimal design: common headline styling for `VS.` and `Winner/Loser` labels, and a shared text-only button style used for "Ready" and "New Game". This ensures consistent presentation across screens and adheres to accessibility and performance best practices.
-- Global typography unified: a single system font stack is applied app-wide for consistent readability.
-- Readability improvements: larger headline and button font sizes with tighter letter spacing.
-- Responsive fix: prevent `.player-section` from overflowing the `.container` on small screens by constraining width and allowing shrink.
-- Board layout stabilized: reserved vertical space for player and opponent hands even when empty, and ensured the main board area (turn indicator + center) consumes leftover space with proper `min-height: 0` in flex containers to avoid overflow.
-- Top/bottom sections now have fixed heights (hand + status) using CSS custom properties; the center area flexes to fill leftover device height. Uses `svh/dvh/lvh` viewport units for mobile stability.
 - Item Play Animations: Items now slide towards the center of the board and fade out when removed from the hand (upwards for players, downwards for opponents). This uses native Angular 21 CSS animation triggers (`animate.leave`). The animation now also smoothly shrinks the item's width and margin after it has slid and faded out, causing remaining items in the hand to slide into their new positions sequentially rather than simultaneously with the play animation.
-- Icon sizing moved from component input to CSS variables: `app-icon` SVG now sizes via `--icon-size` (default 1.6rem) and uses `currentColor`; consumers can control color with CSS or the optional `color` input.
- - Hand/item size alignment: `app-item-display` width/height now use `--hand-item-size`, keeping wrappers and tiles consistent and preventing jumpiness.
- - Fixed opponent/player status row overflow by removing outer margins inside fixed-height status rows and including borders in `app-player-hand` height via `box-sizing: border-box`.

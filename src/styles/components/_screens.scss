@@ -1,0 +1,94 @@
+@use '../mixins' as *;
+
+/* Pre/Post game screens unified, simple layout */
+app-pre-game-screen,
+app-post-game-screen {
+  display: block;
+  @include full-height;
+  background: var(--color-bg);
+  color: var(--color-text);
+
+  .container {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr auto;
+    height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    align-items: center;
+    justify-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .opponent-section,
+  .player-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0; /* prevent overflow on small screens */
+    overflow: hidden;
+  }
+
+  .headline {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.25;
+    text-shadow: 0 1px 0 var(--shadow-text-strong);
+    user-select: none;
+    margin-bottom: 0.4rem;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.5rem 0 1rem;
+  }
+
+  .screen-btn {
+    background: none;
+    color: var(--color-text);
+    border: none;
+    padding: 0.6rem 1rem;
+    font-size: clamp(1rem, 4vw, 1.125rem);
+    font-weight: 700;
+    cursor: pointer;
+    text-shadow: 0 1px 0 var(--shadow-text-strong);
+    box-shadow: none;
+
+    &:hover {
+      filter: brightness(1.1);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+  }
+}
+
+/* Pre-game specific subtle hand reveal animations (kept minimal) */
+app-pre-game-screen {
+  .opponent-hand,
+  .player-hand {
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+      opacity 400ms ease-out,
+      transform 400ms ease-out;
+
+    &.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .vs.fade-out {
+    opacity: 0.8;
+  }
+}

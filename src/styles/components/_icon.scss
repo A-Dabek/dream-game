@@ -1,0 +1,14 @@
+/* IconComponent styles */
+app-icon {
+  display: flex;
+  padding: 0.25rem;
+
+  /* Size icons via CSS variable; defaults to 1.6rem */
+  --icon-size: 1.6rem;
+
+  svg {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    display: block;
+  }
+}

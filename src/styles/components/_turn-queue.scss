@@ -1,0 +1,76 @@
+@use '../mixins' as *;
+
+/* TurnQueueComponent styles */
+app-turn-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem;
+  background: var(--color-surface-2);
+  border-right: 1px solid var(--color-border-weak);
+  height: 100%;
+  overflow: hidden;
+
+  .turn-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 4px;
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+
+    &.player {
+      @include faction-theme('player');
+    }
+
+    &.opponent {
+      @include faction-theme('opponent');
+    }
+
+    &.current {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px var(--shadow-medium);
+      border-width: 2px;
+      z-index: 1;
+    }
+
+    .skip-button {
+      position: absolute;
+      bottom: -0.2rem;
+      right: -0.2rem;
+      background: var(--color-border);
+      border-radius: 50%;
+      width: 1rem;
+      height: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--color-border-strong);
+      animation: pulse 2s infinite ease-in-out;
+      transition: transform 0.1s;
+
+      &:hover {
+        background: #555555;
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+  }
+
+  /* Icon sizing via CSS variables (no TS size input) */
+  .turn-item app-icon {
+    --icon-size: 1.5rem;
+  }
+
+  .turn-item .skip-button app-icon {
+    --icon-size: 0.6rem;
+  }
+}

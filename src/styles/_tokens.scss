@@ -1,0 +1,59 @@
+:root {
+  /* Surface & text */
+  --color-bg: #1a1a1a;
+  --color-text: #e0e0e0;
+  --color-text-inverse: #ffffff;
+  --color-text-muted: #cccccc;
+  --color-text-subtle: #aaaaaa;
+
+  /* Semantic */
+  --color-primary: #3b82f6; /* restart/primary button */
+  --color-focus: #40c4ff; /* high-contrast focus ring */
+  --color-win: #2e7d32;
+  --color-lose: #8b2e2e;
+
+  /* Accents */
+  --color-accent-1: #ff6b35; /* gradient start */
+  --color-accent-2: #f7931e; /* gradient end */
+  --color-accent-active-border: #5c85d6; /* active outline on items */
+  --color-accent-active-bg: #333a4d; /* active surface on items */
+
+  /* Shadows */
+  --shadow-strong: rgba(0, 0, 0, 0.8);
+  --shadow-accent-1: rgba(255, 107, 53, 0.4);
+  --shadow-accent-2: rgba(255, 107, 53, 0.6);
+  --shadow-soft: rgba(0, 0, 0, 0.3);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --shadow-text-strong: rgba(0, 0, 0, 0.5);
+
+  /* Surfaces & borders */
+  --color-surface-1: #2a2a2a; /* cards/tiles */
+  --color-surface-2: #222222; /* rails/panels */
+  --color-surface-3: #333333; /* inner tracks */
+  --color-border: #444444;
+  --color-border-weak: #333333;
+  --color-border-strong: #666666;
+
+  /* Faction tints */
+  --color-player: #4a7c59;
+  --color-player-surface: #2d3d32;
+  --color-player-active: #4c6b56;
+  --shadow-player: rgba(74, 124, 89, 0.1);
+
+  --color-opponent: #a05252;
+  --color-opponent-surface: #3d2d2d;
+  --color-opponent-active: #7d1f1f;
+  --shadow-opponent: rgba(160, 82, 82, 0.1);
+
+  /* Fixed layout sizes */
+  --hand-item-size: 4.2rem; /* height of a single item tile */
+  --hand-padding-y: 0.4rem; /* vertical padding used in app-player-hand */
+  --hand-gap: 0.5rem; /* horizontal gap between items */
+  --hand-height: calc(
+    var(--hand-item-size) + (var(--hand-padding-y) * 2)
+  ); /* total hand strip height */
+  --status-height: 2rem; /* health bar area: bar 1.2rem + vertical margins ~0.5rem*2 */
+  --side-area-height: calc(
+    var(--hand-height) + var(--status-height)
+  ); /* fixed height for player/opponent areas */
+}

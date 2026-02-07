@@ -1,0 +1,40 @@
+/* PlayerHandComponent styles */
+app-player-hand {
+  display: flex;
+  flex-direction: row;
+  gap: var(--hand-gap);
+  padding: var(--hand-padding-y);
+  /* Fixed hand height for stable top/bottom sections */
+  height: var(--hand-height);
+  flex: 0 0 var(--hand-height);
+  box-sizing: border-box; /* include borders in fixed height */
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  justify-content: center;
+  background: var(--color-surface-2);
+  border-top: 1px solid var(--color-border-weak);
+  border-bottom: 1px solid var(--color-border-weak);
+
+  .item-wrapper {
+    display: flex; /* match child height without extra line-box space */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    width: var(--hand-item-size);
+    overflow: hidden;
+    flex-shrink: 0;
+
+    &:not(.disabled):active {
+      transform: scale(0.92);
+    }
+  }
+
+  .disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+}
+

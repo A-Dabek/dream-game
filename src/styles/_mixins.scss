@@ -1,0 +1,57 @@
+@mixin full-height {
+  height: 100vh; /* fallback */
+  height: 100svh; /* small viewport */
+  height: 100dvh; /* dynamic viewport */
+  max-height: 100lvh; /* largest viewport */
+}
+
+@mixin faction-theme($faction, $active-shadow-dir: null) {
+  @if $faction == 'player' {
+    border-color: var(--color-player);
+    background: var(--color-player-surface);
+    --faction-color: var(--color-player);
+    --faction-shadow: var(--shadow-player);
+    --faction-active: var(--color-player-active);
+  } @else if $faction == 'opponent' {
+    border-color: var(--color-opponent);
+    background: var(--color-opponent-surface);
+    --faction-color: var(--color-opponent);
+    --faction-shadow: var(--shadow-opponent);
+    --faction-active: var(--color-opponent-active);
+  }
+
+  @if $active-shadow-dir != null {
+    &.active {
+      background: var(--faction-active);
+      box-shadow: inset 0 #{$active-shadow-dir} 10px var(--faction-shadow);
+    }
+  }
+}
+
+@mixin item-slide($direction) {
+  $y-offset: 5rem;
+  @if $direction == 'down' {
+    $y-offset: 5rem;
+  } @else {
+    $y-offset: -5rem;
+  }
+
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+    width: var(--hand-item-size);
+    margin-right: 0;
+  }
+  50% {
+    transform: translateY($y-offset);
+    opacity: 0;
+    width: var(--hand-item-size);
+    margin-right: 0;
+  }
+  100% {
+    transform: translateY($y-offset);
+    opacity: 0;
+    width: 0;
+    margin-right: calc(var(--hand-gap) * -1);
+  }
+}
