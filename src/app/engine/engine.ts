@@ -9,7 +9,7 @@ import {
   LogEntry,
 } from './engine.model';
 import { PROCESSORS } from './processors';
-import { TurnManager } from './turn-manager/turn-manager';
+import { TurnManager } from '@dream/turn-manager';
 
 export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);

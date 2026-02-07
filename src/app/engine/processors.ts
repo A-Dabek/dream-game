@@ -1,7 +1,7 @@
+import { TurnManager } from '@dream/turn-manager';
 import { StatusEffect } from '../item';
 import { ListenerFactory } from './effects';
 import { EngineState, Processors } from './engine.model';
-import { TurnManager } from './turn-manager/turn-manager';
 
 function getTargetPlayerKey(
   playerKey: 'playerOne' | 'playerTwo',

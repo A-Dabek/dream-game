@@ -1,4 +1,4 @@
-import { TurnManagerInterface } from '../engine.model';
+import { TurnManagerInterface } from '../turn-manager.model';
 
 /**
  * Responsible for calculating and managing the turn order based on player speeds.

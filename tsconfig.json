@@ -20,6 +20,7 @@
       "@dream/item": ["src/app/item/index.ts"],
       "@dream/board": ["src/app/board/index.ts"],
       "@dream/engine": ["src/app/engine/index.ts"],
+      "@dream/turn-manager": ["src/app/turn-manager/index.ts"],
       "@dream/game": ["src/app/game/index.ts"],
       "@dream/player": ["src/app/player/index.ts"],
       "@dream/rating": ["src/app/rating/index.ts"],
