@@ -12,11 +12,14 @@ import { ItemDisplayComponent } from './item-display.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ItemDisplayComponent],
   template: `
-    @for (item of items(); track item.instanceId || item.id) {
+    @for (item of items(); track item.instanceId) {
       <div
         class="item-wrapper"
         [class.disabled]="!interactive()"
         (click)="interactive() && itemSelected.emit(item)"
+        [animate.leave]="
+          side() === 'player' ? 'item-slide-up' : 'item-slide-down'
+        "
       >
         <app-item-display [item]="item" />
       </div>
@@ -26,5 +29,6 @@ import { ItemDisplayComponent } from './item-display.component';
 export class PlayerHandComponent {
   readonly items = input.required<Item[]>();
   readonly interactive = input(true);
+  readonly side = input<'player' | 'opponent'>('player');
   readonly itemSelected = output<Item>();
 }

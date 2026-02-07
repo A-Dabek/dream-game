@@ -6,7 +6,7 @@ The UI module provides Angular components for displaying the game state and faci
 
 - **IconComponent**: Displays SVG icons from a central icon library.
 - **ItemDisplayComponent**: Renders a single item with its icon and label.
-- **PlayerHandComponent**: Displays a list of items (either the player's or opponent's). Supports interactivity for the player's hand.
+- **PlayerHandComponent**: Displays a list of items (either the player's or opponent's). Supports interactivity for the player's hand and automatic slide-out animations when items are played or removed.
 - **TurnQueueComponent**: Shows a vertical list of upcoming turns on the left side of the screen. Supports skipping the current turn for the human player via a pulsing icon.
 - **GameContainerComponent**: The top-level UI component that creates players, displays VS screen with Ready button to start game via slide animation, manages `UiStateService` initialization, and provides state to `BoardUiComponent`.
 - **BoardUiComponent**: Orchestrates the overall game layout for mobile view. It receives a non-nullable `GameState` from `GameContainerComponent`.
@@ -32,6 +32,7 @@ The UI module provides Angular components for displaying the game state and faci
 - Responsive fix: prevent `.player-section` from overflowing the `.container` on small screens by constraining width and allowing shrink.
 - Board layout stabilized: reserved vertical space for player and opponent hands even when empty, and ensured the main board area (turn indicator + center) consumes leftover space with proper `min-height: 0` in flex containers to avoid overflow.
 - Top/bottom sections now have fixed heights (hand + status) using CSS custom properties; the center area flexes to fill leftover device height. Uses `svh/dvh/lvh` viewport units for mobile stability.
- - Icon sizing moved from component input to CSS variables: `app-icon` SVG now sizes via `--icon-size` (default 1.6rem) and uses `currentColor`; consumers can control color with CSS or the optional `color` input.
+- Item Play Animations: Items now slide towards the center of the board and fade out when removed from the hand (upwards for players, downwards for opponents). This uses native Angular 21 CSS animation triggers (`animate.leave`). The animation now also smoothly shrinks the item's width and margin after it has slid and faded out, causing remaining items in the hand to slide into their new positions sequentially rather than simultaneously with the play animation.
+- Icon sizing moved from component input to CSS variables: `app-icon` SVG now sizes via `--icon-size` (default 1.6rem) and uses `currentColor`; consumers can control color with CSS or the optional `color` input.
  - Hand/item size alignment: `app-item-display` width/height now use `--hand-item-size`, keeping wrappers and tiles consistent and preventing jumpiness.
  - Fixed opponent/player status row overflow by removing outer margins inside fixed-height status rows and including borders in `app-player-hand` height via `box-sizing: border-box`.

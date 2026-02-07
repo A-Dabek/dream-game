@@ -21,6 +21,7 @@ import { PlayerHandComponent } from './player-hand.component';
           [interactive]="false"
           class="opponent-hand"
           [class.show]="animating()"
+          side="opponent"
         />
       </section>
       <div
@@ -37,6 +38,7 @@ import { PlayerHandComponent } from './player-hand.component';
           [interactive]="false"
           class="player-hand"
           [class.show]="animating()"
+          side="player"
         />
       </section>
       <section class="actions">

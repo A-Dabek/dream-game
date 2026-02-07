@@ -23,7 +23,11 @@ import { TurnQueueComponent } from './turn-queue.component';
       class="opponent-area"
       [class.active]="!isPlayerTurn() && !s.isGameOver"
     >
-      <app-player-hand [items]="s.opponent.items" [interactive]="false" />
+      <app-player-hand
+        [items]="s.opponent.items"
+        [interactive]="false"
+        side="opponent"
+      />
       <div class="center-content">
         <div class="health-bar-container">
           <div class="health-bar">
@@ -71,6 +75,7 @@ import { TurnQueueComponent } from './turn-queue.component';
       <app-player-hand
         [items]="s.player.items"
         [interactive]="isPlayerTurn() && !s.isGameOver"
+        side="player"
         (itemSelected)="onItemPlayed($event)"
       />
     </div>

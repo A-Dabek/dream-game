@@ -57,6 +57,7 @@
   /* Fixed layout sizes */
   --hand-item-size: 4.2rem; /* height of a single item tile */
   --hand-padding-y: 0.4rem; /* vertical padding used in app-player-hand */
+  --hand-gap: 0.5rem; /* horizontal gap between items */
   --hand-height: calc(
     var(--hand-item-size) + (var(--hand-padding-y) * 2)
   ); /* total hand strip height */
@@ -338,11 +339,62 @@ app-item-display {
   }
 }
 
+/* Item animations for entering/leaving the hand */
+.item-slide-up {
+  animation: itemSlideUp 0.75s ease-out both;
+}
+
+.item-slide-down {
+  animation: itemSlideDown 0.75s ease-out both;
+}
+
+@keyframes itemSlideUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+    width: var(--hand-item-size);
+    margin-right: 0;
+  }
+  50% {
+    transform: translateY(-5rem);
+    opacity: 0;
+    width: var(--hand-item-size);
+    margin-right: 0;
+  }
+  100% {
+    transform: translateY(-5rem);
+    opacity: 0;
+    width: 0;
+    margin-right: calc(var(--hand-gap) * -1);
+  }
+}
+
+@keyframes itemSlideDown {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+    width: var(--hand-item-size);
+    margin-right: 0;
+  }
+  50% {
+    transform: translateY(5rem);
+    opacity: 0;
+    width: var(--hand-item-size);
+    margin-right: 0;
+  }
+  100% {
+    transform: translateY(5rem);
+    opacity: 0;
+    width: 0;
+    margin-right: calc(var(--hand-gap) * -1);
+  }
+}
+
 /* PlayerHandComponent styles */
 app-player-hand {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: var(--hand-gap);
   padding: var(--hand-padding-y);
   /* Fixed hand height for stable top/bottom sections */
   height: var(--hand-height);
@@ -361,6 +413,9 @@ app-player-hand {
     justify-content: center;
     cursor: pointer;
     transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    width: var(--hand-item-size);
+    overflow: hidden;
+    flex-shrink: 0;
 
     &:not(.disabled):active {
       transform: scale(0.92);

@@ -19,14 +19,22 @@ import { PlayerHandComponent } from './player-hand.component';
         <div class="headline" aria-live="polite">
           {{ opponentWon() ? 'Winner' : 'Loser' }}
         </div>
-        <app-player-hand [items]="opponent().items" [interactive]="false" />
+        <app-player-hand
+          [items]="opponent().items"
+          [interactive]="false"
+          side="opponent"
+        />
       </section>
 
       <section class="player-section">
         <div class="headline" aria-live="polite">
           {{ playerWon() ? 'Winner' : 'Loser' }}
         </div>
-        <app-player-hand [items]="player().items" [interactive]="false" />
+        <app-player-hand
+          [items]="player().items"
+          [interactive]="false"
+          side="player"
+        />
       </section>
 
       <section class="actions">
