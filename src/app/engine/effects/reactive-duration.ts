@@ -1,5 +1,6 @@
 import { Duration } from '../../item';
-import { GameEvent, isLifecycleGameEvent } from '../engine.model';
+import { GameEvent } from '../engine.model';
+import { isLifecycleGameEvent } from '../type-guards';
 
 export interface ReactiveDuration {
   readonly isExpired: boolean;

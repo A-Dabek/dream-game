@@ -45,21 +45,6 @@ describe('TurnManager', () => {
     expect(turns).toEqual(['p1', 'p1', 'p2']);
   });
 
-  it('should clone correctly', () => {
-    const tm = new TurnManager(
-      { id: 'p1', speed: 13 },
-      { id: 'p2', speed: 16 },
-    );
-    tm.advanceTurn();
-    tm.advanceTurn();
-
-    const cloned = tm.clone();
-    expect(cloned.getNextTurns(10)).toEqual(tm.getNextTurns(10));
-
-    cloned.advanceTurn();
-    expect(cloned.getNextTurns(5)).not.toEqual(tm.getNextTurns(5));
-  });
-
   it('should support getter for next turns', () => {
     const tm = new TurnManager(p1, p2);
     expect(tm.nextTurns.length).toBe(10);

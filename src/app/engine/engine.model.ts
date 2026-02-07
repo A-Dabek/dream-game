@@ -4,6 +4,17 @@ export interface EngineLoadout extends Loadout {
   readonly id: string;
 }
 
+export interface Listener {
+  readonly instanceId: string;
+  readonly playerId: string;
+  handle(
+    event: GameEvent,
+    state: EngineState,
+  ): {
+    event: GameEvent[];
+  };
+}
+
 export interface EngineState {
   readonly playerOne: EngineLoadout;
   readonly playerTwo: EngineLoadout;
@@ -13,15 +24,6 @@ export interface EngineState {
   readonly gameOver: boolean;
   readonly winnerId?: string;
 }
-
-export type StateChangeLogEntry = {
-  type: 'state-change';
-  snapshot: EngineState;
-};
-
-export type LogEntry =
-  | { type: 'event'; event: GameEvent }
-  | StateChangeLogEntry;
 
 export type LifecyclePhase =
   | 'game_start'
@@ -40,19 +42,14 @@ export type GameEvent =
   | LifecycleGameEvent
   | { type: 'effect'; effect: Effect; playerId: string };
 
-// Type guards for GameEvent variants to avoid `any` casts when handling events
-export function isLifecycleGameEvent(
-  event: GameEvent,
-): event is LifecycleGameEvent {
-  return event.type === 'lifecycle';
-}
+export type StateChangeLogEntry = {
+  type: 'state-change';
+  snapshot: EngineState;
+};
 
-export function isEffectEvent(
-  event: GameEvent,
-): event is { type: 'effect'; effect: Effect; playerId: string } {
-  // Effect events are now explicitly wrapped under the 'effect' discriminant
-  return event.type === 'effect';
-}
+export type LogEntry =
+  | { type: 'event'; event: GameEvent }
+  | StateChangeLogEntry;
 
 export interface TurnManagerInterface {
   readonly nextTurns: string[];
@@ -67,18 +64,23 @@ export interface TurnManagerInterface {
     firstPlayerId: string,
   ): void;
 
-  clone(): TurnManagerInterface;
-
   reset(firstPlayerId?: string): void;
 }
 
-export interface Listener {
-  readonly instanceId: string;
-  readonly playerId: string;
-  handle(
-    event: GameEvent,
-    state: EngineState,
-  ): {
-    event: GameEvent[];
-  };
-}
+export type ProcessorType =
+  | 'damage'
+  | 'healing'
+  | 'speed_up'
+  | 'slow_down'
+  | 'remove_item'
+  | 'remove_listener'
+  | 'advance_turn'
+  | 'add_status_effect';
+
+export type EffectProcessor = (
+  state: EngineState,
+  playerKey: 'playerOne' | 'playerTwo',
+  effect: Effect,
+) => EngineState;
+
+export type Processors = Record<ProcessorType, EffectProcessor>;

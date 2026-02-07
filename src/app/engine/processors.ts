@@ -1,13 +1,7 @@
-import { Effect, StatusEffect } from '../item';
+import { StatusEffect } from '../item';
 import { ListenerFactory } from './effects';
-import { EngineState } from './engine.model';
+import { EngineState, Processors } from './engine.model';
 import { TurnManager } from './turn-manager/turn-manager';
-
-export type EffectProcessor = (
-  state: EngineState,
-  playerKey: 'playerOne' | 'playerTwo',
-  effect: Effect,
-) => EngineState;
 
 function getTargetPlayerKey(
   playerKey: 'playerOne' | 'playerTwo',
@@ -45,7 +39,7 @@ function refreshTurnQueue(state: EngineState): EngineState {
   const tm = getTurnManager(state);
   return {
     ...state,
-    turnQueue: tm.getNextTurns(10),
+    turnQueue: [state.turnQueue[0], ...tm.getNextTurns(9)],
     turnError: tm.accumulatedError,
   };
 }
@@ -65,7 +59,7 @@ function checkGameOver(
   return state;
 }
 
-export const PROCESSORS: Record<string, EffectProcessor> = {
+export const PROCESSORS: Processors = {
   damage: (state, playerKey, effect) => {
     const targetKey = getTargetPlayerKey(playerKey, effect.target);
     const updatedState = updatePlayer(state, targetKey, {

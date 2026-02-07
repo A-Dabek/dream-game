@@ -57,14 +57,6 @@ export class TurnManager implements TurnManagerInterface {
     this.reset(firstPlayerId);
   }
 
-  clone(): TurnManager {
-    const cloned = new TurnManager(this.playerOne, this.playerTwo);
-    cloned.accumulatedError = this.accumulatedError;
-    cloned.turnQueue = [...this.turnQueue];
-    cloned.turnGenerator = cloned.createTurnGenerator(this.accumulatedError);
-    return cloned;
-  }
-
   reset(firstPlayerId?: string): void {
     const speedOne = this.playerOne.speed;
     const speedTwo = this.playerTwo.speed;

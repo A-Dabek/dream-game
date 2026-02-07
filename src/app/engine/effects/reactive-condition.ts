@@ -7,12 +7,8 @@ import {
   ON_PLAY,
   ON_TURN_END,
 } from '../../item';
-import {
-  EngineState,
-  GameEvent,
-  isEffectEvent,
-  isLifecycleGameEvent,
-} from '../engine.model';
+import { EngineState, GameEvent } from '../engine.model';
+import { isEffectEvent, isLifecycleGameEvent } from '../type-guards';
 
 export interface ReactiveCondition {
   readonly type: string;

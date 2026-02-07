@@ -2,11 +2,8 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import { GameState } from '../board';
-import {
-  isLifecycleGameEvent,
-  LogEntry,
-  StateChangeLogEntry,
-} from '../engine/engine.model';
+import { LogEntry, StateChangeLogEntry } from '../engine/engine.model';
+import { isLifecycleGameEvent } from '../engine/type-guards';
 
 @Injectable({
   providedIn: 'root',
