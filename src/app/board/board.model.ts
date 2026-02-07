@@ -1,5 +1,6 @@
 import { LogEntry } from '../engine/engine.model';
 import { ItemId, Loadout } from '../item';
+import { TurnEntry } from '@dream/turn-manager';
 import { Board } from './impl/board';
 
 /**
@@ -15,7 +16,7 @@ export interface BoardLoadout extends Loadout {
 export interface TurnInfo {
   currentPlayerId: string;
   nextPlayerId: string;
-  turnQueue: string[];
+  turnQueue: TurnEntry[];
 }
 
 /**

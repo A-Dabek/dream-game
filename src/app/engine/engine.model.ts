@@ -1,4 +1,5 @@
 import { Effect, ItemId, Loadout } from '../item';
+import { TurnEntry } from '@dream/turn-manager';
 
 export interface EngineLoadout extends Loadout {
   readonly id: string;
@@ -18,7 +19,7 @@ export interface Listener {
 export interface EngineState {
   readonly playerOne: EngineLoadout;
   readonly playerTwo: EngineLoadout;
-  readonly turnQueue: string[];
+  readonly turnQueue: TurnEntry[];
   readonly turnError: number;
   readonly listeners: Listener[];
   readonly gameOver: boolean;

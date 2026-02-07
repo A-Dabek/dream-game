@@ -108,7 +108,7 @@ export class Engine {
     const gameStartEvent: GameEvent = {
       type: 'lifecycle',
       // use the current player from the turn queue
-      playerId: state.turnQueue[0],
+      playerId: state.turnQueue[0]?.playerId ?? state.playerOne.id,
       phase: 'game_start',
     };
     this.processSimpleEvent(gameStartEvent);

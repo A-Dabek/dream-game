@@ -1,4 +1,4 @@
-# Engine Module - Agent Documentation
+﻿# Engine Module - Agent Documentation
 
 ## Overview
 
@@ -6,30 +6,30 @@ The core game engine that manages the game state and flow. It is a synchronous a
 
 ## Core Files
 
-- `engine.model.ts` - Type definitions for engine state, events, and listeners.
-- `effects/` - Implementation of status and passive effect listeners:
-  - `passive/` - Listeners tied to an item's existence in the loadout.
-  - `status/` - Listeners tied to a duration (buffs/debuffs).
-  - `reactive-condition.ts` - Shared trigger logic.
-  - `reactive-duration.ts` - Shared duration logic.
-  - `ListenerFactory.ts` - Factory for creating the appropriate listener instance.
-- `processors.ts` - Implementation of all atomic effect processors.
-- `turn-manager.ts` - Infinite turn sequence generator based on player speed.
-- `engine.ts` - Core engine logic, event processing loop, and state management.
-- `index.ts` - Public exports for the engine module.
+- engine.model.ts - Type definitions for engine state, events, and listeners.
+- effects/ - Implementation of status and passive effect listeners:
+  - passive/ - Listeners tied to an item's existence in the loadout.
+  - status/ - Listeners tied to a duration (buffs/debuffs).
+  - reactive-condition.ts - Shared trigger logic.
+  - reactive-duration.ts - Shared duration logic.
+  - ListenerFactory.ts - Factory for creating the appropriate listener instance.
+- processors.ts - Implementation of all atomic effect processors.
+- turn-manager.ts - Infinite turn sequence generator based on player speed.
+- engine.ts - Core engine logic, event processing loop, and state management.
+- index.ts - Public exports for the engine module.
 
 ## Key Concepts
 
-**EngineState**: An immutable snapshot of the game state, containing state for both players and active listeners. It also carries terminal game information:
+**EngineState**: An immutable snapshot of the game state, containing state for both players and active listeners. The `turnQueue` inside the state is now a list of `TurnEntry`s coming directly from `TurnManager`, so downstream consumers (Board/UI) get both the `playerId` and stable `id` for animation tracking. It also carries terminal game information:
 
-- `gameOver: boolean` — set to `true` when the game is over
-- `winnerId?: string` — the winner's player ID when `gameOver` is `true`
+- `gameOver: boolean` - set to `true` when the game is over
+- `winnerId?: string` - the winner's player ID when `gameOver` is `true`
 
 **GameEvent**: A unified representation of game actions, including lifecycle events (`on_play`, `on_turn_start`, `on_turn_end`, `game_start`), wrapped atomic effects, and terminal events (`game_over`).
 
 - Lifecycle: `{ type: 'lifecycle', playerId, phase }`
 - On Play: `{ type: 'on_play', playerId, itemId }`
-- Effect: `{ type: 'effect', effect: Effect, playerId }` — all atomic effects (e.g., `damage`, `healing`, `remove_item`, `remove_listener`) are carried inside the `effect` field.
+- Effect: `{ type: 'effect', effect: Effect, playerId }` - all atomic effects (e.g., `damage`, `healing`, `remove_item`, `remove_listener`) are carried inside the `effect` field.
 
 **Listeners**: Reactive components that process `GameEvent`s in LIFO (Last-In-First-Out) order. A listener can:
 
@@ -86,18 +86,6 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 
 - `state` - A computed signal returning the current `EngineState`. `EngineState` includes a `log` array, `done` flag, and optional `winnerId`.
 
-## API (`TurnManager` Class)
-
-Responsible for calculating and managing the turn order. Uses a Bresenham-like algorithm for equal distribution based on
-player speed.
-
-- `getNextTurns(count: number): string[]` - Returns next X turns without advancing.
-- `nextTurns` - Getter returning next 10 turns.
-- `advanceTurn(): void` - Consumes current turn.
-- `refresh(playerOneSpeed: number, playerTwoSpeed: number, firstPlayerId: string): void` - Resets distribution with new
-  speeds and starting player.
-- `clone(): TurnManager` - Creates a deep copy of the manager, preserving sequence state.
-
 ## Supported Effects
 
 - `damage`: Decreases the targeted player's health.
@@ -123,6 +111,7 @@ The log contains three types of entries:
 - State updates are immutable for player attributes and items, though listeners are permitted to mutate their internal state (e.g., charges, duration) as an implementation detail.
 - Effect processing is recursive, allowing high-level effects to resolve into low-level ones.
 - The engine only depends on the `item` module.
+- Processors hydrate and refresh a single `TurnManager` instance (with the raw `turnQueue`) before advancing turns or recalculating after speed changes, ensuring the queue always carries producer-generated `TurnEntry`s so UI-facing components can trust both the `playerId` and `id`.
 - When any player's health drops to zero or below via a processed `damage` effect (including fatigue), the engine:
   - Appends an `event` log entry: `{ type: 'game_over', loserId, winnerId }`
   - Sets `state.gameOver = true` and `state.winnerId`

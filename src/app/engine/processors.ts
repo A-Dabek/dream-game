@@ -28,18 +28,26 @@ function updatePlayer(
 }
 
 function getTurnManager(state: EngineState): TurnManager {
-  return new TurnManager(
+  const tm = new TurnManager(
     { id: state.playerOne.id, speed: state.playerOne.speed },
     { id: state.playerTwo.id, speed: state.playerTwo.speed },
     state.turnError,
   );
+  tm.setQueue(state.turnQueue);
+  return tm;
 }
 
 function refreshTurnQueue(state: EngineState): EngineState {
   const tm = getTurnManager(state);
+  const refreshed = tm.refresh(
+    state.playerOne.speed,
+    state.playerTwo.speed,
+    state.turnQueue[0],
+    10,
+  );
   return {
     ...state,
-    turnQueue: [state.turnQueue[0], ...tm.getNextTurns(9)],
+    turnQueue: refreshed,
     turnError: tm.accumulatedError,
   };
 }
@@ -109,16 +117,10 @@ export const PROCESSORS: Processors = {
   },
   advance_turn: (state) => {
     const tm = getTurnManager(state);
-    const turnQueue = state.turnQueue.slice(1);
-    const needed = 10 - turnQueue.length;
-
-    if (needed > 0) {
-      turnQueue.push(...tm.getNextTurns(needed));
-    }
-
+    tm.advanceTurn();
     return {
       ...state,
-      turnQueue,
+      turnQueue: tm.getNextTurns(10),
       turnError: tm.accumulatedError,
     };
   },

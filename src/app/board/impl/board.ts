@@ -195,6 +195,10 @@ export class Board implements BoardInterface {
 
     const isGameOver = engineState.gameOver;
     const winnerId = engineState.winnerId;
+    const queue = engineState.turnQueue;
+    const currentPlayerId =
+      queue[0]?.playerId ?? state.turnInfo.currentPlayerId;
+    const nextPlayerId = queue[1]?.playerId ?? state.turnInfo.nextPlayerId;
 
     return {
       ...state,
@@ -209,9 +213,9 @@ export class Board implements BoardInterface {
         items: updatedOpponent.items,
       },
       turnInfo: {
-        currentPlayerId: engineState.turnQueue[0],
-        nextPlayerId: engineState.turnQueue[1],
-        turnQueue: engineState.turnQueue,
+        currentPlayerId,
+        nextPlayerId,
+        turnQueue: queue,
       },
       isGameOver: isGameOver ?? state.isGameOver,
       winnerId: winnerId ?? state.winnerId,

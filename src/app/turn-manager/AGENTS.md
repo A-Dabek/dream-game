@@ -2,20 +2,20 @@
 
 ## Overview
 
-Central location for the Bresenham-style turn distribution logic that the engine and UI both depend upon. The module exposes the deterministic `TurnManager` implementation plus the shared interface needed to keep the turn queue in sync across layers.
+Central home for the Bresenham-style turn distribution logic. The module produces `TurnEntry` objects (player ID plus a stable turn ID) so the engine, board, and UI can share one authoritative queue for logic and animations.
 
 ## Files
 
-- `impl/turn-manager.ts` – Concrete `TurnManager` implementation that calculates the sequence of upcoming player IDs, supports refreshing speeds, advancing turns, and exposing the accumulated error used by the engine to resume the sequence.
-- `impl/turn-manager.spec.ts` – Unit tests that validate the generator’s behavior for equal and zero speeds, advancing turns, refresh/reset semantics, and the exposed getter for bulk-prefetching.
-- `turn-manager.model.ts` – Shared TypeScript surface (`TurnManagerInterface`) used by any consumer that needs to interact with the manager without knowing about the internal implementation file path.
-- `index.ts` – Module entry point that re-exports the interface and implementation so other modules can import from `@dream/turn-manager`.
+- `impl/turn-manager.ts` - Calculates upcoming `TurnEntry`s, advances turns, refreshes when speeds change while keeping the active entry, and exposes accumulated error so the engine can resume sequences deterministically.
+- `impl/turn-manager.spec.ts` - Tests equal/zero speeds, advancing, refresh/reset, and ID reuse when reordering.
+- `turn-manager.model.ts` - Public interface and `TurnEntry` type.
+- `index.ts` - Re-exports interface and implementation for `@dream/turn-manager` imports.
 
 ## Usage
 
-- **Engine** instantiates `TurnManager` from this module to derive `turnQueue`, `turnError`, and other turn metadata stored in `EngineState`.
-- **Board** and **UI** indirectly rely on the same exports when they need to refresh or advance turns without duplicating the distribution algorithm.
+- Engine hydrates a `TurnManager` with the current queue/error, delegates `advance_turn` and speed-change refresh to it, and stores the resulting `TurnEntry[]` in `EngineState.turnQueue`.
+- Board and UI consume the same `TurnEntry[]` from engine state without regenerating IDs client side.
 
 ## Testing
 
-- `turn-manager.spec.ts` in `impl/` ensures the deterministic sequence aligns with the expected Bresenham-like behavior, including edge cases for zero speed and first-player selection.
+- `impl/turn-manager.spec.ts` validates distribution, refreshing while keeping the active entry, and stable ID reuse when the order changes.

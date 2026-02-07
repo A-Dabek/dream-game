@@ -15,13 +15,16 @@ history, and coordinates turn management. The core logic is encapsulated in the 
 
 ## Key Concepts
 
-**GameState**: Complete game snapshot containing both players, turn information, and game status.
+**GameState**: Complete game snapshot containing both players, turn information, and game status. The turn queue
+is now a list of `TurnEntry`s coming directly from the engine's `TurnManager`, so each entry carries both the
+`playerId` and a stable animation-friendly `id`.
 
 **Action Validation**: All player actions (PLAY_ITEM, SURRENDER, PASS) are validated before execution. Invalid actions
 throw an error without state mutation.
 
-**Turn Management**: Turns are distributed continuously based on player speed (Bresenham-like algorithm). Speed 13 vs 16
-means 13 turns out of 29 for player 1, distributed as equally as possible.
+**Turn Management**: Turns are distributed continuously based on player speed using the TurnManager Bresenham-like
+algorithm. Every active `turnInfo.turnQueue` entry is supplied by the engine/TurnManager and includes a stable `id`
+so the UI can track animations while still displaying the correct `playerId`.
 
 **Action History**: record of all successful actions. Failed actions are not recorded.
 
@@ -46,17 +49,6 @@ Player contains:
 - `speed: number` - Turn order priority (higher speed = more frequent turns)
 
 GameActionType enum: PLAY_ITEM, SURRENDER, PASS
-
-## API (`Board` Class)
-
-### Initialization
-
-**new Board(player: BoardLoadout, opponent: BoardLoadout)**
-
-- Initializes with two player loadouts.
-- Automatically calculates initial turn order based on player speeds.
-- Continuous turn order logic based on player speed.
-- Starts with empty action history within the game state.
 
 ## API (`Board` Class)
 

@@ -54,12 +54,15 @@ export class UiStateService {
     state: GameState,
     log: StateChangeLogEntry,
   ): number {
+    const queue = log.snapshot.turnQueue;
     const nextState: GameState = {
       ...state,
       turnInfo: {
-        turnQueue: log.snapshot.turnQueue,
-        currentPlayerId: log.snapshot.turnQueue[0],
-        nextPlayerId: log.snapshot.turnQueue[1],
+        turnQueue: queue,
+        currentPlayerId:
+          queue[0]?.playerId ?? state.turnInfo.currentPlayerId,
+        nextPlayerId:
+          queue[1]?.playerId ?? state.turnInfo.nextPlayerId,
       },
       player: {
         ...state.player,

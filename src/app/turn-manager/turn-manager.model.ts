@@ -1,15 +1,22 @@
+export interface TurnEntry {
+  readonly playerId: string;
+  readonly id: string;
+}
+
 export interface TurnManagerInterface {
-  readonly nextTurns: string[];
+  readonly accumulatedError: number;
+  readonly nextTurns: TurnEntry[];
 
-  getNextTurns(count: number): string[];
+  getNextTurns(count: number): TurnEntry[];
 
-  advanceTurn(): void;
+  advanceTurn(steps?: number): void;
 
   refresh(
     playerOneSpeed: number,
     playerTwoSpeed: number,
-    firstPlayerId: string,
-  ): void;
+    activeTurn?: TurnEntry,
+    queueLength?: number,
+  ): TurnEntry[];
 
   reset(firstPlayerId?: string): void;
 }

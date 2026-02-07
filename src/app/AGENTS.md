@@ -17,7 +17,7 @@ The foundation module. Defines core data structures:
 A synchronous, deterministic state machine built with Angular signals:
 
 - **Responsibility**: Applies item effects and manages immutable game state snapshots.
-- **Turn Management**: Calculates turn distribution based on player speed.
+- **Turn Management**: Delegates turn distribution to `TurnManager`, storing a shared `TurnEntry[]` (playerId + stable id) for consumers.
 - **Passive Effects**: Uses a strategy pattern ([Effects Submodule](./engine/effects)) to handle triggers and durations.
 - **Dependency**: Depends only on the `Item` module.
 
@@ -34,7 +34,7 @@ Angular components for displaying the game:
 
 - **Mobile First**: Layout optimized for mobile (player at bottom, opponent at top, turn order on left).
 - **Reactive**: Built with Angular signals for high performance.
-- **Modular**: Independent UI components for items, hands, and turn queues. The turn queue uses artificial ID tracking to support smooth slide-out animations.
+- **Modular**: Independent UI components for items, hands, and turn queues. The turn queue now receives `(playerId, turnId)` entries from the engine and only handles presentation/animations.
 - **Screens**: Includes a pre-game `VsScreen` and post-game `PostGameScreen` with animated slide transitions orchestrated by `GameContainerComponent`.
 
 Styling:
