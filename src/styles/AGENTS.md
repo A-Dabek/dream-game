@@ -30,3 +30,4 @@ This module contains the global styles, design tokens, and shared animations for
 - SCSS Refactor: Introduced `_mixins.scss` to eliminate redundancy in animations and faction-based themes.
 - Modernized SCSS: Migrated from `@import` to `@use` for better module management.
 - UI Consistency: Unified viewport height handling across screens and containers using a shared mixin.
+- Animated Turn Queue: Introduced `turn-slide-out` animation for smooth transitions when turns advance.

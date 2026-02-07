@@ -38,6 +38,12 @@ app-turn-queue {
       z-index: 1;
     }
 
+    &.turn-slide-out {
+      animation: turnSlideOut 0.5s ease-in-out both;
+      pointer-events: none; /* disable interaction during animation */
+      z-index: 0;
+    }
+
     .skip-button {
       position: absolute;
       bottom: -0.2rem;
@@ -72,5 +78,26 @@ app-turn-queue {
 
   .turn-item .skip-button app-icon {
     --icon-size: 0.6rem;
+  }
+}
+
+@keyframes turnSlideOut {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+    height: 2.2rem;
+    margin-bottom: 0;
+  }
+  60% {
+    transform: translateX(-120%);
+    opacity: 0;
+    height: 2.2rem;
+    margin-bottom: 0;
+  }
+  100% {
+    transform: translateX(-120%);
+    opacity: 0;
+    height: 0;
+    margin-bottom: -0.4rem; /* Match the gap: 0.4rem */
   }
 }

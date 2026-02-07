@@ -7,7 +7,7 @@ The UI module provides Angular components for displaying the game state and faci
 - **IconComponent**: Displays SVG icons from a central icon library.
 - **ItemDisplayComponent**: Renders a single item with its icon and label.
 - **PlayerHandComponent**: Displays a list of items (either the player's or opponent's). Supports interactivity for the player's hand and automatic slide-out animations when items are played or removed.
-- **TurnQueueComponent**: Shows a vertical list of upcoming turns on the left side of the screen. Supports skipping the current turn for the human player via a pulsing icon.
+- **TurnQueueComponent**: Shows a vertical list of upcoming turns on the left side of the screen. Supports skipping the current turn for the human player via a pulsing icon. Uses a robust sequence-matching algorithm to track turn advancement even when the same player has consecutive turns, ensuring smooth slide-out animations.
 - **GameContainerComponent**: The top-level UI component that creates players, displays VS screen with Ready button to start game via slide animation, manages `UiStateService` initialization, and provides state to `BoardUiComponent`.
 - **BoardUiComponent**: Orchestrates the overall game layout for mobile view. It receives a non-nullable `GameState` from `GameContainerComponent`.
 - **VsScreenComponent**: Initial screen displaying "VS" centered with fade-in animations for opponent hand above and player hand below, plus Ready button to emit event for game start and slide left out.
