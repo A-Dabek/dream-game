@@ -20,7 +20,6 @@ export interface EngineState {
   readonly playerOne: EngineLoadout;
   readonly playerTwo: EngineLoadout;
   readonly turnQueue: TurnEntry[];
-  readonly turnError: number;
   readonly listeners: Listener[];
   readonly gameOver: boolean;
   readonly winnerId?: string;

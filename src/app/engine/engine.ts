@@ -15,19 +15,12 @@ export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);
   readonly state = computed(() => this.engineStateSignal());
   private readonly logBuffer: LogEntry[] = [];
-  private readonly turnManager: TurnManager;
-
   constructor(
     playerOne: Loadout & { id: string },
     playerTwo: Loadout & { id: string },
   ) {
     const p1 = this.prepareLoadout(playerOne);
     const p2 = this.prepareLoadout(playerTwo);
-
-    this.turnManager = new TurnManager(
-      { id: p1.id, speed: p1.speed },
-      { id: p2.id, speed: p2.speed },
-    );
 
     const listeners = [
       ...this.scanForListeners(p1),
@@ -41,8 +34,11 @@ export class Engine {
     this.engineStateSignal.set({
       playerOne: p1,
       playerTwo: p2,
-      turnQueue: this.turnManager.getNextTurns(10),
-      turnError: this.turnManager.accumulatedError,
+      turnQueue: TurnManager.initializeTurnQueue(
+        { id: p1.id, speed: p1.speed },
+        { id: p2.id, speed: p2.speed },
+        10,
+      ),
       listeners,
       gameOver: false,
     });
@@ -108,7 +104,7 @@ export class Engine {
     const gameStartEvent: GameEvent = {
       type: 'lifecycle',
       // use the current player from the turn queue
-      playerId: state.turnQueue[0]?.playerId ?? state.playerOne.id,
+      playerId: state.turnQueue[0].playerId,
       phase: 'game_start',
     };
     this.processSimpleEvent(gameStartEvent);

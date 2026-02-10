@@ -3,7 +3,6 @@ import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import { GameState } from '../board';
 import { LogEntry, StateChangeLogEntry } from '../engine/engine.model';
-import { isLifecycleGameEvent } from '../engine/type-guards';
 
 @Injectable({
   providedIn: 'root',
@@ -34,13 +33,6 @@ export class UiStateService {
       case 'state-change':
         delay = this.applyStateChangeLog(state, log as StateChangeLogEntry);
         break;
-      case 'event':
-        if (isLifecycleGameEvent(log.event)) {
-          this._uiState.set({
-            ...state,
-            turnInfo: { ...this.gameService.gameState().turnInfo },
-          });
-        }
     }
 
     if (this._uiState()?.isGameOver) {
@@ -54,15 +46,12 @@ export class UiStateService {
     state: GameState,
     log: StateChangeLogEntry,
   ): number {
-    const queue = log.snapshot.turnQueue;
     const nextState: GameState = {
       ...state,
       turnInfo: {
-        turnQueue: queue,
-        currentPlayerId:
-          queue[0]?.playerId ?? state.turnInfo.currentPlayerId,
-        nextPlayerId:
-          queue[1]?.playerId ?? state.turnInfo.nextPlayerId,
+        turnQueue: log.snapshot.turnQueue,
+        currentPlayerId: log.snapshot.turnQueue[0].playerId,
+        nextPlayerId: log.snapshot.turnQueue[1].playerId,
       },
       player: {
         ...state.player,

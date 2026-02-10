@@ -1,22 +1,18 @@
 import {
-  ChangeDetectionStrategy,
   Component,
-  computed,
+  ChangeDetectionStrategy,
   input,
   output,
 } from '@angular/core';
-import { IconComponent } from './icon.component';
 import { TurnEntry } from '@dream/turn-manager';
+import { IconComponent } from './icon.component';
 
-/**
- * Displays the upcoming turns with their stable IDs provided by TurnManager.
- */
 @Component({
   selector: 'app-turn-queue',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
-    @for (turn of turnItems(); track turn.id) {
+    @for (turn of turnQueue(); track turn.turnId) {
       <div
         class="turn-item"
         [class.player]="turn.playerId === playerId()"
@@ -48,6 +44,4 @@ export class TurnQueueComponent {
   readonly turnQueue = input.required<TurnEntry[]>();
   readonly playerId = input.required<string>();
   readonly skipTurn = output<void>();
-
-  readonly turnItems = computed(() => this.turnQueue());
 }
