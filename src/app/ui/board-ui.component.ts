@@ -13,6 +13,7 @@ import { ActionHistoryComponent } from './action-history.component';
 import { ActionHistoryEntry } from './action-history-entry';
 import { PlayerHandComponent } from './player-hand.component';
 import { TurnQueueComponent } from './turn-queue.component';
+import { HealthBarComponent } from './health-bar.component';
 
 @Component({
   selector: 'app-board-ui',
@@ -23,6 +24,7 @@ import { TurnQueueComponent } from './turn-queue.component';
     TurnQueueComponent,
     ItemDisplayComponent,
     ActionHistoryComponent,
+    HealthBarComponent,
   ],
   template: `
     @let s = state();
@@ -36,17 +38,10 @@ import { TurnQueueComponent } from './turn-queue.component';
         [interactive]="false"
         side="opponent"
       />
-      <div class="center-content">
-        <div class="health-bar-container">
-          <div class="health-bar">
-            <div
-              class="health-fill opponent-health"
-              [style.width.%]="opponentHealthPercent()"
-            ></div>
-            <span class="health-text">{{ s.opponent.health }}</span>
-          </div>
-        </div>
-      </div>
+      <app-health-bar
+        [health]="s.opponent.health"
+        variant="opponent"
+      ></app-health-bar>
     </div>
 
     <div class="main-area">
@@ -63,15 +58,6 @@ import { TurnQueueComponent } from './turn-queue.component';
             <div class="last-played-placeholder">Awaiting the first play</div>
           }
         </div>
-        @if (s.isGameOver) {
-          <div class="game-over">
-            <h2>Game Over</h2>
-            <p>
-              Winner:
-              {{ s.winnerId === s.player.id ? 'You' : 'Opponent' }}
-            </p>
-          </div>
-        }
       </div>
       <app-action-history
         [actions]="actionHistory()"
@@ -80,17 +66,10 @@ import { TurnQueueComponent } from './turn-queue.component';
     </div>
 
     <div class="player-area" [class.active]="isPlayerTurn() && !s.isGameOver">
-      <div class="center-content">
-        <div class="health-bar-container">
-          <div class="health-bar">
-            <div
-              class="health-fill player-health"
-              [style.width.%]="playerHealthPercent()"
-            ></div>
-            <span class="health-text">{{ s.player.health }}</span>
-          </div>
-        </div>
-      </div>
+      <app-health-bar
+        [health]="s.player.health"
+        variant="player"
+      ></app-health-bar>
       <app-player-hand
         [items]="s.player.items"
         [interactive]="isPlayerTurn() && !s.isGameOver"
@@ -124,13 +103,5 @@ export class BoardUiComponent {
 
   readonly isPlayerTurn = computed(
     () => this.state().turnInfo.currentPlayerId === this.state().player.id,
-  );
-
-  readonly playerHealthPercent = computed(() =>
-    Math.max(0, Math.min(100, (this.state().player.health / 100) * 100)),
-  );
-
-  readonly opponentHealthPercent = computed(() =>
-    Math.max(0, Math.min(100, (this.state().opponent.health / 100) * 100)),
   );
 }
