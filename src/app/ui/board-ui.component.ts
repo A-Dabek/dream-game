@@ -9,6 +9,8 @@ import { GameActionType, GameState } from '../board';
 import { Item } from '../item';
 import { HumanInputService } from './human-input.service';
 import { ItemDisplayComponent } from './item-display.component';
+import { ActionHistoryComponent } from './action-history.component';
+import { ActionHistoryEntry } from './action-history-entry';
 import { PlayerHandComponent } from './player-hand.component';
 import { TurnQueueComponent } from './turn-queue.component';
 
@@ -16,7 +18,12 @@ import { TurnQueueComponent } from './turn-queue.component';
   selector: 'app-board-ui',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PlayerHandComponent, TurnQueueComponent, ItemDisplayComponent],
+  imports: [
+    PlayerHandComponent,
+    TurnQueueComponent,
+    ItemDisplayComponent,
+    ActionHistoryComponent,
+  ],
   template: `
     @let s = state();
 
@@ -66,6 +73,10 @@ import { TurnQueueComponent } from './turn-queue.component';
           </div>
         }
       </div>
+      <app-action-history
+        [actions]="actionHistory()"
+        [playerId]="s.player.id"
+      />
     </div>
 
     <div class="player-area" [class.active]="isPlayerTurn() && !s.isGameOver">
@@ -94,6 +105,7 @@ export class BoardUiComponent {
 
   readonly state = input.required<GameState>();
   readonly lastPlayedItem = input<Item | null>(null);
+  readonly actionHistory = input.required<ActionHistoryEntry[]>();
 
   onItemPlayed(item: Item) {
     this.humanInputService.submitAction({

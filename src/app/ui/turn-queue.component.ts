@@ -5,6 +5,7 @@ import {
   output,
 } from '@angular/core';
 import { TurnEntry } from '@dream/turn-manager';
+import { PASS_ICON_NAME } from './icon-name.util';
 import { IconComponent } from './icon.component';
 
 @Component({
@@ -33,7 +34,7 @@ import { IconComponent } from './icon.component';
             (keydown.enter)="skipTurn.emit()"
             (keydown.space)="$event.preventDefault(); skipTurn.emit()"
           >
-            <app-icon name="fast-forward-button" />
+            <app-icon [name]="passIconName" />
           </div>
         }
       </div>
@@ -44,4 +45,5 @@ export class TurnQueueComponent {
   readonly turnQueue = input.required<TurnEntry[]>();
   readonly playerId = input.required<string>();
   readonly skipTurn = output<void>();
+  readonly passIconName = PASS_ICON_NAME;
 }

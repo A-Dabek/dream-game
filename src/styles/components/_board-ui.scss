@@ -31,17 +31,23 @@ app-board-ui {
     flex-direction: row;
     overflow: hidden;
     min-height: 0; /* allow children to shrink properly in flex layouts */
+    gap: 0.35rem;
+    align-items: stretch;
 
     /* Ensure the turn queue does not grow and center takes remaining width */
     > app-turn-queue {
       flex: 0 0 auto;
     }
+    > app-action-history {
+      flex: 0 0 auto;
+    }
   }
 
   .main-area .center-content {
-    width: 100%;
     padding: 0 0.35rem;
     box-sizing: border-box;
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .center-content {

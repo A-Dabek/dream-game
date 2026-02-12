@@ -1,13 +1,15 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
-import { GameState } from '../board';
+import { GameAction, GameState } from '../board';
 import { Item } from '../item';
 import {
   GameEvent,
   LogEntry,
   StateChangeLogEntry,
 } from '../engine/engine.model';
+import { ActionHistoryEntry } from './action-history-entry';
+import { iconNameFromItemId, PASS_ICON_NAME } from './icon-name.util';
 
 @Injectable({
   providedIn: 'root',
@@ -19,17 +21,60 @@ export class UiStateService {
   readonly uiState = computed(() => this._uiState());
   private readonly _lastPlayedItem = signal<Item | null>(null);
   readonly lastPlayedItem = computed(() => this._lastPlayedItem());
+  private readonly actionHistoryLimit = 15;
+  private readonly _actionHistory = signal<ActionHistoryEntry[]>([]);
+  readonly actionHistory = computed(() => this._actionHistory());
+  private lastObservedActionCount = 0;
   private logSubscription = new Subscription();
 
   initialize(initialState: GameState): void {
     this._uiState.set(JSON.parse(JSON.stringify(initialState)));
     this._lastPlayedItem.set(null);
+    this._actionHistory.set([]);
+    this.lastObservedActionCount = initialState.actionHistory?.length ?? 0;
     this.logSubscription = this.gameService.logs$
       .pipe(
         concatMap((logs) => from([...logs])),
         concatMap((log) => timer(this.applyLog(log))),
       )
       .subscribe();
+  }
+
+  private createHistoryEntry(action: GameAction): ActionHistoryEntry {
+    const iconName =
+      action.itemId != null ? iconNameFromItemId(action.itemId) : PASS_ICON_NAME;
+
+    return {
+      id: `history-${Math.random().toString(36).slice(2, 10)}`,
+      actionType: action.type,
+      playerId: action.playerId,
+      iconName,
+      itemId: action.itemId,
+    };
+  }
+
+  private capturePendingActions(): void {
+    const currentState = this.gameService.gameState();
+    if (!currentState) {
+      return;
+    }
+
+    const allActions = currentState.actionHistory ?? [];
+    if (allActions.length <= this.lastObservedActionCount) {
+      return;
+    }
+
+    let updatedHistory = [...this._actionHistory()];
+    const newActions = allActions.slice(this.lastObservedActionCount);
+    for (const action of newActions) {
+      updatedHistory = [this.createHistoryEntry(action), ...updatedHistory];
+      if (updatedHistory.length > this.actionHistoryLimit) {
+        updatedHistory = updatedHistory.slice(0, this.actionHistoryLimit);
+      }
+    }
+
+    this._actionHistory.set(updatedHistory);
+    this.lastObservedActionCount = allActions.length;
   }
 
   private applyLog(log: LogEntry): number {
@@ -49,6 +94,8 @@ export class UiStateService {
     if (this._uiState()?.isGameOver) {
       this.logSubscription.unsubscribe();
     }
+
+    this.capturePendingActions();
 
     return delay;
   }
