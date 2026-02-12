@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { filter, firstValueFrom } from 'rxjs';
-import { Strategy } from '../ai';
-import { Board, GameAction } from '../board';
+import { Strategy } from '@dream/ai';
+import { Board, GameAction } from '@dream/board';
 import { HumanInputService } from './human-input.service';
 
 /**

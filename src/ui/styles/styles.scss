@@ -1,0 +1,18 @@
+/* Global styles consolidated from component styles and original styles.css */
+
+/* You can add global styles to this file, and also import other style files */
+
+@use './tokens';
+@use './mixins';
+@use './base';
+@use './animations';
+
+/* Component styles */
+@use './components/game-container';
+@use './components/board-ui';
+@use './components/action-history';
+@use './components/icon';
+@use './components/item-display';
+@use './components/player-hand';
+@use './components/turn-queue';
+@use './components/screens';

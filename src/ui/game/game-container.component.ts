@@ -5,12 +5,12 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { GameService } from '../game';
-import { createCpuPlayer, Player } from '../player';
-import { PlayerRating } from '../rating';
-import { BoardUiComponent } from './board-ui.component';
-import { HumanStrategy } from './human-strategy';
-import { UiStateService } from './ui-state.service';
+import { GameService } from '@dream/game';
+import { createCpuPlayer, Player } from '@dream/player';
+import { PlayerRating } from '@dream/rating';
+import { BoardUiComponent } from '../board/board-ui.component';
+import { HumanStrategy } from '../board/service/human-strategy';
+import { UiStateService } from '../board/service/ui-state.service';
 import { PreGameScreenComponent } from './pre-game-screen.component';
 import { PostGameScreenComponent } from './post-game-screen.component';
 

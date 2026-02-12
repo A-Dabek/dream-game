@@ -5,8 +5,8 @@ import {
   output,
 } from '@angular/core';
 import { TurnEntry } from '@dream/turn-manager';
-import { PASS_ICON_NAME } from './icon-name.util';
-import { IconComponent } from './icon.component';
+import { PASS_ICON_NAME } from '../common/icon-name.util';
+import { IconComponent } from '../common/icon.component';
 
 @Component({
   selector: 'app-turn-queue',

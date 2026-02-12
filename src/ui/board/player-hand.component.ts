@@ -4,8 +4,8 @@ import {
   input,
   output,
 } from '@angular/core';
-import { Item } from '../item';
-import { ItemDisplayComponent } from './item-display.component';
+import { Item } from '@dream/item';
+import { ItemDisplayComponent } from '../common/item-display.component';
 
 @Component({
   selector: 'app-player-hand',

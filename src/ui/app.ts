@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GameContainerComponent } from './ui';
+import { GameContainerComponent } from './index';
 
 @Component({
   selector: 'app-root',

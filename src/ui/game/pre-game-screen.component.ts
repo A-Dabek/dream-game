@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { Loadout } from '@dream/item';
-import { PlayerHandComponent } from './player-hand.component';
+import { PlayerHandComponent } from '../board/player-hand.component';
 
 @Component({
   selector: 'app-pre-game-screen',

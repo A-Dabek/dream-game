@@ -1,15 +1,18 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
-import { GameAction, GameState } from '../board';
-import { Item } from '../item';
+import { GameAction, GameState } from '@dream/board';
+import { Item } from '@dream/item';
 import {
   GameEvent,
   LogEntry,
   StateChangeLogEntry,
-} from '../engine/engine.model';
-import { ActionHistoryEntry } from './action-history-entry';
-import { iconNameFromItemId, PASS_ICON_NAME } from './icon-name.util';
+} from '../../../app/engine/engine.model';
+import { ActionHistoryEntry } from '../action-history-entry';
+import {
+  iconNameFromItemId,
+  PASS_ICON_NAME,
+} from '../../common/icon-name.util';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +45,9 @@ export class UiStateService {
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {
     const iconName =
-      action.itemId != null ? iconNameFromItemId(action.itemId) : PASS_ICON_NAME;
+      action.itemId != null
+        ? iconNameFromItemId(action.itemId)
+        : PASS_ICON_NAME;
 
     return {
       id: `history-${Math.random().toString(36).slice(2, 10)}`,

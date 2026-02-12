@@ -5,10 +5,10 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { GameActionType, GameState } from '../board';
-import { Item } from '../item';
-import { HumanInputService } from './human-input.service';
-import { ItemDisplayComponent } from './item-display.component';
+import { GameActionType, GameState } from '@dream/board';
+import { Item } from '@dream/item';
+import { HumanInputService } from './service/human-input.service';
+import { ItemDisplayComponent } from '../common/item-display.component';
 import { ActionHistoryComponent } from './action-history.component';
 import { ActionHistoryEntry } from './action-history-entry';
 import { PlayerHandComponent } from './player-hand.component';

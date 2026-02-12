@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ActionHistoryEntry } from './action-history-entry';
-import { IconComponent } from './icon.component';
+import { IconComponent } from '../common/icon.component';
 
 @Component({
   selector: 'app-action-history',

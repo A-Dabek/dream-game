@@ -4,7 +4,7 @@ import {
   input,
   computed,
 } from '@angular/core';
-import { Item } from '../item';
+import { Item } from '@dream/item';
 import { IconComponent } from './icon.component';
 import { iconNameFromItemId } from './icon-name.util';
 

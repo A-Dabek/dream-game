@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { share, Subject } from 'rxjs';
-import { GameAction } from '../board';
+import { GameAction } from '@dream/board';
 
 /**
  * Service to bridge UI inputs and HumanStrategy.

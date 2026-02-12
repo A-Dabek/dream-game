@@ -28,20 +28,20 @@ The orchestration layer on top of the Engine:
 - **Validation**: Ensures actions (Play Item, Pass, Surrender) are legal before delegating to the Engine.
 - **Simulation**: Supports `clone()` for exploring future game states.
 
-### [UI](./ui)
+### [UI](../ui)
 
-Angular components for displaying the game:
+Angular components for displaying the game (now located in `src/ui`):
 
+- **Structure**: `common/` (icons, item display), `board/` (board layout, hands, turn queue, action history, UI state), `game/` (container + pre/post screens), `styles/` (global SCSS).
 - **Mobile First**: Layout optimized for mobile (player at bottom, opponent at top, turn order on left).
 - **Reactive**: Built with Angular signals for high performance.
-- **Modular**: Independent UI components for items, hands, and turn queues. The turn queue now receives `(playerId, turnId)` entries from the engine and only handles presentation/animations.
-- **Screens**: Includes a pre-game `VsScreen` and post-game `PostGameScreen` with animated slide transitions orchestrated by `GameContainerComponent`.
-- **Last Played Spotlight**: `BoardUiComponent` now reserves the central area between health bars for `lastPlayedItem`, letting the human player see the most recent play (own or opponent) as a gradient-tiled `app-item-display` that UiStateService updates from `on_play` logs.
+- **Screens**: Pre-game `PreGameScreen` and post-game `PostGameScreen` with slide transitions orchestrated by `GameContainerComponent`.
+- **Last Played Spotlight**: `BoardUiComponent` reserves the center for `lastPlayedItem` plus action-history icons sourced from `UiStateService`.
 
 Styling:
 
-- All component styles are consolidated into the global stylesheet `src/styles.scss`, referenced from `angular.json` under `projects.dream-project.architect.build.options.styles`.
-- Previous `:host` selectors were transformed to target component selectors (e.g., `app-vs-screen`, `app-post-game-screen`, `app-game-container`, `app-board-ui`, `app-player-hand`, `app-turn-queue`, `app-item-display`, `app-icon`) to preserve behavior without relying on encapsulation.
+- All component styles are consolidated into the global stylesheet `src/ui/styles/styles.scss`, referenced from `angular.json` under `projects.dream-project.architect.build.options.styles`.
+- Previous `:host` selectors were transformed to target component selectors (e.g., `app-pre-game-screen`, `app-post-game-screen`, `app-game-container`, `app-board-ui`, `app-player-hand`, `app-turn-queue`, `app-item-display`, `app-icon`, `app-action-history`) to preserve behavior without relying on encapsulation.
 - No component declares inline `<style>` anymore; all styles live in the global file to simplify theming and maintenance.
 - Shared colors and shadows are expressed as CSS custom properties under `:root` to enable easy theming.
 
