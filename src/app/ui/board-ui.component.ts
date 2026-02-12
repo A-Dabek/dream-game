@@ -8,6 +8,7 @@ import {
 import { GameActionType, GameState } from '../board';
 import { Item } from '../item';
 import { HumanInputService } from './human-input.service';
+import { ItemDisplayComponent } from './item-display.component';
 import { PlayerHandComponent } from './player-hand.component';
 import { TurnQueueComponent } from './turn-queue.component';
 
@@ -15,7 +16,7 @@ import { TurnQueueComponent } from './turn-queue.component';
   selector: 'app-board-ui',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PlayerHandComponent, TurnQueueComponent],
+  imports: [PlayerHandComponent, TurnQueueComponent, ItemDisplayComponent],
   template: `
     @let s = state();
 
@@ -48,6 +49,13 @@ import { TurnQueueComponent } from './turn-queue.component';
         (skipTurn)="onSkipTurn()"
       />
       <div class="center-content">
+        <div class="last-played-wrapper" role="status" aria-live="polite">
+          @if (lastPlayedItem(); as item) {
+            <app-item-display class="last-played-item" [item]="item" />
+          } @else {
+            <div class="last-played-placeholder">Awaiting the first play</div>
+          }
+        </div>
         @if (s.isGameOver) {
           <div class="game-over">
             <h2>Game Over</h2>
@@ -85,6 +93,7 @@ export class BoardUiComponent {
   private readonly humanInputService = inject(HumanInputService);
 
   readonly state = input.required<GameState>();
+  readonly lastPlayedItem = input<Item | null>(null);
 
   onItemPlayed(item: Item) {
     this.humanInputService.submitAction({

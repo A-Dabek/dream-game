@@ -7,21 +7,13 @@
   --color-text-subtle: #aaaaaa;
 
   /* Semantic */
-  --color-primary: #3b82f6; /* restart/primary button */
   --color-focus: #40c4ff; /* high-contrast focus ring */
-  --color-win: #2e7d32;
-  --color-lose: #8b2e2e;
 
   /* Accents */
-  --color-accent-1: #ff6b35; /* gradient start */
-  --color-accent-2: #f7931e; /* gradient end */
   --color-accent-active-border: #5c85d6; /* active outline on items */
   --color-accent-active-bg: #333a4d; /* active surface on items */
 
   /* Shadows */
-  --shadow-strong: rgba(0, 0, 0, 0.8);
-  --shadow-accent-1: rgba(255, 107, 53, 0.4);
-  --shadow-accent-2: rgba(255, 107, 53, 0.6);
   --shadow-soft: rgba(0, 0, 0, 0.3);
   --shadow-medium: rgba(0, 0, 0, 0.4);
   --shadow-text-strong: rgba(0, 0, 0, 0.5);
@@ -47,6 +39,7 @@
 
   /* Fixed layout sizes */
   --hand-item-size: 4.2rem; /* height of a single item tile */
+  --last-played-item-size: clamp(8rem, 40vw, 12rem);
   --hand-padding-y: 0.4rem; /* vertical padding used in app-player-hand */
   --hand-gap: 0.5rem; /* horizontal gap between items */
   --hand-height: calc(

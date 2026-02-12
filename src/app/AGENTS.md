@@ -36,6 +36,7 @@ Angular components for displaying the game:
 - **Reactive**: Built with Angular signals for high performance.
 - **Modular**: Independent UI components for items, hands, and turn queues. The turn queue now receives `(playerId, turnId)` entries from the engine and only handles presentation/animations.
 - **Screens**: Includes a pre-game `VsScreen` and post-game `PostGameScreen` with animated slide transitions orchestrated by `GameContainerComponent`.
+- **Last Played Spotlight**: `BoardUiComponent` now reserves the central area between health bars for `lastPlayedItem`, letting the human player see the most recent play (own or opponent) as a gradient-tiled `app-item-display` that UiStateService updates from `on_play` logs.
 
 Styling:
 

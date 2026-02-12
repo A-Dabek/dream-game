@@ -2,7 +2,12 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import { GameState } from '../board';
-import { LogEntry, StateChangeLogEntry } from '../engine/engine.model';
+import { Item } from '../item';
+import {
+  GameEvent,
+  LogEntry,
+  StateChangeLogEntry,
+} from '../engine/engine.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +17,13 @@ export class UiStateService {
   private readonly gameService = inject(GameService);
   private readonly _uiState = signal<GameState | null>(null);
   readonly uiState = computed(() => this._uiState());
+  private readonly _lastPlayedItem = signal<Item | null>(null);
+  readonly lastPlayedItem = computed(() => this._lastPlayedItem());
   private logSubscription = new Subscription();
 
   initialize(initialState: GameState): void {
     this._uiState.set(JSON.parse(JSON.stringify(initialState)));
+    this._lastPlayedItem.set(null);
     this.logSubscription = this.gameService.logs$
       .pipe(
         concatMap((logs) => from([...logs])),
@@ -32,6 +40,9 @@ export class UiStateService {
     switch (log.type) {
       case 'state-change':
         delay = this.applyStateChangeLog(state, log as StateChangeLogEntry);
+        break;
+      case 'event':
+        this.applyEventLog(log.event);
         break;
     }
 
@@ -70,5 +81,14 @@ export class UiStateService {
     this._uiState.set(nextState);
 
     return this.defaultDelay;
+  }
+
+  private applyEventLog(event: GameEvent): void {
+    if (event.type !== 'on_play' || !event.itemId) {
+      return;
+    }
+
+    const lastPlayedItem: Item = { id: event.itemId };
+    this._lastPlayedItem.set(lastPlayedItem);
   }
 }

@@ -37,6 +37,7 @@ import { PostGameScreenComponent } from './post-game-screen.component';
             <app-board-ui
               class="screen"
               [state]="s"
+              [lastPlayedItem]="lastPlayedItem()"
               animate.enter="slide-in"
               animate.leave="slide-out"
             />
@@ -67,6 +68,7 @@ export class GameContainerComponent {
   private readonly humanStrategy = inject(HumanStrategy);
 
   readonly state = this.uiStateService.uiState;
+  readonly lastPlayedItem = this.uiStateService.lastPlayedItem;
 
   readonly stage = signal<'pre' | 'game' | 'post'>('pre');
 
