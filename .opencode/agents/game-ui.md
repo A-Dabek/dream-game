@@ -2,6 +2,7 @@
 description: Develops game UI components using Angular
 mode: subagent
 temperature: 0.3
+steps: 20
 tools:
   write: true
   edit: true
@@ -123,6 +124,40 @@ All presentation code lives in `src/ui/`:
   ```bash
   ng test --include "src/ui/**/*.spec.ts" --watch=false
   ```
+
+## 📦 Public API (index.ts)
+
+Each UI module directory should have an `index.ts` file that exports its public components. This is what the orchestrator reads to understand available UI building blocks.
+
+### What to Include in index.ts
+
+- **All standalone components** that should be used by other UI modules
+- **All public directives** and pipes
+- **All shared interfaces/types** used across the UI tree
+- **Do NOT** export internal helpers, private components, or implementation details
+
+### When to Update index.ts
+
+- After creating new standalone components that may be reused
+- After making previously private components public
+- Before reporting completion to the orchestrator
+
+### index.ts Structure Example
+
+```typescript
+// Public components
+export { GameBoardComponent } from './board/game-board.component';
+export { PlayerPanelComponent } from './panels/player-panel.component';
+
+// Public directives/pipes
+export { CardHoverDirective } from './directives/card-hover.directive';
+
+// Shared types
+export type CardState = { ... };
+export interface PlayerInfo { ... };
+```
+
+**Important**: The orchestrator plans based on these index.ts files. Ensure they are complete and accurate before reporting completion.
 
 ## 🎮 Game UI Patterns
 

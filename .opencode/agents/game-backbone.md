@@ -2,6 +2,7 @@
 description: Develops game backbone and business logic
 mode: subagent
 temperature: 0.3
+steps: 20
 tools:
   write: true
   edit: true
@@ -57,6 +58,7 @@ When invoked by the orchestrator, you will receive a specification file path. Al
    - Item definitions and effects
    - Item library management
    - No external dependencies
+   - **⚠️ ItemId Convention**: ItemId IS the icon name (underscores instead of dashes). The `iconNameFromItemId()` utility in `src/ui/common/icon-name.util.ts` converts ItemIds to icon names by replacing underscores with dashes. Example: Icon `sticking-plaster` → ItemId `sticking_plaster`
 
 2. **Engine** (`src/app/engine/`)
    - Synchronous state machine
@@ -109,6 +111,41 @@ When invoked by the orchestrator, you will receive a specification file path. Al
 - **Local Files**: `.spec.ts` next to implementation
 - **Real Instances**: Minimize mocking, use real `Board` and `Engine` instances
 - **Coverage**: Complex reactive logic needs high coverage
+
+## 📦 Public API (index.ts)
+
+Each module must have an `index.ts` file that exports its public API. This is what the orchestrator reads to understand what's available.
+
+### What to Include in index.ts
+
+- **All public types and interfaces** that other modules depend on
+- **All public functions** that are part of the module's interface
+- **All public classes** that should be accessible to other modules
+- **Do NOT** export implementation details, internal helpers, or private types
+
+### When to Update index.ts
+
+- After creating new public types, interfaces, or classes
+- After modifying the signature of exported functions
+- After making previously private entities public
+- Before reporting completion to the orchestrator
+
+### index.ts Structure Example
+
+```typescript
+// Public types
+export type GameState = { ... };
+export interface GameAction { ... };
+
+// Public classes (if applicable)
+export class GameEngine { ... }
+
+// Public functions
+export function createGame(config: GameConfig): GameInstance { ... }
+export function validateAction(action: GameAction): boolean { ... }
+```
+
+**Important**: The orchestrator plans based on these index.ts files. Ensure they are complete and accurate before reporting completion.
 
 ### Test Commands
 

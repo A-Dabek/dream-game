@@ -43,6 +43,4 @@ __screenshots__/
 Thumbs.db
 
 REVIEW_FINDINGS.md
-.opencode
-!.opencode/agents
-!.opencode/skills
+.opencode/node_modules

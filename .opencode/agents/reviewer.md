@@ -2,6 +2,7 @@
 description: Reviews code for readability, expressiveness, and maintainability without modifying source code
 mode: subagent
 temperature: 0.1
+steps: 20
 tools:
   write: true
   edit: true
@@ -130,6 +131,29 @@ Your role is to:
 - **No public Modifier**: Is visibility implicit (not explicit `public`)?
 - **Readonly**: Are immutable properties marked with `readonly`?
 - **Immutability**: Are state transformations pure (no mutations)?
+
+### Public API (index.ts) Completeness
+
+- **All public exports present**: Does `index.ts` export all types, interfaces, functions, and classes that other modules depend on?
+- **No implementation leaks**: Are internal helpers, private types, or implementation details NOT exported?
+- **Missing exports**: Are there public entities in the module that should be in `index.ts` but aren't?
+- **Consistent naming**: Are exports named clearly and follow conventions?
+- **Re-exports organized**: Are re-exports structured and easy to understand?
+- **No private/internal exports**: Are there things like `*Internal`, `*Helper`, or `*Impl` exported that shouldn't be?
+
+**What should NOT be in index.ts:**
+- Internal utility functions (e.g., `calculateInternalHelper`)
+- Private types used only within the module (e.g., `InternalState`, `PrivateConfig`)
+- Implementation-specific constants (e.g., `INTERNAL_TIMEOUT_MS`)
+- Test-related exports
+
+**What SHOULD be in index.ts:**
+- Types and interfaces used by other modules
+- Public API functions and classes
+- Shared data structures
+- Domain models that cross module boundaries
+
+**Why this matters**: The orchestrator plans based solely on `index.ts` files. If the public API is incomplete or unclear, the orchestrator cannot make accurate plans.
 
 ## 📝 Output Format
 

@@ -15,7 +15,15 @@ Follow these steps to add a new item to the Dream Project game.
 ## 1. Define the Item ID
 
 Add the new item ID to the `ItemId` union type in `src/app/item/item.model.ts`.
-Every item should follow the `_blueprint_` prefix convention.
+
+**IMPORTANT: The ItemId IS the icon name!** The `iconNameFromItemId()` utility in `src/ui/common/icon-name.util.ts` normalizes ItemIds by replacing underscores with dashes. Therefore, when choosing an ItemId:
+
+- **Use the exact icon name** from `assets/icons.json` (replacing dashes with underscores if needed)
+- **Example**: Icon `sticking-plaster` → ItemId `sticking_plaster`
+- **Example**: Icon `punch` → ItemId `punch`
+- **Example**: Icon `hand` → ItemId `hand`
+
+For blueprint items (internal/testing), follow the `_blueprint_` prefix convention.
 
 ```typescript
 export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_new_item'; // Add yours here

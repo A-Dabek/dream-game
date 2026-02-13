@@ -2,6 +2,7 @@
 description: Performs code refactoring based on reviewer findings without changing logic
 temperature: 0.2
 mode: subagent
+steps: 20
 tools:
   write: true
   edit: true
@@ -202,6 +203,7 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 - Focus on explaining "how" and "why", not "what"
 - Keep JSDoc for public APIs updated if signatures change
 - Do NOT update AGENTS.md files - the orchestrator handles documentation updates
+- **index.ts**: If refactoring moves or renames public exports, update the module's `index.ts` to reflect the changes. Ensure exports remain complete and accurate.
 
 ## 🤖 Rule Integration
 
