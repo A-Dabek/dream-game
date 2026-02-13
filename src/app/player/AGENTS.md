@@ -46,9 +46,9 @@ Provides a fluent interface for creating CPU players with custom configurations.
 #### Usage
 
 ```typescript
-import { CpuPlayerBuilder } from "./player";
+import { CpuPlayerBuilder } from './player';
 
-const player = new CpuPlayerBuilder("cpu-1", "Strong Bot").withRandomHealth(100, 150).withRandomSpeed(8, 12).withRandomItems(5).withLeftMostStrategy().build();
+const player = new CpuPlayerBuilder('cpu-1', 'Strong Bot').withRandomHealth(100, 150).withRandomSpeed(8, 12).withRandomItems(5).withLeftMostStrategy().build();
 
 console.log(player.loadout.health); // e.g., 125
 console.log(player.loadout.speed); // e.g., 10

@@ -19,7 +19,7 @@ A singleton service that manages the game lifecycle:
 ```typescript
 const gameService = inject(GameService);
 const player1 = { ...humanPlayer, strategy: new HumanStrategy() }; // HumanStrategy from UI module
-const player2 = createCpuPlayer("cpu", "CPU");
+const player2 = createCpuPlayer('cpu', 'CPU');
 
 // Starts the async loop
 gameService.startGame(player1, player2);

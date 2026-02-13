@@ -22,6 +22,7 @@ Handles the logic for when a reactive effect should react to a game event. It us
 - `hasNoItems`: Matches if the player has no items in their loadout.
 
 Logical combinators:
+
 - `and(...predicates)`: All predicates must match.
 - `or(...predicates)`: At least one predicate must match.
 - `not(predicate)`: Negates the predicate.

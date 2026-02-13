@@ -16,11 +16,7 @@ describe('TurnManager', () => {
       'p2',
     ]);
     expect(queue.map((entry) => entry.accumulatedError)).toEqual([
-      0,
-      10,
-      0,
-      10,
-      0,
+      0, 10, 0, 10, 0,
     ]);
     expect(queue.map((entry) => entry.turnId)).toEqual([
       'p2-0',

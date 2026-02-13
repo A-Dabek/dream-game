@@ -31,9 +31,6 @@ export class HealthBarComponent {
   readonly variant = input<'player' | 'opponent'>('player');
 
   readonly healthPercent = computed(() =>
-    Math.max(
-      0,
-      Math.min(100, (this.health() / this.maxHealth()) * 100),
-    ),
+    Math.max(0, Math.min(100, (this.health() / this.maxHealth()) * 100)),
   );
 }

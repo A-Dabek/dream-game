@@ -8,7 +8,7 @@ Add the new item ID to the `ItemId` union type in `src/app/item/item.model.ts`.
 Every item should follow the `_blueprint_` prefix convention.
 
 ```typescript
-export type ItemId = "_blueprint_attack" | "_blueprint_passive_attack" | "_blueprint_reactive_removal" | "_blueprint_new_item"; // Add yours here
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_new_item'; // Add yours here
 ```
 
 ## 2. Create the Item Behavior
@@ -17,8 +17,8 @@ Create a new file `src/app/item/_<item_id_without_prefix>.behaviour.ts`.
 Implement the `ItemBehavior` interface.
 
 ```typescript
-import { attack } from "..";
-import { Effect, ItemBehavior } from "../item.model";
+import { attack } from '..';
+import { Effect, ItemBehavior } from '../item.model';
 
 export class BlueprintNewItemBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
@@ -29,8 +29,8 @@ export class BlueprintNewItemBehaviour implements ItemBehavior {
   passiveEffects(): PassiveEffect[] {
     return [
       statusEffect({
-        condition: afterEffect("damage"),
-        action: [removeItem("some_item_id")],
+        condition: afterEffect('damage'),
+        action: [removeItem('some_item_id')],
       }),
     ];
   }
@@ -57,7 +57,7 @@ Example of a modifying status effect:
 ```typescript
 class ExampleItemBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
-    return [addStatusEffect(invert("damage", charges(2)))];
+    return [addStatusEffect(invert('damage', charges(2)))];
   }
 }
 ```
@@ -88,7 +88,7 @@ const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
 Export the new behavior class in `src/app/item/index.ts`.
 
 ```typescript
-export { BlueprintNewItemBehaviour } from "./_blueprint_new_item.behaviour";
+export { BlueprintNewItemBehaviour } from './_blueprint_new_item.behaviour';
 ```
 
 ## 5. Implement New Effects (If Needed)
@@ -100,8 +100,8 @@ If your item requires a new type of effect:
 In `src/app/item/effects.ts` (or `conditions.ts` / `durations.ts`), add a factory function for the new effect.
 
 ```typescript
-export function newEffect(value: number, target: "self" | "enemy" = "self"): Effect {
-  return { type: "new_effect", value, target };
+export function newEffect(value: number, target: 'self' | 'enemy' = 'self'): Effect {
+  return { type: 'new_effect', value, target };
 }
 ```
 
@@ -129,17 +129,17 @@ Create a new test file in `src/app/board/test/_<item_id_without_prefix>.spec.ts`
 Use `Board` class for integration testing. Use `createMockPlayer` from `test-utils.ts` to set up scenarios.
 
 ```typescript
-import { describe, expect, it } from "vitest";
-import { Board } from "../board";
-import { createMockPlayer } from "./test-utils";
+import { describe, expect, it } from 'vitest';
+import { Board } from '../board';
+import { createMockPlayer } from './test-utils';
 
-describe("_blueprint_new_item Integration Test", () => {
-  it("should apply effects correctly", () => {
-    const player1 = createMockPlayer("p1", { speed: 10, items: [{ id: "_blueprint_new_item" }] });
-    const player2 = createMockPlayer("p2", { speed: 1 });
+describe('_blueprint_new_item Integration Test', () => {
+  it('should apply effects correctly', () => {
+    const player1 = createMockPlayer('p1', { speed: 10, items: [{ id: '_blueprint_new_item' }] });
+    const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
 
-    board.playItem("_blueprint_new_item", "p1");
+    board.playItem('_blueprint_new_item', 'p1');
 
     // Add assertions
   });

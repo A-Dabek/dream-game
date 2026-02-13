@@ -133,7 +133,11 @@ function assignStableTurnIds(
   let searchIndex = 0;
 
   for (const entry of payloads) {
-    const matchIndex = findNextMatchIndex(previousEntries, searchIndex, entry.playerId);
+    const matchIndex = findNextMatchIndex(
+      previousEntries,
+      searchIndex,
+      entry.playerId,
+    );
     if (matchIndex !== -1) {
       items.push({
         ...entry,
