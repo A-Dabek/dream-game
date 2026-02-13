@@ -6,15 +6,11 @@ describe('Damage to Heal Integration Tests', () => {
   it('should convert damage to heal for 2 charges', () => {
     const p1 = createMockPlayer('p1', {
       speed: 10,
-      items: [
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-      ],
+      items: ['_blueprint_attack', '_blueprint_attack', '_blueprint_attack'],
     });
     const p2 = createMockPlayer('p2', {
       speed: 11,
-      items: [{ id: '_blueprint_damage_to_heal_charges' }],
+      items: ['_blueprint_damage_to_heal_charges'],
     });
     const board = new Board(p2, p1);
 
@@ -40,15 +36,11 @@ describe('Damage to Heal Integration Tests', () => {
   it('should convert damage to heal for 2 turns', () => {
     const p1 = createMockPlayer('p1', {
       speed: 10,
-      items: [
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-      ],
+      items: ['_blueprint_attack', '_blueprint_attack', '_blueprint_attack'],
     });
     const p2 = createMockPlayer('p2', {
       speed: 11,
-      items: [{ id: '_blueprint_damage_to_heal_turns' }],
+      items: ['_blueprint_damage_to_heal_turns'],
     });
     const board = new Board(p2, p1);
 
@@ -71,16 +63,16 @@ describe('Damage to Heal Integration Tests', () => {
     const p1 = createMockPlayer('p1', {
       speed: 10,
       items: [
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_attack' },
+        '_blueprint_attack',
+        '_blueprint_attack',
+        '_blueprint_attack',
+        '_blueprint_attack',
+        '_blueprint_attack',
       ],
     });
     const p2 = createMockPlayer('p2', {
       speed: 11,
-      items: [{ id: '_blueprint_damage_to_heal_permanent' }],
+      items: ['_blueprint_damage_to_heal_permanent'],
     });
     const board = new Board(p2, p1);
 

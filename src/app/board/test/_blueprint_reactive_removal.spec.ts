@@ -7,11 +7,11 @@ describe('_blueprint_reactive_removal Integration Test', () => {
     // Player 1 has attack, Player 2 has reactive removal
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [{ id: '_blueprint_attack' }],
+      items: ['_blueprint_attack'],
     });
     const player2 = createMockPlayer('p2', {
       speed: 5,
-      items: [{ id: '_blueprint_reactive_removal' }],
+      items: ['_blueprint_reactive_removal'],
     });
     const board = new Board(player1, player2);
 
@@ -37,14 +37,11 @@ describe('_blueprint_reactive_removal Integration Test', () => {
   it('should not remove other items when player is attacked', () => {
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [{ id: '_blueprint_attack' }],
+      items: ['_blueprint_attack'],
     });
     const player2 = createMockPlayer('p2', {
       speed: 5,
-      items: [
-        { id: '_blueprint_reactive_removal' },
-        { id: '_blueprint_attack' },
-      ],
+      items: ['_blueprint_reactive_removal', '_blueprint_attack'],
     });
     const board = new Board(player1, player2);
 
@@ -63,10 +60,7 @@ describe('_blueprint_reactive_removal Integration Test', () => {
   it('should remove _blueprint_reactive_removal when owner damages themselves', () => {
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [
-        { id: '_blueprint_self_damage' },
-        { id: '_blueprint_reactive_removal' },
-      ],
+      items: ['_blueprint_self_damage', '_blueprint_reactive_removal'],
     });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
@@ -90,14 +84,11 @@ describe('_blueprint_reactive_removal Integration Test', () => {
   it('should only remove the item from the player that got damaged when both players have it', () => {
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [
-        { id: '_blueprint_attack' },
-        { id: '_blueprint_reactive_removal' },
-      ],
+      items: ['_blueprint_attack', '_blueprint_reactive_removal'],
     });
     const player2 = createMockPlayer('p2', {
       speed: 5,
-      items: [{ id: '_blueprint_reactive_removal' }],
+      items: ['_blueprint_reactive_removal'],
     });
     const board = new Board(player1, player2);
 

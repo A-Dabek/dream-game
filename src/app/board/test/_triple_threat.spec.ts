@@ -6,7 +6,7 @@ describe('_blueprint_triple_threat Integration Test', () => {
   it('should deal 1 damage at the end of turn if just passing (passive effect)', () => {
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [{ id: '_blueprint_triple_threat' }],
+      items: ['_blueprint_triple_threat'],
     });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
@@ -21,7 +21,7 @@ describe('_blueprint_triple_threat Integration Test', () => {
   it('should deal 2 damage immediately and 3 damage at the end of turn when played (active + status)', () => {
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [{ id: '_blueprint_triple_threat' }],
+      items: ['_blueprint_triple_threat'],
     });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);
@@ -38,7 +38,7 @@ describe('_blueprint_triple_threat Integration Test', () => {
   it('should continue dealing 3 damage at the end of subsequent turns (status effect)', () => {
     const player1 = createMockPlayer('p1', {
       speed: 2,
-      items: [{ id: '_blueprint_triple_threat' }],
+      items: ['_blueprint_triple_threat'],
     });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);

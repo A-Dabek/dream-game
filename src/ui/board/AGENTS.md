@@ -12,8 +12,10 @@ This folder contains the in-game board layout and UI state wiring.
 
 ## Data and Services
 
-- **ActionHistoryEntry**: Presentation-friendly interface for recent actions.
-- **UiStateService**: Applies engine logs to UI state, tracks last played item and action history.
+- **ActionHistoryEntry**: Presentation-friendly interface for recent actions, including an optional `genre` field so historical
+  actions display the correct icon color even if item definitions change.
+- **UiStateService**: Applies engine logs to UI state, tracks last played item and action history. Captures the genre of played
+  items and includes it in action history entries for consistent icon coloring.
 - **HumanInputService**: Captures UI intent and forwards it to the human strategy.
 - **HumanStrategy**: Strategy implementation that waits on `HumanInputService` input.
 

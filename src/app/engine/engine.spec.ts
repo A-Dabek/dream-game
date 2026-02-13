@@ -2,20 +2,22 @@ import { describe, expect, it } from 'vitest';
 import { Loadout } from '../item';
 import { Engine } from './engine';
 
+import { createTestItem } from '../board/test/test-utils';
+
 describe('Engine', () => {
   const baseNumberOfListeners = 4;
   const player1: Loadout & { id: string } = {
     id: 'p1',
     health: 100,
     speed: 10,
-    items: [{ id: '_blueprint_attack' }, { id: '_dummy' }],
+    items: [createTestItem('_blueprint_attack'), createTestItem('_dummy')],
   };
 
   const player2: Loadout & { id: string } = {
     id: 'p2',
     health: 100,
     speed: 5,
-    items: [{ id: '_dummy' }],
+    items: [createTestItem('_dummy')],
   };
 
   it('should initialize with two players', () => {
@@ -65,13 +67,16 @@ describe('Engine', () => {
       id: 'p1',
       health: 100,
       speed: 10,
-      items: [{ id: '_blueprint_attack' }, { id: '_dummy' }],
+      items: [createTestItem('_blueprint_attack'), createTestItem('_dummy')],
     };
     const p2: Loadout & { id: string } = {
       id: 'p2',
       health: 100,
       speed: 5,
-      items: [{ id: '_blueprint_reactive_removal' }, { id: '_dummy' }],
+      items: [
+        createTestItem('_blueprint_reactive_removal'),
+        createTestItem('_dummy'),
+      ],
     };
     const engine = new Engine(p1, p2);
 
@@ -95,13 +100,16 @@ describe('Engine', () => {
       id: 'p1',
       health: 100,
       speed: 10,
-      items: [{ id: '_blueprint_negate_damage' }, { id: '_dummy' }],
+      items: [
+        createTestItem('_blueprint_negate_damage'),
+        createTestItem('_dummy'),
+      ],
     };
     const p2: Loadout & { id: string } = {
       id: 'p2',
       health: 100,
       speed: 5,
-      items: [{ id: '_blueprint_attack' }, { id: '_dummy' }],
+      items: [createTestItem('_blueprint_attack'), createTestItem('_dummy')],
     };
     const engine = new Engine(p1, p2);
 
@@ -146,13 +154,13 @@ describe('Engine', () => {
       id: 'p1',
       health: 100,
       speed: 10,
-      items: [{ id: '_blueprint_attack' }], // deals 10
+      items: [createTestItem('_blueprint_attack')], // deals 10
     };
     const p2: Loadout & { id: string } = {
       id: 'p2',
       health: 5,
       speed: 5,
-      items: [{ id: '_dummy' }],
+      items: [createTestItem('_dummy')],
     };
     const engine = new Engine(p1, p2);
 

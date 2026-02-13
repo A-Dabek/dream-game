@@ -36,7 +36,7 @@ export class TestBoardBuilder {
       ...this.player1Config,
       health,
       speed,
-      items: items.map((id) => ({ id })),
+      items: items.map((id) => ({ id, genre: 'basic' })),
     };
     return this;
   }
@@ -56,7 +56,7 @@ export class TestBoardBuilder {
       ...this.player2Config,
       health,
       speed,
-      items: items.map((id) => ({ id })),
+      items: items.map((id) => ({ id, genre: 'basic' })),
     };
     return this;
   }

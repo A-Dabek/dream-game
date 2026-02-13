@@ -1,4 +1,5 @@
 import { GameActionType } from '@dream/board';
+import { Genre } from '@dream/item';
 
 /** Presentation-friendly representation of a historical action for animation/display. */
 export interface ActionHistoryEntry {
@@ -7,4 +8,5 @@ export interface ActionHistoryEntry {
   readonly playerId: string;
   readonly iconName: string;
   readonly itemId?: string;
+  readonly genre?: Genre;
 }

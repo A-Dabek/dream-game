@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import { GameAction, GameState } from '@dream/board';
-import { Item } from '@dream/item';
+import { Genre, Item } from '@dream/item';
 import {
   GameEvent,
   LogEntry,
@@ -49,13 +49,31 @@ export class UiStateService {
         ? iconNameFromItemId(action.itemId)
         : PASS_ICON_NAME;
 
+    // Look up genre from game state if itemId is present
+    let genre: Genre | undefined;
+    if (action.itemId != null) {
+      genre = this.findItemGenre(action.playerId, action.itemId);
+    }
+
     return {
       id: `history-${Math.random().toString(36).slice(2, 10)}`,
       actionType: action.type,
       playerId: action.playerId,
       iconName,
       itemId: action.itemId,
+      genre,
     };
+  }
+
+  private findItemGenre(_playerId: string, itemId: string): Genre | undefined {
+    const currentState = this.gameService.gameState();
+    if (!currentState) return undefined;
+
+    const allItems = [
+      ...currentState.player.items,
+      ...currentState.opponent.items,
+    ];
+    return allItems.find((item) => item.id === itemId)?.genre;
   }
 
   private capturePendingActions(): void {
@@ -140,7 +158,9 @@ export class UiStateService {
       return;
     }
 
-    const lastPlayedItem: Item = { id: event.itemId };
+    // Look up genre from game state or default to 'basic'
+    const genre = this.findItemGenre(event.playerId, event.itemId) ?? 'basic';
+    const lastPlayedItem: Item = { id: event.itemId, genre };
     this._lastPlayedItem.set(lastPlayedItem);
   }
 }

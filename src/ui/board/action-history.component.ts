@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ActionHistoryEntry } from './action-history-entry';
 import { IconComponent } from '../common/icon.component';
+import { getGenreColor } from '../common/genre-color.util';
+import { Genre } from '@dream/item';
 
 @Component({
   selector: 'app-action-history',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
@@ -16,7 +17,7 @@ import { IconComponent } from '../common/icon.component';
           [class.opponent]="entry.playerId !== playerId()"
           animate.enter="history-slide-in"
         >
-          <app-icon [name]="entry.iconName" />
+          <app-icon [name]="entry.iconName" [color]="getColor(entry.genre)" />
         </div>
       }
     </div>
@@ -25,4 +26,8 @@ import { IconComponent } from '../common/icon.component';
 export class ActionHistoryComponent {
   readonly actions = input.required<ActionHistoryEntry[]>();
   readonly playerId = input.required<string>();
+
+  getColor(genre: Genre | undefined): string {
+    return getGenreColor(genre);
+  }
 }

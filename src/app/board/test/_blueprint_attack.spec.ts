@@ -22,7 +22,7 @@ describe('_blueprint_attack Integration Test', () => {
   it('should remove _blueprint_attack from player loadout after it is played', () => {
     const player1 = createMockPlayer('p1', {
       speed: 10,
-      items: [{ id: '_blueprint_attack' }],
+      items: ['_blueprint_attack'],
     });
     const player2 = createMockPlayer('p2', { speed: 1 });
     const board = new Board(player1, player2);

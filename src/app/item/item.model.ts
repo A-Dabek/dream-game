@@ -1,4 +1,10 @@
 /**
+ * Represents the genre/type of an item, determining its icon color.
+ * Currently only 'basic' is supported, but extensible for future genres.
+ */
+export type Genre = 'basic';
+
+/**
  * Represents the unique identifier for an item.
  */
 export type ItemId =
@@ -76,6 +82,7 @@ export interface ItemBehavior {
 export interface Item {
   readonly id: ItemId;
   readonly instanceId?: string;
+  readonly genre: Genre;
 }
 
 /**

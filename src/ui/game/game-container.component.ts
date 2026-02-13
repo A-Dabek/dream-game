@@ -85,10 +85,10 @@ export class GameContainerComponent {
       health: 20,
       speed: 8,
       items: [
-        { id: '_blueprint_attack', instanceId: 'p1-1' },
-        { id: '_blueprint_attack', instanceId: 'p1-2' },
-        { id: '_blueprint_attack', instanceId: 'p1-3' },
-        { id: '_blueprint_attack', instanceId: 'p1-4' },
+        { id: '_blueprint_attack', instanceId: 'p1-1', genre: 'basic' },
+        { id: '_blueprint_attack', instanceId: 'p1-2', genre: 'basic' },
+        { id: '_blueprint_attack', instanceId: 'p1-3', genre: 'basic' },
+        { id: '_blueprint_attack', instanceId: 'p1-4', genre: 'basic' },
       ],
     },
   };

@@ -94,6 +94,7 @@ export class CpuPlayerBuilder {
     return Array.from({ length: this.itemCount }, (_, i) => ({
       id: availableItemIds[Math.floor(Math.random() * availableItemIds.length)],
       instanceId: `${this.id}-item-${i}`,
+      genre: 'basic',
     }));
   }
 

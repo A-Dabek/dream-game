@@ -4,16 +4,17 @@ import {
   input,
   computed,
 } from '@angular/core';
-import { Item } from '@dream/item';
+import { Genre, Item } from '@dream/item';
 import { IconComponent } from './icon.component';
 import { iconNameFromItemId } from './icon-name.util';
+import { getGenreColor } from './genre-color.util';
 
 @Component({
   selector: 'app-item-display',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
-    <app-icon [name]="iconName()" />
+    <app-icon [name]="iconName()" [color]="genreColor()" />
     <div class="label">{{ label() }}</div>
   `,
   host: {
@@ -30,4 +31,10 @@ export class ItemDisplayComponent {
     const id = this.item().id;
     return id.replace('_blueprint_', '').replace(/_/g, ' ');
   });
+
+  /**
+   * Maps the item's genre to its corresponding CSS variable color.
+   * Falls back to 'currentColor' if no genre is defined.
+   */
+  readonly genreColor = computed(() => getGenreColor(this.item().genre));
 }

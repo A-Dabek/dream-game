@@ -6,11 +6,11 @@ describe('Negate Damage Integration Tests', () => {
   it('should negate one instance of damage', () => {
     const p1 = createMockPlayer('p1', {
       speed: 10,
-      items: [{ id: '_blueprint_attack' }, { id: '_blueprint_attack' }],
+      items: ['_blueprint_attack', '_blueprint_attack'],
     });
     const p2 = createMockPlayer('p2', {
       speed: 11,
-      items: [{ id: '_blueprint_negate_damage' }],
+      items: ['_blueprint_negate_damage'],
     });
     const board = new Board(p2, p1);
 
@@ -32,11 +32,11 @@ describe('Negate Damage Integration Tests', () => {
   it('should negate end-of-turn damage from opponent if negate was played BEFORE opponent played status attack', () => {
     const p1 = createMockPlayer('p1', {
       speed: 100,
-      items: [{ id: '_blueprint_negate_damage' }],
+      items: ['_blueprint_negate_damage'],
     });
     const p2 = createMockPlayer('p2', {
       speed: 1,
-      items: [{ id: '_blueprint_passive_attack' }],
+      items: ['_blueprint_passive_attack'],
     });
     const board = new Board(p1, p2);
 
@@ -67,11 +67,11 @@ describe('Negate Damage Integration Tests', () => {
   it('should NOT negate end-of-turn damage if negate was played AFTER status attack, but charge should remain', () => {
     const p1 = createMockPlayer('p1', {
       speed: 100,
-      items: [{ id: '_blueprint_negate_damage' }, { id: '_blueprint_attack' }],
+      items: ['_blueprint_negate_damage', '_blueprint_attack'],
     });
     const p2 = createMockPlayer('p2', {
       speed: 1,
-      items: [{ id: '_blueprint_passive_attack' }],
+      items: ['_blueprint_passive_attack'],
     });
     const board = new Board(p1, p2);
 
@@ -101,11 +101,11 @@ describe('Negate Damage Integration Tests', () => {
   it('should verify negate is still active after being skipped by older status attack', () => {
     const p1 = createMockPlayer('p1', {
       speed: 100,
-      items: [{ id: '_blueprint_negate_damage' }],
+      items: ['_blueprint_negate_damage'],
     });
     const p2 = createMockPlayer('p2', {
       speed: 1,
-      items: [{ id: '_blueprint_passive_attack' }, { id: '_blueprint_attack' }],
+      items: ['_blueprint_passive_attack', '_blueprint_attack'],
     });
     const board = new Board(p1, p2);
 

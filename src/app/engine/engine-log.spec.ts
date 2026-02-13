@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { createTestItem } from '../board/test/test-utils';
 import { Loadout } from '../item';
 import { Engine } from './engine';
 import { StateChangeLogEntry } from './engine.model';
@@ -8,14 +9,14 @@ describe('Engine Log', () => {
     id: 'p1',
     health: 100,
     speed: 10,
-    items: [{ id: '_blueprint_attack' }],
+    items: [createTestItem('_blueprint_attack')],
   };
 
   const player2: Loadout & { id: string } = {
     id: 'p2',
     health: 100,
     speed: 5,
-    items: [{ id: '_blueprint_negate_damage' }],
+    items: [createTestItem('_blueprint_negate_damage')],
   };
 
   it('should og on_play and effects', () => {

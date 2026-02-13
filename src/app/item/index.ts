@@ -2,6 +2,7 @@ export {
   type Condition,
   type Duration,
   type Effect,
+  type Genre,
   type Item,
   type ItemBehavior,
   type ItemId,
