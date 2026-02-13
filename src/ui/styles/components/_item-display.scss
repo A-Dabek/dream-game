@@ -17,7 +17,7 @@ app-item-display {
   &.active {
     border-color: var(--color-accent-active-border);
     background: var(--color-accent-active-bg);
-    box-shadow: 0 0 12px rgba(92, 133, 214, 0.4);
+    box-shadow: 0 0 12px var(--shadow-active-item);
   }
 
   .label {

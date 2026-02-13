@@ -4,7 +4,7 @@
 app-turn-queue {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--turn-queue-gap);
   padding: 0.6rem;
   background: var(--color-surface-2);
   border-right: 1px solid var(--color-border-weak);
@@ -61,7 +61,7 @@ app-turn-queue {
       transition: transform 0.1s;
 
       &:hover {
-        background: #555555;
+        background: var(--color-border-strong);
         transform: scale(1.1);
       }
 
@@ -98,6 +98,6 @@ app-turn-queue {
     transform: translateX(-120%);
     opacity: 0;
     height: 0;
-    margin-bottom: -0.4rem; /* Match the gap: 0.4rem */
+    margin-bottom: calc(var(--turn-queue-gap) * -1); /* Match the gap */
   }
 }

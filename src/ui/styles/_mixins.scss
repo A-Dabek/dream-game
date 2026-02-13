@@ -29,12 +29,7 @@
 }
 
 @mixin item-slide($direction) {
-  $y-offset: 5rem;
-  @if $direction == 'down' {
-    $y-offset: 5rem;
-  } @else {
-    $y-offset: -5rem;
-  }
+  $y-offset: if($direction == 'down', 5rem, -5rem);
 
   0% {
     transform: translateY(0);

@@ -2,6 +2,7 @@
 
 /* Shared animations used across multiple components */
 
+/* Screen transition animations used in GameContainerComponent for sliding between pre-game, game, and post-game screens */
 @keyframes slideLeft {
   from {
     transform: translateX(0);

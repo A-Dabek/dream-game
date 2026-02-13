@@ -17,6 +17,7 @@
   --shadow-soft: rgba(0, 0, 0, 0.3);
   --shadow-medium: rgba(0, 0, 0, 0.4);
   --shadow-text-strong: rgba(0, 0, 0, 0.5);
+  --shadow-active-item: rgba(92, 133, 214, 0.4); /* glow for active items */
 
   /* Surfaces & borders */
   --color-surface-1: #2a2a2a; /* cards/tiles */
@@ -39,8 +40,10 @@
 
   /* Fixed layout sizes */
   --hand-item-size: 4.2rem; /* height of a single item tile */
+  /* Size of the last played item spotlight in the center of the board */
   --last-played-item-size: clamp(8rem, 40vw, 12rem);
   --hand-padding-y: 0.4rem; /* vertical padding used in app-player-hand */
+  --turn-queue-gap: 0.4rem; /* gap between turn queue items, used for animation calculations */
   --hand-gap: 0.5rem; /* horizontal gap between items */
   --hand-height: calc(
     var(--hand-item-size) + (var(--hand-padding-y) * 2)

@@ -9,8 +9,7 @@ app-action-history {
   background: var(--color-surface-2);
   border-left: 1px solid var(--color-border-weak);
   box-sizing: border-box;
-  min-width: clamp(3.2rem, 3.6rem, 4rem);
-  max-width: clamp(3.2rem, 3.6rem, 4rem);
+  width: clamp(3.2rem, 3.6rem, 4rem);
   overflow: hidden;
 
   .history-list {
@@ -58,7 +57,7 @@ app-action-history {
     transform: translateX(120%);
     opacity: 0;
     height: 0;
-    margin-bottom: -0.4rem; /* Match the gap: 0.4rem */
+    margin-bottom: calc(var(--turn-queue-gap) * -1); /* Match the gap */
   }
   40% {
     transform: translateX(120%);
