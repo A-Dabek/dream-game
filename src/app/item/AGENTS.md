@@ -27,4 +27,4 @@ This module defines the core data structures for items and player loadouts in th
 The `item` module serves as a base for other modules, providing the fundamental types used by the engine and the board.
 It is designed to be independent and unaware of other modules.
 
-For detailed instructions on how to add a new item, see [ADDING_NEW_ITEM.md](library/ADDING_NEW_ITEM.md).
+For detailed instructions on how to add a new item, invoke the `add-new-item` skill via the skill tool.

@@ -7,6 +7,10 @@ tools:
   edit: true
   bash: true
   read: true
+  skill: true
+permission:
+  skill:
+    add-new-item: allow
 ---
 
 # Game Backbone Agent - Dream Project

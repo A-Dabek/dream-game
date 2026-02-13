@@ -1,6 +1,16 @@
+---
+name: add-new-item
+description: Guide for adding new items to the Dream Project game. Defines step-by-step process for item creation, behavior implementation, effect definition, and integration testing following the Item module architecture.
+license: MIT
+compatibility: opencode
+metadata:
+  module: item
+  agent: game-backbone
+---
+
 # Adding a New Item
 
-Follow these steps to add a new item to the game.
+Follow these steps to add a new item to the Dream Project game.
 
 ## 1. Define the Item ID
 
@@ -149,3 +159,19 @@ describe('_blueprint_new_item Integration Test', () => {
 ## 7. Update Documentation
 
 Update `src/app/item/AGENTS.md` and `src/app/AGENTS.md` to reflect the new item or any changes in the module's responsibilities.
+
+## When to Use This Skill
+
+Use this skill when:
+- Adding a completely new item to the game
+- Creating new effect types that don't exist yet
+- Implementing complex item behaviors with passive or status effects
+- Setting up integration tests for new items
+
+## Key Principles
+
+- Item module has no dependencies - keep it pure
+- Follow the `_blueprint_` naming convention for new items
+- Use factory functions from `effects.ts`, `conditions.ts`, and `durations.ts`
+- Processors must be pure functions in the Engine
+- Test with the Board class for integration scenarios

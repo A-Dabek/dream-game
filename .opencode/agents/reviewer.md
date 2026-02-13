@@ -10,10 +10,10 @@ tools:
 permission:
   edit:
     "*": deny
-    ".opencode/REVIEW_FINDINGS.md": allow
+    ".opencode\\REVIEW_FINDINGS.md": allow
   write:
     "*": deny
-    ".opencode/REVIEW_FINDINGS.md": allow
+    ".opencode\\REVIEW_FINDINGS.md": allow
 ---
 
 # Reviewer Agent - Dream Project
