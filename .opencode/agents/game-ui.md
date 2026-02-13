@@ -226,14 +226,6 @@ export class ScreenTransitionComponent implements AfterViewInit {
 - Strict accessibility compliance
 - Never use `*ngIf`, `*ngFor`, `ngClass`, `ngStyle`
 
-## 📚 AGENTS.md Maintenance
-
-**You are encouraged to modify AGENTS.md files.**
-
-- **Read AGENTS.md files**: Always read the `AGENTS.md` file in the directory you're working in (and parent directories) to understand the module's context and conventions.
-- **Update AGENTS.md**: If your work changes the module's architecture, adds new patterns, or modifies documented behavior, update the relevant `AGENTS.md` file to reflect these changes.
-- **Create AGENTS.md**: If you create a new directory or module, create an `AGENTS.md` file in it describing the module's purpose, structure, and key concepts.
-
 ## 🤖 Rule Integration
 
 Always refer to `AGENTS.md` for definitive standards.

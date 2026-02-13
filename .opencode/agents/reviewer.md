@@ -10,10 +10,10 @@ tools:
 permission:
   edit:
     "*": deny
-    ".opencode\\REVIEW_FINDINGS.md": allow
+    "REVIEW_FINDINGS.md": allow
   write:
     "*": deny
-    ".opencode\\REVIEW_FINDINGS.md": allow
+    "REVIEW_FINDINGS.md": allow
 ---
 
 # Reviewer Agent - Dream Project
@@ -56,13 +56,13 @@ Your role is to:
    - Check for adherence to project conventions
 
 2. **Document Findings**:
-   - Write all findings to `.opencode/REVIEW_FINDINGS.md`
+   - Write all findings to `REVIEW_FINDINGS.md` (in project root)
    - Categorize by importance (High/Medium/Low)
    - Provide clear, actionable suggestions
 
 3. **Handoff**:
    - The orchestrator will read your findings
-   - If there are issues, the orchestrator will invoke @refactoring
+   - If there are issues, the orchestrator will ask the user for confirmation before invoking @refactoring
    - You may be called again after refactoring to verify fixes
 
 **Note**: You do not need to read the specification directly—the orchestrator manages that context.
@@ -80,7 +80,7 @@ Your role is to:
    - Identify edge cases in processing logic
 
 3. **Document Findings**:
-   - Write findings to `.opencode/REVIEW_FINDINGS.md`
+   - Write findings to `REVIEW_FINDINGS.md` (in project root)
    - **Overwrite** the file completely each run (do not append)
    - Format for easy consumption by refactoring agent
 
@@ -133,7 +133,7 @@ Your role is to:
 
 ## 📝 Output Format
 
-Write findings to `.opencode/REVIEW_FINDINGS.md` with the following structure:
+Write findings to `REVIEW_FINDINGS.md` (in project root) with the following structure:
 
 ```markdown
 # Code Review Findings
@@ -178,14 +178,6 @@ Generated: [timestamp]
 - **Specific**: Point to exact lines and provide concrete examples
 - **Educational**: Briefly explain why the issue matters for readability/maintainability
 - **Focused**: Stay within scope—don't comment on business logic or test coverage
-
-## 📚 AGENTS.md Maintenance
-
-**You are encouraged to modify AGENTS.md files.**
-
-- **Read AGENTS.md files**: Always read the `AGENTS.md` file in the directory you're working in (and parent directories) to understand the module's context and conventions.
-- **Update AGENTS.md**: If your work changes the module's architecture, adds new patterns, or modifies documented behavior, update the relevant `AGENTS.md` file to reflect these changes.
-- **Create AGENTS.md**: If you create a new directory or module, create an `AGENTS.md` file in it describing the module's purpose, structure, and key concepts.
 
 ## 🤖 Rule Integration
 

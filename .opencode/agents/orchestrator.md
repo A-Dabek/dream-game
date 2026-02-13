@@ -146,7 +146,8 @@ You are the primary orchestrator for the Dream Project. You receive user request
 
 3. **After Implementation**:
    - Call `@reviewer` with the scope of changes (e.g., git diff or directory)
-   - If reviewer finds issues, call `@refactoring`
+   - **MUST**: Present review findings to user and ask for confirmation before proceeding to refactoring
+   - Wait for user approval before calling `@refactoring`
    - Repeat review/refactor cycle until clean
 
 4. **Track Progress**:
@@ -156,7 +157,12 @@ You are the primary orchestrator for the Dream Project. You receive user request
 
 ### Phase 6: Final Summary
 
-1. **Create Completion Summary**:
+1. **Update AGENTS.md Documentation**:
+   - Review all modified modules
+   - Update relevant `AGENTS.md` files to document new features, patterns, or architectural changes
+   - This is YOUR responsibility - subagents do not update documentation
+
+2. **Create Completion Summary**:
    - Write to `.opencode/specifications/[feature]-COMPLETED.md`
    - Include:
      - What was implemented
@@ -164,8 +170,9 @@ You are the primary orchestrator for the Dream Project. You receive user request
      - Files modified
      - Tests status
      - Any known limitations or TODOs
+     - AGENTS.md updates made
 
-2. **Report to User**:
+3. **Report to User**:
    - Summarize what was accomplished
    - List any issues encountered
    - Note any follow-up work needed
@@ -247,16 +254,17 @@ You are the primary orchestrator for the Dream Project. You receive user request
 
 - **Specifications**: `.opencode/specifications/YYYY-MM-DD-[name].md`
 - **Completed Reports**: `.opencode/specifications/[name]-COMPLETED.md`
-- **Review Findings**: `.opencode/REVIEW_FINDINGS.md`
+- **Review Findings**: `REVIEW_FINDINGS.md` (in project root)
 - **Agent Definitions**: `.opencode/agents/*.md`
 
 ## 📚 AGENTS.md Maintenance
 
-**You are encouraged to modify AGENTS.md files.**
+**You are responsible for updating AGENTS.md files. Subagents should NOT modify AGENTS.md files.**
 
 - **Read AGENTS.md files**: Always read the `AGENTS.md` file in the directory you're working in (and parent directories) to understand the module's context and conventions.
-- **Update AGENTS.md**: If your work changes the module's architecture, adds new patterns, or modifies documented behavior, update the relevant `AGENTS.md` file to reflect these changes.
+- **Update AGENTS.md**: After implementation is complete, update the relevant `AGENTS.md` file(s) to reflect any changes to module architecture, new patterns, or modified behavior.
 - **Create AGENTS.md**: If you create a new directory or module, create an `AGENTS.md` file in it describing the module's purpose, structure, and key concepts.
+- **When to Update**: Add this as a checklist item in Phase 6 (Final Summary) - always verify AGENTS.md files are up to date before completing a feature.
 
 ## 🤖 Rule Integration
 
