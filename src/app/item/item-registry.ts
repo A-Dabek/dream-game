@@ -10,6 +10,9 @@ import { BlueprintNegateDamageBehaviour } from './library/_negate_damage.behavio
 import { TripleThreatBehaviour } from './library/_triple_threat.behaviour';
 import { DummyBehavior } from './library/_dummy.behaviour';
 import { BlueprintHeal5Behaviour } from './library/_blueprint_heal_5.behaviour';
+import { PunchBehaviour } from './library/punch.behaviour';
+import { StickingPlasterBehaviour } from './library/sticking_plaster.behaviour';
+import { HandBehaviour } from './library/hand.behaviour';
 
 /**
  * Registry of item behaviors.
@@ -26,6 +29,9 @@ export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   _blueprint_triple_threat: TripleThreatBehaviour,
   _dummy: DummyBehavior,
   _blueprint_heal_5: BlueprintHeal5Behaviour,
+  punch: PunchBehaviour,
+  sticking_plaster: StickingPlasterBehaviour,
+  hand: HandBehaviour,
 };
 
 /**

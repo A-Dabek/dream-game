@@ -18,23 +18,37 @@ export type ItemId =
   | '_blueprint_negate_damage'
   | '_blueprint_triple_threat'
   | '_dummy'
-  | '_blueprint_heal_5';
+  | '_blueprint_heal_5'
+  | 'punch'
+  | 'sticking_plaster'
+  | 'hand';
+
+/**
+ * Represents the value of an effect, which can be a number (damage/heal amount),
+ * string (item ID or effect type), or a StatusEffect configuration.
+ */
+export type EffectValue = number | string | StatusEffect;
 
 /**
  * Represents an atomic effect that can be applied to the game state.
  */
 export interface Effect {
   readonly type: string;
-  readonly value: any;
+  readonly value: EffectValue;
   readonly target?: 'self' | 'enemy';
 }
+
+/**
+ * Represents the value of a condition, which can be a string (effect type) or undefined.
+ */
+export type ConditionValue = string | undefined;
 
 /**
  * Represents a condition that must be met for a status effect to trigger.
  */
 export interface Condition {
   readonly type: string;
-  readonly value?: any;
+  readonly value?: ConditionValue;
   readonly subConditions?: Condition[];
 }
 

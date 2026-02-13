@@ -1,7 +1,9 @@
 export {
   type Condition,
+  type ConditionValue,
   type Duration,
   type Effect,
+  type EffectValue,
   type Genre,
   type Item,
   type ItemBehavior,
@@ -20,6 +22,10 @@ export { BlueprintDamageToHealPermanentBehaviour } from './library/_damage_to_he
 export { BlueprintNegateDamageBehaviour } from './library/_negate_damage.behaviour';
 export { TripleThreatBehaviour } from './library/_triple_threat.behaviour';
 export { BlueprintHeal5Behaviour } from './library/_blueprint_heal_5.behaviour';
+export { PunchBehaviour } from './library/punch.behaviour';
+export { StickingPlasterBehaviour } from './library/sticking_plaster.behaviour';
+export { HandBehaviour } from './library/hand.behaviour';
+export { GAME_CONFIG, BASE_HEAL } from './game-config';
 export {
   attack,
   heal,

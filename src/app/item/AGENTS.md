@@ -23,6 +23,18 @@ This module defines the core data structures for items and player loadouts in th
   `BlueprintPassiveAttackBehaviour`, `TripleThreatBehaviour`).
 - **Library**: The `library` directory contains all concrete item behaviors and a guide on how to add new ones.
 - **Loadout**: An interface representing a player's set of items and base attributes like health and speed.
+- **Game Balance Configuration**: `GAME_CONFIG` object in `game-config.ts` provides centralized baseline values for game balance:
+  - `BASE_HEALTH`: Average player health baseline (20)
+  - `BASE_ATTACK`: Baseline damage for attacks (5)
+  - `HEAL_MODIFIER`: Multiplier for healing (1.2)
+  - `BASE_HEAL`: Calculated as `Math.floor(BASE_ATTACK * HEAL_MODIFIER)` (6)
+  - Changing `BASE_ATTACK` automatically updates `BASE_HEAL` for easy game balancing
+- **Basic Items**: Three playable items using the configuration values:
+  - `punch`: Deals `BASE_ATTACK` damage (icon: "punch")
+  - `sticking_plaster`: Heals `BASE_HEAL` amount (icon: "sticking-plaster")
+  - `hand`: No effect (pass turn) (icon: "hand")
+
+  **Note**: The ItemId IS the icon name (with dashes replaced by underscores). The `iconNameFromItemId()` utility normalizes IDs by replacing underscores with dashes to match icon names in `assets/icons.json`.
 
 ## Responsibility
 
