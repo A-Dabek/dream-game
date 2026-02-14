@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Loadout } from '../item';
+import { Loadout } from '@dream/item';
 import { Engine } from './engine';
 
 import { createTestItem } from '../board/test/test-utils';

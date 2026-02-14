@@ -1,6 +1,5 @@
-import { heal } from '../effects';
-import { Effect, ItemBehavior } from '../item.model';
-import { BASE_HEAL } from '../game-config';
+import { BASE_HEAL, heal } from '@dream/item';
+import { Effect, ItemBehavior } from '@dream/item';
 
 /**
  * Behavior for the sticking_plaster item.

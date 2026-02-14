@@ -1,5 +1,5 @@
-import { afterEffect, statusEffect } from '..';
-import { Effect, ItemBehavior, PassiveEffect } from '../item.model';
+import { afterEffect, statusEffect } from '@dream/item';
+import { Effect, ItemBehavior, PassiveEffect } from '@dream/item';
 
 /**
  * Behavior for the _blueprint_reactive_removal item.

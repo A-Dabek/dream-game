@@ -18,6 +18,7 @@
     "paths": {
       "@dream/ai": ["src/app/ai/index.ts"],
       "@dream/item": ["src/app/item/index.ts"],
+      "@dream/item-library": ["src/app/item-library/index.ts"],
       "@dream/board": ["src/app/board/index.ts"],
       "@dream/engine": ["src/app/engine/index.ts"],
       "@dream/turn-manager": ["src/app/turn-manager/index.ts"],

@@ -1,5 +1,5 @@
-import { heal } from '../effects';
-import { Effect, ItemBehavior } from '../item.model';
+import { heal } from '@dream/item';
+import { Effect, ItemBehavior } from '@dream/item';
 
 /**
  * Behavior for the _blueprint_heal_5 item.

@@ -1,5 +1,5 @@
 import { LogEntry } from '../engine/engine.model';
-import { ItemId, Loadout } from '../item';
+import { ItemId, Loadout } from '@dream/item';
 import { TurnEntry } from '@dream/turn-manager';
 import { Board } from './impl/board';
 

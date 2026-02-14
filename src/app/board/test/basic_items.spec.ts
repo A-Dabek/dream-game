@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Board } from '../impl/board';
 import { createMockPlayer, MockPlayerOverrides } from './test-utils';
-import { GAME_CONFIG, BASE_HEAL } from '../../item/game-config';
-import { ItemId } from '../../item';
+import { GAME_CONFIG, BASE_HEAL, ItemId } from '@dream/item';
 
 /**
  * Creates a board with two players for testing.

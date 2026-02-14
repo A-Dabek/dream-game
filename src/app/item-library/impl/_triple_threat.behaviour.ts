@@ -1,13 +1,5 @@
-import {
-  addStatusEffect,
-  attack,
-  Effect,
-  ItemBehavior,
-  onTurnEnd,
-  PassiveEffect,
-  permanent,
-  statusEffect,
-} from '..';
+import { addStatusEffect, attack, onTurnEnd, statusEffect } from '@dream/item';
+import { Effect, ItemBehavior, PassiveEffect } from '@dream/item';
 
 export class TripleThreatBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
@@ -17,7 +9,7 @@ export class TripleThreatBehaviour implements ItemBehavior {
         statusEffect({
           condition: onTurnEnd(),
           action: [attack(3)],
-          duration: permanent(),
+          duration: { type: 'permanent' },
         }),
       ),
     ];
@@ -28,7 +20,7 @@ export class TripleThreatBehaviour implements ItemBehavior {
       statusEffect({
         condition: onTurnEnd(),
         action: [attack(1)],
-        duration: permanent(),
+        duration: { type: 'permanent' },
       }),
     ];
   }

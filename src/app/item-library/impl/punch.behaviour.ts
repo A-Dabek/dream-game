@@ -1,6 +1,5 @@
-import { attack } from '../effects';
-import { Effect, ItemBehavior } from '../item.model';
-import { GAME_CONFIG } from '../game-config';
+import { attack, GAME_CONFIG } from '@dream/item';
+import { Effect, ItemBehavior } from '@dream/item';
 
 /**
  * Behavior for the punch item.

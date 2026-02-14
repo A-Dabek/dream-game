@@ -6,7 +6,7 @@ import {
   HAS_NO_ITEMS,
   ON_PLAY,
   ON_TURN_END,
-} from '../../item';
+} from '@dream/item';
 import { EngineState, GameEvent } from '../engine.model';
 import { isEffectEvent, isLifecycleGameEvent } from '../type-guards';
 

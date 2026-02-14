@@ -1,5 +1,6 @@
 import { computed, signal } from '@angular/core';
-import { Effect, getItemBehavior, ItemId, Loadout, removeItem } from '../item';
+import { Effect, ItemId, Loadout, removeItem } from '@dream/item';
+import { getItemBehavior } from '@dream/item-library';
 import { ListenerFactory } from './effects';
 import {
   EngineLoadout,

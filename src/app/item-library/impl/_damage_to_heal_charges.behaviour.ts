@@ -1,5 +1,5 @@
-import { addStatusEffect, charges, invert } from '..';
-import { Effect, ItemBehavior } from '../item.model';
+import { addStatusEffect, charges, invert } from '@dream/item';
+import { Effect, ItemBehavior } from '@dream/item';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_charges item.

@@ -1,4 +1,4 @@
-import { BEHAVIORS } from '../../item/item-registry';
+import { BEHAVIORS } from '@dream/item-library';
 import { Player } from '../player.model';
 import { PlayerRating } from '@dream/rating';
 import { FirstAvailableStrategy } from '@dream/ai';

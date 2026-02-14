@@ -1,4 +1,4 @@
-import { Item, ItemId } from '../../item';
+import { Item, ItemId } from '@dream/item';
 import { BoardLoadout } from '../board.model';
 
 /**

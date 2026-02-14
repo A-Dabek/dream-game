@@ -1,4 +1,4 @@
-import { Effect, ItemId, Loadout } from '../item';
+import { Effect, ItemId, Loadout } from '@dream/item';
 import { TurnEntry } from '@dream/turn-manager';
 
 export interface EngineLoadout extends Loadout {
