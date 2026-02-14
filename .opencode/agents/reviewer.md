@@ -155,6 +155,15 @@ Your role is to:
 
 **Why this matters**: The orchestrator plans based solely on `index.ts` files. If the public API is incomplete or unclear, the orchestrator cannot make accurate plans.
 
+### Documentation (AGENTS.md) Completeness
+
+- **AGENTS.md Updated**: If changes introduce new patterns, architecture changes, or modify module behavior, has the relevant `AGENTS.md` been updated?
+- **Pattern Documentation**: Are new coding patterns or conventions documented?
+- **Module Structure**: If module organization changed, is the structure documented?
+- **Cross-References**: Are related modules or dependencies properly referenced?
+
+**Why this matters**: Implementation agents (not the orchestrator) are responsible for keeping AGENTS.md up to date since they work with the source code. Check that documentation reflects actual implementation.
+
 ## 📝 Output Format
 
 Write findings to `REVIEW_FINDINGS.md` (in project root) with the following structure:

@@ -202,21 +202,15 @@ Verify these conventions are followed:
 
 ### Phase 6: Final Summary
 
-1. **Update AGENTS.md Documentation**:
-   - Read `AGENTS.md` files to understand what needs to be updated
-   - Update relevant `AGENTS.md` files to document new features, patterns, or architectural changes
-   - You can read `AGENTS.md` files - this is part of your planning role
-   - This is YOUR responsibility - subagents do not update documentation
-
-2. **Create Completion Summary**:
-   - Write to `.opencode/specifications/[feature]-COMPLETED.md`
-   - Include:
-     - What was implemented
-     - Which agents contributed
-     - Files modified
-     - Tests status
-     - Any known limitations or TODOs
-     - AGENTS.md updates made
+1. **Create Completion Summary**:
+    - Write to `.opencode/specifications/[feature]-COMPLETED.md`
+    - Include:
+      - What was implemented
+      - Which agents contributed
+      - Files modified
+      - Tests status
+      - Any known limitations or TODOs
+    - **NOTE**: AGENTS.md updates are handled by implementation agents, not the orchestrator
 
 3. **Report to User**:
    - Summarize what was accomplished
@@ -327,14 +321,24 @@ This limitation forces you to:
 - Delegate **implementation details** to subagents
 - Create **high-level plans** that work with available public interfaces
 
-## 📚 AGENTS.md Maintenance
+## 📚 Orchestrator Limitations
 
-**You are responsible for updating AGENTS.md files. Subagents should NOT modify AGENTS.md files.**
+**You are NOT responsible for updating AGENTS.md files or source code.**
 
 - **Read AGENTS.md files**: Always read the `AGENTS.md` file in the directory you're working in (and parent directories) to understand the module's context and conventions. This is one of the two file types you're allowed to read.
-- **Update AGENTS.md**: After implementation is complete, update the relevant `AGENTS.md` file(s) to reflect any changes to module architecture, new patterns, or modified behavior.
-- **Create AGENTS.md**: If you create a new directory or module, create an `AGENTS.md` file in it describing the module's purpose, structure, and key concepts.
-- **When to Update**: Add this as a checklist item in Phase 6 (Final Summary) - always verify AGENTS.md files are up to date before completing a feature.
+- **Do NOT update AGENTS.md**: You cannot read implementation files, so you cannot accurately update AGENTS.md documentation. This is the responsibility of implementation agents who work with the source code.
+- **Do NOT modify source code**: Always delegate to subagents for any code changes.
+
+## ✅ Subagent TODO List
+
+When delegating work to subagents, ensure they complete the following checklist:
+
+**Before Reporting Completion:**
+- [ ] **Export Public API**: All new public types, interfaces, functions, and classes exported in `index.ts`
+- [ ] **Update AGENTS.md**: Documentation updated to reflect new patterns, architecture changes, or module behavior
+- [ ] **Run Tests**: All tests pass (`ng test --watch=false`)
+- [ ] **Check Format**: Code passes format check (`npm run format:check`)
+- [ ] **Build**: Project builds successfully (`ng build`)
 
 ## 🤖 Rule Integration
 

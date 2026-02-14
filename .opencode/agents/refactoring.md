@@ -176,6 +176,8 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 - [ ] Run build: `ng build` (must succeed)
 - [ ] Verify no behavioral changes
 - [ ] Review changes to ensure they only improve code quality
+- [ ] Update `index.ts` if public API changed (exports moved, renamed, or added)
+- [ ] Update `AGENTS.md` if patterns or architecture changed
 - [ ] Run full verification: `npm run verify`
 
 ## 🚫 What NOT to Do
@@ -202,8 +204,8 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 - Update comments if they become outdated due to refactoring
 - Focus on explaining "how" and "why", not "what"
 - Keep JSDoc for public APIs updated if signatures change
-- Do NOT update AGENTS.md files - the orchestrator handles documentation updates
-- **index.ts**: If refactoring moves or renames public exports, update the module's `index.ts` to reflect the changes. Ensure exports remain complete and accurate.
+- **Update AGENTS.md**: If refactoring changes patterns or architecture, update relevant `AGENTS.md` files
+- **Update index.ts**: If refactoring moves or renames public exports, update the module's `index.ts` to reflect the changes. Ensure exports remain complete and accurate.
 
 ## 🤖 Rule Integration
 

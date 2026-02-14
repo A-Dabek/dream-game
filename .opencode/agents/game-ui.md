@@ -42,9 +42,21 @@ When invoked by the orchestrator, you will receive a specification file path. Al
    - Do not deviate from the specification without consulting the orchestrator
 
 4. **After Implementation**:
-   - Run tests to verify functionality
-   - Report completion to the orchestrator
-   - Do not proceed to review phase - the orchestrator will handle that
+    - Run tests to verify functionality
+    - Update `index.ts` with all new public exports
+    - Update `AGENTS.md` with any new patterns or UI conventions
+    - Report completion to the orchestrator
+    - Do not proceed to review phase - the orchestrator will handle that
+
+## ✅ Completion Checklist
+
+**Never skip these steps before reporting completion:**
+
+- [ ] **Public API Exported**: All new standalone components, directives, types added to `index.ts`
+- [ ] **AGENTS.md Updated**: Documentation reflects new UI patterns, component conventions, or changes
+- [ ] **Tests Pass**: All tests pass (`ng test --watch=false`)
+- [ ] **Format Check**: Code passes format check (`npm run format:check`)
+- [ ] **Build Succeeds**: Project builds (`ng build`)
 
 ## 🏗 Architecture Understanding
 
