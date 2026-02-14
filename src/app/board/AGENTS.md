@@ -30,6 +30,13 @@ so the UI can track animations while still displaying the correct `playerId`.
 
 **Engine Delegation**: Item effect calculations delegated to Engine. Board handles validation and state transitions.
 
+**State Synchronization**: `Board.syncWithEngine()` synchronizes player state from the Engine after each action, including:
+
+- `health` - Current health value
+- `items` - Remaining inventory
+- `speed` - Current speed (affected by items like wingfoot/sticky_boot)
+- Turn queue and game over status
+
 ## Data Models
 
 GameState contains:

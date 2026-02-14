@@ -12,3 +12,5 @@ export { TripleThreatBehaviour } from './_triple_threat.behaviour';
 export { HandBehaviour } from './hand.behaviour';
 export { PunchBehaviour } from './punch.behaviour';
 export { StickingPlasterBehaviour } from './sticking_plaster.behaviour';
+export { StickyBootBehaviour } from './sticky_boot.behaviour';
+export { WingfootBehaviour } from './wingfoot.behaviour';

@@ -9,6 +9,8 @@ export const GAME_CONFIG = {
   BASE_ATTACK: 5,
   /** Heal is 120% of attack damage */
   HEAL_MODIFIER: 1.2,
+  /** Baseline speed modifier (30% of typical base speed of 10) */
+  BASE_SPEED_MODIFIER: 3,
 } as const;
 
 /**

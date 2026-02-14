@@ -14,6 +14,8 @@ import {
   HandBehaviour,
   PunchBehaviour,
   StickingPlasterBehaviour,
+  StickyBootBehaviour,
+  WingfootBehaviour,
 } from './impl';
 
 export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
@@ -31,6 +33,8 @@ export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   hand: HandBehaviour,
   punch: PunchBehaviour,
   sticking_plaster: StickingPlasterBehaviour,
+  sticky_boot: StickyBootBehaviour,
+  wingfoot: WingfootBehaviour,
 };
 
 export function getItemBehavior(itemId: ItemId): ItemBehavior {

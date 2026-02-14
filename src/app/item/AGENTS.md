@@ -11,7 +11,9 @@ This module defines the core data structures for items and player loadouts in th
   (e.g., `--genre-basic`). The genre system is designed to be extensible for future types like 'fire', 'poison', etc.
 - **Effect**: An interface representing an atomic effect (e.g., damage, healing). Each effect has a `target` property (`self` or `enemy`) to explicitly define whom it affects.
 - **Effect Creators**: Factory functions that simplify the creation of `Effect` and `StatusEffect` objects. Examples include
-  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(value, target?)`, and `statusEffect(config)`.
+  `attack(amount, target?)`, `heal(amount, target?)`, `removeItem(value, target?)`, `modifySpeed(value, target?)`, and `statusEffect(config)`.
+- **Speed Modification Effects**: The `modifySpeed(value, target?)` factory creates speed adjustment effects. Positive values create `speed_up` effects,
+  negative values create `slow_down` effects. Speed changes are permanent (do not expire) and immediately recalculate the turn order.
 - **Passive Effects**: Effects that are active while an item is in the loadout. Defined via `passiveEffects()` in `ItemBehavior`.
 - **Status Effects**: Lingering effects that are applied when an item is played. Defined via `whenPlayed()` using `addStatusEffect()`.
 - **Passive/Status Logic**: Both use the same underlying structure consisting of a `Condition` (e.g.,
@@ -28,11 +30,14 @@ This module defines the core data structures for items and player loadouts in th
   - `BASE_ATTACK`: Baseline damage for attacks (5)
   - `HEAL_MODIFIER`: Multiplier for healing (1.2)
   - `BASE_HEAL`: Calculated as `Math.floor(BASE_ATTACK * HEAL_MODIFIER)` (6)
+  - `BASE_SPEED_MODIFIER`: Speed adjustment amount for speed-modifying items (3, approximately 30% of typical base speed)
   - Changing `BASE_ATTACK` automatically updates `BASE_HEAL` for easy game balancing
-- **Basic Items**: Three playable items using the configuration values:
+- **Basic Items**: Playable items using the configuration values:
   - `punch`: Deals `BASE_ATTACK` damage (icon: "punch")
   - `sticking_plaster`: Heals `BASE_HEAL` amount (icon: "sticking-plaster")
   - `hand`: No effect (pass turn) (icon: "hand")
+  - `sticky_boot`: Reduces enemy speed by `BASE_SPEED_MODIFIER` (icon: "sticky-boot")
+  - `wingfoot`: Increases player speed by `BASE_SPEED_MODIFIER` (icon: "wingfoot")
 
   **Note**: The ItemId IS the icon name (with dashes replaced by underscores). The `iconNameFromItemId()` utility normalizes IDs by replacing underscores with dashes to match icon names in `assets/icons.json`.
 

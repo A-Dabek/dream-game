@@ -110,3 +110,27 @@ export function addStatusEffect(
     target,
   };
 }
+
+/**
+ * Creates a speed modification effect.
+ * Positive values speed up, negative values slow down.
+ * Uses speed_up processor for positive, slow_down for negative.
+ */
+export function modifySpeed(
+  value: number,
+  target: 'self' | 'enemy' = 'self',
+): Effect {
+  if (value >= 0) {
+    return {
+      type: 'speed_up',
+      value,
+      target,
+    };
+  } else {
+    return {
+      type: 'slow_down',
+      value: -value, // Convert negative to positive for slow_down processor
+      target,
+    };
+  }
+}

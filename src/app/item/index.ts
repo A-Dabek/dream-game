@@ -22,6 +22,7 @@ export {
   negate,
   statusEffect,
   addStatusEffect,
+  modifySpeed,
 } from './effects';
 export {
   BEFORE_EFFECT,

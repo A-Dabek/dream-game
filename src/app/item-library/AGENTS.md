@@ -74,6 +74,8 @@ import { Item } from '../item';
 - `PunchBehaviour` - Deals `BASE_ATTACK` damage (uses game config)
 - `StickingPlasterBehaviour` - Heals `BASE_HEAL` amount (uses game config)
 - `HandBehaviour` - Pass turn (no effect)
+- `StickyBootBehaviour` - Reduces enemy speed by `BASE_SPEED_MODIFIER` (uses game config)
+- `WingfootBehaviour` - Increases player speed by `BASE_SPEED_MODIFIER` (uses game config)
 
 ## Dependencies
 

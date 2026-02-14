@@ -1,4 +1,4 @@
-﻿# Engine Module - Agent Documentation
+# Engine Module - Agent Documentation
 
 ## Overview
 
@@ -90,11 +90,22 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 
 - `damage`: Decreases the targeted player's health.
 - `healing`: Increases the targeted player's health.
+- `speed_up`: Increases the targeted player's speed by the effect's value and immediately recalculates the turn queue.
+- `slow_down`: Decreases the targeted player's speed by the effect's value and immediately recalculates the turn queue.
 - `remove_item`: Removes an item from the targeted player's loadout. The processor also automatically removes any listeners associated with the removed item's `instanceId`. Listeners are still encouraged to emit `remove_listener` if they have complex cleanup, but for passive effects tied to item existence, it is handled by the processor.
 - `remove_listener`: Explicitly removes a listener from the engine state by its `instanceId`.
 - `add_status_effect`: Adds a persistent status effect (with its defined `Duration`) to the targeted player.
 
 All processors for these effects now automatically append a `state-change` type entry (a full `EngineState` snapshot) to the engine's log.
+
+### Speed Modification Effects
+
+Speed changes (`speed_up` and `slow_down`) are permanent (do not expire) and immediately affect turn order:
+
+- The processor updates the target player's `speed` attribute
+- The `TurnManager.recalculateTurnQueue()` function is called to rebuild the turn queue based on new speeds
+- Speed modifications stack (multiple speed_up/slow_down effects add/subtract cumulatively)
+- The `modifySpeed(value, target?)` factory function in the item module creates the appropriate effect based on sign (positive = speed_up, negative = slow_down)
 
 ## Logging
 

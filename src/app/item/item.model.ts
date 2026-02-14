@@ -21,7 +21,9 @@ export type ItemId =
   | '_blueprint_heal_5'
   | 'punch'
   | 'sticking_plaster'
-  | 'hand';
+  | 'hand'
+  | 'sticky_boot'
+  | 'wingfoot';
 
 /**
  * Represents the value of an effect, which can be a number (damage/heal amount),

@@ -202,11 +202,13 @@ export class Board implements BoardInterface {
         ...state.player,
         health: updatedPlayer.health,
         items: updatedPlayer.items,
+        speed: updatedPlayer.speed,
       },
       opponent: {
         ...state.opponent,
         health: updatedOpponent.health,
         items: updatedOpponent.items,
+        speed: updatedOpponent.speed,
       },
       turnInfo: {
         currentPlayerId: engineState.turnQueue[0].playerId,
