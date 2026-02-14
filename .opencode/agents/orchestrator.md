@@ -254,6 +254,47 @@ Verify these conventions are followed:
 - **Delegate Implementation**: Let subagents figure out how to implement your plans
 - **Requirements-Focused**: Define WHAT needs to be built and acceptance criteria, not HOW to build it
 
+## ⚠️ Common Requirement Pitfalls
+
+When adding new items or mechanics, ALWAYS clarify with the user upfront:
+
+- **Effect timing**: Is this immediate (like heal/damage) or lingering (status effect)?
+- **Duration**: One-time, turns-based, charges, or permanent?
+- **Stacking**: Do multiple uses stack or replace?
+
+**Example clarifying questions:**
+- "Should these items have immediate one-time effects like heal/damage, or lingering status effects?"
+- "Are the changes permanent or temporary?"
+
+## 🌿 Git Workflow
+
+### Starting Work
+
+**ALWAYS begin with a new branch checkout:**
+1. Check current branch: `git branch`
+2. Create and checkout new feature branch: `git checkout -b feature/[feature-name]`
+3. Confirm you're on the new branch before proceeding
+
+### Completion & Signoff
+
+**After refactoring is complete:**
+
+1. **Ask user for signoff**: Present summary of changes and ask "Ready to commit and merge?"
+
+2. **Only after explicit user approval:**
+   ```bash
+   # Stage and commit changes
+   git add .
+   git commit -m "[type]: [descriptive message]"
+   
+   # Merge to master
+   git checkout master
+   git merge feature/[feature-name]
+   
+   # Clean up
+   git branch -d feature/[feature-name]
+   ```
+
 ## 🚫 What NOT to Do
 
 - **Never write code yourself**: Always delegate to subagents

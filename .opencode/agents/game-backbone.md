@@ -2,7 +2,7 @@
 description: Develops game backbone and business logic
 mode: subagent
 temperature: 0.3
-steps: 20
+steps: 40
 tools:
   write: true
   edit: true
@@ -254,6 +254,33 @@ import { sibling } from '../sibling-file';
 **When creating new modules:**
 - Add path alias to tsconfig.json
 - Update all relevant imports to use the alias
+
+## ⚠️ Critical Pattern: State Synchronization
+
+When adding new player attributes that change during gameplay:
+
+**Always verify `Board.syncWithEngine()` synchronizes the new attribute:**
+- Located in `src/app/board/impl/board.ts`
+- Currently syncs: `health`, `items`
+- Must also sync any new attributes (e.g., `speed`, `mana`, etc.)
+
+**Checklist when adding stateful player attributes:**
+- [ ] Engine processor updates the attribute
+- [ ] Board.syncWithEngine() syncs the attribute
+- [ ] Tests verify attribute persists across turns
+
+## 📏 Task Sizing Guidelines
+
+**Break complex features into smaller tasks:**
+
+Complex = New effect type + Multiple behaviors + Tests + Documentation
+- Delegate as separate sequential tasks if needed
+- Example: "Implement speed items" → "Create effect type" → "Create items" → "Fix sync issues"
+
+**When hitting step limits:**
+- Stop with a clear summary of what's done and what's remaining
+- Don't try to rush unfinished work
+- Report to orchestrator for next task delegation
 
 ## 🤖 Rule Integration
 
