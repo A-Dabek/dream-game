@@ -304,6 +304,20 @@ Verify these conventions are followed:
 - **Module Public APIs**: `[module]/index.ts` (for understanding module interfaces)
 - **Module Documentation**: `[module]/AGENTS.md` (for understanding module patterns)
 
+## 📍 Path Aliases
+
+This project uses TypeScript path aliases with `@dream/` prefix for clean cross-module imports:
+- `@dream/item` → `src/app/item/index.ts`
+- `@dream/item-library` → `src/app/item-library/index.ts`
+- `@dream/engine` → `src/app/engine/index.ts`
+- `@dream/board` → `src/app/board/index.ts`
+- etc.
+
+When subagents create new modules or move existing ones, they should:
+1. Add corresponding path alias to `tsconfig.json`
+2. Update all imports to use the alias instead of relative paths
+3. Follow the import conventions documented in each agent's instructions
+
 ## 📚 Reading Guidelines
 
 **You are limited to reading ONLY these file types:**

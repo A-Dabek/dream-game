@@ -164,6 +164,17 @@ Your role is to:
 
 **Why this matters**: Implementation agents (not the orchestrator) are responsible for keeping AGENTS.md up to date since they work with the source code. Check that documentation reflects actual implementation.
 
+### Post-Refactoring Verification
+
+When reviewing code after structural changes (moving modules, renaming directories):
+
+- **Stale LSP State**: LSP errors about missing files may indicate stale state rather than actual orphaned files. If you see errors like "Cannot find module..." for files that were moved:
+  - Check if the file actually exists at the reported location
+  - If the file is genuinely missing from old location, it's likely already cleaned up
+  - Trust the build/test results over stale LSP diagnostics
+- **Import Updates**: Verify all imports use the new path aliases correctly
+- **Duplicate Files**: Ensure no files exist in both old and new locations
+
 ## 📝 Output Format
 
 Write findings to `REVIEW_FINDINGS.md` (in project root) with the following structure:

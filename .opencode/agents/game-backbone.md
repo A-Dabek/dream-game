@@ -228,6 +228,33 @@ export class GameBoard {
 - Validate in Board, process in Engine
 - AI uses Board simulation, never touches Engine directly
 
+## 📥 Import Path Conventions
+
+**Always use path aliases for cross-module imports:**
+
+```typescript
+// ✅ Good - path alias
+import { Item, Effect } from '@dream/item';
+import { PunchBehaviour } from '@dream/item-library';
+import { Board } from '@dream/board';
+
+// ❌ Avoid - relative paths for cross-module imports
+import { Item } from '../item';
+import { PunchBehaviour } from '../../item-library';
+```
+
+**Within-module imports can use relative paths:**
+
+```typescript
+// ✅ OK - within same module
+import { helper } from './utils';
+import { sibling } from '../sibling-file';
+```
+
+**When creating new modules:**
+- Add path alias to tsconfig.json
+- Update all relevant imports to use the alias
+
 ## 🤖 Rule Integration
 
 Always refer to `AGENTS.md` for definitive standards.

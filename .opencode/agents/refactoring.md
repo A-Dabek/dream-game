@@ -2,7 +2,7 @@
 description: Performs code refactoring based on reviewer findings without changing logic
 temperature: 0.2
 mode: subagent
-steps: 20
+steps: 40
 tools:
   write: true
   edit: true
@@ -169,16 +169,16 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 - [ ] Maintain Angular patterns (inject(), signals, OnPush, etc.)
 - [ ] Preserve module boundaries (logic in `src/app/`, UI in `src/ui/`)
 
-### After Refactoring
+### After Refactoring (Priority Order)
 
-- [ ] Run tests: `ng test --watch=false` (all must pass)
-- [ ] Run format check: `npm run format:check`
-- [ ] Run build: `ng build` (must succeed)
-- [ ] Verify no behavioral changes
-- [ ] Review changes to ensure they only improve code quality
-- [ ] Update `index.ts` if public API changed (exports moved, renamed, or added)
-- [ ] Update `AGENTS.md` if patterns or architecture changed
-- [ ] Run full verification: `npm run verify`
+1. [ ] **Run build first**: `ng build` (catches import/path errors immediately - must succeed)
+2. [ ] Run tests: `ng test --watch=false` (all must pass)
+3. [ ] Run format check: `npm run format:check`
+4. [ ] Run full verification: `npm run verify`
+5. [ ] Verify no behavioral changes
+6. [ ] Review changes to ensure they only improve code quality
+7. [ ] Update `index.ts` if public API changed (exports moved, renamed, or added)
+8. [ ] Update `AGENTS.md` if patterns or architecture changed
 
 ## 🚫 What NOT to Do
 
@@ -198,6 +198,34 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 - Use early returns to reduce nesting
 - Remove dead code and unused imports
 - Apply consistent formatting
+
+## 📥 Import Path Conventions
+
+**Always use path aliases for cross-module imports:**
+
+```typescript
+// ✅ Good - path alias
+import { Item, Effect } from '@dream/item';
+import { PunchBehaviour } from '@dream/item-library';
+import { Board } from '@dream/board';
+
+// ❌ Avoid - relative paths for cross-module imports
+import { Item } from '../item';
+import { PunchBehaviour } from '../../item-library';
+```
+
+**Within-module imports can use relative paths:**
+
+```typescript
+// ✅ OK - within same module
+import { helper } from './utils';
+import { sibling } from '../sibling-file';
+```
+
+**When moving files between modules:**
+- Update all imports to use the correct path alias
+- Verify no stale relative imports remain pointing to old locations
+- Check tsconfig.json has the path alias configured
 
 ## 📝 Documentation
 

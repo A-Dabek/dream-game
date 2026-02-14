@@ -273,6 +273,33 @@ export class ScreenTransitionComponent implements AfterViewInit {
 - Strict accessibility compliance
 - Never use `*ngIf`, `*ngFor`, `ngClass`, `ngStyle`
 
+## 📥 Import Path Conventions
+
+**Always use path aliases for cross-module imports:**
+
+```typescript
+// ✅ Good - path alias
+import { Item, Effect } from '@dream/item';
+import { PunchBehaviour } from '@dream/item-library';
+import { Board } from '@dream/board';
+
+// ❌ Avoid - relative paths for cross-module imports
+import { Item } from '../item';
+import { PunchBehaviour } from '../../item-library';
+```
+
+**Within-module imports can use relative paths:**
+
+```typescript
+// ✅ OK - within same module
+import { helper } from './utils';
+import { sibling } from '../sibling-file';
+```
+
+**When importing from backbone modules to UI:**
+- Use path aliases for all cross-module imports
+- Keep UI components decoupled from specific file locations
+
 ## 🤖 Rule Integration
 
 Always refer to `AGENTS.md` for definitive standards.
