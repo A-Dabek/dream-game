@@ -2,7 +2,7 @@
 description: Develops game UI components using Angular
 mode: subagent
 temperature: 0.3
-steps: 20
+steps: 40
 tools:
   write: true
   edit: true
@@ -71,6 +71,7 @@ Before reporting completion:
 - **Standalone Components**: Always standalone (omit `standalone: true`, it's default in Angular v20+)
 - **Dependency Injection**: Use `inject()` function, NEVER constructor injection
 - **Change Detection**: Set `changeDetection: ChangeDetectionStrategy.OnPush` for all components
+- **Zoneless Architecture**: This app is zoneless (no zone.js). DO NOT use `fakeAsync` in tests - use Vitest's `fakeTimers` instead
 - **Control Flow**: Use native control flow:
   ```typescript
   @if (condition) { ... }

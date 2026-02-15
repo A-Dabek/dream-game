@@ -144,6 +144,39 @@ git add . && git commit -m "[type]: [message]"
 
 **Report to user**: Summarize accomplishments, issues, follow-up work
 
+### Phase 7: Merge & Deploy (After User Signoff)
+
+**After user approves and says "all good" or similar:**
+
+1. **Merge feature branch to master:**
+   ```bash
+   git checkout master
+   git merge feature/[name]
+   ```
+
+2. **Build for production:**
+   ```bash
+   ng build
+   ```
+
+3. **Deploy to Firebase Hosting:**
+   ```bash
+   firebase deploy --only hosting
+   ```
+
+4. **Report deployment status:**
+   - Confirm branch merged
+   - Share deployment URL
+   - Summarize what's live
+
+## Handling Roadblocks
+
+**If you encounter blockers:**
+- Stop and report clearly what worked vs what didn't
+- Don't rush unfinished work
+- Better to report partial completion than broken implementation
+- Ask user for guidance on how to proceed
+
 ## 🎯 Request Types & Agent Delegation
 
 | Type | Agents | Notes |
@@ -164,6 +197,17 @@ git add . && git commit -m "[type]: [message]"
 2. **@game-ui**: UI components, screens, styling, e2e tests - **ONLY after backbone finishes**
 3. **@reviewer**: Code quality review (mandatory after all implementation completes)
 4. **@refactoring**: Address review findings (only after reviewer, never directly)
+
+**CRITICAL: Reviewer only IDENTIFIES issues, never approves**
+- The reviewer creates REVIEW_FINDINGS.md with categorized issues
+- The user decides if/when to approve the implementation
+- After user approval, invoke @refactoring to address findings
+- Never treat reviewer output as "approval to proceed"
+
+**Stay High-Level**
+- Never suggest specific method/function names to backbone
+- Describe WHAT capability is needed, let backbone decide HOW
+- Example: Say "provide configuration-based player creation" not "add createPlayerWithConfig()"
 
 ## 📸 E2E Testing
 

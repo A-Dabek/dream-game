@@ -55,6 +55,7 @@ Before reporting completion:
 - [ ] Tests pass: `ng test --watch=false`
 - [ ] Build succeeds: `ng build`
 - [ ] **NOTE**: Do NOT run formatting - orchestrator handles this
+- [ ] **If you hit roadblocks**: Stop and report clearly what worked vs what didn't. Don't rush unfinished work.
 
 ## 🏗 Architecture
 
