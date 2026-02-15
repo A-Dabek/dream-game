@@ -6,10 +6,11 @@ steps: 20
 tools:
   write: true
   edit: true
-  bash: false
+  bash: true
   read: true
   glob: true
   task: true
+  firebase-firestore: true
 permission:
   read:
     "*": deny
@@ -17,6 +18,8 @@ permission:
     "**\\*.md": allow
     "**/index.ts": allow
     "**\\index.ts": allow
+    "**/*.png": allow
+    "**\\*.png": allow
   edit:
     "*": deny
     "**/*.md": allow
@@ -25,6 +28,12 @@ permission:
     "*": deny
     "**/*.md": allow
     "**\\*.md": allow
+  bash:
+    "*": deny
+    "ng build": allow
+    "npm run build": allow
+    "firebase deploy": allow
+    "npx firebase deploy": allow
   task:
     game-backbone: allow
     game-ui: allow
@@ -266,6 +275,43 @@ When adding new items or mechanics, ALWAYS clarify with the user upfront:
 - "Should these items have immediate one-time effects like heal/damage, or lingering status effects?"
 - "Are the changes permanent or temporary?"
 
+## 📸 Visual Regression Testing (E2E)
+
+The project uses Playwright for visual regression testing. The e2e test does the following:
+- Navigates to root URL
+- Clicks the "Ready" button (using `data-testid="ready-button"`)
+- Waits for the game board to appear (using `data-testid="board-ui"`)
+- Takes a full-page screenshot
+- Compares against baseline stored at `e2e/sanity.spec.ts-snapshots/game-board-chromium-win32.png`
+
+### Visual Testing Workflow
+
+**At the START of every feature work:**
+1. Generate baseline screenshot:
+   ```bash
+   npm run e2e -- --update-snapshots
+   ```
+2. This creates the reference screenshot for comparison
+
+**Before presenting final summary to user:**
+1. Run e2e tests to verify UI:
+   ```bash
+   npm run e2e
+   ```
+2. **If test passes**: No visual changes detected (or changes are within acceptable threshold)
+3. **If test fails due to visual differences**:
+   - Show the diff to the user
+   - Ask: "Visual regression detected. Is this expected due to UI changes, or is this a bug?"
+   - If expected: Update screenshots with `npm run e2e -- --update-snapshots`
+   - If bug: Stop and report the issue to the user
+
+### E2E Test Details
+
+- **Viewport**: Mobile (iPhone 14: 390x844)
+- **Animations**: Disabled via CSS injection to prevent flaky tests
+- **Location**: Baseline stored in `e2e/sanity.spec.ts-snapshots/`
+- **Threshold**: `maxDiffPixels: 5000` (accounts for randomized CPU items)
+
 ## 🌿 Git Workflow
 
 ### Starting Work
@@ -281,7 +327,7 @@ When adding new items or mechanics, ALWAYS clarify with the user upfront:
 
 1. **Ask user for signoff**: Present summary of changes and ask "Ready to commit and merge?"
 
-2. **Only after explicit user approval:**
+2. **Only after explicit user approval, execute the following automatically:**
    ```bash
    # Stage and commit changes
    git add .
@@ -293,7 +339,15 @@ When adding new items or mechanics, ALWAYS clarify with the user upfront:
    
    # Clean up
    git branch -d feature/[feature-name]
+   
+   # Build for production
+   npm run build
+   
+   # Deploy to Firebase Hosting
+   npx firebase deploy --only hosting
    ```
+   
+3. **If deployment fails**: Report the error to the user immediately. Do not attempt rollback.
 
 ## 🚫 What NOT to Do
 
@@ -392,7 +446,7 @@ When delegating work to subagents, ensure they complete the following checklist:
 - [ ] **Export Public API**: All new public types, interfaces, functions, and classes exported in `index.ts`
 - [ ] **Update AGENTS.md**: Documentation updated to reflect new patterns, architecture changes, or module behavior
 - [ ] **Run Tests**: All tests pass (`ng test --watch=false`)
-- [ ] **Check Format**: Code passes format check (`npm run format:check`)
+- [ ] **Format Code**: Run `npm run format` to format all code
 - [ ] **Build**: Project builds successfully (`ng build`)
 
 ## 🤖 Rule Integration

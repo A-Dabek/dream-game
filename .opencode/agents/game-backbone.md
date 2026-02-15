@@ -59,7 +59,7 @@ When invoked by the orchestrator, you will receive a specification file path. Al
 - [ ] **Public API Exported**: All new public types, interfaces, functions, and classes added to `index.ts`
 - [ ] **AGENTS.md Updated**: Documentation reflects new patterns, architecture changes, or module behavior
 - [ ] **Tests Pass**: All tests pass (`ng test --watch=false`)
-- [ ] **Format Check**: Code passes format check (`npm run format:check`)
+- [ ] **Format Code**: Run `npm run format` to format all code
 - [ ] **Build Succeeds**: Project builds (`ng build`)
 
 ## 🏗 Architecture Understanding
