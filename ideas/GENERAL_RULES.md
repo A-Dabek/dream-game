@@ -1,6 +1,7 @@
 # Item Ideas — General Rules
 
 ## Current Baseline
+
 - Game: 1v1, each player has 5 items; stats differ slightly (health, speed).
 - Turn order: based on speed; each turn you can play 1 item.
 - Effect types:
@@ -15,7 +16,9 @@
   - Do Nothing (interaction / filler)
 
 ## Brainstorming Structure
+
 For each theme, define:
+
 - Core fantasy (what it feels like)
 - 2–3 active items
 - 2–3 status items (turns / charges / permanent)
@@ -24,6 +27,7 @@ For each theme, define:
 - Typical counterplay (what beats it)
 
 ## Core Mechanics (confirmed)
+
 - Healing is capped at max health (no overheal).
 - Turn order/initiative is known upfront; "consecutive turns" refers to back‑to‑back scheduled actions before the opponent acts.
 - Start/end of turn sequencing is resolved by the engine based on play order when both would trigger in the same window.

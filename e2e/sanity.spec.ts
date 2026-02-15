@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test('visual sanity check - game loads and board renders', async ({ page }) => {
-  await page.goto('/');
+  // Use URL state parameter for predictable, reproducible game state
+  // Format: items|health|speed;items|health|speed
+  await page.goto('/?state=punch,sticking_plaster|20|10;wingfoot|15|8');
 
   await page.addStyleTag({
     content: `
@@ -23,6 +25,5 @@ test('visual sanity check - game loads and board renders', async ({ page }) => {
 
   await expect(page).toHaveScreenshot('game-board.png', {
     fullPage: true,
-    maxDiffPixels: 5000,
   });
 });

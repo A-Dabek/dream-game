@@ -3,6 +3,7 @@
 Core fantasy: tempo control, counters, and "clean" skill expression (stances, interrupts, punishes).
 
 Cards:
+
 1. Counterattack (status)
    - Next enemy attack that would deal damage: negate it and deal flat damage back. Attacking yourself removes Counterattack with no trigger.
 2. Headlock (status)
@@ -18,8 +19,9 @@ Cards:
 7. Meditate (status)
    - Heal each turn and reduce incoming damage by %; removed if you attack.
 
-Legendary:
-8. Karate Belt (build-around)
-   - Playing Martial Arts cards upgrades belt color/potency; generates new cards based on color when activated.
+Legendary: 8. Karate Belt (build-around)
+
+- Playing Martial Arts cards upgrades belt color/potency; generates new cards based on color when activated.
+
 9. Duel (legendary active)
    - Set both speeds to 10; enemy starts next turn. Duration: permanent.

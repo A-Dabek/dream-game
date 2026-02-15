@@ -44,6 +44,7 @@ Thumbs.db
 
 REVIEW_FINDINGS.md
 .opencode/node_modules
+.opencode/specifications
 .firebase
 
 # Playwright
@@ -51,3 +52,5 @@ e2e/**/*.spec.ts
 playwright-report/
 test-results/
 playwright/.cache/
+
+ideas

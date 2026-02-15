@@ -3,9 +3,11 @@
 Core fantasy: medical procedures, precision, risk/reward (organ exchange), recovery, and max‑health manipulation.
 
 Main note:
+
 - This theme experiments with Max HP changes and conditional overhealing mechanics (future exploration), while keeping base healing capped by default.
 
 Cards:
+
 1. Stitches (active — reworked)
    - Heal to full; add Stitches status equal to missing health healed.
    - While active: when taking damage D, remove 2·D stitches. When stitches reach 0, take stitched damage equal to the original heal (once).
@@ -26,20 +28,28 @@ Cards:
 9. Adrenaline Injection (active)
    - Apply Adrenaline status (Speed Up now; after 3 of your turns, Slow Down).
 10. Organ Gamble (active)
-   - Lose flat Max HP for the rest of the duel; immediately heal a larger flat amount now (capped by current max). Risk‑reward swing.
+
+- Lose flat Max HP for the rest of the duel; immediately heal a larger flat amount now (capped by current max). Risk‑reward swing.
+
 11. Painkillers (status, 5 charges)
-   - For the next 5 damage instances you take, reduce each by 2. When Painkillers wear off, reduce your Max HP by 5.
+
+- For the next 5 damage instances you take, reduce each by 2. When Painkillers wear off, reduce your Max HP by 5.
+
 12. Quarantine (status, 3 turns)
-   - For 3 turns, no one can gain new statuses (existing statuses continue to function).
+
+- For 3 turns, no one can gain new statuses (existing statuses continue to function).
+
 13. Fight or flight - when health drops below 5% add permanent adrenaline status.
 
-Legendary:
-7. Young Doctor (build-around / passive)
-   - Tracks only your items. Immediately after you’ve played 3 items, specialization is determined implicitly by later usage (no extra UI).
+Legendary: 7. Young Doctor (build-around / passive)
+
+- Tracks only your items. Immediately after you’ve played 3 items, specialization is determined implicitly by later usage (no extra UI).
+
 8. Surgeon (legendary specialization / permanent status)
    - Flat increase to all damage. Only one Surgeon; playing again replaces. Adds procedure cards to hand immediately (details TBD).
 
 Cross-theme notes:
+
 - Drip vs Poison timing depends on which effect was played first.
 - Gas Mask only blocks poison.
 - Antidote cannot remove Bedrest (Bedrest resolves immediately).

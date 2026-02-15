@@ -6,13 +6,32 @@ import {
   signal,
 } from '@angular/core';
 import { GameService } from '@dream/game';
-import { createCpuPlayer, Player } from '@dream/player';
-import { PlayerRating } from '@dream/rating';
+import { createGamePlayers, Player, PlayerConfig } from '@dream/player';
 import { BoardUiComponent } from '../board/board-ui.component';
 import { HumanStrategy } from '../board/service/human-strategy';
 import { UiStateService } from '../board/service/ui-state.service';
 import { PreGameScreenComponent } from './pre-game-screen.component';
 import { PostGameScreenComponent } from './post-game-screen.component';
+import { UrlGameConfigService } from './url-game-config.service';
+
+// Default human player configuration
+const DEFAULT_HUMAN_CONFIG: PlayerConfig = {
+  items: [
+    '_blueprint_attack',
+    '_blueprint_attack',
+    '_blueprint_attack',
+    '_blueprint_attack',
+  ],
+  health: 20,
+  speed: 8,
+};
+
+// Default CPU player configuration
+const DEFAULT_CPU_CONFIG: PlayerConfig = {
+  items: ['punch', 'sticking_plaster', 'wingfoot', 'sticky_boot'],
+  health: 18,
+  speed: 7,
+};
 
 @Component({
   selector: 'app-game-container',
@@ -71,32 +90,30 @@ export class GameContainerComponent {
 
   private readonly humanStrategy = inject(HumanStrategy);
 
+  private readonly urlConfigService = inject(UrlGameConfigService);
+
   readonly state = this.uiStateService.uiState;
   readonly lastPlayedItem = this.uiStateService.lastPlayedItem;
   readonly actionHistory = this.uiStateService.actionHistory;
 
   readonly stage = signal<'pre' | 'game' | 'post'>('pre');
 
-  readonly cpuPlayer: Player = createCpuPlayer('cpu', 'CPU');
-
-  readonly humanPlayer: Player = {
-    id: 'player',
-    name: 'You',
-    rating: new PlayerRating(),
-    strategy: this.humanStrategy,
-    loadout: {
-      health: 20,
-      speed: 8,
-      items: [
-        { id: '_blueprint_attack', instanceId: 'p1-1', genre: 'basic' },
-        { id: '_blueprint_attack', instanceId: 'p1-2', genre: 'basic' },
-        { id: '_blueprint_attack', instanceId: 'p1-3', genre: 'basic' },
-        { id: '_blueprint_attack', instanceId: 'p1-4', genre: 'basic' },
-      ],
-    },
-  };
+  // Players are created based on URL config or defaults
+  readonly humanPlayer: Player;
+  readonly cpuPlayer: Player;
 
   constructor() {
+    // Parse configuration from URL or use defaults
+    const urlConfig = this.urlConfigService.parseConfigFromUrl();
+    const config = urlConfig ?? {
+      player1: DEFAULT_HUMAN_CONFIG,
+      player2: DEFAULT_CPU_CONFIG,
+    };
+    console.log('Game config:', urlConfig);
+    const { humanPlayer, cpuPlayer } = this.createPlayers(config);
+    this.humanPlayer = humanPlayer;
+    this.cpuPlayer = cpuPlayer;
+
     effect(() => {
       const s = this.state();
       if (s?.isGameOver) {
@@ -114,5 +131,16 @@ export class GameContainerComponent {
 
   handleRestart() {
     this.stage.set('pre');
+  }
+
+  private createPlayers(config: {
+    player1?: PlayerConfig;
+    player2?: PlayerConfig;
+  }): { humanPlayer: Player; cpuPlayer: Player } {
+    const { player1, player2 } = createGamePlayers(config);
+    return {
+      humanPlayer: { ...player1, name: 'You', strategy: this.humanStrategy },
+      cpuPlayer: { ...player2, name: 'CPU' },
+    };
   }
 }
