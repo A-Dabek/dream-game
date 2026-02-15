@@ -45,3 +45,9 @@ Thumbs.db
 REVIEW_FINDINGS.md
 .opencode/node_modules
 .firebase
+
+# Playwright
+e2e/screenshots/
+playwright-report/
+test-results/
+playwright/.cache/
