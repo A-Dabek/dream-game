@@ -47,8 +47,7 @@ REVIEW_FINDINGS.md
 .firebase
 
 # Playwright
-e2e/screenshots/
-e2e/sanity.spec.ts-snapshots/
+e2e/**/*.spec.ts
 playwright-report/
 test-results/
 playwright/.cache/
