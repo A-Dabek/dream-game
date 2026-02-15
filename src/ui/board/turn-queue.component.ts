@@ -33,6 +33,7 @@ import { IconComponent } from '../common/icon.component';
             tabindex="0"
             (keydown.enter)="skipTurn.emit()"
             (keydown.space)="$event.preventDefault(); skipTurn.emit()"
+            data-testid="skip-turn-button"
           >
             <app-icon [name]="passIconName" />
           </div>

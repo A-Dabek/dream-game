@@ -28,12 +28,10 @@ app-action-history {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.25s ease;
     overflow: hidden;
     box-shadow: 0 6px 18px var(--shadow-medium);
 
     &.history-slide-in {
-      animation: historySlideIn 0.5s ease-in-out both;
       pointer-events: none; /* disable interaction during animation */
       z-index: 0;
     }
@@ -44,6 +42,14 @@ app-action-history {
 
     &.opponent {
       @include faction-theme('opponent');
+    }
+  }
+
+  :not(.disable-animations) .history-item {
+    transition: transform 0.25s ease;
+
+    &.history-slide-in {
+      animation: historySlideIn 0.5s ease-in-out both;
     }
   }
 

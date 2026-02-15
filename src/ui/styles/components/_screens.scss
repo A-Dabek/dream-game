@@ -78,9 +78,6 @@ app-pre-game-screen {
   .player-hand {
     opacity: 0;
     transform: scale(0.98);
-    transition:
-      opacity 400ms ease-out,
-      transform 400ms ease-out;
 
     &.show {
       opacity: 1;
@@ -90,5 +87,14 @@ app-pre-game-screen {
 
   .vs.fade-out {
     opacity: 0.8;
+  }
+}
+
+:not(.disable-animations) app-pre-game-screen {
+  .opponent-hand,
+  .player-hand {
+    transition:
+      opacity 400ms ease-out,
+      transform 400ms ease-out;
   }
 }

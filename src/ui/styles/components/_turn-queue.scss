@@ -20,7 +20,6 @@ app-turn-queue {
     border-radius: 4px;
     background: var(--color-surface-1);
     border: 1px solid var(--color-border);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 
     &.player {
@@ -32,14 +31,11 @@ app-turn-queue {
     }
 
     &.current {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px var(--shadow-medium);
       border-width: 2px;
       z-index: 1;
     }
 
     &.turn-slide-out {
-      animation: turnSlideOut 0.5s ease-in-out both;
       pointer-events: none; /* disable interaction during animation */
       z-index: 0;
     }
@@ -57,11 +53,30 @@ app-turn-queue {
       justify-content: center;
       cursor: pointer;
       border: 1px solid var(--color-border-strong);
+
+      &:hover {
+        background: var(--color-border-strong);
+      }
+    }
+  }
+
+  :not(.disable-animations) .turn-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.current {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px var(--shadow-medium);
+    }
+
+    &.turn-slide-out {
+      animation: turnSlideOut 0.5s ease-in-out both;
+    }
+
+    .skip-button {
       animation: pulse 2s infinite ease-in-out;
       transition: transform 0.1s;
 
       &:hover {
-        background: var(--color-border-strong);
         transform: scale(1.1);
       }
 

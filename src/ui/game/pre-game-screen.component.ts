@@ -47,6 +47,7 @@ import { PlayerHandComponent } from '../board/player-hand.component';
           type="button"
           (click)="onReady.emit()"
           aria-label="Ready"
+          data-testid="ready-button"
         >
           Ready
         </button>

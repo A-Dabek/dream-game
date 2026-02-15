@@ -20,6 +20,9 @@ import { ItemDisplayComponent } from '../common/item-display.component';
         [animate.leave]="
           side() === 'player' ? 'item-slide-up' : 'item-slide-down'
         "
+        [attr.data-testid]="'item-' + item.instanceId"
+        [attr.data-item-id]="item.id"
+        [attr.data-interactive]="interactive()"
       >
         <app-item-display [item]="item" />
       </div>

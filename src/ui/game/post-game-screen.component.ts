@@ -43,6 +43,7 @@ import { PlayerHandComponent } from '../board/player-hand.component';
           class="screen-btn"
           (click)="restart.emit()"
           aria-label="Start a new game"
+          data-testid="new-game-button"
         >
           New Game
         </button>

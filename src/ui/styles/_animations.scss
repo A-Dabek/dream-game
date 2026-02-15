@@ -22,11 +22,11 @@
 }
 
 /* Item animations for entering/leaving the hand */
-.item-slide-up {
+:not(.disable-animations) .item-slide-up {
   animation: itemSlideUp 0.75s ease-out both;
 }
 
-.item-slide-down {
+:not(.disable-animations) .item-slide-down {
   animation: itemSlideDown 0.75s ease-out both;
 }
 

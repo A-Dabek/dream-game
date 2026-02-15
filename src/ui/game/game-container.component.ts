@@ -20,11 +20,12 @@ import { PostGameScreenComponent } from './post-game-screen.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [BoardUiComponent, PreGameScreenComponent, PostGameScreenComponent],
   template: `
-    <div class="screens-container">
+    <div class="screens-container" data-testid="game-container">
       @switch (stage()) {
         @case ('pre') {
           <app-pre-game-screen
             class="screen"
+            data-testid="pre-game-screen"
             [player]="humanPlayer.loadout"
             [opponent]="cpuPlayer.loadout"
             (onReady)="handleReady()"
@@ -36,6 +37,7 @@ import { PostGameScreenComponent } from './post-game-screen.component';
           @if (state(); as s) {
             <app-board-ui
               class="screen"
+              data-testid="game-screen"
               [state]="s"
               [lastPlayedItem]="lastPlayedItem()"
               [actionHistory]="actionHistory()"
@@ -48,6 +50,7 @@ import { PostGameScreenComponent } from './post-game-screen.component';
           @if (state(); as s) {
             <app-post-game-screen
               class="screen"
+              data-testid="post-game-screen"
               [player]="humanPlayer.loadout"
               [opponent]="cpuPlayer.loadout"
               [winnerId]="s.winnerId!"

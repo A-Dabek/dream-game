@@ -21,14 +21,21 @@ app-player-hand {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     width: var(--hand-item-size);
     overflow: hidden;
     flex-shrink: 0;
+  }
+
+  :not(.disable-animations) .item-wrapper {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:not(.disabled):active {
       transform: scale(0.92);
     }
+  }
+
+  .item-wrapper:not(.disabled):active {
+    transform: scale(0.92);
   }
 
   .disabled {

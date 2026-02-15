@@ -30,6 +30,7 @@ import { HealthBarComponent } from './health-bar.component';
     @let s = state();
 
     <div
+      data-testid="board-ui"
       class="opponent-area"
       [class.active]="!isPlayerTurn() && !s.isGameOver"
     >

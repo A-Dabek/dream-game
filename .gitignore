@@ -48,6 +48,7 @@ REVIEW_FINDINGS.md
 
 # Playwright
 e2e/screenshots/
+e2e/sanity.spec.ts-snapshots/
 playwright-report/
 test-results/
 playwright/.cache/
