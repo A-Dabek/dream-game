@@ -31,9 +31,12 @@ You are an expert refactoring specialist focused on improving code quality, main
    - Make only changes that improve code quality without changing logic
    - Ensure all tests continue to pass
 
-4. **Verify**:
+4. **Update Documentation**:
+   - Update `AGENTS.md` if patterns or architecture changed
+   - Update `index.ts` if public API changed
+
+5. **Verify**:
    - Run tests: `ng test --watch=false`
-   - Run format check: `npm run format:check`
    - Run build: `ng build`
    - Confirm no behavioral changes
 
@@ -46,12 +49,16 @@ The orchestrator will invoke you after the reviewer has documented findings. You
    - Start with High Impact, then Medium, then Low
    - Do not change business logic—only code quality
 
-2. **Report Completion**:
+2. **Update Documentation**:
+   - Update `AGENTS.md` if refactoring changes patterns
+   - Update `index.ts` if exports moved or renamed
+
+3. **Report Completion**:
    - After addressing findings, inform the orchestrator
    - The orchestrator may invoke @reviewer again to verify
    - Repeat cycle until no issues remain
 
-3. **No Direct User Interaction**:
+4. **No Direct User Interaction**:
    - The orchestrator manages the workflow
    - Do not ask the user questions—resolve what you can automatically
    - Escalate to orchestrator only if you encounter blockers
@@ -173,12 +180,16 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 
 1. [ ] **Run build first**: `ng build` (catches import/path errors immediately - must succeed)
 2. [ ] Run tests: `ng test --watch=false` (all must pass)
-3. [ ] Run format check: `npm run format:check`
-4. [ ] Run full verification: `npm run verify`
+3. [ ] **Update AGENTS.md**: If patterns or architecture changed
+4. [ ] **Update index.ts**: If public API changed (exports moved, renamed, or added)
 5. [ ] Verify no behavioral changes
 6. [ ] Review changes to ensure they only improve code quality
-7. [ ] Update `index.ts` if public API changed (exports moved, renamed, or added)
-8. [ ] Update `AGENTS.md` if patterns or architecture changed
+
+### Documentation Updates (YOUR Responsibility)
+
+- [ ] Update `AGENTS.md` if patterns changed
+- [ ] Update `index.ts` if exports changed
+- [ ] **NOTE**: Do NOT run formatting - orchestrator handles this
 
 ## 🚫 What NOT to Do
 
@@ -189,6 +200,7 @@ Tests should be clean, readable, and avoid unnecessary repetition. Follow these 
 - **Never break existing tests**: All tests must pass
 - **Never introduce new dependencies**: Use existing libraries only
 - **Never change API signatures**: Unless explicitly required by the finding
+- **Never skip documentation updates**: AGENTS.md is your responsibility
 
 ## 🎨 Code Style Guidelines
 
@@ -232,7 +244,7 @@ import { sibling } from '../sibling-file';
 - Update comments if they become outdated due to refactoring
 - Focus on explaining "how" and "why", not "what"
 - Keep JSDoc for public APIs updated if signatures change
-- **Update AGENTS.md**: If refactoring changes patterns or architecture, update relevant `AGENTS.md` files
+- **Update AGENTS.md**: If refactoring changes patterns or architecture, update relevant `AGENTS.md` files (YOUR responsibility)
 - **Update index.ts**: If refactoring moves or renames public exports, update the module's `index.ts` to reflect the changes. Ensure exports remain complete and accurate.
 
 ## 🤖 Rule Integration

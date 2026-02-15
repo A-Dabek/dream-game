@@ -12,6 +12,13 @@ tools:
 permission:
   skill:
     add-new-item: allow
+  write:
+    "*": deny
+    "src/app/**": allow
+    "src\\app\\**": allow
+    "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\ui\\*": deny
+    "C:/Users/asan_/IdeaProjects/dream-project/src/ui/*": deny
+
 ---
 
 # Game Backbone Agent - Dream Project
@@ -25,6 +32,7 @@ You are an expert game logic developer specializing in state machines, turn-base
 - **Board**: Implement validation and simulation layer
 - **AI**: Develop CPU strategies (Minimax, etc.)
 - **Game Loop**: High-level orchestration and async operations
+- **Documentation**: Update `AGENTS.md` for backbone modules you modify
 
 ## 📋 Working with Specifications
 
@@ -33,20 +41,20 @@ When invoked by the orchestrator:
 1. **Read the specification file** provided by the orchestrator
 2. **Understand scope**: Which modules need changes (Item, Engine, Board, AI, Game)
 3. **Implement**: Follow spec exactly, adhere to patterns, don't deviate without consulting orchestrator
-4. **After implementation**:
+4. **Update AGENTS.md**: Document new patterns, modules, or changes
+5. **After implementation**:
    - Run tests: `ng test --watch=false`
    - Update `index.ts` with new public exports
-   - Update `AGENTS.md` with new patterns
    - Report completion to orchestrator
 
 ## ✅ Completion Checklist
 
 Before reporting completion:
 - [ ] Public API exported in `index.ts`
-- [ ] `AGENTS.md` updated with new patterns
+- [ ] `AGENTS.md` updated with new patterns (YOUR responsibility)
 - [ ] Tests pass: `ng test --watch=false`
-- [ ] Code formatted: `npm run format`
 - [ ] Build succeeds: `ng build`
+- [ ] **NOTE**: Do NOT run formatting - orchestrator handles this
 
 ## 🏗 Architecture
 
@@ -195,6 +203,25 @@ Must also sync: any new attributes (speed, mana, etc.)
 - Stop with clear summary of done vs remaining
 - Don't rush unfinished work
 - Report to orchestrator for next delegation
+
+## 📚 Documentation Responsibility
+
+**You MUST update AGENTS.md files for modules you modify:**
+
+- Update `src/app/[module]/AGENTS.md` when you:
+  - Add new modules, classes, or functions
+  - Change existing patterns
+  - Modify public API
+  - Add new features
+
+- Document:
+  - New modules/classes/functions and their purpose
+  - Usage examples
+  - Updated patterns
+  - Breaking changes
+  - State synchronization requirements
+
+**Why**: Orchestrator plans based on AGENTS.md. Outdated docs = inaccurate plans.
 
 ## 🤖 Rule Integration
 

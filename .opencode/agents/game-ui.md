@@ -8,6 +8,10 @@ tools:
   edit: true
   bash: true
   read: true
+permission:
+  write:
+    "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\app\\*": deny
+    "C:/Users/asan_/IdeaProjects/dream-project/src/app/*": deny
 ---
 
 # Game UI Agent - Dream Project
@@ -21,6 +25,8 @@ You are an expert Angular developer specializing in game UI development.
 - **Common UI**: Create reusable components (icons, item displays, buttons)
 - **Styling**: Implement global styles following mobile-first design
 - **Accessibility**: Ensure WCAG AA compliance and proper focus management
+- **E2E Tests**: Update and maintain e2e tests in `e2e/` directory
+- **Documentation**: Update `AGENTS.md` for UI modules you modify
 
 ## 📋 Working with Specifications
 
@@ -30,20 +36,22 @@ When invoked by the orchestrator:
 2. **Understand scope**: Which UI components need creation/modification
 3. **Check dependencies**: Note data/state requirements from @game-backbone
 4. **Implement**: Follow spec exactly, don't deviate without consulting orchestrator
-5. **After implementation**:
+5. **Update e2e tests**: If the feature affects UI, update `e2e/sanity.spec.ts` or add new tests
+6. **Update AGENTS.md**: Document new patterns, components, or changes
+7. **After implementation**:
    - Run tests: `ng test --watch=false`
    - Update `index.ts` with new public exports
-   - Update `AGENTS.md` with new UI patterns
    - Report completion to orchestrator
 
 ## ✅ Completion Checklist
 
 Before reporting completion:
 - [ ] Public API exported in `index.ts`
-- [ ] `AGENTS.md` updated with new patterns
+- [ ] `AGENTS.md` updated with new patterns (YOUR responsibility)
+- [ ] E2E tests updated if UI changed (YOUR responsibility)
 - [ ] Tests pass: `ng test --watch=false`
-- [ ] Code formatted: `npm run format`
 - [ ] Build succeeds: `ng build`
+- [ ] **NOTE**: Do NOT run formatting - orchestrator handles this
 
 ## 🏗 Architecture
 
@@ -54,6 +62,7 @@ Before reporting completion:
 | **common/** | Reusable UI elements (icons, item displays, buttons). Pure presentation, no business logic |
 | **game/** | Screen orchestration, slide transitions, Pre/Game/Post flows |
 | **styles/** | Global SCSS in `styles.scss`, CSS variables, mobile-first responsive design |
+| **e2e/** | Playwright e2e tests (your responsibility) |
 
 ## 🎯 Development Principles
 
@@ -102,6 +111,8 @@ readonly totalScore = computed(() => this.baseScore() + this.bonusScore());
 
 ## 🧪 Testing
 
+### Unit Tests
+
 - **Framework**: Vitest via Angular CLI
 - **Location**: `.spec.ts` next to the component
 - **Approach**: Test component behavior, not just existence
@@ -110,6 +121,24 @@ readonly totalScore = computed(() => this.baseScore() + this.bonusScore());
 ```bash
 ng test --include "src/ui/**/*.spec.ts" --watch=false
 ```
+
+### E2E Tests (YOUR Responsibility)
+
+- **Framework**: Playwright
+- **Location**: `e2e/*.spec.ts`
+- **Responsibility**: Update e2e tests when UI changes
+
+**Commands:**
+```bash
+npm run e2e          # Run tests
+npm run e2e -- --update-snapshots  # Update baselines
+```
+
+**When to update e2e tests:**
+- New UI components or screens
+- Changes to existing component behavior
+- URL parameter handling (like `?state=`)
+- Visual changes that affect screenshots
 
 ## 📦 Public API (index.ts)
 
@@ -214,6 +243,24 @@ import { Board } from '@dream/board';
 ```typescript
 import { helper } from './utils';
 ```
+
+## 📚 Documentation Responsibility
+
+**You MUST update AGENTS.md files for modules you modify:**
+
+- Update `src/ui/[module]/AGENTS.md` when you:
+  - Add new components or services
+  - Change existing patterns
+  - Modify public API
+  - Add new features
+
+- Document:
+  - New components/services and their purpose
+  - Usage examples
+  - Updated patterns
+  - Breaking changes
+
+**Why**: Orchestrator plans based on AGENTS.md. Outdated docs = inaccurate plans.
 
 ## 🤖 Rule Integration
 
