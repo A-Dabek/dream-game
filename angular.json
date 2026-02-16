@@ -39,18 +39,18 @@
         }
       }
     },
-    "game-board-ui": {
+    "dream-game": {
       "projectType": "application",
-      "root": "projects/game-board-ui",
-      "sourceRoot": "projects/game-board-ui",
+      "root": "projects/dream-game",
+      "sourceRoot": "projects/dream-game",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "projects/game-board-ui/main.ts",
-            "tsConfig": "projects/game-board-ui/tsconfig.app.json",
-            "index": "projects/game-board-ui/index.html",
+            "browser": "projects/dream-game/main.ts",
+            "tsConfig": "projects/dream-game/tsconfig.app.json",
+            "index": "projects/dream-game/index.html",
             "assets": [
               {
                 "glob": "**/*",
@@ -62,7 +62,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["projects/game-board-ui/styles/styles.scss"]
+            "styles": ["projects/dream-game/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -80,13 +80,46 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "game-board-ui:build:production"
+              "buildTarget": "dream-game:build:production"
             },
             "development": {
-              "buildTarget": "game-board-ui:build:development"
+              "buildTarget": "dream-game:build:development"
             }
           },
           "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/dream-game/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "game-board-ui": {
+      "projectType": "library",
+      "root": "projects/game-board-ui",
+      "sourceRoot": "projects/game-board-ui",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/game-board-ui/index.ts",
+            "tsConfig": "projects/game-board-ui/tsconfig.app.json",
+            "index": false
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular/build:unit-test",

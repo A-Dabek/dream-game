@@ -1,17 +1,14 @@
-# Game Board UI Project
+# Game Board UI Library
 
-The `game-board-ui` project provides Angular components for displaying the game state and facilitating player interaction.
+The `game-board-ui` project is an Angular library providing components and logic related to board games and dueling.
 
 ## Structure
 
 - `common/`: Shared display components (icons, item tiles) and icon-name utilities.
 - `board/`: Board layout, hands, turn queue, action history, and UI state services.
-- `game/`: GameContainer plus pre/post game screens and transitions.
+- `game/`: Pre/post game screens.
 - `game-logic/`: Angular-specific logic services (e.g., `GameService`) and bridges to core `game-board/` logic.
-
 - `styles/`: Global SCSS, tokens, and component-level styles (see `styles/AGENTS.md`).
-- `sound/` (deprecated): Moved to `board/service/sound.service.ts`.
-- Entry points: `main.ts`, `app.ts`, `app.config.ts`, `app.routes.ts`, and `index.ts` exports.
 
 ## Components and Services
 
@@ -22,7 +19,6 @@ The `game-board-ui` project provides Angular components for displaying the game 
 - **HealthBarComponent**: Shared health bar with percent math and player/opponent variants.
 - **ActionHistoryComponent**: Compact icon log for recent actions with slide-in animations.
 - **BoardUiComponent**: Main board layout, combines hands, turn queue, last-played spotlight, and action history.
-- **GameContainerComponent**: Orchestrates pre/game/post stages and wires `UiStateService` to the board.
 - **PreGameScreenComponent**: Minimal VS screen with ready action and hand reveal animation.
 - **PostGameScreenComponent**: Result screen with winner/loser labels and replay button.
 - **UiStateService**: Applies engine logs to UI state, tracks last played item and action history.

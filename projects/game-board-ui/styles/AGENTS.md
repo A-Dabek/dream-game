@@ -8,7 +8,7 @@ This module contains the global styles, design tokens, and shared animations for
 - `_mixins.scss`: Shared SCSS mixins for themes, layouts, and animations.
 - `_base.scss`: Global base styles, typography resets, and fundamental layout rules.
 - `_animations.scss`: Shared CSS animations and transitions.
-- `components/`: Component-specific global styles (for components that don't use encapsulated styles).
+- `components/`: Component-specific global styles (for library components).
 
 ## Key Features
 

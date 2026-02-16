@@ -7,11 +7,13 @@ import {
 } from '@angular/core';
 import { GameService } from '@dream/game';
 import { createGamePlayers, Player, PlayerConfig } from '@dream/player';
-import { BoardUiComponent } from '../board/board-ui.component';
-import { HumanStrategy } from '../board/service/human-strategy';
-import { UiStateService } from '../board/service/ui-state.service';
-import { PreGameScreenComponent } from './pre-game-screen.component';
-import { PostGameScreenComponent } from './post-game-screen.component';
+import {
+  BoardUiComponent,
+  HumanStrategy,
+  PostGameScreenComponent,
+  PreGameScreenComponent,
+  UiStateService,
+} from '@dream/ui';
 import { UrlGameConfigService } from './url-game-config.service';
 
 // Default human player configuration

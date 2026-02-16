@@ -48,6 +48,12 @@
     },
     {
       "path": "./projects/game-board-ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/dream-game/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/dream-game/tsconfig.spec.json"
     }
   ]
 }
