@@ -8,3 +8,4 @@ export * from './game/url-game-config.service';
 export * from './board/service/human-input.service';
 export * from './board/service/human-strategy';
 export * from './board/service/ui-state.service';
+export * from './board/service/sound.service';

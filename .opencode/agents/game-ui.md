@@ -8,6 +8,14 @@ tools:
   edit: true
   bash: true
   read: true
+  angular-cli: true
+mcpServers:
+  angular:
+    command: npx
+    args:
+      - "-y"
+      - "@angular/cli"
+      - "mcp"
 permission:
   write:
     "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\app\\*": deny
@@ -262,6 +270,26 @@ import { helper } from './utils';
   - Breaking changes
 
 **Why**: Orchestrator plans based on AGENTS.md. Outdated docs = inaccurate plans.
+
+## 🤖 Angular MCP Server
+
+**You have access to the Angular MCP server for advanced Angular development assistance.**
+
+### When to Use
+- Complex Angular configuration issues (angular.json, build settings)
+- Troubleshooting build or asset-related problems
+- Angular CLI command guidance
+- Advanced Angular patterns or best practices
+
+### How to Use
+The Angular MCP server is automatically available via the `mcpServers` configuration.
+Reference Angular docs: https://angular.dev/ai/mcp
+
+### Example Use Cases
+- Debug why assets are not being served correctly
+- Get help with Angular build optimization
+- Troubleshoot zoneless change detection issues
+- Understand Angular control flow syntax
 
 ## 🤖 Rule Integration
 

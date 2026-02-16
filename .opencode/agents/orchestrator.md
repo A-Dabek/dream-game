@@ -10,6 +10,8 @@ tools:
   read: true
   glob: true
   task: true
+  firebase-firestore: false
+  angular-cli: false
 permission:
   skill:
     add-new-item: ask
@@ -83,6 +85,7 @@ Spec template: Overview, Requirements (functional/non-functional/acceptance crit
 - Present the specification
 - Explain approach and agents involved
 - **Wait for explicit user approval** before proceeding
+- **User approval is REQUIRED at: specification review, implementation review, pre-commit stages**
 
 ### Phase 4: Execute
 
@@ -144,30 +147,25 @@ git add . && git commit -m "[type]: [message]"
 
 **Report to user**: Summarize accomplishments, issues, follow-up work
 
-### Phase 7: Merge & Deploy (After User Signoff)
+### Phase 7: Complete (After User Signoff)
 
 **After user approves and says "all good" or similar:**
 
-1. **Merge feature branch to master:**
+1. **Format code before final commit:**
    ```bash
-   git checkout master
-   git merge feature/[name]
+   npm run format
    ```
 
-2. **Build for production:**
+2. **Commit changes:**
    ```bash
-   ng build
+   git add -A && git commit -m "feat: [description]"
    ```
 
-3. **Deploy to Firebase Hosting:**
-   ```bash
-   firebase deploy --only hosting
-   ```
-
-4. **Report deployment status:**
-   - Confirm branch merged
-   - Share deployment URL
-   - Summarize what's live
+3. **Report completion:**
+   - Summarize what was implemented
+   - Confirm tests pass
+   - Note any limitations or TODOs
+   - **Deployment is handled separately by the user**
 
 ## Handling Roadblocks
 

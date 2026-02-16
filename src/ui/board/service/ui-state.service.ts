@@ -13,6 +13,7 @@ import {
   iconNameFromItemId,
   PASS_ICON_NAME,
 } from '../../common/icon-name.util';
+import { SoundService } from './sound.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ import {
 export class UiStateService {
   private readonly defaultDelay = 200;
   private readonly gameService = inject(GameService);
+  private readonly soundService = inject(SoundService);
   private readonly _uiState = signal<GameState | null>(null);
   readonly uiState = computed(() => this._uiState());
   private readonly _lastPlayedItem = signal<Item | null>(null);
@@ -157,6 +159,8 @@ export class UiStateService {
     if (event.type !== 'on_play' || !event.itemId) {
       return;
     }
+
+    this.soundService.playItemSound(event.itemId);
 
     // Look up genre from game state or default to 'basic'
     const genre = this.findItemGenre(event.playerId, event.itemId) ?? 'basic';

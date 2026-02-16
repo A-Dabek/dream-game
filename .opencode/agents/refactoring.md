@@ -8,6 +8,7 @@ tools:
   edit: true
   bash: true
   read: true
+  angular-cli: true
 ---
 
 # Refactoring Agent - Dream Project
