@@ -39,7 +39,7 @@ This module defines the core data structures for items and player loadouts in th
   - `sticky_boot`: Reduces enemy speed by `BASE_SPEED_MODIFIER` (icon: "sticky-boot")
   - `wingfoot`: Increases player speed by `BASE_SPEED_MODIFIER` (icon: "wingfoot")
 
-  **Note**: The ItemId IS the icon name (with dashes replaced by underscores). The `iconNameFromItemId()` utility normalizes IDs by replacing underscores with dashes to match icon names in `assets/icons.json`.
+  **Note**: Display properties (icon name, description) are UI-only and live in `src/ui/common/item-display-map.ts`. The `ItemId` type identifies items in the game logic, while the UI maps each `ItemId` to its display metadata via `ITEM_DISPLAY_MAP`.
 
 ## Responsibility
 

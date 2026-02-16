@@ -5,7 +5,7 @@ import {
   output,
 } from '@angular/core';
 import { TurnEntry } from '@dream/turn-manager';
-import { PASS_ICON_NAME } from '../common/icon-name.util';
+import { ItemDisplayRegistry } from '../common/item-display-map';
 import { IconComponent } from '../common/icon.component';
 
 @Component({
@@ -46,5 +46,5 @@ export class TurnQueueComponent {
   readonly turnQueue = input.required<TurnEntry[]>();
   readonly playerId = input.required<string>();
   readonly skipTurn = output<void>();
-  readonly passIconName = PASS_ICON_NAME;
+  readonly passIconName = ItemDisplayRegistry.PASS_ICON_NAME;
 }

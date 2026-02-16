@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { Genre, Item } from '@dream/item';
 import { IconComponent } from './icon.component';
-import { iconNameFromItemId } from './icon-name.util';
+import { ItemDisplayRegistry } from './item-display-map';
 import { getGenreColor } from './genre-color.util';
 
 @Component({
@@ -25,7 +25,9 @@ export class ItemDisplayComponent {
   readonly item = input.required<Item>();
   readonly active = input(false);
 
-  readonly iconName = computed(() => iconNameFromItemId(this.item().id));
+  readonly iconName = computed(
+    () => ItemDisplayRegistry.getMetadata(this.item().id).iconName,
+  );
 
   readonly label = computed(() => {
     const id = this.item().id;

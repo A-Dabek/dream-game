@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ItemId } from '@dream/item';
-import { iconNameFromItemId } from '../../common/icon-name.util';
+import { ItemDisplayRegistry } from '../../common/item-display-map';
 
 const SFX_BASE_PATH = '/assets/sfx';
 const FALLBACK_SOUND = `${SFX_BASE_PATH}/basic.wav`;
@@ -10,7 +10,7 @@ const FALLBACK_SOUND = `${SFX_BASE_PATH}/basic.wav`;
 })
 export class SoundService {
   playItemSound(itemId: ItemId): void {
-    const iconName = iconNameFromItemId(itemId);
+    const iconName = ItemDisplayRegistry.getMetadata(itemId).iconName;
     const soundPath = `${SFX_BASE_PATH}/${iconName}.wav`;
 
     this.playAudio(soundPath).catch(() => {

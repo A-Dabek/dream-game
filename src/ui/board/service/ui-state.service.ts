@@ -2,17 +2,14 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import { GameAction, GameState } from '@dream/board';
-import { Genre, Item } from '@dream/item';
+import { Genre, Item, ItemId } from '@dream/item';
 import {
   GameEvent,
   LogEntry,
   StateChangeLogEntry,
 } from '../../../app/engine/engine.model';
 import { ActionHistoryEntry } from '../action-history-entry';
-import {
-  iconNameFromItemId,
-  PASS_ICON_NAME,
-} from '../../common/icon-name.util';
+import { ItemDisplayRegistry } from '../../common/item-display-map';
 import { SoundService } from './sound.service';
 
 @Injectable({
@@ -47,9 +44,9 @@ export class UiStateService {
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {
     const iconName =
-      action.itemId != null
-        ? iconNameFromItemId(action.itemId)
-        : PASS_ICON_NAME;
+      action.itemId != null && ItemDisplayRegistry.hasMetadata(action.itemId)
+        ? ItemDisplayRegistry.getMetadata(action.itemId as ItemId).iconName
+        : ItemDisplayRegistry.PASS_ICON_NAME;
 
     // Look up genre from game state if itemId is present
     let genre: Genre | undefined;
