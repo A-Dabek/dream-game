@@ -10,12 +10,10 @@ tools:
   read: true
   skill: true
 permission:
-  skill:
-    add-new-item: allow
   write:
-    "*": deny
-    "src/app/**": allow
-    "src\\app\\**": allow
+    "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\ui\\*": deny
+    "C:/Users/asan_/IdeaProjects/dream-project/src/ui/*": deny
+  edit:
     "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\ui\\*": deny
     "C:/Users/asan_/IdeaProjects/dream-project/src/ui/*": deny
 
@@ -52,6 +50,7 @@ When invoked by the orchestrator:
 Before reporting completion:
 - [ ] Public API exported in `index.ts`
 - [ ] `AGENTS.md` updated with new patterns (YOUR responsibility)
+- [ ] **New functionality tested**: Tests written for new features (see below)
 - [ ] Tests pass: `ng test --watch=false`
 - [ ] Build succeeds: `ng build`
 - [ ] **NOTE**: Do NOT run formatting - orchestrator handles this
@@ -101,6 +100,39 @@ Before reporting completion:
 ng test --watch=false
 ng test --include "src/app/engine/**/*.spec.ts" --watch=false
 ```
+
+### ⚠️ CRITICAL: Always Test New Functionality
+
+**Never assume existing tests cover new features.** When implementing new items, effects, or mechanics:
+
+1. **Write integration tests** in `src/app/board/test/[feature].spec.ts`:
+   - Test each new item/behavior individually
+   - Verify effect values are consumed (e.g., `poison_bottle` with 5 stacks vs `poison_gas` with 2)
+   - Test state accumulation (effects that stack should add to existing, not replace)
+   - Test edge cases and interactions with existing features
+
+2. **Verify before completion**:
+   ```typescript
+   // Example: Verify different stack values work
+   it('should apply different poison amounts', () => {
+     const player1 = createMockPlayer('p1', { items: ['poison_bottle'] });
+     const player2 = createMockPlayer('p2', { items: ['poison_gas'] });
+     const board = new Board(player1, player2);
+     
+     board.playItem('poison_bottle', 'p1');
+     board.playItem('poison_gas', 'p2');
+     
+     // Assert: Different stack amounts applied correctly
+   });
+   ```
+
+3. **Check these common bugs**:
+   - Effect `value` parameters ignored in processors
+   - Wrong ID prefixes when searching listeners (`buff-` vs custom prefixes)
+   - State replaced instead of accumulated
+   - Edge cases (zero values, maximum values, multiple applications)
+
+**Remember**: Passing existing tests only means you didn't break old code. It doesn't mean new code works correctly.
 
 ## 📦 Public API (index.ts)
 

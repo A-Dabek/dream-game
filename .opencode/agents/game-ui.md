@@ -20,6 +20,9 @@ permission:
   write:
     "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\app\\*": deny
     "C:/Users/asan_/IdeaProjects/dream-project/src/app/*": deny
+  edit:
+    "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\app\\*": deny
+    "C:/Users/asan_/IdeaProjects/dream-project/src/app/*": deny
 ---
 
 # Game UI Agent - Dream Project
