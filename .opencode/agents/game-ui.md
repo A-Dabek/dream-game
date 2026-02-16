@@ -121,6 +121,28 @@ readonly totalScore = computed(() => this.baseScore() + this.bonusScore());
 - Use `FormBuilder` and `FormGroup`
 - Validate with validators from `@angular/forms`
 
+### Implementation Guidelines
+
+**Registry Pattern**: Encapsulate mappings in objects, not multiple exports:
+```typescript
+// ✅ Good - Single registry object
+export const ItemDisplayRegistry = {
+  getMetadata(id): Metadata { ... },
+  hasMetadata(id): boolean { ... },
+  CONST_NAME: 'value' as const,
+} as const;
+
+// ❌ Avoid - Multiple separate exports
+export const DATA_MAP = {...};
+export function getMetadata(id) {...}
+export const CONST_NAME = 'value';
+```
+
+**Literal Instructions**: Follow user instructions literally:
+- "Remove" = delete completely (don't deprecate)
+- "Revert" = restore original
+- "Don't change X" = leave X untouched
+
 ## 🧪 Testing
 
 ### Unit Tests
@@ -242,6 +264,7 @@ export class ScreenComponent implements AfterViewInit {
 - Mobile-first design approach
 - Strict accessibility compliance
 - Never use `*ngIf`, `*ngFor`, `ngClass`, `ngStyle`
+- **No Excessive JSDoc**: Code should be self-documenting. Avoid JSDoc for simple functions/components. Only document complex logic explaining "how" and "why", not "what".
 
 ## 📥 Import Conventions
 

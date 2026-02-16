@@ -72,6 +72,7 @@ The orchestrator will invoke you after the reviewer has documented findings. You
 - **Preserve Behavior**: External behavior must remain identical
 - **Tests Must Pass**: All existing tests must pass after refactoring
 - **Clean Code**: Code should be clean, short, to-the-point, and easy to read
+- **Literal Instructions**: "Remove" = delete (don't deprecate), "Revert" = restore original, "Don't change X" = leave untouched
 
 ## 📝 Handling Different Types of Findings
 

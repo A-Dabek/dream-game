@@ -87,6 +87,7 @@ Before reporting completion:
 - Use `readonly` for immutable properties
 - Prefer type inference when obvious
 - No `public` modifier (implicit default)
+- **No Excessive JSDoc**: Code should be self-documenting. Avoid JSDoc for simple functions/properties. Only document complex logic explaining "how" and "why", not "what".
 
 ## 🧪 Testing
 
