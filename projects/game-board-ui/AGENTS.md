@@ -7,7 +7,7 @@ The `game-board-ui` project provides Angular components for displaying the game 
 - `common/`: Shared display components (icons, item tiles) and icon-name utilities.
 - `board/`: Board layout, hands, turn queue, action history, and UI state services.
 - `game/`: GameContainer plus pre/post game screens and transitions.
-- `game-logic/`: Angular-specific logic services (e.g., `GameService`) and bridges to core `app/` logic.
+- `game-logic/`: Angular-specific logic services (e.g., `GameService`) and bridges to core `game-board/` logic.
 
 - `styles/`: Global SCSS, tokens, and component-level styles (see `styles/AGENTS.md`).
 - `sound/` (deprecated): Moved to `board/service/sound.service.ts`.

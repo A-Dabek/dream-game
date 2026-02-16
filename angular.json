@@ -8,15 +8,15 @@
   "projects": {
     "game-board": {
       "projectType": "application",
-      "root": "src/app",
-      "sourceRoot": "src/app",
+      "root": "projects/game-board",
+      "sourceRoot": "projects/game-board",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/app/index.ts",
-            "tsConfig": "src/app/tsconfig.app.json",
+            "browser": "projects/game-board/index.ts",
+            "tsConfig": "projects/game-board/tsconfig.app.json",
             "index": false
           },
           "configurations": {
@@ -34,23 +34,23 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "src/app/tsconfig.spec.json"
+            "tsConfig": "projects/game-board/tsconfig.spec.json"
           }
         }
       }
     },
     "game-board-ui": {
       "projectType": "application",
-      "root": "src/ui",
-      "sourceRoot": "src/ui",
+      "root": "projects/game-board-ui",
+      "sourceRoot": "projects/game-board-ui",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/ui/main.ts",
-            "tsConfig": "src/ui/tsconfig.app.json",
-            "index": "src/ui/index.html",
+            "browser": "projects/game-board-ui/main.ts",
+            "tsConfig": "projects/game-board-ui/tsconfig.app.json",
+            "index": "projects/game-board-ui/index.html",
             "assets": [
               {
                 "glob": "**/*",
@@ -62,7 +62,7 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/ui/styles/styles.scss"]
+            "styles": ["projects/game-board-ui/styles/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -91,7 +91,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "src/ui/tsconfig.spec.json"
+            "tsConfig": "projects/game-board-ui/tsconfig.spec.json"
           }
         }
       }

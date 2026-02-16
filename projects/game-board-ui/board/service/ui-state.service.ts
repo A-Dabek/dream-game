@@ -3,11 +3,7 @@ import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import { GameAction, GameState } from '@dream/board';
 import { Genre, Item, ItemId } from '@dream/item';
-import {
-  GameEvent,
-  LogEntry,
-  StateChangeLogEntry,
-} from '../../../app/engine/engine.model';
+import { GameEvent, LogEntry, StateChangeLogEntry } from '@dream/engine';
 import { ActionHistoryEntry } from '../action-history-entry';
 import { ItemDisplayRegistry } from '../../common/item-display-map';
 import { SoundService } from './sound.service';
