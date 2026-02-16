@@ -22,10 +22,10 @@
       "@dream/board": ["src/app/board/index.ts"],
       "@dream/engine": ["src/app/engine/index.ts"],
       "@dream/turn-manager": ["src/app/turn-manager/index.ts"],
-      "@dream/game": ["src/app/game/index.ts"],
+      "@dream/game": ["src/ui/game-logic/index.ts"],
       "@dream/player": ["src/app/player/index.ts"],
       "@dream/rating": ["src/app/rating/index.ts"],
-      "@dream/ui": ["src/app/ui/index.ts"],
+      "@dream/ui": ["src/ui/index.ts"],
       "@test": ["test/index.ts"]
     }
   },
@@ -38,10 +38,16 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./src/app/tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.spec.json"
+      "path": "./src/app/tsconfig.spec.json"
+    },
+    {
+      "path": "./src/ui/tsconfig.app.json"
+    },
+    {
+      "path": "./src/ui/tsconfig.spec.json"
     }
   ]
 }

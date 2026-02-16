@@ -2,7 +2,7 @@ import { Signal } from '@angular/core';
 import { Board, GameState } from '@dream/board';
 import { Player } from '@dream/player';
 import { Observable } from 'rxjs';
-import { LogEntry } from '../engine/engine.model';
+import { LogEntry } from '@dream/engine';
 
 export interface GameServiceInterface {
   readonly gameState: Signal<GameState>;

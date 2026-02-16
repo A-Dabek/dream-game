@@ -8,10 +8,10 @@ import {
   GameActionResult,
   GameActionType,
 } from '@dream/board';
-import { LogEntry } from '../../engine/engine.model';
+import { LogEntry } from '@dream/engine';
 import { ItemId } from '@dream/item';
 import { Player } from '@dream/player';
-import { GameServiceInterface } from '../game.model';
+import { GameServiceInterface } from './game.model';
 
 @Injectable({
   providedIn: 'root',

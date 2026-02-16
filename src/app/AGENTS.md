@@ -1,6 +1,6 @@
-# Project Overview
+# Game Board Project
 
-A turn-based game implementation where players use items to defeat opponents. The project follows a modular architecture with a clear separation of concerns.
+A turn-based game implementation where players use items to defeat opponents. This is the `game-board` Angular project, containing only pure logic and reactive state. It is configured as a headless application without an `index.html`.
 
 ## Modules
 
@@ -63,13 +63,3 @@ Integrates identity, rating, loadout, and AI:
 - **Composite Object**: Wraps modules into a cohesive `Player` entity.
 - **CPU Factory**: Includes a factory for generating randomized CPU opponents with 5 items and varying base attributes.
 - **Dependency**: Orchestrates `Rating`, `Item`, and `AI`.
-
-### [Game](./game)
-
-The high-level orchestration module:
-
-- **Game Lifecycle**: Managed by `GameService`, handles starting a game and running the asynchronous game loop.
-- **Asynchronous Flow**: Support for asynchronous player strategies (human and AI).
-- **Logging**: Emits engine logs for UI animation.
-- **Rating Synchronization**: Updates player ratings automatically upon game completion.
-- **Orchestration**: Connects `Player` and `Board` modules.

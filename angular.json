@@ -6,18 +6,51 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "dream-project": {
+    "game-board": {
       "projectType": "application",
-      "schematics": {},
-      "root": "",
-      "sourceRoot": "src",
+      "root": "src/app",
+      "sourceRoot": "src/app",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/app/index.ts",
+            "tsConfig": "src/app/tsconfig.app.json",
+            "index": false
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "src/app/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "game-board-ui": {
+      "projectType": "application",
+      "root": "src/ui",
+      "sourceRoot": "src/ui",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/ui/main.ts",
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "src/ui/tsconfig.app.json",
+            "index": "src/ui/index.html",
             "assets": [
               {
                 "glob": "**/*",
@@ -47,16 +80,19 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dream-project:build:production"
+              "buildTarget": "game-board-ui:build:production"
             },
             "development": {
-              "buildTarget": "dream-project:build:development"
+              "buildTarget": "game-board-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "src/ui/tsconfig.spec.json"
+          }
         }
       }
     }
