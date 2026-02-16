@@ -35,14 +35,10 @@ permission:
     "**\\*.md": allow
   bash:
     "*": deny
-    "ng build*": allow
-    "npm run build*": allow
+    "npm run*": allow
     "firebase deploy*": allow
     "npx firebase deploy*": allow
     "git *": allow
-    "npm run format*": allow
-    "npm run verify*": allow
-    "npm run e2e*": allow
   task:
     game-backbone: allow
     game-ui: allow
