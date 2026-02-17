@@ -6,5 +6,50 @@
       "enabled": true,
       "command": ["npx", "-y", "@angular/cli", "mcp"]
     }
+  },
+  "agent": {
+    "orchestrator": {
+      "description": "{file:./agents/orchestrator.md}",
+      "mode": "primary",
+      "temperature": 0.2,
+      "steps": 20,
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true,
+        "glob": true,
+        "task": true,
+        "angular-cli": true
+      },
+      "permission": {
+        "task": {
+          "reviewer": "allow"
+        }
+      }
+    },
+    "reviewer": {
+      "description": "{file:./agents/reviewer.md}",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "steps": 40,
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true,
+        "angular-cli": true
+      },
+      "permission": {
+        "edit": {
+          "*": "deny",
+          "REVIEW_FINDINGS.md": "allow"
+        },
+        "write": {
+          "*": "deny",
+          "REVIEW_FINDINGS.md": "allow"
+        }
+      }
+    }
   }
 }

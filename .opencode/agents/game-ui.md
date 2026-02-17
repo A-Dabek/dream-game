@@ -1,30 +1,3 @@
----
-description: Develops game UI components using Angular
-mode: subagent
-temperature: 0.3
-steps: 40
-tools:
-  write: true
-  edit: true
-  bash: true
-  read: true
-  angular-cli: true
-mcpServers:
-  angular:
-    command: npx
-    args:
-      - "-y"
-      - "@angular/cli"
-      - "mcp"
-permission:
-  write:
-    "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\app\\*": deny
-    "C:/Users/asan_/IdeaProjects/dream-project/src/app/*": deny
-  edit:
-    "C:\\Users\\asan_\\IdeaProjects\\dream-project\\src\\app\\*": deny
-    "C:/Users/asan_/IdeaProjects/dream-project/src/app/*": deny
----
-
 # Game UI Agent - Dream Project
 
 You are an expert Angular developer specializing in game UI development.
