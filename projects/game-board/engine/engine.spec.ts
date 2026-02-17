@@ -22,7 +22,7 @@ describe('Engine', () => {
 
   it('should initialize with two players', () => {
     const engine = new Engine(player1, player2);
-    const state = engine.state();
+    const state = engine.state;
 
     expect(state.playerOne.id).toBe('p1');
     expect(state.playerTwo.id).toBe('p2');
@@ -35,7 +35,7 @@ describe('Engine', () => {
 
     engine.play('p1', '_blueprint_attack');
 
-    const state = engine.state();
+    const state = engine.state;
     expect(state.playerTwo.health).toBe(90); // Deals 10 damage
     expect(state.playerOne.health).toBe(100);
   });
@@ -47,7 +47,7 @@ describe('Engine', () => {
     engine.play('p1', '_blueprint_attack');
     engine.play('p2', '_blueprint_attack' as any); // p2 doesn't have it in loadout but Engine allows playing by ID for now if we don't check loadout in Engine
 
-    const state = engine.state();
+    const state = engine.state;
     expect(state.playerOne.health).toBe(90);
     expect(state.playerTwo.health).toBe(90);
   });
@@ -55,11 +55,11 @@ describe('Engine', () => {
   it('should remove item from player loadout after it is played', () => {
     const engine = new Engine(player1, player2);
 
-    expect(engine.state().playerOne.items.length).toBe(2);
+    expect(engine.state.playerOne.items.length).toBe(2);
 
     engine.play('p1', '_blueprint_attack');
 
-    expect(engine.state().playerOne.items.length).toBe(1);
+    expect(engine.state.playerOne.items.length).toBe(1);
   });
 
   it('should emit remove_listener when parent item is removed', () => {
@@ -80,13 +80,13 @@ describe('Engine', () => {
     };
     const engine = new Engine(p1, p2);
 
-    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners + 1);
+    expect(engine.state.listeners).toHaveLength(baseNumberOfListeners + 1);
 
     // p1 attacks p2, triggering reactive removal which removes the item and thus the listener
     engine.play('p1', '_blueprint_attack');
     const log = engine.consumeLog();
 
-    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners);
+    expect(engine.state.listeners).toHaveLength(baseNumberOfListeners);
     const hasRemoveListener = log.some(
       (entry) =>
         entry.type === 'state-change' &&
@@ -114,13 +114,13 @@ describe('Engine', () => {
     const engine = new Engine(p1, p2);
 
     engine.play('p1', '_blueprint_negate_damage');
-    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners + 1);
+    expect(engine.state.listeners).toHaveLength(baseNumberOfListeners + 1);
 
     // p2 attacks p1, negate_damage triggers, charge expires, remove_listener emitted
     engine.play('p2', '_blueprint_attack');
     const log = engine.consumeLog();
 
-    expect(engine.state().listeners).toHaveLength(baseNumberOfListeners);
+    expect(engine.state.listeners).toHaveLength(baseNumberOfListeners);
     const hasRemoveListener = log.some(
       (entry) =>
         entry.type === 'state-change' &&
@@ -146,7 +146,7 @@ describe('Engine', () => {
 
     engine.processEndOfTurn('p1');
 
-    expect(engine.state().playerOne.health).toBe(99);
+    expect(engine.state.playerOne.health).toBe(99);
   });
 
   it('should mark game over and log event when health drops to zero or below', () => {
@@ -166,7 +166,7 @@ describe('Engine', () => {
 
     engine.play('p1', '_blueprint_attack');
 
-    const state = engine.state();
+    const state = engine.state;
     expect(state.playerTwo.health).toBeLessThanOrEqual(0);
     expect(state.gameOver).toBe(true);
     expect(state.winnerId).toBe('p1');
@@ -183,6 +183,6 @@ describe('Engine', () => {
     // Further events should be ignored
     const prevHealthP1 = state.playerOne.health;
     engine.processEndOfTurn('p1');
-    expect(engine.state().playerOne.health).toBe(prevHealthP1);
+    expect(engine.state.playerOne.health).toBe(prevHealthP1);
   });
 });

@@ -1,4 +1,3 @@
-import { computed, signal } from '@angular/core';
 import { Effect, ItemId, Loadout, removeItem } from '../item';
 import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
@@ -13,8 +12,10 @@ import {
 import { PROCESSORS } from './processors';
 
 export class Engine {
-  private readonly engineStateSignal = signal<EngineState>(null!);
-  readonly state = computed(() => this.engineStateSignal());
+  private _state: EngineState = null!;
+  get state(): EngineState {
+    return this._state;
+  }
   private readonly logBuffer: LogEntry[] = [];
   constructor(
     playerOne: Loadout & { id: string },
@@ -32,7 +33,7 @@ export class Engine {
       ListenerFactory.createAdvanceTurn(p2.id),
     ];
 
-    this.engineStateSignal.set({
+    this._state = {
       playerOne: p1,
       playerTwo: p2,
       turnQueue: TurnManager.initializeTurnQueue(
@@ -42,13 +43,13 @@ export class Engine {
       ),
       listeners,
       gameOver: false,
-    });
+    };
   }
 
   play(playerId: string, itemId: ItemId): void {
-    if (this.engineStateSignal().gameOver) return;
+    if (this._state.gameOver) return;
     const behavior = getItemBehavior(itemId);
-    const state = this.engineStateSignal();
+    const state = this._state;
 
     const player =
       state.playerOne.id === playerId ? state.playerOne : state.playerTwo;
@@ -86,11 +87,11 @@ export class Engine {
       },
     );
 
-    this.engineStateSignal.set(finalState);
+    this._state = finalState;
   }
 
   processEndOfTurn(playerId: string): void {
-    if (this.engineStateSignal().gameOver) return;
+    if (this._state.gameOver) return;
     const turnEndEvent: GameEvent = {
       type: 'lifecycle',
       playerId,
@@ -100,8 +101,8 @@ export class Engine {
   }
 
   processGameStart(): void {
-    if (this.engineStateSignal().gameOver) return;
-    const state = this.engineStateSignal();
+    if (this._state.gameOver) return;
+    const state = this._state;
     const gameStartEvent: GameEvent = {
       type: 'lifecycle',
       // use the current player from the turn queue
@@ -112,7 +113,7 @@ export class Engine {
   }
 
   processTurnStart(playerId: string): void {
-    if (this.engineStateSignal().gameOver) return;
+    if (this._state.gameOver) return;
     const turnStartEvent: GameEvent = {
       type: 'lifecycle',
       playerId,
@@ -196,12 +197,12 @@ export class Engine {
 
   // DRY helper for simple top-level events that only need logging + processing
   private processSimpleEvent(event: GameEvent): void {
-    const state = this.engineStateSignal();
+    const state = this._state;
     if (state.gameOver) return;
     // Log first (previous behavior), then process
     this.log({ type: 'event', event } as LogEntry);
     const nextState = this.processEvent(event, state.listeners, state);
-    this.engineStateSignal.set(nextState);
+    this._state = nextState;
   }
 
   private log(entry: LogEntry): void {

@@ -184,7 +184,7 @@ export class Board implements BoardInterface {
   }
 
   private syncWithEngine(engine: Engine, state: GameState): GameState {
-    const engineState = engine.state();
+    const engineState = engine.state;
     const isActingPlayerOne = engineState.playerOne.id === state.player.id;
     const updatedPlayer = isActingPlayerOne
       ? engineState.playerOne

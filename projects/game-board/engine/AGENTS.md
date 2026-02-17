@@ -2,7 +2,7 @@
 
 ## Overview
 
-The core game engine that manages the game state and flow. It is a synchronous and deterministic state machine built using Angular signals for reactive state updates.
+The core game engine that manages the game state and flow. It is a synchronous and deterministic state machine.
 
 ## Core Files
 
@@ -84,7 +84,7 @@ The engine uses a hierarchy of listener implementations based on `BaseEffectInst
 
 ### State Queries
 
-- `state` - A computed signal returning the current `EngineState`. `EngineState` includes a `log` array, `done` flag, and optional `winnerId`.
+- `state` - A getter returning the current `EngineState`. `EngineState` includes terminal game information like `gameOver` and optional `winnerId`.
 
 ## Supported Effects
 
