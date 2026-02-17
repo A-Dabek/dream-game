@@ -7,11 +7,11 @@
 import { Board as Board_2 } from '../board';
 import { Effect } from '../item';
 import { GameAction as GameAction_2 } from '../board';
-import { ItemId as ItemId_2 } from '../item';
-import { ItemId as ItemId_3 } from '../../item';
+import { ItemId as ItemId_2 } from '../../item';
+import { ItemId as ItemId_3 } from '../item';
 import { Loadout as Loadout_2 } from '../item';
 import { LogEntry as LogEntry_2 } from '../../engine';
-import { Rating as Rating_2 } from '@dream/game-board';
+import { Rating } from '../rating';
 import { Strategy as Strategy_2 } from '../ai';
 import { TurnEntry as TurnEntry_2 } from '../turn-manager';
 
@@ -40,7 +40,7 @@ export class Board implements BoardInterface {
     // (undocumented)
     get playerHealth(): number;
     // (undocumented)
-    playItem(itemId: ItemId_3, playerId: string): GameActionResult;
+    playItem(itemId: ItemId_2, playerId: string): GameActionResult;
     // (undocumented)
     surrender(playerId: string): GameActionResult;
 }
@@ -87,7 +87,7 @@ export enum GameActionType {
 export type GameEvent = {
     type: 'on_play';
     playerId: string;
-    itemId: ItemId_2;
+    itemId: ItemId_3;
 } | LifecycleGameEvent | {
     type: 'effect';
     effect: Effect;
@@ -159,7 +159,7 @@ export interface Player {
     // (undocumented)
     readonly name: string;
     // (undocumented)
-    readonly rating: Rating_2;
+    readonly rating: Rating;
     // (undocumented)
     readonly strategy: Strategy_2;
 }
@@ -167,16 +167,8 @@ export interface Player {
 // @public
 export interface PlayerConfig {
     health?: number;
-    items?: ItemId_3[];
+    items?: ItemId_2[];
     speed?: number;
-}
-
-// @public
-export interface Rating {
-    lose(opponentRating: number): number;
-    // (undocumented)
-    readonly value: number;
-    win(opponentRating: number): number;
 }
 
 // @public (undocumented)

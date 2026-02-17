@@ -20,24 +20,10 @@ import { Signal } from '@angular/core';
 import { Strategy } from '@dream/game-board';
 import { WritableSignal } from '@angular/core';
 
-// @public
-export interface ActionHistoryEntry {
-    // (undocumented)
-    readonly actionType: GameActionType;
-    // (undocumented)
-    readonly genre?: Genre;
-    // (undocumented)
-    readonly iconName: string;
-    // (undocumented)
-    readonly id: string;
-    // (undocumented)
-    readonly itemId?: string;
-    // (undocumented)
-    readonly playerId: string;
-}
-
 // @public (undocumented)
 export class BoardUiComponent {
+    // Warning: (ae-forgotten-export) The symbol "ActionHistoryEntry" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     readonly actionHistory: InputSignal<ActionHistoryEntry[]>;
     // (undocumented)
@@ -52,6 +38,8 @@ export class BoardUiComponent {
     readonly state: InputSignal<GameState>;
 }
 
+// Warning: (ae-forgotten-export) The symbol "GameServiceInterface" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
 export class GameService implements GameServiceInterface {
     // (undocumented)
@@ -59,15 +47,6 @@ export class GameService implements GameServiceInterface {
     // (undocumented)
     readonly logs$: Observable<LogEntry[]>;
     // (undocumented)
-    startGame(player1: Player, player2: Player): Promise<Board>;
-}
-
-// @public (undocumented)
-export interface GameServiceInterface {
-    // (undocumented)
-    readonly gameState: Signal<GameState>;
-    // (undocumented)
-    readonly logs$: Observable<LogEntry[]>;
     startGame(player1: Player, player2: Player): Promise<Board>;
 }
 

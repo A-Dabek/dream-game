@@ -1,6 +1,6 @@
-import { Rating } from '@dream/game-board';
 import { Strategy } from '../ai';
 import { Loadout } from '../item';
+import { Rating } from '../rating';
 
 /**
  * Represents a player in the game.
