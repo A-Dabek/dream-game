@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GameContainerComponent } from './game/game-container.component';
+import { GameViewComponent } from './game/game-view.component';
 
 @Component({
   selector: 'app-root',
-  imports: [GameContainerComponent],
+  imports: [GameViewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<app-game-container />`,
+  template: `<app-game-view />`,
 })
 export class App {}

@@ -1,11 +1,11 @@
-@use '../game-board-ui/styles/mixins' as *;
+@use '../mixins' as *;
 
 /* GameContainerComponent styles */
 app-game-container {
-  display: block; /* custom elements are inline by default; ensure it can size itself */
+  display: block;
   position: relative;
   @include full-height;
-  overflow: hidden; /* prevent scrollbars during transitions */
+  overflow: hidden;
 
   .screens-container {
     position: relative;
@@ -13,16 +13,14 @@ app-game-container {
     height: 100%;
   }
 
-  /* Every screen occupies full container space so it doesn't collapse during leave */
   .screen {
     position: absolute;
-    inset: 0; /* top:0 right:0 bottom:0 left:0 */
+    inset: 0;
     width: 100%;
     height: 100%;
     display: flex;
   }
 
-  /* Use keyframe animations for both enter and leave to keep behavior consistent */
   .slide-in {
     z-index: 1;
 

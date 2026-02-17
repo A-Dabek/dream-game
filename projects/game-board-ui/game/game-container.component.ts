@@ -3,41 +3,24 @@ import {
   Component,
   effect,
   inject,
+  input,
   signal,
 } from '@angular/core';
-import { UrlGameConfigService } from './url-game-config.service';
-import { Player, PlayerConfig, createGamePlayers } from '@dream/game-board';
 import {
-  BoardUiComponent,
-  PreGameScreenComponent,
-  PostGameScreenComponent,
-  UiStateService,
-  HumanStrategy,
-  GameService,
-} from '@dream/game-board-ui';
-
-// Default human player configuration
-const DEFAULT_HUMAN_CONFIG: PlayerConfig = {
-  items: [
-    '_blueprint_attack',
-    '_blueprint_attack',
-    '_blueprint_attack',
-    '_blueprint_attack',
-  ],
-  health: 20,
-  speed: 8,
-};
-
-// Default CPU player configuration
-const DEFAULT_CPU_CONFIG: PlayerConfig = {
-  items: ['punch', 'sticking_plaster', 'wingfoot', 'sticky_boot'],
-  health: 18,
-  speed: 7,
-};
+  Player,
+  PlayerConfig,
+  createGamePlayers,
+  GamePlayersConfig,
+} from '@dream/game-board';
+import { BoardUiComponent } from '../board/board-ui.component';
+import { PreGameScreenComponent } from './pre-game-screen.component';
+import { PostGameScreenComponent } from './post-game-screen.component';
+import { UiStateService } from '../board/service/ui-state.service';
+import { HumanStrategy } from '../board/service/human-strategy';
+import { GameService } from '../game-logic/game.service';
 
 @Component({
   selector: 'app-game-container',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [BoardUiComponent, PreGameScreenComponent, PostGameScreenComponent],
   template: `
@@ -47,8 +30,8 @@ const DEFAULT_CPU_CONFIG: PlayerConfig = {
           <app-pre-game-screen
             class="screen"
             data-testid="pre-game-screen"
-            [player]="humanPlayer.loadout"
-            [opponent]="cpuPlayer.loadout"
+            [player]="humanPlayer().loadout"
+            [opponent]="cpuPlayer().loadout"
             (onReady)="handleReady()"
             animate.enter="slide-in"
             animate.leave="slide-out"
@@ -72,8 +55,8 @@ const DEFAULT_CPU_CONFIG: PlayerConfig = {
             <app-post-game-screen
               class="screen"
               data-testid="post-game-screen"
-              [player]="humanPlayer.loadout"
-              [opponent]="cpuPlayer.loadout"
+              [player]="humanPlayer().loadout"
+              [opponent]="cpuPlayer().loadout"
               [winnerId]="s.winnerId!"
               (restart)="handleRestart()"
               animate.enter="slide-in"
@@ -92,7 +75,7 @@ export class GameContainerComponent {
 
   private readonly humanStrategy = inject(HumanStrategy);
 
-  private readonly urlConfigService = inject(UrlGameConfigService);
+  readonly config = input.required<GamePlayersConfig>();
 
   readonly state = this.uiStateService.uiState;
   readonly lastPlayedItem = this.uiStateService.lastPlayedItem;
@@ -100,21 +83,16 @@ export class GameContainerComponent {
 
   readonly stage = signal<'pre' | 'game' | 'post'>('pre');
 
-  // Players are created based on URL config or defaults
-  readonly humanPlayer: Player;
-  readonly cpuPlayer: Player;
+  readonly humanPlayer = signal<Player>(null as unknown as Player);
+  readonly cpuPlayer = signal<Player>(null as unknown as Player);
 
   constructor() {
-    // Parse configuration from URL or use defaults
-    const urlConfig = this.urlConfigService.parseConfigFromUrl();
-    const config = urlConfig ?? {
-      player1: DEFAULT_HUMAN_CONFIG,
-      player2: DEFAULT_CPU_CONFIG,
-    };
-    console.log('Game config:', urlConfig);
-    const { humanPlayer, cpuPlayer } = this.createPlayers(config);
-    this.humanPlayer = humanPlayer;
-    this.cpuPlayer = cpuPlayer;
+    effect(() => {
+      const config = this.config();
+      const { humanPlayer, cpuPlayer } = this.createPlayers(config);
+      this.humanPlayer.set(humanPlayer);
+      this.cpuPlayer.set(cpuPlayer);
+    });
 
     effect(() => {
       const s = this.state();
@@ -126,13 +104,18 @@ export class GameContainerComponent {
 
   handleReady() {
     this.stage.set('game');
-    void this.gameService.startGame(this.humanPlayer, this.cpuPlayer);
+    void this.gameService.startGame(this.humanPlayer(), this.cpuPlayer());
     const initial = this.gameService.gameState();
     this.uiStateService.initialize(initial);
   }
 
   handleRestart() {
     this.stage.set('pre');
+    // Re-create players on restart to ensure fresh state
+    const config = this.config();
+    const { humanPlayer, cpuPlayer } = this.createPlayers(config);
+    this.humanPlayer.set(humanPlayer);
+    this.cpuPlayer.set(cpuPlayer);
   }
 
   private createPlayers(config: {

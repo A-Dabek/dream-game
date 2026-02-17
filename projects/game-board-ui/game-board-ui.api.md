@@ -4,95 +4,43 @@
 
 ```ts
 
-import { Board } from '@dream/game-board';
-import { GameAction } from '@dream/game-board';
 import { GameActionType } from '@dream/game-board';
+import { GamePlayersConfig } from '@dream/game-board';
 import { GameState } from '@dream/game-board';
 import { Genre } from '@dream/game-board';
 import { InputSignal } from '@angular/core';
 import { Item } from '@dream/game-board';
-import { Loadout } from '@dream/game-board';
-import { LogEntry } from '@dream/game-board';
-import { Observable } from 'rxjs';
-import { OutputEmitterRef } from '@angular/core';
 import { Player } from '@dream/game-board';
 import { Signal } from '@angular/core';
-import { Strategy } from '@dream/game-board';
 import { WritableSignal } from '@angular/core';
 
 // @public (undocumented)
-export class BoardUiComponent {
+export class GameContainerComponent {
+    constructor();
     // Warning: (ae-forgotten-export) The symbol "ActionHistoryEntry" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    readonly actionHistory: InputSignal<ActionHistoryEntry[]>;
-    // (undocumented)
-    readonly isPlayerTurn: Signal<boolean>;
-    // (undocumented)
-    readonly lastPlayedItem: InputSignal<Item | null>;
-    // (undocumented)
-    onItemPlayed(item: Item): void;
-    // (undocumented)
-    onSkipTurn(): void;
-    // (undocumented)
-    readonly state: InputSignal<GameState>;
-}
-
-// Warning: (ae-forgotten-export) The symbol "GameServiceInterface" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export class GameService implements GameServiceInterface {
-    // (undocumented)
-    readonly gameState: Signal<GameState>;
-    // (undocumented)
-    readonly logs$: Observable<LogEntry[]>;
-    // (undocumented)
-    startGame(player1: Player, player2: Player): Promise<Board>;
-}
-
-// @public
-export class HumanStrategy implements Strategy {
-    decide(board: Board): Promise<GameAction>;
-}
-
-// @public (undocumented)
-export class PostGameScreenComponent {
-    // (undocumented)
-    readonly opponent: InputSignal<Loadout>;
-    // (undocumented)
-    readonly opponentWon: Signal<boolean>;
-    // (undocumented)
-    readonly player: InputSignal<Loadout>;
-    // (undocumented)
-    readonly playerWon: Signal<boolean>;
-    // (undocumented)
-    readonly restart: OutputEmitterRef<void>;
-    // (undocumented)
-    readonly winnerId: InputSignal<string>;
-}
-
-// @public (undocumented)
-export class PreGameScreenComponent {
-    // (undocumented)
-    readonly animating: WritableSignal<boolean>;
-    // (undocumented)
-    readonly onReady: OutputEmitterRef<void>;
-    // (undocumented)
-    readonly opponent: InputSignal<Loadout>;
-    // (undocumented)
-    readonly player: InputSignal<Loadout>;
-}
-
-// @public (undocumented)
-export class UiStateService {
-    // (undocumented)
     readonly actionHistory: Signal<ActionHistoryEntry[]>;
     // (undocumented)
-    initialize(initialState: GameState): void;
+    readonly config: InputSignal<GamePlayersConfig>;
+    // (undocumented)
+    readonly cpuPlayer: WritableSignal<Player>;
+    // (undocumented)
+    handleReady(): void;
+    // (undocumented)
+    handleRestart(): void;
+    // (undocumented)
+    readonly humanPlayer: WritableSignal<Player>;
     // (undocumented)
     readonly lastPlayedItem: Signal<Item | null>;
     // (undocumented)
-    readonly uiState: Signal<GameState | null>;
+    readonly stage: WritableSignal<"pre" | "game" | "post">;
+    // (undocumented)
+    readonly state: Signal<GameState | null>;
+    // Warning: (ae-forgotten-export) The symbol "UiStateService" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly uiStateService: UiStateService;
 }
 
 // (No @packageDocumentation comment for this package)
