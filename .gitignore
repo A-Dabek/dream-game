@@ -54,4 +54,5 @@ test-results/
 playwright/.cache/
 
 /ideas
+/temp
 .output.txt

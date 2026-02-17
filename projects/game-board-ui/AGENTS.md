@@ -49,3 +49,50 @@ Global styles, design tokens, and layout-specific styling are documented in `sty
 - Last-played spotlight remains centered between health bars for quick state comprehension.
 - Turn queue animations use stable `TurnEntry.turnId` values from the engine for track-by safety.
 - Pre/post screens share a unified minimal style and slide transitions via `GameContainerComponent`.
+
+## API Extractor
+
+Tooling: @microsoft/api-extractor for generating API documentation and type rollups.
+
+### Generated Files
+
+Running `npm run api-extractor:game-board-ui` produces:
+
+1. **`game-board-ui.api.md`** - API report showing the public API surface (imports/exports)
+2. **`game-board-ui.d.ts`** - Consolidated TypeScript declarations with full type definitions
+
+### Viewing Full Type Declarations
+
+To see complete type definitions with all properties and methods:
+
+**Open `game-board-ui.d.ts`** - This file contains the full declarations:
+
+- All exported Angular components with their inputs, outputs, and methods
+- All exported services with their public methods and properties
+- All exported interfaces and types
+
+The .d.ts rollup includes full class definitions (e.g., `export declare class BoardUiComponent { ... }`)
+with all public members visible, unlike the .api.md file which shows imports/exports.
+
+### Usage
+
+Generate both files:
+
+```bash
+npm run api-extractor:game-board-ui
+```
+
+This command:
+
+1. Compiles TypeScript declarations to `dist/types/game-board-ui/`
+2. Runs API Extractor analysis
+3. Creates/updates both `.api.md` and `.d.ts` files in the project root
+
+### Release Tags
+
+Add TSDoc annotations to suppress warnings and document API stability:
+
+- `@public` - Part of the stable public API
+- `@beta` - Experimental API subject to change
+- `@alpha` - Early preview, highly unstable
+- `@internal` - For internal use only

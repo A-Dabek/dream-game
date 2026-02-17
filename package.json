@@ -12,7 +12,7 @@
     "test:app": "ng test game-board --watch=false",
     "test:ui": "ng test game-board-ui --watch=false",
     "api-extractor:game-board": "tsc -p projects/game-board/tsconfig.api.json --declaration --emitDeclarationOnly --outDir dist/types/game-board && api-extractor run --local --config projects/game-board/api-extractor.json",
-    "api-extractor:game-board-ui": "tsc -p projects/game-board-ui/tsconfig.app.json --declaration --emitDeclarationOnly --outDir dist/types/game-board-ui && api-extractor run --local --config projects/game-board-ui/api-extractor.json",
+    "api-extractor:game-board-ui": "tsc -p projects/game-board-ui/tsconfig.api.json --declaration --emitDeclarationOnly --outDir dist/types/game-board-ui && api-extractor run --local --config projects/game-board-ui/api-extractor.json",
     "api-extractor": "npm run api-extractor:game-board && npm run api-extractor:game-board-ui",
     "format": "prettier --write .",
     "verify": "npm run format && npm run build:app && npm run test:app && npm run build && npm test && npm run e2e",

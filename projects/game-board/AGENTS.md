@@ -63,3 +63,51 @@ Integrates identity, rating, loadout, and AI:
 - **Composite Object**: Wraps modules into a cohesive `Player` entity.
 - **CPU Factory**: Includes a factory for generating randomized CPU opponents with 5 items and varying base attributes.
 - **Dependency**: Orchestrates `Rating`, `Item`, and `AI`.
+
+## API Extractor
+
+Tooling: @microsoft/api-extractor for generating API documentation and type rollups.
+
+### Generated Files
+
+Running `npm run api-extractor:game-board` produces:
+
+1. **`game-board.api.md`** - API report showing the public API surface (imports/exports)
+2. **`game-board.d.ts`** - Consolidated TypeScript declarations with full type definitions
+
+### Viewing Full Type Declarations
+
+To see complete type definitions with all properties and methods:
+
+**Open `game-board.d.ts`** - This file contains the full declarations:
+
+- All exported classes with their properties and methods
+- All exported interfaces with their fields
+- All exported types and enums
+
+Note: When types are re-exported from other modules (e.g., `export { Board } from './board'`),
+the .d.ts rollup preserves the re-export structure. To see inlined declarations, the source
+would need to use `export * from './module'` patterns or define types directly in index.ts.
+
+### Usage
+
+Generate both files:
+
+```bash
+npm run api-extractor:game-board
+```
+
+This command:
+
+1. Compiles TypeScript declarations to `dist/types/game-board/`
+2. Runs API Extractor analysis
+3. Creates/updates both `.api.md` and `.d.ts` files in the project root
+
+### Release Tags
+
+If warnings appear about missing release tags, add TSDoc annotations to exported APIs:
+
+- `@public` - Part of the stable public API
+- `@beta` - Experimental API subject to change
+- `@alpha` - Early preview, highly unstable
+- `@internal` - For internal use only

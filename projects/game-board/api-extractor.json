@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "mainEntryPointFilePath": "<projectFolder>/dist/types/game-board/index.d.ts",
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/projects/game-board/tsconfig.api.json",
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {},
+        "skipLibCheck": true,
+        "module": "esnext",
+        "types": []
+      },
+      "files": ["<projectFolder>/dist/types/game-board/index.d.ts"]
+    }
+  },
+  "apiReport": {
+    "enabled": true,
+    "reportFolder": "<projectFolder>/projects/game-board",
+    "reportFileName": "game-board.api.md",
+    "reportTempFolder": "<projectFolder>/temp/api-extractor"
+  },
+  "dtsRollup": {
+    "enabled": true,
+    "untrimmedFilePath": "<projectFolder>/dist/projects/game-board/game-board.d.ts"
+  },
+  "docModel": {
+    "enabled": false
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "messages": {
+    "compilerMessageReporting": {
+      "default": { "logLevel": "warning" }
+    },
+    "extractorMessageReporting": {
+      "default": { "logLevel": "warning" }
+    }
+  }
+}

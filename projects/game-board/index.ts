@@ -1,22 +1,28 @@
-export { type Genre, type Item, type ItemId, type Loadout } from './item';
 export {
   type GameEvent,
   type LogEntry,
   type StateChangeLogEntry,
-} from './engine';
+} from './engine/engine.model';
 export {
   GameActionType,
   type GameState,
   type GameAction,
-  Board,
   type GameActionResult,
-} from './board';
-export { type Rating } from './rating';
-export { type Strategy } from './ai';
+} from './board/board.model';
+export { Board } from './board/impl/board';
+export { type Rating } from './rating/rating.model';
+export { type Strategy } from './ai/ai.model';
+export { type Player } from './player/player.model';
 export {
-  type Player,
   type PlayerConfig,
   type GamePlayersConfig,
-  createGamePlayers,
-} from './player';
-export { type TurnEntry } from './turn-manager';
+} from './player/impl/cpu-player-builder';
+export { createGamePlayers } from './player/player';
+export { type TurnEntry } from './turn-manager/turn-manager.model';
+
+export {
+  type Genre,
+  type Item,
+  type ItemId,
+  type Loadout,
+} from './item/item.model';
