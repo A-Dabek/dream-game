@@ -1,9 +1,8 @@
-import { BEHAVIORS } from '@dream/item-library';
+import { FirstAvailableStrategy, Strategy } from '../../ai';
+import { Item, ItemId, Loadout } from '../../item';
+import { BEHAVIORS } from '../../item-library';
+import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
-import { PlayerRating } from '@dream/rating';
-import { FirstAvailableStrategy } from '@dream/ai';
-import { ItemId, Item, Loadout } from '@dream/item';
-import { Strategy } from '@dream/ai';
 
 /**
  * Configuration options for creating a player with specific values.

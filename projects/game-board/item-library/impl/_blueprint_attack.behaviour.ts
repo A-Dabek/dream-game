@@ -1,5 +1,4 @@
-import { attack } from '@dream/item';
-import { Effect, ItemBehavior } from '@dream/item';
+import { attack, Effect, ItemBehavior } from '../../item';
 
 /**
  * Behavior for the _blueprint_attack item.

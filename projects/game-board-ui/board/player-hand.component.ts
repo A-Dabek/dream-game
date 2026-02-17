@@ -4,7 +4,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { Item } from '@dream/item';
+import { Item } from '@dream/game-board';
 import { ItemDisplayComponent } from '../common/item-display.component';
 
 @Component({

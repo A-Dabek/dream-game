@@ -1,11 +1,18 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { GameService } from '@dream/game';
 import { concatMap, from, Subscription, timer } from 'rxjs';
-import { GameAction, GameState } from '@dream/board';
-import { Genre, Item, ItemId } from '@dream/item';
-import { GameEvent, LogEntry, StateChangeLogEntry } from '@dream/engine';
+import {
+  GameAction,
+  GameEvent,
+  GameState,
+  Genre,
+  Item,
+  ItemId,
+  LogEntry,
+  StateChangeLogEntry,
+} from '@dream/game-board';
+import { GameService } from '../../game-logic';
 import { ActionHistoryEntry } from '../action-history-entry';
-import { ItemDisplayRegistry } from '../../common/item-display-map';
+import { ItemDisplayRegistry } from '../../common';
 import { SoundService } from './sound.service';
 
 @Injectable({

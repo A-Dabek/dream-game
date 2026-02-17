@@ -1,4 +1,4 @@
-import { Duration } from '@dream/item';
+import { Duration } from '../../item';
 import { GameEvent } from '../engine.model';
 import { isLifecycleGameEvent } from '../type-guards';
 

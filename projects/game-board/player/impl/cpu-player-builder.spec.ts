@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { FirstAvailableStrategy } from '../../ai';
+import { PlayerRating } from '../../rating';
 import { CpuPlayerBuilder } from './cpu-player-builder';
-import { PlayerRating } from '@dream/rating';
-import { FirstAvailableStrategy } from '@dream/ai';
 
 describe('CpuPlayerBuilder', () => {
   describe('initialization', () => {

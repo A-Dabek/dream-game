@@ -1,11 +1,6 @@
-export * from './common/icon.component';
-export * from './common/item-display.component';
-export * from './board/player-hand.component';
-export * from './board/turn-queue.component';
-export * from './board/board-ui.component';
-export * from './game/pre-game-screen.component';
-export * from './game/post-game-screen.component';
-export * from './board/service/human-input.service';
-export * from './board/service/human-strategy';
-export * from './board/service/ui-state.service';
-export * from './board/service/sound.service';
+export { BoardUiComponent } from './board/board-ui.component';
+export { PreGameScreenComponent } from './game/pre-game-screen.component';
+export { PostGameScreenComponent } from './game/post-game-screen.component';
+export { HumanStrategy } from './board/service/human-strategy';
+export { UiStateService } from './board/service/ui-state.service';
+export { GameService } from './game-logic/game.service';

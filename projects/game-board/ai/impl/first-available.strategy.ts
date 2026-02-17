@@ -1,4 +1,4 @@
-import { Board, GameAction, GameActionType } from '@dream/board';
+import { Board, GameAction, GameActionType } from '../../board';
 import { Strategy } from '../ai.model';
 
 /**

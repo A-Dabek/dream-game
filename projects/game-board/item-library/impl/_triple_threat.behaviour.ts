@@ -1,5 +1,12 @@
-import { addStatusEffect, attack, onTurnEnd, statusEffect } from '@dream/item';
-import { Effect, ItemBehavior, PassiveEffect } from '@dream/item';
+import {
+  addStatusEffect,
+  attack,
+  Effect,
+  ItemBehavior,
+  onTurnEnd,
+  PassiveEffect,
+  statusEffect,
+} from '../../item';
 
 export class TripleThreatBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {

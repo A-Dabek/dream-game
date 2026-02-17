@@ -1,5 +1,4 @@
-import { GameActionType } from '@dream/board';
-import { Genre } from '@dream/item';
+import { Genre, GameActionType } from '@dream/game-board';
 
 /** Presentation-friendly representation of a historical action for animation/display. */
 export interface ActionHistoryEntry {

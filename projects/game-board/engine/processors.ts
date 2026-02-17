@@ -1,5 +1,5 @@
-import { TurnManager } from '@dream/turn-manager';
-import { StatusEffect } from '@dream/item';
+import { StatusEffect } from '../item';
+import { TurnManager } from '../turn-manager';
 import { ListenerFactory } from './effects';
 import { EngineState, Processors } from './engine.model';
 

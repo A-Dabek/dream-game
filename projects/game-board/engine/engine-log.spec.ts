@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createTestItem } from '../board/test/test-utils';
-import { Loadout } from '@dream/item';
+import { Loadout } from '../item';
 import { Engine } from './engine';
 import { StateChangeLogEntry } from './engine.model';
 

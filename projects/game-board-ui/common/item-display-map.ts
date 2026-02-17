@@ -1,4 +1,4 @@
-import { ItemId } from '@dream/item';
+import { ItemId } from '@dream/game-board';
 
 export interface ItemDisplayMetadata {
   readonly iconName: string;

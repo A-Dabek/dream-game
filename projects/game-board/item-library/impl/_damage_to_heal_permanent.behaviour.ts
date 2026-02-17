@@ -1,5 +1,10 @@
-import { addStatusEffect, invert, permanent } from '@dream/item';
-import { Effect, ItemBehavior } from '@dream/item';
+import {
+  addStatusEffect,
+  Effect,
+  invert,
+  ItemBehavior,
+  permanent,
+} from '../../item';
 
 /**
  * Behavior for the _blueprint_damage_to_heal_permanent item.

@@ -1,6 +1,5 @@
-import { Engine } from '@dream/engine';
-import { LogEntry } from '../../engine/engine.model';
-import { ItemId } from '@dream/item';
+import { Engine, LogEntry } from '../../engine';
+import { ItemId } from '../../item';
 import {
   BoardInterface,
   BoardLoadout,
@@ -10,7 +9,6 @@ import {
 } from '../board.model';
 
 export class Board implements BoardInterface {
-  private _gameState: GameState;
   private readonly engine: Engine;
 
   constructor(player: BoardLoadout, opponent: BoardLoadout) {
@@ -32,6 +30,8 @@ export class Board implements BoardInterface {
     this._gameState = this.syncWithEngine(this.engine, this._gameState);
     this.engine.processTurnStart(this._gameState.turnInfo.currentPlayerId);
   }
+
+  private _gameState: GameState;
 
   get gameState(): GameState {
     return this._gameState;

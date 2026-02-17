@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ItemId } from '@dream/item';
+import { ItemId } from '@dream/game-board';
 import { ItemDisplayRegistry } from '../../common/item-display-map';
 
 const SFX_BASE_PATH = '/assets/sfx';

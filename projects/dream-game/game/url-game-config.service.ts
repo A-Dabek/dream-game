@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GamePlayersConfig, PlayerConfig } from '@dream/player';
-import { ItemId } from '@dream/item';
+import { GamePlayersConfig, ItemId, PlayerConfig } from '@dream/game-board';
 
 /**
  * Service for parsing game configuration from URL query parameters.

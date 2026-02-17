@@ -1,6 +1,7 @@
 import { computed, signal } from '@angular/core';
-import { Effect, ItemId, Loadout, removeItem } from '@dream/item';
-import { getItemBehavior } from '@dream/item-library';
+import { Effect, ItemId, Loadout, removeItem } from '../item';
+import { getItemBehavior } from '../item-library';
+import { TurnManager } from '../turn-manager';
 import { ListenerFactory } from './effects';
 import {
   EngineLoadout,
@@ -10,7 +11,6 @@ import {
   LogEntry,
 } from './engine.model';
 import { PROCESSORS } from './processors';
-import { TurnManager } from '@dream/turn-manager';
 
 export class Engine {
   private readonly engineStateSignal = signal<EngineState>(null!);

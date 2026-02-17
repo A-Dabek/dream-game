@@ -4,7 +4,7 @@ import {
   input,
   computed,
 } from '@angular/core';
-import { Genre, Item } from '@dream/item';
+import { Item } from '@dream/game-board';
 import { IconComponent } from './icon.component';
 import { ItemDisplayRegistry } from './item-display-map';
 import { getGenreColor } from './genre-color.util';

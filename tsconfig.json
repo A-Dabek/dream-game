@@ -16,16 +16,8 @@
     "module": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@dream/ai": ["projects/game-board/ai/index.ts"],
-      "@dream/item": ["projects/game-board/item/index.ts"],
-      "@dream/item-library": ["projects/game-board/item-library/index.ts"],
-      "@dream/board": ["projects/game-board/board/index.ts"],
-      "@dream/engine": ["projects/game-board/engine/index.ts"],
-      "@dream/turn-manager": ["projects/game-board/turn-manager/index.ts"],
-      "@dream/game": ["projects/game-board-ui/game-logic/index.ts"],
-      "@dream/player": ["projects/game-board/player/index.ts"],
-      "@dream/rating": ["projects/game-board/rating/index.ts"],
-      "@dream/ui": ["projects/game-board-ui/index.ts"],
+      "@dream/game-board": ["projects/game-board/index.ts"],
+      "@dream/game-board-ui": ["projects/game-board-ui/index.ts"],
       "@test": ["test/index.ts"]
     }
   },

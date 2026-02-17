@@ -1,4 +1,4 @@
-import { Board, GameAction } from '@dream/board';
+import { Board, GameAction } from '../board';
 
 /**
  * Interface for AI decision-making strategies.

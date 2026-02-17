@@ -5,7 +5,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { Loadout } from '@dream/item';
+import { Loadout } from '@dream/game-board';
 import { PlayerHandComponent } from '../board/player-hand.component';
 
 @Component({

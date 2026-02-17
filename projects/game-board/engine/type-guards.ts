@@ -1,5 +1,5 @@
 // Type guards for GameEvent variants to avoid `any` casts when handling events
-import { Effect } from '@dream/item';
+import { Effect } from '../item';
 import { GameEvent, LifecycleGameEvent } from './engine.model';
 
 export function isLifecycleGameEvent(

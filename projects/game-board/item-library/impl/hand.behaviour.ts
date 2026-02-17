@@ -1,4 +1,4 @@
-import { Effect, ItemBehavior } from '@dream/item';
+import { Effect, ItemBehavior } from '../../item';
 
 /**
  * Behavior for the hand item (pass/skip turn).

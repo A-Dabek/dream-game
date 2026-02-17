@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Genre } from '@dream/game-board';
 import { ActionHistoryEntry } from './action-history-entry';
 import { IconComponent } from '../common/icon.component';
 import { getGenreColor } from '../common/genre-color.util';
-import { Genre } from '@dream/item';
 
 @Component({
   selector: 'app-action-history',

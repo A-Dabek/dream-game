@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { App } from './app';
 import { UrlGameConfigService } from './game/url-game-config.service';
-import { GamePlayersConfig } from '@dream/player';
+import { GamePlayersConfig } from '@dream/game-board';
 
 describe('App', () => {
   beforeEach(async () => {

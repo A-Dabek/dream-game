@@ -5,16 +5,16 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { GameService } from '@dream/game';
-import { createGamePlayers, Player, PlayerConfig } from '@dream/player';
+import { UrlGameConfigService } from './url-game-config.service';
+import { Player, PlayerConfig, createGamePlayers } from '@dream/game-board';
 import {
   BoardUiComponent,
-  HumanStrategy,
-  PostGameScreenComponent,
   PreGameScreenComponent,
+  PostGameScreenComponent,
   UiStateService,
-} from '@dream/ui';
-import { UrlGameConfigService } from './url-game-config.service';
+  HumanStrategy,
+  GameService,
+} from '@dream/game-board-ui';
 
 // Default human player configuration
 const DEFAULT_HUMAN_CONFIG: PlayerConfig = {

@@ -1,6 +1,5 @@
-import { Board } from '@dream/board';
-import { BoardLoadout } from '@dream/board';
-import { ItemId } from '@dream/item';
+import { Board, ItemId } from '@dream/game-board';
+import { BoardLoadout } from '../projects/game-board/board';
 
 /**
  * Builder for creating test game boards with sensible defaults.

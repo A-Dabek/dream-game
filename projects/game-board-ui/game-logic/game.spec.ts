@@ -1,10 +1,10 @@
+import { Board, GameActionType, Strategy } from '@dream/game-board';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { Strategy } from '@dream/ai';
-import { Board, GameActionType } from '@dream/board';
-import { createCpuPlayer } from '@dream/player';
-import { HumanInputService, HumanStrategy } from '@dream/ui';
+import { createCpuPlayer } from '../../game-board/player';
 import { GameService } from './game.service';
+import { HumanInputService } from '../board/service/human-input.service';
+import { HumanStrategy } from '../board/service/human-strategy';
 
 describe('GameService', () => {
   let service: GameService;

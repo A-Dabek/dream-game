@@ -4,8 +4,8 @@ import {
   input,
   output,
 } from '@angular/core';
-import { TurnEntry } from '@dream/turn-manager';
-import { ItemDisplayRegistry } from '../common/item-display-map';
+import { TurnEntry } from '@dream/game-board';
+import { ItemDisplayRegistry } from '../common';
 import { IconComponent } from '../common/icon.component';
 
 @Component({

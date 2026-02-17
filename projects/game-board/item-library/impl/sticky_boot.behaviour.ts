@@ -1,5 +1,4 @@
-import { modifySpeed, GAME_CONFIG } from '@dream/item';
-import { Effect, ItemBehavior } from '@dream/item';
+import { Effect, GAME_CONFIG, ItemBehavior, modifySpeed } from '../../item';
 
 /**
  * Behavior for the sticky_boot item.

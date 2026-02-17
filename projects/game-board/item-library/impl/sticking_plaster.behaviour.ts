@@ -1,5 +1,4 @@
-import { BASE_HEAL, heal } from '@dream/item';
-import { Effect, ItemBehavior } from '@dream/item';
+import { BASE_HEAL, Effect, heal, ItemBehavior } from '../../item';
 
 /**
  * Behavior for the sticking_plaster item.

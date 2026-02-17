@@ -1,5 +1,5 @@
-import { PlayerRating } from '@dream/rating';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { PlayerRating } from './player-rating';
 
 describe('PlayerRating', () => {
   let playerRating: PlayerRating;

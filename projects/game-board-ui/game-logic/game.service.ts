@@ -1,16 +1,16 @@
 import { Injectable, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Subject } from 'rxjs';
-import type { GameState } from '@dream/board';
+import type { GameState } from '@dream/game-board';
 import {
   Board,
   GameAction,
   GameActionResult,
   GameActionType,
-} from '@dream/board';
-import { LogEntry } from '@dream/engine';
-import { ItemId } from '@dream/item';
-import { Player } from '@dream/player';
+  ItemId,
+  LogEntry,
+  Player,
+} from '@dream/game-board';
+import { Subject } from 'rxjs';
 import { GameServiceInterface } from './game.model';
 
 @Injectable({
@@ -18,13 +18,12 @@ import { GameServiceInterface } from './game.model';
 })
 export class GameService implements GameServiceInterface {
   private _gameState$ = new Subject<GameState>();
-  private _logs$ = new Subject<LogEntry[]>();
-  private _players: Player[] = [];
-
   readonly gameState = toSignal(
     this._gameState$.asObservable(),
   ) as Signal<GameState>;
+  private _logs$ = new Subject<LogEntry[]>();
   readonly logs$ = this._logs$.asObservable();
+  private _players: Player[] = [];
 
   async startGame(player1: Player, player2: Player): Promise<Board> {
     this._players = [player1, player2];

@@ -2,11 +2,10 @@ import {
   AFTER_EFFECT,
   BEFORE_EFFECT,
   Condition,
-  Effect,
   HAS_NO_ITEMS,
   ON_PLAY,
   ON_TURN_END,
-} from '@dream/item';
+} from '../../item';
 import { EngineState, GameEvent } from '../engine.model';
 import { isEffectEvent, isLifecycleGameEvent } from '../type-guards';
 

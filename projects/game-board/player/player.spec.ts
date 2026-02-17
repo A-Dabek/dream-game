@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { ItemId } from '../item';
 import {
   createCpuPlayer,
   createCpuPlayerWithConfig,
@@ -6,7 +7,6 @@ import {
 } from './player';
 import { PlayerRating } from '../rating';
 import { FirstAvailableStrategy } from '../ai';
-import { ItemId } from '@dream/item';
 
 describe('Player Module', () => {
   describe('createCpuPlayer', () => {

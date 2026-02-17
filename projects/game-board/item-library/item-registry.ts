@@ -1,4 +1,4 @@
-import { ItemId, ItemBehavior } from '@dream/item';
+import { ItemBehavior, ItemId } from '../item';
 import {
   BlueprintAttackBehaviour,
   BlueprintHeal5Behaviour,

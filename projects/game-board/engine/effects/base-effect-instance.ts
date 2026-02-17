@@ -1,4 +1,4 @@
-import { BEFORE_EFFECT, StatusEffect } from '@dream/item';
+import { BEFORE_EFFECT, StatusEffect } from '../../item';
 import { EngineState, GameEvent, Listener } from '../engine.model';
 import { createCondition, ReactiveCondition } from './reactive-condition';
 import { createDuration, ReactiveDuration } from './reactive-duration';

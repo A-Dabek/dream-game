@@ -1,8 +1,22 @@
-export * from '@dream/ai';
-export * from '@dream/item';
-export * from '@dream/item-library';
-export * from '@dream/board';
-export * from '@dream/engine';
-export * from '@dream/turn-manager';
-export * from '@dream/player';
-export * from '@dream/rating';
+export { type Genre, type Item, type ItemId, type Loadout } from './item';
+export {
+  type GameEvent,
+  type LogEntry,
+  type StateChangeLogEntry,
+} from './engine';
+export {
+  GameActionType,
+  type GameState,
+  type GameAction,
+  Board,
+  type GameActionResult,
+} from './board';
+export { type Rating } from './rating';
+export { type Strategy } from './ai';
+export {
+  type Player,
+  type PlayerConfig,
+  type GamePlayersConfig,
+  createGamePlayers,
+} from './player';
+export { type TurnEntry } from './turn-manager';

@@ -1,4 +1,4 @@
-import { Genre } from '@dream/item';
+import { Genre } from '@dream/game-board';
 
 /**
  * Maps a genre to its corresponding CSS variable color.
