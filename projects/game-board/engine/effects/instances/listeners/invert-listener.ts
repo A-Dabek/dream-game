@@ -1,7 +1,7 @@
 import { EngineState, GameEvent } from '../../../engine.types';
-import { BaseStatusEffectInstance } from './base-status-effect-instance';
+import { BaseEffectInstance } from '../base-effect-instance';
 
-export class InvertListener extends BaseStatusEffectInstance {
+export class InvertListener extends BaseEffectInstance {
   protected handleReaction(
     event: GameEvent,
     state: EngineState,

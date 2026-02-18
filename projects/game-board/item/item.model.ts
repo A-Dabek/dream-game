@@ -58,8 +58,8 @@ export interface Condition {
  * Represents the duration of a status effect.
  */
 export interface Duration {
-  readonly type: 'turns' | 'charges' | 'permanent';
-  readonly value?: number;
+  readonly type: 'turns' | 'charges' | 'permanent' | 'until_item_removed';
+  readonly value?: number | string;
 }
 
 /**

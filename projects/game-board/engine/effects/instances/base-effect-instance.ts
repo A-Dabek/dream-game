@@ -36,7 +36,38 @@ export abstract class BaseEffectInstance implements Listener {
     state: EngineState,
   ): GameEvent[] | null;
 
-  protected abstract wrapResult(events: GameEvent[]): { event: GameEvent[] };
+  private wrapResult(events: GameEvent[]): { event: GameEvent[] } {
+    const removeSelfEvent = {
+      type: 'effect',
+      effect: {
+        type: 'remove_listener',
+        value: this.instanceId,
+      },
+      playerId: this.playerId,
+    } as const;
+
+    // Check if duration expired
+    if (this.duration.isExpired) {
+      return {
+        event: this.addEvent(events, removeSelfEvent),
+      };
+    }
+
+    // Check if any event removes this listener's associated item
+    for (const e of events) {
+      if (
+        e.type === 'effect' &&
+        e.effect.type === 'remove_item' &&
+        e.effect.value === this.instanceId
+      ) {
+        return {
+          event: this.addEvent(events, removeSelfEvent),
+        };
+      }
+    }
+
+    return { event: events };
+  }
 
   protected shouldReact(event: GameEvent, state: EngineState): boolean {
     return this.condition.shouldReact(event, this.playerId, state);
@@ -84,23 +115,5 @@ export abstract class BaseEffectInstance implements Listener {
       return base;
     }
     return [...base, newEvent];
-  }
-
-  protected checkRemoveItem(event: GameEvent): GameEvent | null {
-    if (
-      event.type === 'effect' &&
-      event.effect.type === 'remove_item' &&
-      event.effect.value === this.instanceId
-    ) {
-      return {
-        type: 'effect',
-        effect: {
-          type: 'remove_listener',
-          value: this.instanceId,
-        },
-        playerId: this.playerId,
-      };
-    }
-    return null;
   }
 }

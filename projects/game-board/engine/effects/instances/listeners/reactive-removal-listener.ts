@@ -1,7 +1,7 @@
 import { EngineState, GameEvent } from '../../../engine.types';
-import { BasePassiveInstance } from './base-passive-instance';
+import { BaseEffectInstance } from '../base-effect-instance';
 
-export class ReactiveRemovalListener extends BasePassiveInstance {
+export class ReactiveRemovalListener extends BaseEffectInstance {
   protected handleReaction(
     event: GameEvent,
     state: EngineState,

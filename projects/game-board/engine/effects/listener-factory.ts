@@ -1,16 +1,14 @@
 import { StatusEffect } from '../../item';
 import { Listener } from '../engine.types';
+import { ItemDuration } from './durations';
 import {
-  DefaultPassiveInstance,
-  ReactiveRemovalListener,
-} from './instances/passive';
-import {
-  DefaultStatusEffectInstance,
+  DefaultListener,
   FatigueListener,
   InvertListener,
   NegateListener,
   AdvanceTurnListener,
-} from './instances/status';
+  ReactiveRemovalListener,
+} from './instances/listeners';
 
 export class ListenerFactory {
   static createAdvanceTurn(playerId: string): Listener {
@@ -26,11 +24,25 @@ export class ListenerFactory {
     playerId: string,
     effect: StatusEffect,
   ): Listener {
+    const itemDuration = new ItemDuration(instanceId);
+
     if (effect.type === 'reactive_removal') {
-      return new ReactiveRemovalListener(instanceId, playerId, effect);
+      return new ReactiveRemovalListener(
+        instanceId,
+        playerId,
+        effect,
+        undefined,
+        itemDuration,
+      );
     }
 
-    return DefaultPassiveInstance.create(instanceId, playerId, effect);
+    return new DefaultListener(
+      instanceId,
+      playerId,
+      effect,
+      undefined,
+      itemDuration,
+    );
   }
 
   static createStatusEffect(
@@ -45,6 +57,6 @@ export class ListenerFactory {
       return new InvertListener(instanceId, playerId, effect);
     }
 
-    return DefaultStatusEffectInstance.create(instanceId, playerId, effect);
+    return DefaultListener.create(instanceId, playerId, effect);
   }
 }

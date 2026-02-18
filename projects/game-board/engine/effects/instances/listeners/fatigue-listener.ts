@@ -1,12 +1,12 @@
-import { onTurnEnd, StatusEffect } from '../../../../item';
+import { and, hasNoItems, onTurnEnd, StatusEffect } from '../../../../item';
 import { EngineState, GameEvent } from '../../../engine.types';
-import { BaseStatusEffectInstance } from './base-status-effect-instance';
+import { BaseEffectInstance } from '../base-effect-instance';
 
-export class AdvanceTurnListener extends BaseStatusEffectInstance {
+export class FatigueListener extends BaseEffectInstance {
   constructor(instanceId: string, playerId: string) {
     const effect: StatusEffect = {
-      condition: onTurnEnd(),
-      action: [{ type: 'advance_turn', value: 0, target: 'self' }],
+      condition: and(onTurnEnd(), hasNoItems()),
+      action: [{ type: 'damage', value: 1, target: 'self' }],
       duration: { type: 'permanent' },
     };
     super(instanceId, playerId, effect);

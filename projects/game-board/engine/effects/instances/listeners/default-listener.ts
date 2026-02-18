@@ -1,18 +1,14 @@
 import { StatusEffect } from '../../../../item';
 import { EngineState, GameEvent } from '../../../engine.types';
-import { EffectInstance } from '../../types';
-import { BasePassiveInstance } from './base-passive-instance';
+import { BaseEffectInstance } from '../base-effect-instance';
 
-export class DefaultPassiveInstance
-  extends BasePassiveInstance
-  implements EffectInstance
-{
+export class DefaultListener extends BaseEffectInstance {
   static create(
     instanceId: string,
     playerId: string,
     effect: StatusEffect,
-  ): DefaultPassiveInstance {
-    return new DefaultPassiveInstance(instanceId, playerId, effect);
+  ): DefaultListener {
+    return new DefaultListener(instanceId, playerId, effect);
   }
 
   protected handleReaction(
