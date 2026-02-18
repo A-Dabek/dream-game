@@ -25,3 +25,15 @@ This is an Angular monorepo for a turn-based card-like 1v1 game with the followi
 - For commands refer to the package.json scripts section.
 - E2E tests are written in Playwright and are located in `e2e'.
 - Webapp assets are located in `assets`.
+
+## Useful scripts
+
+- You can find scripts in `.opencode/scripts` directory.
+
+### Scripts Description
+
+| Script                | Description                                                                                                              | Usage                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| `acceptance-tests.sh` | Runs the full acceptance test suite including build, all unit tests, and E2E tests                                       | `./acceptance-tests.sh`                                    |
+| `finalize-work.sh`    | Complete work finalization workflow with formatting, builds, tests, API checks, and optional git operations + deployment | `./finalize-work.sh [--dry-run]`                           |
+| `verify-lib.sh`       | Verifies a single library (test, build, API extractor)                                                                   | `./verify-lib.sh <lib-name>` (game-board or game-board-ui) |
