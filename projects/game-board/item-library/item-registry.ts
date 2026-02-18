@@ -1,4 +1,4 @@
-import { ItemBehavior, ItemId } from '../item';
+import { Genre, ItemBehavior, ItemId } from '../item';
 import {
   BlueprintAttackBehaviour,
   BlueprintHeal5Behaviour,
@@ -37,10 +37,37 @@ export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   wingfoot: WingfootBehaviour,
 };
 
+export const ITEM_GENRES: Record<ItemId, Genre> = {
+  _blueprint_attack: 'basic',
+  _blueprint_heal_5: 'basic',
+  _blueprint_passive_attack: 'basic',
+  _blueprint_reactive_removal: 'basic',
+  _blueprint_self_damage: 'basic',
+  _blueprint_damage_to_heal_charges: 'basic',
+  _blueprint_damage_to_heal_permanent: 'basic',
+  _blueprint_damage_to_heal_turns: 'basic',
+  _dummy: 'basic',
+  _blueprint_negate_damage: 'basic',
+  _blueprint_triple_threat: 'basic',
+  hand: 'basic',
+  punch: 'basic',
+  sticking_plaster: 'basic',
+  sticky_boot: 'basic',
+  wingfoot: 'basic',
+};
+
 export function getItemBehavior(itemId: ItemId): ItemBehavior {
   const BehaviorClass = BEHAVIORS[itemId];
   if (!BehaviorClass) {
     throw new Error(`No behavior found for item: ${itemId}`);
   }
   return new BehaviorClass();
+}
+
+export function getItemGenre(itemId: ItemId): Genre {
+  const genre = ITEM_GENRES[itemId];
+  if (!genre) {
+    throw new Error(`No genre found for item: ${itemId}`);
+  }
+  return genre;
 }

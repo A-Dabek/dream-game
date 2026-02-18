@@ -34,13 +34,19 @@ Export the behaviour class.
 
 Import and add to `BEHAVIORS` record.
 
-## 5. Add Display Metadata
+## 5. Add Genre Mapping
+
+**Where:** `projects/game-board/item-library/item-registry.ts`
+
+Add entry to `ITEM_GENRES` with the item's genre (usually 'basic' for new items).
+
+## 6. Add Display Metadata
 
 **Where:** `projects/game-board-ui/common/item-display-map.ts`
 
 Add entry to `ITEM_DISPLAY_MAP` with icon name and description.
 
-## 6. Create Integration Test
+## 7. Create Integration Test
 
 **Where:** `projects/game-board/board/test/{item-name}.spec.ts`
 

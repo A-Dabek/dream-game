@@ -5,6 +5,7 @@ import {
   GameEvent,
   GameState,
   Genre,
+  getItemGenre,
   Item,
   ItemId,
   LogEntry,
@@ -51,10 +52,10 @@ export class UiStateService {
         ? ItemDisplayRegistry.getMetadata(action.itemId as ItemId).iconName
         : ItemDisplayRegistry.PASS_ICON_NAME;
 
-    // Look up genre from game state if itemId is present
+    // Look up genre from item registry if itemId is present
     let genre: Genre | undefined;
     if (action.itemId != null) {
-      genre = this.findItemGenre(action.playerId, action.itemId);
+      genre = getItemGenre(action.itemId as ItemId);
     }
 
     return {
@@ -65,17 +66,6 @@ export class UiStateService {
       itemId: action.itemId,
       genre,
     };
-  }
-
-  private findItemGenre(_playerId: string, itemId: string): Genre | undefined {
-    const currentState = this.gameService.gameState();
-    if (!currentState) return undefined;
-
-    const allItems = [
-      ...currentState.player.items,
-      ...currentState.opponent.items,
-    ];
-    return allItems.find((item) => item.id === itemId)?.genre;
   }
 
   private capturePendingActions(): void {
@@ -162,8 +152,8 @@ export class UiStateService {
 
     this.soundService.playItemSound(event.itemId);
 
-    // Look up genre from game state or default to 'basic'
-    const genre = this.findItemGenre(event.playerId, event.itemId) ?? 'basic';
+    // Look up genre from item registry
+    const genre = getItemGenre(event.itemId);
     const lastPlayedItem: Item = { id: event.itemId, genre };
     this._lastPlayedItem.set(lastPlayedItem);
   }

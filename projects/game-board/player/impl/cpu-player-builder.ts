@@ -1,6 +1,6 @@
 import { FirstAvailableStrategy, Strategy } from '../../ai';
 import { Item, ItemId, Loadout } from '../../item';
-import { BEHAVIORS } from '../../item-library';
+import { BEHAVIORS, getItemGenre } from '../../item-library';
 import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
 
@@ -188,17 +188,21 @@ export class CpuPlayerBuilder {
       return validItemIds.map((id, i) => ({
         id,
         instanceId: `${this.id}-item-${i}`,
-        genre: 'basic' as const,
+        genre: getItemGenre(id),
       }));
     }
 
     // Fall back to random items
     const availableItemIds: ItemId[] = Object.keys(BEHAVIORS) as ItemId[];
-    return Array.from({ length: this.itemCount }, (_, i) => ({
-      id: availableItemIds[Math.floor(Math.random() * availableItemIds.length)],
-      instanceId: `${this.id}-item-${i}`,
-      genre: 'basic' as const,
-    }));
+    return Array.from({ length: this.itemCount }, (_, i) => {
+      const id =
+        availableItemIds[Math.floor(Math.random() * availableItemIds.length)];
+      return {
+        id,
+        instanceId: `${this.id}-item-${i}`,
+        genre: getItemGenre(id),
+      };
+    });
   }
 
   private filterValidItemIds(itemIds: ItemId[]): ItemId[] {

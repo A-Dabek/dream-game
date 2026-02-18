@@ -7,6 +7,7 @@
 import { Board as Board_2 } from '../board';
 import { Effect } from '../item';
 import { GameAction as GameAction_2 } from '../board';
+import { Genre as Genre_2 } from '../item';
 import { ItemId as ItemId_2 } from '../../item';
 import { ItemId as ItemId_3 } from '../item';
 import { Loadout as Loadout_2 } from '../item';
@@ -120,6 +121,9 @@ export interface GameState {
 
 // @public
 export type Genre = 'basic';
+
+// @public (undocumented)
+export function getItemGenre(itemId: ItemId_3): Genre_2;
 
 // @public
 export interface Item {

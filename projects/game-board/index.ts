@@ -24,3 +24,4 @@ export {
   type ItemId,
   type Loadout,
 } from './item/item.model';
+export { getItemGenre } from './item-library/item-registry';

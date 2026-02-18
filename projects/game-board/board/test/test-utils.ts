@@ -1,22 +1,23 @@
 import { Item, ItemId } from '../../item';
+import { getItemGenre } from '../../item-library';
 import { BoardLoadout } from '../board.model';
 
 /**
- * Creates a test item with the given ID and default genre 'basic'.
+ * Creates a test item with the given ID and its associated genre.
  */
 export function createTestItem(id: ItemId): Item {
-  return { id, genre: 'basic' };
+  return { id, genre: getItemGenre(id) };
 }
 
 /**
  * Input items can be either:
- * - ItemId[]: ['_blueprint_attack', '_blueprint_heal_5'] (simplified)
+ * - ItemId[]: ['_blueprint_attack', '_blueprint_heal_5'] (simplified, genre looked up from registry)
  * - Item[]: [{ id: '_blueprint_attack', genre: 'basic' }] (full objects)
  */
 export type TestItemInput = ItemId[] | Item[];
 
 /**
- * Converts an array of item IDs to full Item objects with genre 'basic'.
+ * Converts an array of item IDs to full Item objects with genre from registry.
  */
 function convertItemIdsToItems(itemIds: ItemId[]): Item[] {
   return itemIds.map((id) => createTestItem(id));
@@ -52,8 +53,8 @@ export interface MockPlayerOverrides {
 /**
  * Creates a mock player loadout for testing purposes.
  * Items can be specified as either:
- * - ItemId[]: ['_blueprint_attack', '_blueprint_heal_5'] (simplified, genre defaults to 'basic')
- * - Item[]: [{ id: '_blueprint_attack', genre: 'basic' }] (full objects, backward compatible)
+ * - ItemId[]: ['_blueprint_attack', '_blueprint_heal_5'] (simplified, genre determined by itemId)
+ * - Item[]: [{ id: '_blueprint_attack' }] (full objects, genre determined by itemId)
  *
  * @example
  * // Simple usage with item IDs
@@ -65,7 +66,7 @@ export interface MockPlayerOverrides {
  *
  * @example
  * // Backward compatible with full Item objects
- * createMockPlayer('p1', { items: [{ id: '_blueprint_attack', genre: 'basic' }] })
+ * createMockPlayer('p1', { items: [{ id: '_blueprint_attack' }] })
  */
 export function createMockPlayer(
   id: string,

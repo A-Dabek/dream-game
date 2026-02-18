@@ -1,4 +1,4 @@
-import { Board, ItemId } from '@dream/game-board';
+import { Board, ItemId, getItemGenre } from '@dream/game-board';
 import { BoardLoadout } from '../projects/game-board/board';
 
 /**
@@ -35,7 +35,7 @@ export class TestBoardBuilder {
       ...this.player1Config,
       health,
       speed,
-      items: items.map((id) => ({ id, genre: 'basic' })),
+      items: items.map((id) => ({ id, genre: getItemGenre(id) })),
     };
     return this;
   }
@@ -55,7 +55,7 @@ export class TestBoardBuilder {
       ...this.player2Config,
       health,
       speed,
-      items: items.map((id) => ({ id, genre: 'basic' })),
+      items: items.map((id) => ({ id, genre: getItemGenre(id) })),
     };
     return this;
   }

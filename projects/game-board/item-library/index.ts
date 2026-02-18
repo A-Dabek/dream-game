@@ -1,2 +1,7 @@
 export * from './impl';
-export { getItemBehavior, BEHAVIORS } from './item-registry';
+export {
+  getItemBehavior,
+  getItemGenre,
+  BEHAVIORS,
+  ITEM_GENRES,
+} from './item-registry';
