@@ -1,32 +1,26 @@
-import { StatusEffect } from '../../item/item.model';
-import { Listener } from '../engine.model';
-import { DefaultPassiveInstance, ReactiveRemovalListener } from './passive';
+import { StatusEffect } from '../../item';
+import { Listener } from '../engine.types';
+import {
+  DefaultPassiveInstance,
+  ReactiveRemovalListener,
+} from './instances/passive';
 import {
   DefaultStatusEffectInstance,
   FatigueListener,
   InvertListener,
   NegateListener,
-} from './status';
-import { AdvanceTurnListener } from './status/advance-turn-listener';
+  AdvanceTurnListener,
+} from './instances/status';
 
 export class ListenerFactory {
-  /**
-   * Creates a listener for an advance turn effect.
-   */
   static createAdvanceTurn(playerId: string): Listener {
     return new AdvanceTurnListener(`advance_turn-${playerId}`, playerId);
   }
 
-  /**
-   * Creates a listener for a fatigue effect.
-   */
   static createFatigue(playerId: string): Listener {
     return new FatigueListener(`fatigue-${playerId}`, playerId);
   }
 
-  /**
-   * Creates a listener for a passive effect tied to an item.
-   */
   static createPassive(
     instanceId: string,
     playerId: string,
@@ -39,9 +33,6 @@ export class ListenerFactory {
     return DefaultPassiveInstance.create(instanceId, playerId, effect);
   }
 
-  /**
-   * Creates a listener for a status effect applied to a player.
-   */
   static createStatusEffect(
     instanceId: string,
     playerId: string,

@@ -1,12 +1,8 @@
-import { StatusEffect } from '../../../item';
-import { EngineState, GameEvent } from '../../engine.model';
-import { EffectInstance } from '../effect-instance';
+import { StatusEffect } from '../../../../item';
+import { EngineState, GameEvent } from '../../../engine.types';
+import { EffectInstance } from '../../types';
 import { BaseStatusEffectInstance } from './base-status-effect-instance';
 
-/**
- * Specifically for status effects applied to the player (buffs/debuffs).
- * Removed when its duration expires.
- */
 export class DefaultStatusEffectInstance
   extends BaseStatusEffectInstance
   implements EffectInstance

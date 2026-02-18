@@ -1,9 +1,6 @@
-import { EngineState, GameEvent } from '../../engine.model';
+import { EngineState, GameEvent } from '../../../engine.types';
 import { BaseStatusEffectInstance } from './base-status-effect-instance';
 
-/**
- * Listener that negates (consumes) the triggering event.
- */
 export class NegateListener extends BaseStatusEffectInstance {
   protected handleReaction(
     event: GameEvent,

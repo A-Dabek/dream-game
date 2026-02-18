@@ -1,12 +1,8 @@
-import { StatusEffect } from '../../../item';
-import { EngineState, GameEvent } from '../../engine.model';
-import { EffectInstance } from '../effect-instance';
+import { StatusEffect } from '../../../../item';
+import { EngineState, GameEvent } from '../../../engine.types';
+import { EffectInstance } from '../../types';
 import { BasePassiveInstance } from './base-passive-instance';
 
-/**
- * Specifically for passive effects tied to an item.
- * Removed when the item is removed from the loadout.
- */
 export class DefaultPassiveInstance
   extends BasePassiveInstance
   implements EffectInstance

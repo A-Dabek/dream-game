@@ -1,10 +1,7 @@
-import { onTurnEnd, StatusEffect } from '../../../item';
-import { EngineState, GameEvent } from '../../engine.model';
+import { onTurnEnd, StatusEffect } from '../../../../item';
+import { EngineState, GameEvent } from '../../../engine.types';
 import { BaseStatusEffectInstance } from './base-status-effect-instance';
 
-/**
- * Listener that applies damage to the player at the end of their turn if they have no items.
- */
 export class AdvanceTurnListener extends BaseStatusEffectInstance {
   constructor(instanceId: string, playerId: string) {
     const effect: StatusEffect = {

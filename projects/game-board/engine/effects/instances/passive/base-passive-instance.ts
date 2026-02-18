@@ -1,9 +1,6 @@
-import { GameEvent } from '../../engine.model';
+import { GameEvent } from '../../../engine.types';
 import { BaseEffectInstance } from '../base-effect-instance';
 
-/**
- * Base class for passive effects tied to an item.
- */
 export abstract class BasePassiveInstance extends BaseEffectInstance {
   protected wrapResult(events: GameEvent[]): { event: GameEvent[] } {
     let finalEvents = events;

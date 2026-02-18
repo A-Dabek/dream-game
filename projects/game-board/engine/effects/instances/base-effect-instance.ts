@@ -1,12 +1,8 @@
-import { BEFORE_EFFECT, StatusEffect } from '../../item';
-import { EngineState, GameEvent, Listener } from '../engine.model';
-import { createCondition, ReactiveCondition } from './reactive-condition';
-import { createDuration, ReactiveDuration } from './reactive-duration';
+import { BEFORE_EFFECT, StatusEffect } from '../../../item';
+import { EngineState, GameEvent, Listener } from '../../engine.types';
+import { createCondition, ReactiveCondition } from '../conditions';
+import { createDuration, ReactiveDuration } from '../durations';
 
-/**
- * Base class for status effect listeners.
- * Handles condition checking, duration updates, and basic state management.
- */
 export abstract class BaseEffectInstance implements Listener {
   protected readonly condition: ReactiveCondition;
   protected readonly duration: ReactiveDuration;
@@ -22,10 +18,6 @@ export abstract class BaseEffectInstance implements Listener {
     this.duration = duration ?? createDuration(effect.duration);
   }
 
-  /**
-   * Main entry point for event processing.
-   * Handles the lifecycle of the listener (reaction, charges, duration, removal).
-   */
   handle(event: GameEvent, state: EngineState): { event: GameEvent[] } {
     const reaction = this.handleReaction(event, state);
     const resultEvents = reaction ?? [event];
@@ -39,28 +31,17 @@ export abstract class BaseEffectInstance implements Listener {
     return this.wrapResult(resultEvents);
   }
 
-  /**
-   * Subclasses should implement this to define their reaction logic.
-   * Return an array of events if the listener reacts, or null if it doesn't.
-   */
   protected abstract handleReaction(
     event: GameEvent,
     state: EngineState,
   ): GameEvent[] | null;
 
-  /**
-   * Wraps the result events with lifecycle-related events (like removal).
-   */
   protected abstract wrapResult(events: GameEvent[]): { event: GameEvent[] };
 
   protected shouldReact(event: GameEvent, state: EngineState): boolean {
     return this.condition.shouldReact(event, this.playerId, state);
   }
 
-  /**
-   * Default reaction logic that either replaces the event (for 'before_effect')
-   * or adds new effects to the queue.
-   */
   protected defaultHandleReaction(
     event: GameEvent,
     state: EngineState,
