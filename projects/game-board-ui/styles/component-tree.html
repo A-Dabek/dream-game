@@ -1,0 +1,210 @@
+<!--
+  PSEUDO-HTML COMPONENT TREE
+  ==========================
+
+  This file provides a visual representation of the component hierarchy and
+  CSS class structure for the game-board-ui project. Use this as a reference
+  when modifying styles without needing to read component templates.
+
+  Legend:
+  - [conditional] = class applied conditionally
+  - [host] = applied to component host element
+  - -->
+child component -->
+
+<!-- ============================================ -->
+<!-- GAME CONTAINER (Root)                       -->
+<!-- File: components/_game-container.scss       -->
+<!-- ============================================ -->
+<app-game-container>
+  <div class="screens-container">
+    <!-- ============================================ -->
+    <!-- PRE-GAME SCREEN                             -->
+    <!-- File: components/_screens.scss              -->
+    <!-- ============================================ -->
+    <app-pre-game-screen class="screen [conditional: slide-in | slide-out]">
+      <div class="container">
+        <section class="opponent-section">
+          <!-- PlayerHandComponent -->
+          <app-player-hand class="opponent-hand [conditional: show]">
+            <div class="item-wrapper [conditional: disabled]">
+              <!-- ItemDisplayComponent -->
+              <app-item-display class="[host: active]">
+                <!-- IconComponent -->
+                <app-icon></app-icon>
+                <div class="label"></div>
+              </app-item-display>
+            </div>
+          </app-player-hand>
+        </section>
+
+        <div class="headline vs [conditional: fade-out]"></div>
+
+        <section class="player-section">
+          <!-- PlayerHandComponent -->
+          <app-player-hand class="player-hand [conditional: show]">
+            <div class="item-wrapper [conditional: disabled]">
+              <!-- ItemDisplayComponent -->
+              <app-item-display class="[host: active]">
+                <app-icon></app-icon>
+                <div class="label"></div>
+              </app-item-display>
+            </div>
+          </app-player-hand>
+        </section>
+
+        <section class="actions">
+          <button class="screen-btn"></button>
+        </section>
+      </div>
+    </app-pre-game-screen>
+
+    <!-- ============================================ -->
+    <!-- BOARD UI (Main Game Screen)                 -->
+    <!-- File: components/_board-ui.scss             -->
+    <!-- ============================================ -->
+    <app-board-ui class="screen [conditional: slide-in | slide-out]">
+      <!-- Opponent Section -->
+      <div class="opponent-area [conditional: active]">
+        <!-- PlayerHandComponent -->
+        <app-player-hand>
+          <div class="item-wrapper [conditional: disabled]">
+            <!-- ItemDisplayComponent -->
+            <app-item-display class="[host: active]">
+              <app-icon></app-icon>
+              <div class="label"></div>
+            </app-item-display>
+          </div>
+        </app-player-hand>
+
+        <!-- HealthBarComponent -->
+        <app-health-bar>
+          <div class="center-content">
+            <div class="health-bar-container">
+              <div class="health-bar">
+                <div
+                  class="health-fill [conditional: player-health | opponent-health]"
+                ></div>
+                <span class="health-text"></span>
+              </div>
+            </div>
+          </div>
+        </app-health-bar>
+      </div>
+
+      <!-- Main Area -->
+      <div class="main-area">
+        <!-- TurnQueueComponent -->
+        <!-- File: components/_turn-queue.scss -->
+        <app-turn-queue>
+          <div
+            class="turn-item [conditional: player | opponent] [conditional: current] [conditional: turn-slide-out]"
+          >
+            <app-icon></app-icon>
+            <div class="skip-button">
+              <app-icon></app-icon>
+            </div>
+          </div>
+        </app-turn-queue>
+
+        <!-- Center Content -->
+        <div class="center-content">
+          <div class="last-played-wrapper">
+            <!-- ItemDisplayComponent (Last Played) -->
+            <app-item-display class="last-played-item [host: active]">
+              <app-icon></app-icon>
+              <div class="label"></div>
+            </app-item-display>
+
+            <!-- Placeholder (when no item played) -->
+            <div class="last-played-placeholder"></div>
+          </div>
+        </div>
+
+        <!-- ActionHistoryComponent -->
+        <!-- File: components/_action-history.scss -->
+        <app-action-history>
+          <div class="history-list">
+            <div
+              class="history-item [conditional: player | opponent] [conditional: history-slide-in]"
+            >
+              <app-icon></app-icon>
+            </div>
+          </div>
+        </app-action-history>
+      </div>
+
+      <!-- Player Section -->
+      <div class="player-area [conditional: active]">
+        <!-- HealthBarComponent -->
+        <app-health-bar>
+          <div class="center-content">
+            <div class="health-bar-container">
+              <div class="health-bar">
+                <div
+                  class="health-fill [conditional: player-health | opponent-health]"
+                ></div>
+                <span class="health-text"></span>
+              </div>
+            </div>
+          </div>
+        </app-health-bar>
+
+        <!-- PlayerHandComponent -->
+        <app-player-hand>
+          <div class="item-wrapper [conditional: disabled]">
+            <!-- ItemDisplayComponent -->
+            <app-item-display class="[host: active]">
+              <app-icon></app-icon>
+              <div class="label"></div>
+            </app-item-display>
+          </div>
+        </app-player-hand>
+      </div>
+
+      <!-- Game Over State (when applicable) -->
+      <div class="game-over">
+        <h2></h2>
+        <p></p>
+      </div>
+    </app-board-ui>
+
+    <!-- ============================================ -->
+    <!-- POST-GAME SCREEN                            -->
+    <!-- File: components/_screens.scss              -->
+    <!-- ============================================ -->
+    <app-post-game-screen class="screen [conditional: slide-in | slide-out]">
+      <div class="container">
+        <section class="opponent-section">
+          <div class="headline"></div>
+          <!-- PlayerHandComponent -->
+          <app-player-hand>
+            <div class="item-wrapper [conditional: disabled]">
+              <app-item-display class="[host: active]">
+                <app-icon></app-icon>
+                <div class="label"></div>
+              </app-item-display>
+            </div>
+          </app-player-hand>
+        </section>
+
+        <section class="player-section">
+          <div class="headline"></div>
+          <!-- PlayerHandComponent -->
+          <app-player-hand>
+            <div class="item-wrapper [conditional: disabled]">
+              <app-item-display class="[host: active]">
+                <app-icon></app-icon>
+                <div class="label"></div>
+              </app-item-display>
+            </div>
+          </app-player-hand>
+        </section>
+
+        <section class="actions">
+          <button class="screen-btn"></button>
+        </section>
+      </div>
+    </app-post-game-screen>
+  </div>
+</app-game-container>
