@@ -184,7 +184,7 @@ if [ "$DRY_RUN" = "true" ]; then
     echo "[DRY-RUN] Skipping git operations and deployment"
     echo "[DRY-RUN] Would execute:"
     echo "  - Git commit: $COMMIT_MSG"
-    echo "  - Merge $CURRENT_BRANCH into main"
+    echo "  - Merge $CURRENT_BRANCH into master"
     echo "  - Delete branch $CURRENT_BRANCH"
     echo "  - Firebase deploy"
     echo ""
@@ -199,11 +199,11 @@ git add -A
 git commit -m "$COMMIT_MSG"
 echo -e "${GREEN}[GIT] Commit created: $COMMIT_MSG${NC}"
 
-# Git Merge to main
-if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+# Git Merge to master
+if [ "$CURRENT_BRANCH" != "master" ]; then
     echo ""
-    echo "[GIT] Merging $CURRENT_BRANCH into main..."
-    git checkout main
+    echo "[GIT] Merging $CURRENT_BRANCH into master..."
+    git checkout master
     git merge "$CURRENT_BRANCH"
     echo -e "${GREEN}[GIT] Merge completed successfully${NC}"
 
@@ -213,7 +213,7 @@ if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
     git branch -d "$CURRENT_BRANCH"
     echo -e "${GREEN}[GIT] Branch deleted successfully${NC}"
 else
-    echo -e "${YELLOW}[GIT] Currently on main/master, skipping merge/branch deletion${NC}"
+    echo -e "${YELLOW}[GIT] Currently on master, skipping merge/branch deletion${NC}"
 fi
 
 # Firebase Deploy
