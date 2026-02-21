@@ -2,7 +2,7 @@
  * Represents the genre/type of an item, determining its icon color.
  * Currently only 'basic' is supported, but extensible for future genres.
  */
-export type Genre = 'basic';
+export type Genre = 'basic' | 'poison';
 
 /**
  * Represents the unique identifier for an item.

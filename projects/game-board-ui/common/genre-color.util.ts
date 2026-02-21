@@ -9,6 +9,7 @@ export function getGenreColor(genre: Genre | undefined): string {
 
   const colorMap: Record<Genre, string> = {
     basic: 'var(--genre-basic)',
+    poison: 'var(--genre-poison)',
   };
 
   return colorMap[genre] ?? 'currentColor';

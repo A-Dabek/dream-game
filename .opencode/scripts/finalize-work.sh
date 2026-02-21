@@ -1,14 +1,65 @@
 #!/bin/bash
 
 # finalize-work.sh - Complete work finalization workflow
-# Usage: ./finalize-work.sh [--dry-run]
+# Usage: ./finalize-work.sh [--dry-run] [--commit "message"] [--merge] [--delete-branch] [--deploy]
 
 set -e
 
 DRY_RUN=false
+COMMIT_MSG=""
+DO_COMMIT=false
+DO_MERGE=false
+DO_DELETE_BRANCH=false
+DO_DEPLOY=false
 
-if [ "$1" = "--dry-run" ]; then
-    DRY_RUN=true
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        --commit)
+            DO_COMMIT=true
+            COMMIT_MSG="$2"
+            shift 2
+            ;;
+        --merge)
+            DO_MERGE=true
+            shift
+            ;;
+        --delete-branch)
+            DO_DELETE_BRANCH=true
+            shift
+            ;;
+        --deploy)
+            DO_DEPLOY=true
+            shift
+            ;;
+        --help|-h)
+            echo "Usage: ./finalize-work.sh [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  --dry-run           Show commands without execution"
+            echo "  --commit MESSAGE    Create git commit with message"
+            echo "  --merge             Merge current branch into main"
+            echo "  --delete-branch     Delete branch after merge"
+            echo "  --deploy            Deploy to Firebase"
+            echo "  --help, -h          Show this help message"
+            echo ""
+            echo "Example:"
+            echo "  ./finalize-work.sh --commit 'Add new feature' --merge --delete-branch"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$DRY_RUN" = true ]; then
     echo "[DRY-RUN] Mode enabled - showing commands without execution"
 fi
 
@@ -49,20 +100,6 @@ run_step() {
         echo -e "${RED}[ERROR] Workflow stopped. Fix errors above.${NC}"
         exit 1
     fi
-}
-
-prompt_yes_no() {
-    local prompt=$1
-    local response
-
-    while true; do
-        read -p "$prompt (y/n): " response
-        case $response in
-            [Yy]* ) return 0;;
-            [Nn]* ) return 1;;
-            * ) echo "Please answer y or n.";;
-        esac
-    done
 }
 
 echo "========================================="
@@ -176,63 +213,70 @@ echo -e "${GREEN}ALL CHECKS PASSED!${NC}"
 echo "========================================="
 echo ""
 
-# Interactive prompts
+# Show what actions will be taken
 if [ "$DRY_RUN" = true ]; then
-    echo "[DRY-RUN] Would prompt for:"
-    echo "  - Git commit"
-    echo "  - Git merge to main"
-    echo "  - Delete branch"
-    echo "  - Firebase deploy"
+    echo "[DRY-RUN] Would execute:"
+    [ "$DO_COMMIT" = true ] && echo "  - Git commit: $COMMIT_MSG"
+    [ "$DO_MERGE" = true ] && echo "  - Merge $CURRENT_BRANCH into main"
+    [ "$DO_DELETE_BRANCH" = true ] && echo "  - Delete branch $CURRENT_BRANCH"
+    [ "$DO_DEPLOY" = true ] && echo "  - Firebase deploy"
     echo ""
     echo "[DRY-RUN] Complete!"
     exit 0
 fi
 
 # Git Commit
-echo ""
-if prompt_yes_no "Create git commit?"; then
-    read -p "Enter commit message: " commit_msg
-    if [ -n "$commit_msg" ]; then
+if [ "$DO_COMMIT" = true ]; then
+    if [ -n "$COMMIT_MSG" ]; then
+        echo ""
+        echo "[GIT] Creating commit..."
         git add -A
-        git commit -m "$commit_msg"
-        echo -e "${GREEN}[GIT] Commit created successfully${NC}"
+        git commit -m "$COMMIT_MSG"
+        echo -e "${GREEN}[GIT] Commit created: $COMMIT_MSG${NC}"
     else
         echo -e "${YELLOW}[GIT] No commit message provided, skipping${NC}"
     fi
 else
-    echo -e "${YELLOW}[GIT] Skipping commit${NC}"
+    echo -e "${YELLOW}[GIT] Skipping commit (--commit not specified)${NC}"
 fi
 
 # Git Merge to main
-if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
-    echo ""
-    if prompt_yes_no "Merge $CURRENT_BRANCH into main?"; then
+if [ "$DO_MERGE" = true ]; then
+    if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+        echo ""
+        echo "[GIT] Merging $CURRENT_BRANCH into main..."
         git checkout main
         git merge "$CURRENT_BRANCH"
         echo -e "${GREEN}[GIT] Merge completed successfully${NC}"
     else
-        echo -e "${YELLOW}[GIT] Skipping merge${NC}"
+        echo -e "${YELLOW}[GIT] Currently on main/master, skipping merge${NC}"
     fi
+else
+    echo -e "${YELLOW}[GIT] Skipping merge (--merge not specified)${NC}"
+fi
 
-    # Delete branch
-    echo ""
-    if prompt_yes_no "Delete branch $CURRENT_BRANCH?"; then
+# Delete branch
+if [ "$DO_DELETE_BRANCH" = true ]; then
+    if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+        echo ""
+        echo "[GIT] Deleting branch $CURRENT_BRANCH..."
         git branch -d "$CURRENT_BRANCH"
         echo -e "${GREEN}[GIT] Branch deleted successfully${NC}"
     else
-        echo -e "${YELLOW}[GIT] Keeping branch $CURRENT_BRANCH${NC}"
+        echo -e "${YELLOW}[GIT] Cannot delete main/master branch${NC}"
     fi
 else
-    echo -e "${YELLOW}[GIT] Currently on main/master, skipping merge/branch deletion${NC}"
+    echo -e "${YELLOW}[GIT] Skipping branch deletion (--delete-branch not specified)${NC}"
 fi
 
 # Firebase Deploy
-echo ""
-if prompt_yes_no "Deploy to Firebase?"; then
+if [ "$DO_DEPLOY" = true ]; then
+    echo ""
+    echo "[FIREBASE] Deploying..."
     npx firebase deploy
     echo -e "${GREEN}[FIREBASE] Deploy completed successfully${NC}"
 else
-    echo -e "${YELLOW}[FIREBASE] Skipping deployment${NC}"
+    echo -e "${YELLOW}[FIREBASE] Skipping deployment (--deploy not specified)${NC}"
 fi
 
 echo ""

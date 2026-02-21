@@ -120,7 +120,7 @@ export interface GameState {
 }
 
 // @public
-export type Genre = 'basic';
+export type Genre = 'basic' | 'poison';
 
 // @public (undocumented)
 export function getItemGenre(itemId: ItemId_3): Genre_2;
