@@ -1,5 +1,5 @@
 import { beforeEffect, onTurnEnd } from './conditions';
-import { permanent } from './durations';
+import { charges, permanent } from './durations';
 import { Condition, Duration, Effect, StatusEffect } from './item.model';
 
 /**
@@ -45,6 +45,19 @@ export function passiveAttack(
     }),
     target,
   );
+}
+
+/**
+ * Creates a poison status effect that deals 1 damage at the end of each turn.
+ * The effect lasts for the specified number of charges.
+ */
+export function poison(chargeCount: number): StatusEffect {
+  return statusEffect({
+    type: 'poison',
+    condition: onTurnEnd(),
+    action: [attack(1, 'self')],
+    duration: charges(chargeCount),
+  });
 }
 
 /**

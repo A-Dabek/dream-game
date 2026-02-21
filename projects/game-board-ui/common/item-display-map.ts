@@ -73,6 +73,11 @@ const ITEM_DISPLAY_MAP: Record<ItemId, ItemDisplayMetadata> = {
     iconName: 'wingfoot',
     description: 'Increase your speed for faster turns.',
   },
+  gas_grenade: {
+    iconName: 'stun-grenade',
+    description:
+      'Release poison gas that affects both players, dealing 1 damage at the end of each turn for 10 turns.',
+  },
 };
 
 /**

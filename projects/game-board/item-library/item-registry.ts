@@ -16,6 +16,7 @@ import {
   StickingPlasterBehaviour,
   StickyBootBehaviour,
   WingfootBehaviour,
+  GasGrenadeBehaviour,
 } from './impl';
 
 export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
@@ -35,6 +36,7 @@ export const BEHAVIORS: Record<ItemId, new () => ItemBehavior> = {
   sticking_plaster: StickingPlasterBehaviour,
   sticky_boot: StickyBootBehaviour,
   wingfoot: WingfootBehaviour,
+  gas_grenade: GasGrenadeBehaviour,
 };
 
 export const ITEM_GENRES: Record<ItemId, Genre> = {
@@ -54,6 +56,7 @@ export const ITEM_GENRES: Record<ItemId, Genre> = {
   sticking_plaster: 'basic',
   sticky_boot: 'basic',
   wingfoot: 'basic',
+  gas_grenade: 'poison',
 };
 
 export function getItemBehavior(itemId: ItemId): ItemBehavior {

@@ -14,3 +14,4 @@ export { PunchBehaviour } from './punch.behaviour';
 export { StickingPlasterBehaviour } from './sticking_plaster.behaviour';
 export { StickyBootBehaviour } from './sticky_boot.behaviour';
 export { WingfootBehaviour } from './wingfoot.behaviour';
+export { GasGrenadeBehaviour } from './gas_grenade.behaviour';

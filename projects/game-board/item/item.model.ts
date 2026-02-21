@@ -23,7 +23,8 @@ export type ItemId =
   | 'sticking_plaster'
   | 'hand'
   | 'sticky_boot'
-  | 'wingfoot';
+  | 'wingfoot'
+  | 'gas_grenade';
 
 /**
  * Represents the value of an effect, which can be a number (damage/heal amount),

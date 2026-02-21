@@ -136,7 +136,7 @@ export interface Item {
 }
 
 // @public
-export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot';
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade';
 
 // @public
 export interface Loadout {

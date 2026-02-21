@@ -17,6 +17,7 @@ export {
   attack,
   heal,
   passiveAttack,
+  poison,
   removeItem,
   invert,
   negate,
