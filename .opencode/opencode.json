@@ -8,46 +8,69 @@
     }
   },
   "agent": {
-    "orchestrator": {
-      "description": "{file:./agents/orchestrator.md}",
+    "game-planner": {
+      "description": "{file:./agents/planner.md}",
+      "color": "#FF0000",
       "mode": "primary",
-      "temperature": 0.2,
-      "steps": 20,
-      "tools": {
-        "write": true,
-        "edit": true,
-        "bash": true,
-        "read": true,
-        "glob": true,
-        "task": true,
-        "angular-cli": true
+      "temperature": 0.1,
+      "steps": 40,
+      "task": {
+        "developer": "deny",
+        "reviewer": "deny"
       },
       "permission": {
-        "task": {
-          "reviewer": "allow"
+        "edit": {
+          "*": "deny",
+          "*/.opencode/specifications/*": "allow"
+        },
+        "write": {
+          "*": "deny",
+          "*/.opencode/specifications/*": "allow"
         }
       }
+    },
+    "manager": {
+      "description": "{file:./agents/manager.md}",
+      "color": "#00FF00",
+      "mode": "primary",
+      "temperature": 0.1,
+      "steps": 40,
+      "task": {
+        "developer": "allow",
+        "reviewer": "allow"
+      }
+    },
+    "specialist": {
+      "description": "{file:./agents/specialist.md}",
+      "mode": "all",
+      "temperature": 0.1,
+      "steps": 40
+    },
+    "developer": {
+      "description": "{file:./agents/developer.md}",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "steps": 40
+    },
+    "refactoring": {
+      "description": "{file:./agents/refactorin.md}",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "steps": 40
     },
     "reviewer": {
       "description": "{file:./agents/reviewer.md}",
       "mode": "subagent",
       "temperature": 0.1,
       "steps": 40,
-      "tools": {
-        "write": true,
-        "edit": true,
-        "bash": true,
-        "read": true,
-        "angular-cli": true
-      },
       "permission": {
         "edit": {
           "*": "deny",
-          "REVIEW_FINDINGS.md": "allow"
+          "*/.opencode/specifications/*": "allow"
         },
         "write": {
           "*": "deny",
-          "REVIEW_FINDINGS.md": "allow"
+          "*/.opencode/specifications/*": "allow"
         }
       }
     }

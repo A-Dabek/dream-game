@@ -42,7 +42,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-REVIEW_FINDINGS.md
 .opencode/node_modules
 .opencode/specifications
 .firebase
