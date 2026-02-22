@@ -16,6 +16,10 @@ description: Use this skill when adding a new item to the game
 
 Create a class implementing `ItemBehavior` with a `whenPlayed()` method returning effects.
 
+**Note**: To apply an effect to both players (area-effect), return two separate `addStatusEffect` calls:
+- `addStatusEffect(effect, 'self')` - affects the player who played
+- `addStatusEffect(effect, 'enemy')` - affects the opponent
+
 ## 2. Add Item ID
 
 **Where:** `projects/game-board/item/item.model.ts`

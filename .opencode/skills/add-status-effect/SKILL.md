@@ -52,11 +52,13 @@ export class YourItemBehaviour implements ItemBehavior {
 
 - **`condition`**: When the effect triggers (e.g., `{ type: 'after_effect', value: 'damage' }`, `onTurnEnd()`)
 - **`action`**: What happens when triggered (e.g., `[modifySpeed(-1, 'enemy')]`, `[attack(5)]`, `[heal(3)]`)
+  - For self-damage, use `attack(value, 'self')` (default target is 'enemy')
 - **`duration`**: How long the effect lasts:
   - `charges(n)` - lasts for n triggers
   - `turns(n)` - lasts for n turns
   - `permanent()` - lasts until manually removed
 - **`target`**: Who receives the status effect ('self' or 'enemy')
+- **`type`** (optional): Identifies the effect type (e.g., `type: 'poison'`) for interactions with items like antidotes or gas masks
 
 ## 2. Create Integration Test
 
