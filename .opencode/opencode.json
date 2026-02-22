@@ -53,7 +53,7 @@
       "steps": 40
     },
     "refactoring": {
-      "description": "{file:./agents/refactorin.md}",
+      "description": "{file:./agents/refactoring.md}",
       "mode": "subagent",
       "temperature": 0.1,
       "steps": 40
