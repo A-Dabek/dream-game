@@ -8,12 +8,12 @@
     }
   },
   "agent": {
-    "game-planner": {
+    "planner": {
       "description": "{file:./agents/planner.md}",
       "color": "#FF0000",
       "mode": "primary",
       "temperature": 0.1,
-      "steps": 40,
+      "steps": 80,
       "task": {
         "developer": "deny",
         "reviewer": "deny"
@@ -21,11 +21,13 @@
       "permission": {
         "edit": {
           "*": "deny",
-          "*/.opencode/specifications/*": "allow"
+          "*\\specifications\\*": "allow",
+          "*/specifications/*": "allow"
         },
         "write": {
           "*": "deny",
-          "*/.opencode/specifications/*": "allow"
+          "*\\specifications\\*": "allow",
+          "*/specifications/*": "allow"
         }
       }
     },
@@ -43,6 +45,7 @@
     "specialist": {
       "description": "{file:./agents/specialist.md}",
       "mode": "all",
+      "color": "#0000FF",
       "temperature": 0.1,
       "steps": 40
     },
@@ -66,11 +69,13 @@
       "permission": {
         "edit": {
           "*": "deny",
-          "*/.opencode/specifications/*": "allow"
+          "*\\specifications\\*": "allow",
+          "*/specifications/*": "allow"
         },
         "write": {
           "*": "deny",
-          "*/.opencode/specifications/*": "allow"
+          "*\\specifications\\*": "allow",
+          "*/specifications/*": "allow"
         }
       }
     }
