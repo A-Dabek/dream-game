@@ -27,6 +27,26 @@ export type ItemId =
   | 'gas_grenade';
 
 /**
+ * Represents the unique identifier for a status effect type.
+ * Analogous to ItemId, but for status effects.
+ *
+ * Core types are predefined identifiers for standard status effects.
+ * Custom types can be any ItemId value, but to avoid collisions with core types,
+ * custom item IDs used as status effect types should use a distinct naming
+ * convention (e.g., start with '_blueprint_' or other prefix) and must not
+ * match any core type string.
+ */
+export type StatusEffectType =
+  | 'poison'
+  | 'invert'
+  | 'negate'
+  | 'reactive_removal'
+  | 'advance_turn'
+  | 'fatigue'
+  | 'periodic_attack'
+  | ItemId; // Allow item IDs for custom passive effects
+
+/**
  * Represents the value of an effect, which can be a number (damage/heal amount),
  * string (item ID or effect type), or a StatusEffect configuration.
  */
@@ -67,7 +87,7 @@ export interface Duration {
  * Represents a status effect that reacts to game conditions.
  */
 export interface StatusEffect {
-  readonly type?: string;
+  readonly type: StatusEffectType;
   readonly condition: Condition;
   readonly action: Effect[];
   readonly duration?: Duration;

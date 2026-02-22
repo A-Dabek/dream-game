@@ -14,6 +14,7 @@ export class TripleThreatBehaviour implements ItemBehavior {
       attack(2),
       addStatusEffect(
         statusEffect({
+          type: '_blueprint_triple_threat',
           condition: onTurnEnd(),
           action: [attack(3)],
           duration: { type: 'permanent' },
@@ -25,6 +26,7 @@ export class TripleThreatBehaviour implements ItemBehavior {
   passiveEffects(): PassiveEffect[] {
     return [
       statusEffect({
+        type: '_blueprint_triple_threat',
         condition: onTurnEnd(),
         action: [attack(1)],
         duration: { type: 'permanent' },

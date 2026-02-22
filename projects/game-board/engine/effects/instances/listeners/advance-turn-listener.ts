@@ -5,6 +5,7 @@ import { BaseEffectInstance } from '../base-effect-instance';
 export class AdvanceTurnListener extends BaseEffectInstance {
   constructor(instanceId: string, playerId: string) {
     const effect: StatusEffect = {
+      type: 'advance_turn',
       condition: onTurnEnd(),
       action: [{ type: 'advance_turn', value: 0, target: 'self' }],
       duration: { type: 'permanent' },

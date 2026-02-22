@@ -1,6 +1,12 @@
 import { beforeEffect, onTurnEnd } from './conditions';
 import { charges, permanent } from './durations';
-import { Condition, Duration, Effect, StatusEffect } from './item.model';
+import {
+  Condition,
+  Duration,
+  Effect,
+  StatusEffect,
+  StatusEffectType,
+} from './item.model';
 
 /**
  * Creates a damage effect.
@@ -36,9 +42,11 @@ export function heal(
 export function passiveAttack(
   value: number | string,
   target: 'self' | 'enemy' = 'self',
+  type: StatusEffectType = 'periodic_attack',
 ): Effect {
   return addStatusEffect(
     statusEffect({
+      type,
       condition: onTurnEnd(),
       action: [attack(value)],
       duration: permanent(),
@@ -102,10 +110,10 @@ export function negate(targetType: string, duration?: Duration): StatusEffect {
  * Creates a status effect.
  */
 export function statusEffect(config: {
+  type: StatusEffectType;
   condition: Condition;
   action: Effect[];
   duration?: Duration;
-  type?: string;
 }): StatusEffect {
   return { ...config };
 }

@@ -12,7 +12,8 @@
       "description": "{file:./agents/planner.md}",
       "color": "#FF0000",
       "mode": "primary",
-      "temperature": 0.1,
+      "temperature": 1.0,
+      "top_p": 0.95,
       "steps": 80,
       "task": {
         "developer": "deny",
@@ -35,7 +36,8 @@
       "description": "{file:./agents/manager.md}",
       "color": "#00FF00",
       "mode": "primary",
-      "temperature": 0.1,
+      "temperature": 1.0,
+      "top_p": 0.95,
       "steps": 40,
       "task": {
         "developer": "allow",
@@ -46,25 +48,29 @@
       "description": "{file:./agents/specialist.md}",
       "mode": "all",
       "color": "#0000FF",
-      "temperature": 0.1,
+      "temperature": 1.0,
+      "top_p": 0.95,
       "steps": 40
     },
     "developer": {
       "description": "{file:./agents/developer.md}",
       "mode": "subagent",
-      "temperature": 0.1,
+      "temperature": 1.0,
+      "top_p": 0.95,
       "steps": 40
     },
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",
       "mode": "subagent",
-      "temperature": 0.1,
+      "temperature": 1.0,
+      "top_p": 0.95,
       "steps": 40
     },
     "reviewer": {
       "description": "{file:./agents/reviewer.md}",
       "mode": "subagent",
-      "temperature": 0.1,
+      "temperature": 1.0,
+      "top_p": 0.95,
       "steps": 40,
       "permission": {
         "edit": {

@@ -5,6 +5,7 @@ import { BaseEffectInstance } from '../base-effect-instance';
 export class FatigueListener extends BaseEffectInstance {
   constructor(instanceId: string, playerId: string) {
     const effect: StatusEffect = {
+      type: 'fatigue',
       condition: and(onTurnEnd(), hasNoItems()),
       action: [{ type: 'damage', value: 1, target: 'self' }],
       duration: { type: 'permanent' },
