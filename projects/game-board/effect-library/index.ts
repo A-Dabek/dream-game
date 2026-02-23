@@ -1,3 +1,2 @@
-export * from './effect-ids';
-export * from './active-effects';
-export * from './status-effects';
+export { ActiveEffectLibrary } from './active-effects';
+export { StatusEffectLibrary } from './status-effects';

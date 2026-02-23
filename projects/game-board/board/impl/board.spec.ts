@@ -163,15 +163,6 @@ describe('Board', () => {
   });
 
   describe('simulation (cloning)', () => {
-    let board: Board;
-
-    beforeEach(() => {
-      board = new Board(
-        createMockPlayer('player1'),
-        createMockPlayer('player2'),
-      );
-    });
-
     it('should allow exploring future scenarios using clones without affecting original', () => {
       const boardInstance = new Board(
         createMockPlayer('player1', { speed: 100 }),
