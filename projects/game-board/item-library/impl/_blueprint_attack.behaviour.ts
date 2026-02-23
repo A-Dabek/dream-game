@@ -1,13 +1,8 @@
-import { attack, Effect, ItemBehavior } from '../../item';
+import { Effect, ItemBehavior } from '../../item';
+import { ActiveEffectLibrary } from '../../effect-library';
 
-/**
- * Behavior for the _blueprint_attack item.
- */
 export class BlueprintAttackBehaviour implements ItemBehavior {
-  /**
-   * Returns a single damage effect when the item is played.
-   */
   whenPlayed(): Effect[] {
-    return [attack(10)];
+    return [ActiveEffectLibrary.attack(10)];
   }
 }

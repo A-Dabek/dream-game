@@ -46,7 +46,7 @@
     },
     "specialist": {
       "description": "{file:./agents/specialist.md}",
-      "mode": "all",
+      "mode": "primary",
       "color": "#0000FF",
       "temperature": 1.0,
       "top_p": 0.95,

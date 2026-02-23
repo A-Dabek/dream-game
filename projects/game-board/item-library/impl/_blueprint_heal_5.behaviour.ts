@@ -1,11 +1,8 @@
-import { Effect, heal, ItemBehavior } from '../../item';
+import { Effect, ItemBehavior } from '../../item';
+import { ActiveEffectLibrary } from '../../effect-library';
 
-/**
- * Behavior for the _blueprint_heal_5 item.
- * When played, it heals 5 health to the default target (self).
- */
 export class BlueprintHeal5Behaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
-    return [heal(5)];
+    return [ActiveEffectLibrary.heal(5)];
   }
 }

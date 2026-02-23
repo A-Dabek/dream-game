@@ -1,4 +1,5 @@
-import { Effect, ItemId, Loadout, removeItem } from '../item';
+import { Effect, ItemId, Loadout } from '../item';
+import { ActiveEffectLibrary } from '../effect-library';
 import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
 import { ListenerFactory } from './effects';
@@ -67,7 +68,7 @@ export class Engine {
     this.log({ type: 'event', event: onPlayEvent } as LogEntry);
 
     const effects: Effect[] = [
-      removeItem(instanceId),
+      ActiveEffectLibrary.remove_item(instanceId),
       ...behavior.whenPlayed(),
     ];
 

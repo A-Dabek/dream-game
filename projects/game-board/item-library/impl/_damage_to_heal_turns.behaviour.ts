@@ -1,17 +1,12 @@
-import {
-  addStatusEffect,
-  Effect,
-  invert,
-  ItemBehavior,
-  turns,
-} from '../../item';
+import { Effect, ItemBehavior, turns } from '../../item';
+import { ActiveEffectLibrary, StatusEffectLibrary } from '../../effect-library';
 
-/**
- * Behavior for the _blueprint_damage_to_heal_turns item.
- * When played, it adds a statusEffect effect that converts all incoming damage into healing for 2 turns.
- */
 export class BlueprintDamageToHealTurnsBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
-    return [addStatusEffect(invert('damage', turns(2)))];
+    return [
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.invert('damage', turns(2)),
+      ),
+    ];
   }
 }

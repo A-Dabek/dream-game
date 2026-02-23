@@ -1,14 +1,9 @@
-import { BASE_HEAL, Effect, heal, ItemBehavior } from '../../item';
+import { Effect, ItemBehavior } from '../../item';
+import { ActiveEffectLibrary } from '../../effect-library';
+import { BASE_HEAL } from '../../item';
 
-/**
- * Behavior for the sticking_plaster item.
- * Heals the player for the calculated BASE_HEAL amount.
- */
 export class StickingPlasterBehaviour implements ItemBehavior {
-  /**
-   * Returns a single healing effect equal to BASE_HEAL when the item is played.
-   */
   whenPlayed(): Effect[] {
-    return [heal(BASE_HEAL)];
+    return [ActiveEffectLibrary.heal(BASE_HEAL)];
   }
 }

@@ -1,17 +1,12 @@
-import {
-  addStatusEffect,
-  charges,
-  Effect,
-  invert,
-  ItemBehavior,
-} from '../../item';
+import { Effect, ItemBehavior, charges } from '../../item';
+import { ActiveEffectLibrary, StatusEffectLibrary } from '../../effect-library';
 
-/**
- * Behavior for the _blueprint_damage_to_heal_charges item.
- * When played, it adds a statusEffect effect that converts the next 2 instances of damage into healing.
- */
 export class BlueprintDamageToHealChargesBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
-    return [addStatusEffect(invert('damage', charges(2)))];
+    return [
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.invert('damage', charges(2)),
+      ),
+    ];
   }
 }

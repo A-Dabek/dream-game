@@ -1,29 +1,14 @@
-import {
-  afterEffect,
-  Effect,
-  ItemBehavior,
-  PassiveEffect,
-  statusEffect,
-} from '../../item';
+import { Effect, ItemBehavior, afterEffect, PassiveEffect } from '../../item';
+import { StatusEffectLibrary } from '../../effect-library';
 
-/**
- * Behavior for the _blueprint_reactive_removal item.
- * This item does nothing when played, but it reacts to its owner being damaged while in the loadout.
- */
 export class BlueprintReactiveRemovalBehaviour implements ItemBehavior {
-  /**
-   * Returns no effects when played.
-   */
   whenPlayed(): Effect[] {
     return [];
   }
 
-  /**
-   * Returns passive effects that are active while the item is in the loadout.
-   */
   passiveEffects(): PassiveEffect[] {
     return [
-      statusEffect({
+      StatusEffectLibrary.status_effect({
         type: 'reactive_removal',
         condition: afterEffect('damage'),
         action: [],

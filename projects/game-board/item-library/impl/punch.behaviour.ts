@@ -1,14 +1,9 @@
-import { attack, Effect, GAME_CONFIG, ItemBehavior } from '../../item';
+import { Effect, ItemBehavior } from '../../item';
+import { ActiveEffectLibrary } from '../../effect-library';
+import { GAME_CONFIG } from '../../item';
 
-/**
- * Behavior for the punch item.
- * Deals baseline damage to the enemy.
- */
 export class PunchBehaviour implements ItemBehavior {
-  /**
-   * Returns a single damage effect equal to BASE_ATTACK when the item is played.
-   */
   whenPlayed(): Effect[] {
-    return [attack(GAME_CONFIG.BASE_ATTACK)];
+    return [ActiveEffectLibrary.attack(GAME_CONFIG.BASE_ATTACK)];
   }
 }

@@ -12,6 +12,7 @@ You should follow the best engineering practices:
 - OCP principle: keep code open for extension and closed for modification
 - self-documenting code: add comments when they are necessary to explain WHY, NEVER WHAT or HOW
 - black-box testing: test the behavior of the code without knowing its internal implementation
+- encapsulation: hide implementation details from the rest of the code, export only the API
 
 To understand the project, use the relevant SKILLS and read references:
 - `projects/game-board-ui/COMPONENTS.md` to understand UI components
