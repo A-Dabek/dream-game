@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Board } from '../impl/board';
-import { createMockPlayer } from './test-utils';
+import { createMockPlayer, passUntilTurn } from './test-utils';
 
 describe('Negate Damage Integration Tests', () => {
   it('should negate one instance of damage', () => {
@@ -44,9 +44,7 @@ describe('Negate Damage Integration Tests', () => {
     board.playItem('_blueprint_negate_damage', 'p1');
 
     // pass until it's p2's turn
-    while ((board.currentPlayerId as string) !== 'p2') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p2');
 
     // p2 plays status attack
     board.playItem('_blueprint_passive_attack', 'p2');
@@ -56,9 +54,7 @@ describe('Negate Damage Integration Tests', () => {
 
     // pass until p2's next turn to see damage applied (negate is gone)
     board.pass(board.currentPlayerId);
-    while ((board.currentPlayerId as string) !== 'p2') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p2');
     board.pass('p2');
 
     expect(board.gameState.player.health).toBe(95);
@@ -76,22 +72,16 @@ describe('Negate Damage Integration Tests', () => {
     const board = new Board(p1, p2);
 
     // 1. p2 plays status attack (older listener)
-    while ((board.currentPlayerId as string) !== 'p2') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p2');
     board.playItem('_blueprint_passive_attack', 'p2');
     expect(board.gameState.player.health).toBe(95);
 
     // 2. p1 plays negate (newer listener)
-    while ((board.currentPlayerId as string) !== 'p1') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p1');
     board.playItem('_blueprint_negate_damage', 'p1');
 
     // 3. p2 passes.
-    while ((board.currentPlayerId as string) !== 'p2') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p2');
     board.pass('p2');
 
     // status attack (older) triggers and its damage is NOT seen by negate (newer).
@@ -110,26 +100,22 @@ describe('Negate Damage Integration Tests', () => {
     const board = new Board(p1, p2);
 
     // 1. Setup p2's status attack (Older)
-    while ((board.currentPlayerId as string) !== 'p2')
-      board.pass(board.currentPlayerId);
+    passUntilTurn(board, 'p2');
     board.playItem('_blueprint_passive_attack', 'p2');
     expect(board.gameState.player.health).toBe(95);
 
     // 2. Setup p1's negate (Newer)
-    while ((board.currentPlayerId as string) !== 'p1')
-      board.pass(board.currentPlayerId);
+    passUntilTurn(board, 'p1');
     board.playItem('_blueprint_negate_damage', 'p1');
 
     // 3. End p2's turn again. Passive attack (Older) triggers.
-    while ((board.currentPlayerId as string) !== 'p2')
-      board.pass(board.currentPlayerId);
+    passUntilTurn(board, 'p2');
     board.pass('p2');
     // Damage should be applied because negate is newer.
     expect(board.gameState.player.health).toBe(90);
 
     // 4. Verify negate is STILL active by using an active attack from p2.
-    while ((board.currentPlayerId as string) !== 'p2')
-      board.pass(board.currentPlayerId);
+    passUntilTurn(board, 'p2');
     board.playItem('_blueprint_attack', 'p2');
     // The active attack is negated (90 -> 90),
     // but p2's end-of-turn status attack still triggers (90 -> 85).

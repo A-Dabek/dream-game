@@ -87,3 +87,35 @@ export function createMockPlayer(
     items,
   };
 }
+
+const DEFAULT_MAX_ITERATIONS = 100;
+
+interface TurnBasedBoard {
+  currentPlayerId: string;
+  pass(playerId: string): void;
+}
+
+function waitForTurn(
+  board: TurnBasedBoard,
+  targetPlayerId: string,
+  maxIterations: number = DEFAULT_MAX_ITERATIONS,
+): void {
+  let iterations = 0;
+  while (board.currentPlayerId !== targetPlayerId) {
+    if (iterations >= maxIterations) {
+      throw new Error(
+        `Timeout: waited ${maxIterations} iterations for player ${targetPlayerId}, got ${board.currentPlayerId}`,
+      );
+    }
+    board.pass(board.currentPlayerId);
+    iterations++;
+  }
+}
+
+export function passUntilTurn(
+  board: TurnBasedBoard,
+  targetPlayerId: string,
+  maxIterations?: number,
+): void {
+  waitForTurn(board, targetPlayerId, maxIterations);
+}

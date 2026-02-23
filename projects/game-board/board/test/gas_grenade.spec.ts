@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Board } from '../impl/board';
-import { createMockPlayer } from './test-utils';
+import { createMockPlayer, passUntilTurn } from './test-utils';
 
 describe('gas_grenade Integration Test', () => {
   it('should apply poison to both players when played', () => {
@@ -45,17 +45,13 @@ describe('gas_grenade Integration Test', () => {
     expect(board.opponentHealth).toBe(99);
 
     // Wait until it's p1's turn again and pass
-    while (board.currentPlayerId !== 'p1') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p1');
     board.pass('p1');
     // p1 takes another 1 poison damage
     expect(board.playerHealth).toBe(98);
 
     // Wait until it's p2's turn again and pass
-    while ((board.currentPlayerId as string) !== 'p2') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p2');
     board.pass('p2');
     // p2 takes another 1 poison damage
     expect(board.opponentHealth).toBe(98);
@@ -80,7 +76,9 @@ describe('gas_grenade Integration Test', () => {
     let p2Damage = 0;
 
     // Continue until each player has had 10 turns
-    while (p1Damage < 10 || p2Damage < 10) {
+    let iterations = 0;
+    const maxIterations = 50;
+    while ((p1Damage < 10 || p2Damage < 10) && iterations < maxIterations) {
       const currentPlayer = board.currentPlayerId;
       board.pass(currentPlayer);
       if (currentPlayer === 'p1') {
@@ -88,6 +86,12 @@ describe('gas_grenade Integration Test', () => {
       } else {
         p2Damage++;
       }
+      iterations++;
+    }
+    if (iterations >= maxIterations) {
+      throw new Error(
+        `Timeout: exceeded ${maxIterations} iterations in gas_grenade test`,
+      );
     }
 
     // After 10 turns each, both players should have taken 10 damage total
@@ -122,17 +126,12 @@ describe('gas_grenade Integration Test', () => {
     // Play first gas_grenade - p1 takes 1 damage at end of turn
     board.playItem('gas_grenade', 'p1');
     expect(board.playerHealth).toBe(99);
-    const p2HealthAfterFirstGrenade = board.opponentHealth; // p2 hasn't had a turn yet
 
     // Wait until it's p1's turn again
     // Note: p2 will take damage during this wait
-    let p2TurnCount = 0;
-    while (board.currentPlayerId !== 'p1') {
-      board.pass(board.currentPlayerId);
-      if (board.opponentHealth < 100 - p2TurnCount) {
-        p2TurnCount++;
-      }
-    }
+    const p2HealthBefore = board.opponentHealth;
+    passUntilTurn(board, 'p1');
+    const p2TurnsTaken = p2HealthBefore - board.opponentHealth;
 
     // Play second gas_grenade
     board.playItem('gas_grenade', 'p1');
@@ -140,21 +139,17 @@ describe('gas_grenade Integration Test', () => {
     expect(board.playerHealth).toBe(97);
 
     // Verify p2 took damage from first poison during wait
-    expect(board.opponentHealth).toBe(p2HealthAfterFirstGrenade - p2TurnCount);
+    expect(board.opponentHealth).toBe(p2HealthBefore - p2TurnsTaken);
 
     // Wait until it's p2's turn and pass
-    while ((board.currentPlayerId as string) !== 'p2') {
-      board.pass(board.currentPlayerId);
-    }
-    const p2HealthBefore = board.opponentHealth;
+    passUntilTurn(board, 'p2');
+    const p2HealthAfter = board.opponentHealth;
     board.pass('p2');
     // p2 takes 2 damage (1 from each poison stack)
-    expect(board.opponentHealth).toBe(p2HealthBefore - 2);
+    expect(board.opponentHealth).toBe(p2HealthAfter - 2);
 
     // Wait until it's p1's turn again and pass
-    while (board.currentPlayerId !== 'p1') {
-      board.pass(board.currentPlayerId);
-    }
+    passUntilTurn(board, 'p1');
     const p1HealthBefore = board.playerHealth;
     board.pass('p1');
     // p1 takes another 2 damage

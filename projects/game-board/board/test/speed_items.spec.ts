@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { GAME_CONFIG, ItemId } from '../../item';
 import { Board } from '../impl/board';
-import { createMockPlayer, MockPlayerOverrides } from './test-utils';
+import {
+  createMockPlayer,
+  MockPlayerOverrides,
+  passUntilTurn,
+} from './test-utils';
 
 /**
  * Creates a board with two players for testing.
@@ -125,9 +129,7 @@ describe('wingfoot Integration Test', () => {
 
     // p2 goes first (higher speed), so p1 needs to wait for their turn
     // Pass until it's p1's turn
-    while (board.gameState.turnInfo.currentPlayerId !== 'p1') {
-      board.pass(board.gameState.turnInfo.currentPlayerId);
-    }
+    passUntilTurn(board, 'p1');
 
     // Record turn queue before playing wingfoot
     const queueBefore = [...board.gameState.turnInfo.turnQueue];
@@ -183,14 +185,7 @@ describe('sticky_boot and wingfoot Interaction Test', () => {
     );
 
     // Pass until it's p1's turn again
-    let turnsPassed = 0;
-    while (
-      board.gameState.turnInfo.currentPlayerId !== 'p1' &&
-      turnsPassed < 10
-    ) {
-      board.pass(board.gameState.turnInfo.currentPlayerId);
-      turnsPassed++;
-    }
+    passUntilTurn(board, 'p1');
 
     // Play sticky_boot to slow down p2
     board.playItem('sticky_boot', 'p1');
@@ -225,14 +220,7 @@ describe('sticky_boot and wingfoot Interaction Test', () => {
     );
 
     // Pass until it's p1's turn again
-    let turnsPassed = 0;
-    while (
-      board.gameState.turnInfo.currentPlayerId !== 'p1' &&
-      turnsPassed < 10
-    ) {
-      board.pass(board.gameState.turnInfo.currentPlayerId);
-      turnsPassed++;
-    }
+    passUntilTurn(board, 'p1');
 
     board.playItem('wingfoot', 'p1');
 
@@ -255,28 +243,14 @@ describe('sticky_boot and wingfoot Interaction Test', () => {
     const board = new Board(player1, player2);
 
     // p2 goes first (higher speed), pass until it's p1's turn
-    let turnsPassed = 0;
-    while (
-      board.gameState.turnInfo.currentPlayerId !== 'p1' &&
-      turnsPassed < 10
-    ) {
-      board.pass(board.gameState.turnInfo.currentPlayerId);
-      turnsPassed++;
-    }
+    passUntilTurn(board, 'p1');
 
     // p1 plays wingfoot: speed becomes 11 (8 + 3)
     board.playItem('wingfoot', 'p1');
     expect(board.gameState.player.speed).toBe(11);
 
     // Pass until it's p2's turn
-    turnsPassed = 0;
-    while (
-      board.gameState.turnInfo.currentPlayerId !== 'p2' &&
-      turnsPassed < 10
-    ) {
-      board.pass(board.gameState.turnInfo.currentPlayerId);
-      turnsPassed++;
-    }
+    passUntilTurn(board, 'p2');
 
     // p2 plays sticky_boot on p1: p1's speed becomes 8 (11 - 3)
     board.playItem('sticky_boot', 'p2');
