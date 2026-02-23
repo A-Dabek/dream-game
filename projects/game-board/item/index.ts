@@ -6,7 +6,7 @@ export {
   type EffectValue,
   type Genre,
   type Item,
-  type ItemBehavior,
+  type ItemDefinition,
   type ItemId,
   type Loadout,
   type PassiveEffect,

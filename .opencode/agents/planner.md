@@ -26,7 +26,6 @@ The specification MUST NOT include:
 - step-by-step instructions
 - optional criteria, consult the user's needs instead
 - non-functional requirements like documentation, testing, or code style unless the user specifically requests them
+- backward compatibility concerns; old code should be removed instead of kept for backward compatibility 
 
-The specification SHOULD NOT
-
-ALWAYS write the specification in the `.opencode/specifiactions/` directory as a single markdown file.
+ALWAYS write the specification in the `.opencode/specifiactions/` directory as a single Markdown file.

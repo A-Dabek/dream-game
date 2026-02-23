@@ -49,7 +49,7 @@ export class Engine {
 
   play(playerId: string, itemId: ItemId): void {
     if (this._state.gameOver) return;
-    const behavior = getItemBehavior(itemId);
+    const itemDef = getItemBehavior(itemId);
     const state = this._state;
 
     const player =
@@ -69,7 +69,7 @@ export class Engine {
 
     const effects: Effect[] = [
       ActiveEffectLibrary.remove_item(instanceId),
-      ...behavior.whenPlayed(),
+      ...itemDef.onPlayEffects,
     ];
 
     const finalState = effects.reduce<EngineState>(
@@ -141,8 +141,8 @@ export class Engine {
 
   private scanForListeners(player: EngineLoadout): Listener[] {
     return player.items.flatMap((item) => {
-      const behavior = getItemBehavior(item.id);
-      const effects = behavior.passiveEffects?.() ?? [];
+      const itemDef = getItemBehavior(item.id);
+      const effects = itemDef.passiveEffects ?? [];
       return effects.map((effect) =>
         ListenerFactory.createPassive(item.instanceId!, player.id, effect),
       );

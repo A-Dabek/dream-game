@@ -16,6 +16,9 @@ import { Rating } from '../rating';
 import { Strategy as Strategy_2 } from '../ai';
 import { TurnEntry as TurnEntry_2 } from '../turn-manager';
 
+// @public (undocumented)
+export type ActiveEffectId = 'attack' | 'heal' | 'modify_speed' | 'remove_item' | 'add_status_effect';
+
 // Warning: (ae-forgotten-export) The symbol "BoardInterface" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -95,9 +98,11 @@ export type GameEvent = {
     playerId: string;
 };
 
-// @public
+// @public (undocumented)
 export interface GamePlayersConfig {
+    // (undocumented)
     player1?: PlayerConfig;
+    // (undocumented)
     player2?: PlayerConfig;
 }
 
@@ -119,13 +124,13 @@ export interface GameState {
     winnerId?: string;
 }
 
-// @public
+// @public (undocumented)
 export type Genre = 'basic' | 'poison';
 
 // @public (undocumented)
 export function getItemGenre(itemId: ItemId_3): Genre_2;
 
-// @public
+// @public (undocumented)
 export interface Item {
     // (undocumented)
     readonly genre: Genre;
@@ -135,10 +140,10 @@ export interface Item {
     readonly instanceId?: string;
 }
 
-// @public
+// @public (undocumented)
 export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade';
 
-// @public
+// @public (undocumented)
 export interface Loadout {
     // (undocumented)
     health: number;
@@ -168,10 +173,13 @@ export interface Player {
     readonly strategy: Strategy_2;
 }
 
-// @public
+// @public (undocumented)
 export interface PlayerConfig {
+    // (undocumented)
     health?: number;
+    // (undocumented)
     items?: ItemId_2[];
+    // (undocumented)
     speed?: number;
 }
 
@@ -180,6 +188,9 @@ export type StateChangeLogEntry = {
     type: 'state-change';
     snapshot: EngineState;
 };
+
+// @public (undocumented)
+export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';
 
 // @public
 export interface Strategy {

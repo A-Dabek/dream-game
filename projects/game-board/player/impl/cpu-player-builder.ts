@@ -1,35 +1,29 @@
 import { FirstAvailableStrategy, Strategy } from '../../ai';
 import { Item, ItemId, Loadout } from '../../item';
-import { BEHAVIORS, getItemGenre } from '../../item-library';
+import { getItemGenre } from '../../item-library';
 import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
 
-/**
- * Configuration options for creating a player with specific values.
- * When values are not provided or invalid, defaults will be used.
- */
-export interface PlayerConfig {
-  /** Array of ItemId values to include in the player's loadout. Invalid IDs are filtered out. */
-  items?: ItemId[];
-  /** Health value. Falls back to default range if not positive. */
-  health?: number;
-  /** Speed value. Falls back to default range if not positive. */
-  speed?: number;
-}
+const AVAILABLE_ITEM_IDS: ItemId[] = [
+  'hand',
+  'punch',
+  'sticking_plaster',
+  'sticky_boot',
+  'wingfoot',
+  'gas_grenade',
+  '_blueprint_attack',
+  '_blueprint_heal_5',
+  '_blueprint_passive_attack',
+  '_blueprint_reactive_removal',
+  '_blueprint_self_damage',
+  '_blueprint_damage_to_heal_charges',
+  '_blueprint_damage_to_heal_permanent',
+  '_blueprint_damage_to_heal_turns',
+  '_dummy',
+  '_blueprint_negate_damage',
+  '_blueprint_triple_threat',
+];
 
-/**
- * Configuration for both players in a game.
- */
-export interface GamePlayersConfig {
-  /** Configuration for player 1. Falls back to defaults if undefined. */
-  player1?: PlayerConfig;
-  /** Configuration for player 2. Falls back to defaults if undefined. */
-  player2?: PlayerConfig;
-}
-
-/**
- * Default configuration values for health and speed.
- */
 interface Defaults {
   HEALTH_MIN: number;
   HEALTH_MAX: number;
@@ -193,7 +187,7 @@ export class CpuPlayerBuilder {
     }
 
     // Fall back to random items
-    const availableItemIds: ItemId[] = Object.keys(BEHAVIORS) as ItemId[];
+    const availableItemIds = AVAILABLE_ITEM_IDS;
     return Array.from({ length: this.itemCount }, (_, i) => {
       const id =
         availableItemIds[Math.floor(Math.random() * availableItemIds.length)];
@@ -206,7 +200,7 @@ export class CpuPlayerBuilder {
   }
 
   private filterValidItemIds(itemIds: ItemId[]): ItemId[] {
-    const validIds = Object.keys(BEHAVIORS) as ItemId[];
+    const validIds = AVAILABLE_ITEM_IDS;
     return itemIds.filter((id) => validIds.includes(id));
   }
 
@@ -232,4 +226,15 @@ export class CpuPlayerBuilder {
     const range = max - min + 1;
     return Math.floor(Math.random() * range) + min;
   }
+}
+
+export interface PlayerConfig {
+  items?: ItemId[];
+  health?: number;
+  speed?: number;
+}
+
+export interface GamePlayersConfig {
+  player1?: PlayerConfig;
+  player2?: PlayerConfig;
 }

@@ -1,12 +1,5 @@
-/**
- * Represents the genre/type of an item, determining its icon color.
- * Currently only 'basic' is supported, but extensible for future genres.
- */
 export type Genre = 'basic' | 'poison';
 
-/**
- * Represents the unique identifier for an item.
- */
 export type ItemId =
   | '_blueprint_attack'
   | '_blueprint_passive_attack'
@@ -26,16 +19,6 @@ export type ItemId =
   | 'wingfoot'
   | 'gas_grenade';
 
-/**
- * Represents the unique identifier for a status effect type.
- * Analogous to ItemId, but for status effects.
- *
- * Core types are predefined identifiers for standard status effects.
- * Custom types can be any ItemId value, but to avoid collisions with core types,
- * custom item IDs used as status effect types should use a distinct naming
- * convention (e.g., start with '_blueprint_' or other prefix) and must not
- * match any core type string.
- */
 export type StatusEffectType =
   | 'poison'
   | 'invert'
@@ -46,46 +29,27 @@ export type StatusEffectType =
   | 'periodic_attack'
   | ItemId; // Allow item IDs for custom passive effects
 
-/**
- * Represents the value of an effect, which can be a number (damage/heal amount),
- * string (item ID or effect type), or a StatusEffect configuration.
- */
 export type EffectValue = number | string | StatusEffect;
 
-/**
- * Represents an atomic effect that can be applied to the game state.
- */
 export interface Effect {
   readonly type: string;
   readonly value: EffectValue;
   readonly target?: 'self' | 'enemy';
 }
 
-/**
- * Represents the value of a condition, which can be a string (effect type) or undefined.
- */
 export type ConditionValue = string | undefined;
 
-/**
- * Represents a condition that must be met for a status effect to trigger.
- */
 export interface Condition {
   readonly type: string;
   readonly value?: ConditionValue;
   readonly subConditions?: Condition[];
 }
 
-/**
- * Represents the duration of a status effect.
- */
 export interface Duration {
   readonly type: 'turns' | 'charges' | 'permanent' | 'until_item_removed';
   readonly value?: number | string;
 }
 
-/**
- * Represents a status effect that reacts to game conditions.
- */
 export interface StatusEffect {
   readonly type: StatusEffectType;
   readonly condition: Condition;
@@ -93,38 +57,20 @@ export interface StatusEffect {
   readonly duration?: Duration;
 }
 
-/**
- * Represents a passive effect that is active while the item is in the loadout.
- */
 export type PassiveEffect = StatusEffect;
 
-/**
- * Defines the behavior and effects of an item.
- */
-export interface ItemBehavior {
-  /**
-   * Returns the effects to be applied when the item is played.
-   */
-  whenPlayed(): Effect[];
+export type ItemDefinition = {
+  readonly genre: Genre;
+  readonly onPlayEffects: readonly Effect[];
+  readonly passiveEffects?: readonly PassiveEffect[];
+};
 
-  /**
-   * Returns passive effects that are active while the item is in the loadout.
-   */
-  passiveEffects?(): PassiveEffect[];
-}
-
-/**
- * Represents an item in the game.
- */
 export interface Item {
   readonly id: ItemId;
   readonly instanceId?: string;
   readonly genre: Genre;
 }
 
-/**
- * Represents a player's loadout, including items and base attributes.
- */
 export interface Loadout {
   readonly items: Item[];
   health: number;
