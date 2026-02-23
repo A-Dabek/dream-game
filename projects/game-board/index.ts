@@ -25,3 +25,7 @@ export {
   type Loadout,
 } from './item/item.model';
 export { getItemGenre } from './item-library/item-registry';
+export {
+  type ActiveEffectId,
+  type StatusEffectId,
+} from './effect-library/effect-ids';
