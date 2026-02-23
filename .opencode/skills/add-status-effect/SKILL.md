@@ -20,25 +20,19 @@ Status effects are applied when an item is played via `whenPlayed()` and remain 
 
 **Where:** `projects/game-board/item-library/impl/{item-name}.behaviour.ts`
 
-Add a status effect to your `whenPlayed()` method using `addStatusEffect`:
+Add a status effect to your `whenPlayed()` method using `ActiveEffectLibrary.add_status_effect`:
 
 ```typescript
-import {
-  addStatusEffect,
-  charges,
-  Effect,
-  ItemBehavior,
-  modifySpeed,
-  statusEffect,
-} from '../../item';
+import { Effect, ItemBehavior } from '../../item';
+import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
 
 export class YourItemBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
     return [
-      addStatusEffect(
-        statusEffect({
-          condition: { type: 'after_effect', value: 'damage' },
-          action: [modifySpeed(-1, 'enemy')],
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.status_effect({
+          condition: onTurnEnd(),
+          action: [ActiveEffectLibrary.modifySpeed(-1, 'enemy')],
           duration: charges(3),
         }),
         'self',
@@ -98,7 +92,7 @@ For the complete list of available conditions and durations, read:
 
 - **Conditions:** `projects/game-board/item/conditions.ts`
 - **Durations:** `projects/game-board/item/durations.ts`
-- **Actions:** `projects/game-board/item/effects.ts`
+- **Effects:** `projects/game-board/effect-library/`
 
 ### Common Conditions:
 
@@ -115,7 +109,7 @@ For the complete list of available conditions and durations, read:
 
 ### Common Actions:
 
-- `attack(value, target)` - Deal damage
-- `heal(value, target)` - Restore health
-- `modifySpeed(value, target)` - Change speed (negative to slow, positive to speed up)
-- `removeItem(itemId, target)` - Remove an item from loadout
+- `ActiveEffectLibrary.attack(value, target)` - Deal damage
+- `ActiveEffectLibrary.heal(value, target)` - Restore health
+- `ActiveEffectLibrary.modifySpeed(value, target)` - Change speed (negative to slow, positive to speed up)
+- `ActiveEffectLibrary.remove_item(itemId, target)` - Remove an item from loadout

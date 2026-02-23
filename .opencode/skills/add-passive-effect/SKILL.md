@@ -42,11 +42,14 @@ passiveEffects(): PassiveEffect[] {
 For static effects that don't depend on game state (e.g., "deal 1 damage at end of turn"):
 
 ```typescript
+import { PassiveEffect } from '../../item';
+import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
+
 passiveEffects(): PassiveEffect[] {
   return [
-    statusEffect({
+    StatusEffectLibrary.status_effect({
       condition: onTurnEnd(),
-      action: [attack(1)],
+      action: [ActiveEffectLibrary.attack(1)],
       duration: permanent(),
     }),
   ];
@@ -65,6 +68,7 @@ For dynamic behavior that depends on game state (e.g., "heal based on item count
 
 ```typescript
 import { onTurnStart, StatusEffect } from '../../../../item';
+import { ActiveEffectLibrary } from '../../../effect-library';
 import { EngineState, GameEvent } from '../../../engine.types';
 import { BaseEffectInstance } from '../base-effect-instance';
 
@@ -93,16 +97,12 @@ export class YourItemListener extends BaseEffectInstance {
         : state.playerTwo;
     const healAmount = player.items.length;
 
-    // Emit healing effect
-    const healEvent: GameEvent = {
-      type: 'effect',
-      effect: {
-        type: 'healing',
-        value: healAmount,
-        target: 'self',
-      },
-      playerId: this.playerId,
-    };
+     // Emit healing effect using ActiveEffectLibrary
+     const healEvent: GameEvent = {
+       type: 'effect',
+       effect: ActiveEffectLibrary.heal(healAmount, 'self'),
+       playerId: this.playerId,
+     };
 
     return [event, healEvent];
   }

@@ -1,4 +1,3 @@
-import { EngineState } from '../../engine.types';
 import { ConditionPredicate } from './reactive-condition';
 
 export const hasNoItems: ConditionPredicate = (event, playerId, state) => {

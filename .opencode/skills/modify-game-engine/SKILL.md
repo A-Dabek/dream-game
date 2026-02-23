@@ -106,12 +106,17 @@ Effect (atomic operation processed by Processors)
 Uses DefaultListener automatically. Just define in behavior:
 
 ```typescript
+import { PassiveEffect } from '../../item';
+import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
+
 passiveEffects(): PassiveEffect[] {
-  return [{
-    condition: onTurnEnd(),
-    action: [attack(1)],  // Static - used by DefaultListener
-    duration: permanent(),
-  }];
+  return [
+    StatusEffectLibrary.status_effect({
+      condition: onTurnEnd(),
+      action: [ActiveEffectLibrary.attack(1)],
+      duration: permanent(),
+    }),
+  ];
 }
 ```
 

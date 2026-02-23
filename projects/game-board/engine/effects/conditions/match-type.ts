@@ -1,5 +1,4 @@
 import { AFTER_EFFECT, BEFORE_EFFECT, ON_TURN_END } from '../../../item';
-import { GameEvent } from '../../engine.types';
 import { isEffectEvent, isLifecycleGameEvent } from '../../type-guards';
 import { ConditionPredicate } from './reactive-condition';
 
