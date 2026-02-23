@@ -14,7 +14,10 @@
       "mode": "primary",
       "temperature": 1.0,
       "top_p": 0.95,
+      "min_p": 0.01,
+      "top_k": 40,
       "steps": 80,
+      "repeat_penalty": 1.0,
       "task": {
         "developer": "deny",
         "reviewer": "deny"
@@ -38,7 +41,10 @@
       "mode": "primary",
       "temperature": 1.0,
       "top_p": 0.95,
+      "min_p": 0.01,
+      "top_k": 40,
       "steps": 40,
+      "repeat_penalty": 1.0,
       "task": {
         "developer": "allow",
         "reviewer": "allow"
@@ -50,28 +56,40 @@
       "color": "#0000FF",
       "temperature": 1.0,
       "top_p": 0.95,
-      "steps": 40
+      "min_p": 0.01,
+      "top_k": 40,
+      "steps": 40,
+      "repeat_penalty": 1.0
     },
     "developer": {
       "description": "{file:./agents/developer.md}",
       "mode": "subagent",
       "temperature": 1.0,
       "top_p": 0.95,
-      "steps": 40
+      "min_p": 0.01,
+      "top_k": 40,
+      "steps": 40,
+      "repeat_penalty": 1.0
     },
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",
       "mode": "subagent",
       "temperature": 1.0,
       "top_p": 0.95,
-      "steps": 40
+      "min_p": 0.01,
+      "top_k": 40,
+      "steps": 40,
+      "repeat_penalty": 1.0
     },
     "reviewer": {
       "description": "{file:./agents/reviewer.md}",
       "mode": "subagent",
       "temperature": 1.0,
       "top_p": 0.95,
+      "min_p": 0.01,
+      "top_k": 40,
       "steps": 40,
+      "repeat_penalty": 1.0,
       "permission": {
         "edit": {
           "*": "deny",

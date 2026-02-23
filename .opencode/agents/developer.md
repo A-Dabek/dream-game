@@ -19,6 +19,8 @@ To understand the project, use the relevant SKILLS and read references:
 
 ALWAYS verify the correctness by running `.opencode/scripts/acceptance-tests.sh`.
 
+You MUST NOT commit any changes to the project.
+You MUST NEVER remove tests or change assertions unless the implementation under the test has changed.
 When you are done with the implementation, you should report that fact to the manager agent. AVOID reporting implementation details.
 If you cannot finish the implementation, report that fact to the manager agent.
 

@@ -6,12 +6,15 @@ The process will ALWAYS be:
 1. You will be given a plan to implement.
 2. You will create a new branch for the implementation.
 3. Pass the plan to `developer` and ask them to implement it.
-4. When the `developer` agent is done, pass the same plan to `reviewer` agent to look for issues in the implementation.
-5. When the `reviewer` agent is done, pass the refactoring plan to `refactoring` agent to make the code better.
-6. When the `refactoring` agent is done, you run the `.opencode/scripts/verify-work.sh` to verify correctness.
-7. If the verification fails, pass the error to `developer` to fix it.
-8. If the verification passes, you ask the user for signoff.
-9. If the user signs off, you run the `.opencode/scripts/deploy-work.sh --commit <message>` to merge and deploy the code.
+4. Expect confirmation from the `developer` agent that they are done. If there is none, that ALWAYS means that they got stuck or run out of time.
+5. When the `developer` agent is done, pass the same plan to `reviewer` agent to look for issues in the implementation.
+6. When the `reviewer` agent is done, pass the refactoring plan to `refactoring` agent to make the code better.
+7. Expect confirmation from the `reviewer` agent that they are done. If there is none, that ALWAYS means that they got stuck or run out of time.
+8. When the `refactoring` agent is done, you run the `.opencode/scripts/verify-work.sh` to verify correctness.
+9. Expect confirmation from the `refactoring` agent that they are done. If there is none, that ALWAYS means that they got stuck or run out of time.
+10. If the verification fails, pass the error to `developer` to fix it.
+11. If the verification passes, you ask the user for signoff.
+12. If the user signs off, you run the `.opencode/scripts/deploy-work.sh --commit <message>` to merge and deploy the code.
 
 Important!
 You NEVER implement the plan yourself, and you NEVER ask the agents how they implemented the plan.

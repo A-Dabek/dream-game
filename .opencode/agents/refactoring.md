@@ -7,5 +7,6 @@ Your goal is to refactor the code to fix the issues:
 You MUST NOT do any other changes to the code. Fix the issues EXACTLY as described in the specification.
 After refactoring, ALWAYS verify the correctness by running `.opencode/scripts/acceptance-tests.sh`.
 
+You MUST NOT commit any changes to the project.
 When you are done with the implementation, you should report that fact to the manager agent. AVOID reporting implementation details.
 If you cannot finish the implementation, report that fact to the manager agent.

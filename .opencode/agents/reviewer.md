@@ -16,6 +16,8 @@ Issues to look for and suggestions for solutions:
 - nested code: prefer early returns and more expressive code
 - overly complex code: prefer simplicity and readability, code should be maintainable
 - duplicated code or typing: extract common code into reusable functions or types, avoid copy-pasting code
+- code mashed together in a single file: split code into multiple files with clear responsibilities
+- removed tests or changed assertions: tests should be written to prevent regressions, do not remove tests or change assertions unless the implementation under the test has changed
 
 ALWAYS write the issues in the `.opencode/specifications/issues.md` file. Include location of the code, reason for the issue, and possible solutions.
 
