@@ -51,9 +51,9 @@
         "reviewer": "allow"
       }
     },
-    "specialist": {
-      "description": "{file:./agents/specialist.md}",
-      "mode": "primary",
+    "documentation": {
+      "description": "{file:./agents/documentation.md}",
+      "mode": "subagent",
       "color": "#0000FF",
       "temperature": 1.0,
       "top_p": 0.95,
@@ -85,27 +85,15 @@
       "steps": 40,
       "repeat_penalty": 1.0
     },
-    "reviewer": {
-      "description": "{file:./agents/reviewer.md}",
+    "qa": {
+      "description": "{file:./agents/qa.md}",
       "mode": "subagent",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
       "steps": 40,
-      "repeat_penalty": 1.0,
-      "permission": {
-        "edit": {
-          "*": "deny",
-          "*\\specifications\\*": "allow",
-          "*/specifications/*": "allow"
-        },
-        "write": {
-          "*": "deny",
-          "*\\specifications\\*": "allow",
-          "*/specifications/*": "allow"
-        }
-      }
+      "repeat_penalty": 1.0
     }
   }
 }
