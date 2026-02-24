@@ -60,8 +60,9 @@ app-turn-queue {
     }
   }
 
-  :not(.disable-animations) .turn-item {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  // :not(disable-animations) does not work here foe some reason
+  .turn-item {
+    transition: transform 0.25s ease;
 
     &.current {
       transform: scale(1.05);
