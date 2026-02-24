@@ -44,7 +44,6 @@ __screenshots__/
 Thumbs.db
 
 .opencode/node_modules
-.opencode/specifications
 .firebase
 
 # Playwright

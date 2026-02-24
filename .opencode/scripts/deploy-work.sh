@@ -96,3 +96,10 @@ echo ""
 echo "========================================="
 echo -e "${GREEN}WORK DEPLOYMENT COMPLETE!${NC}"
 echo "========================================="
+
+# Remove specification files
+echo ""
+echo "[CLEANUP] Removing specification files..."
+rm -f .opencode/specifications/*.md
+echo -e "${GREEN}[CLEANUP] Specification files removed successfully${NC}"
+
