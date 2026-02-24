@@ -55,6 +55,7 @@ export interface StatusEffect {
   readonly condition: Condition;
   readonly action: Effect[];
   readonly duration?: Duration;
+  readonly extraParams?: Record<string, unknown>;
 }
 
 export type PassiveEffect = StatusEffect;

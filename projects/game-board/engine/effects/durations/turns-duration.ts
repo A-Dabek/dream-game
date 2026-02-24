@@ -9,6 +9,14 @@ export class TurnsDuration implements ReactiveDuration {
     return this.remainingTurns <= 0;
   }
 
+  get type(): 'turns' {
+    return 'turns';
+  }
+
+  get remaining(): number {
+    return this.remainingTurns;
+  }
+
   update(event: GameEvent, playerId: string): void {
     if (
       isLifecycleGameEvent(event) &&

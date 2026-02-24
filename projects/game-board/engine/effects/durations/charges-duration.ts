@@ -7,6 +7,14 @@ export class ChargesDuration implements ReactiveDuration {
     return this.remainingCharges <= 0;
   }
 
+  get type(): 'charges' {
+    return 'charges';
+  }
+
+  get remaining(): number {
+    return this.remainingCharges;
+  }
+
   update(): void {}
 
   onHandle(): void {

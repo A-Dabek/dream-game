@@ -1,21 +1,83 @@
 import { BEFORE_EFFECT, StatusEffect } from '../../../item';
-import { EngineState, GameEvent, Listener } from '../../engine.types';
+import {
+  EngineState,
+  GameEvent,
+  Listener,
+  ListenerData,
+} from '../../engine.types';
 import { createCondition, ReactiveCondition } from '../conditions';
 import { createDuration, ReactiveDuration } from '../durations';
+import { ChargesDuration } from '../durations/charges-duration';
+import { TurnsDuration } from '../durations/turns-duration';
+import { DurationState } from '../types';
+
+function extractDurationState(duration: ReactiveDuration): DurationState {
+  switch (duration.type) {
+    case 'charges':
+      return { type: 'charges', remaining: duration.remaining };
+    case 'turns':
+      return { type: 'turns', remaining: duration.remaining };
+    case 'until_item_removed':
+      return { type: 'until_item_removed', remaining: 0 };
+    case 'permanent':
+    default:
+      return { type: 'permanent', remaining: 0 };
+  }
+}
 
 export abstract class BaseEffectInstance implements Listener {
   protected readonly condition: ReactiveCondition;
   protected readonly duration: ReactiveDuration;
 
-  constructor(
-    readonly instanceId: string,
-    readonly playerId: string,
-    readonly effect: StatusEffect,
-    condition?: ReactiveCondition,
-    duration?: ReactiveDuration,
-  ) {
-    this.condition = condition ?? createCondition(effect.condition);
-    this.duration = duration ?? createDuration(effect.duration);
+  constructor(protected readonly listenerData: ListenerData) {
+    this.condition = createCondition(listenerData.effectState.effect.condition);
+    this.duration = createDuration(listenerData.effectState.effect.duration);
+    // Sync the runtime state with the duration state if it exists
+    this.syncDurationFromState();
+  }
+
+  private syncDurationFromState(): void {
+    const currentDuration = this.listenerData.effectState.currentDuration;
+
+    if (
+      currentDuration.type === 'charges' &&
+      this.duration.type === 'charges'
+    ) {
+      (this.duration as ChargesDuration).remainingCharges =
+        currentDuration.remaining;
+    } else if (
+      currentDuration.type === 'turns' &&
+      this.duration.type === 'turns'
+    ) {
+      (this.duration as TurnsDuration).remainingTurns =
+        currentDuration.remaining;
+    }
+  }
+
+  /**
+   * Serializes the listener to ListenerData format.
+   */
+  serialize(): ListenerData {
+    return {
+      instanceId: this.listenerData.instanceId,
+      playerId: this.listenerData.playerId,
+      effectState: {
+        effect: this.listenerData.effectState.effect,
+        currentDuration: extractDurationState(this.duration),
+      },
+    };
+  }
+
+  get instanceId(): string {
+    return this.listenerData.instanceId;
+  }
+
+  get playerId(): string {
+    return this.listenerData.playerId;
+  }
+
+  get effect(): StatusEffect {
+    return this.listenerData.effectState.effect;
   }
 
   handle(event: GameEvent, state: EngineState): { event: GameEvent[] } {

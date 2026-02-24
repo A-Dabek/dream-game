@@ -23,6 +23,7 @@
         "reviewer": "deny"
       },
       "permission": {
+        "skill": "allow",
         "edit": {
           "*": "deny",
           "*\\specifications\\*": "allow",
@@ -69,7 +70,10 @@
       "min_p": 0.01,
       "top_k": 40,
       "steps": 40,
-      "repeat_penalty": 1.0
+      "repeat_penalty": 1.0,
+      "permission": {
+        "skill": "allow"
+      }
     },
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",

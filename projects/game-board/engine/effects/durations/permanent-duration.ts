@@ -5,6 +5,14 @@ export class PermanentDuration implements ReactiveDuration {
     return false;
   }
 
+  get type(): 'permanent' {
+    return 'permanent';
+  }
+
+  get remaining(): number {
+    return 0;
+  }
+
   update(): void {}
 
   onHandle(): void {}
