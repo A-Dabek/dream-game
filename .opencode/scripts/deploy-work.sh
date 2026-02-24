@@ -63,6 +63,12 @@ echo "Current branch: $CURRENT_BRANCH"
 echo "Commit message: $COMMIT_MSG"
 echo ""
 
+# Remove specification files
+echo ""
+echo "[CLEANUP] Removing specification files..."
+rm -f .opencode/specifications/*.md
+echo -e "${GREEN}[CLEANUP] Specification files removed successfully${NC}"
+
 # Git Commit
 echo "[GIT] Creating commit..."
 git add -A
@@ -96,10 +102,4 @@ echo ""
 echo "========================================="
 echo -e "${GREEN}WORK DEPLOYMENT COMPLETE!${NC}"
 echo "========================================="
-
-# Remove specification files
-echo ""
-echo "[CLEANUP] Removing specification files..."
-rm -f .opencode/specifications/*.md
-echo -e "${GREEN}[CLEANUP] Specification files removed successfully${NC}"
 

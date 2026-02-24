@@ -2,12 +2,11 @@ import { Effect, ItemId, Loadout } from '../item';
 import { ActiveEffectLibrary } from '../effect-library';
 import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
-import { ListenerFactory } from './effects';
+import { ListenerFactory, ListenerData } from './effects';
 import {
   EngineLoadout,
   EngineState,
   GameEvent,
-  Listener,
   LogEntry,
 } from './engine.model';
 import { PROCESSORS } from './processors';
@@ -25,13 +24,13 @@ export class Engine {
     const p1 = this.prepareLoadout(playerOne);
     const p2 = this.prepareLoadout(playerTwo);
 
-    const listeners = [
+    const listeners: ListenerData[] = [
       ...this.scanForListeners(p1),
       ...this.scanForListeners(p2),
-      ListenerFactory.createFatigue(p1.id),
-      ListenerFactory.createFatigue(p2.id),
-      ListenerFactory.createAdvanceTurn(p1.id),
-      ListenerFactory.createAdvanceTurn(p2.id),
+      ListenerFactory.createFatigue(p1.id).serialize(),
+      ListenerFactory.createFatigue(p2.id).serialize(),
+      ListenerFactory.createAdvanceTurn(p1.id).serialize(),
+      ListenerFactory.createAdvanceTurn(p2.id).serialize(),
     ];
 
     this._state = {
@@ -139,19 +138,27 @@ export class Engine {
     };
   }
 
-  private scanForListeners(player: EngineLoadout): Listener[] {
+  private scanForListeners(player: EngineLoadout): ListenerData[] {
     return player.items.flatMap((item) => {
       const itemDef = getItemBehavior(item.id);
       const effects = itemDef.passiveEffects ?? [];
       return effects.map((effect) =>
-        ListenerFactory.createPassive(item.instanceId!, player.id, effect),
+        ListenerFactory.createPassive(
+          item.instanceId!,
+          player.id,
+          effect,
+        ).serialize(),
       );
     });
   }
 
+  private deserializeListener(data: ListenerData) {
+    return ListenerFactory.deserialize(data);
+  }
+
   private processEvent(
     event: GameEvent,
-    listenersToProcess: Listener[],
+    listenersToProcess: ListenerData[],
     state: EngineState,
     depth = 0,
   ): EngineState {
@@ -159,11 +166,22 @@ export class Engine {
     if (depth > 50) return state;
 
     if (listenersToProcess.length !== 0) {
-      const [current, ...remaining] = listenersToProcess;
+      const [currentData, ...remaining] = listenersToProcess;
+      const current = this.deserializeListener(currentData);
       const { event: resultEvent } = current.handle(event, state);
-      return resultEvent.reduce<EngineState>((acc, e) => {
+      // Serialize the listener after processing to persist any state changes (e.g., duration updates)
+      const serializedCurrent = current.serialize();
+      const processedState = resultEvent.reduce<EngineState>((acc, e) => {
         return this.processEvent(e, remaining, acc, depth + 1);
       }, state);
+      // After all processing, update the listener in the state with its updated serialized form
+      const updatedListeners = processedState.listeners.map((l) =>
+        l.instanceId === serializedCurrent.instanceId ? serializedCurrent : l,
+      );
+      return {
+        ...processedState,
+        listeners: updatedListeners,
+      };
     }
     // Basic effect processing via processors
     if (event.type === 'effect') {

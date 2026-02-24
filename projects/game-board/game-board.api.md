@@ -13,7 +13,7 @@ import { ItemId as ItemId_3 } from '../item';
 import { Loadout as Loadout_2 } from '../item';
 import { LogEntry as LogEntry_2 } from '../../engine';
 import { Rating } from '../rating';
-import { StatusEffect } from '../item';
+import { StatusEffect } from '../../item';
 import { Strategy as Strategy_2 } from '../ai';
 import { TurnEntry as TurnEntry_2 } from '../turn-manager';
 
@@ -210,7 +210,7 @@ export interface TurnEntry {
 
 // Warnings were encountered during analysis:
 //
-// dist/types/game-board/engine/engine.types.d.ts:51:5 - (ae-forgotten-export) The symbol "EngineState" needs to be exported by the entry point index.d.ts
+// dist/types/game-board/engine/engine.types.d.ts:44:5 - (ae-forgotten-export) The symbol "EngineState" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

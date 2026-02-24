@@ -33,6 +33,8 @@ What you hate about code:
 - testing non-public APIs
 - testing implementation instead of behavior
 - files bloated with multiple unrelated things
+- unused code
+- deprecated code that should be removed instead
 
 The MORE code you can remove without losing readability the BETTER.
 You MUST NOT commit any changes to the project.

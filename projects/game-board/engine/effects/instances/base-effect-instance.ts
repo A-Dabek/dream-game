@@ -1,10 +1,6 @@
 import { BEFORE_EFFECT, StatusEffect } from '../../../item';
-import {
-  EngineState,
-  GameEvent,
-  Listener,
-  ListenerData,
-} from '../../engine.types';
+import { EngineState, GameEvent, Listener } from '../../engine.types';
+import { ListenerData } from '../types';
 import { createCondition, ReactiveCondition } from '../conditions';
 import { createDuration, ReactiveDuration } from '../durations';
 import { ChargesDuration } from '../durations/charges-duration';

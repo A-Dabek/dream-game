@@ -1,6 +1,6 @@
 import { StatusEffect } from '../item';
 import { TurnManager } from '../turn-manager';
-import { ListenerFactory } from './effects';
+import { createInitialListenerData } from './effects';
 import { EngineState, Processors } from './engine.model';
 
 function getTargetPlayerKey(
@@ -92,7 +92,7 @@ export const PROCESSORS: Processors = {
     return {
       ...state,
       listeners: [
-        ListenerFactory.createStatusEffect(
+        createInitialListenerData(
           `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
           targetPlayer.id,
           statusEffect,
