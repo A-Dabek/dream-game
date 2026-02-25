@@ -193,6 +193,9 @@ export type StateChangeLogEntry = {
 // @public (undocumented)
 export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';
 
+// @public (undocumented)
+export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'fatigue' | 'periodic_attack' | ItemId;
+
 // @public
 export interface Strategy {
     decide(board: Board_2): Promise<GameAction_2>;
@@ -210,7 +213,7 @@ export interface TurnEntry {
 
 // Warnings were encountered during analysis:
 //
-// dist/types/game-board/engine/engine.types.d.ts:44:5 - (ae-forgotten-export) The symbol "EngineState" needs to be exported by the entry point index.d.ts
+// dist/types/game-board/engine/engine.types.d.ts:40:5 - (ae-forgotten-export) The symbol "EngineState" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

@@ -7,4 +7,7 @@ export {
   ACTIVE_EFFECT_DISPLAY_MAP,
   type EffectDisplayMetadata,
 } from './active-effect-display-map';
-export { STATUS_EFFECT_DISPLAY_MAP } from './status-effect-display-map';
+export {
+  StatusEffectDisplayRegistry,
+  type StatusEffectDisplayMetadata,
+} from './status-effect-display-map';

@@ -8,6 +8,13 @@ Your team consists of:
 - `refactoring` agent responsible for keeping the codebase clean and easy to maintain. It makes code improvements after the implementation is done
 - `documentation` agent responsible for keeping the project documentation and agentic skills up to date
 
+Read their instructions in `.opencode/agents/*` to understand what they are capable of.
+In a nutshell:
+- `developer` agent implements business logic
+- `qa` agent validates the implementation and adds tests if needed
+- `refactoring` agent cleans up the codebase and improves code quality
+- `documentation` agent keeps the project documentation and agentic skills up to date
+
 The process will ALWAYS be:
 
 1. You will be given a plan to implement.

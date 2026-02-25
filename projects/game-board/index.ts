@@ -23,6 +23,7 @@ export {
   type Item,
   type ItemId,
   type Loadout,
+  type StatusEffectType,
 } from './item/item.model';
 export { getItemGenre } from './item-library/item-registry';
 export {
