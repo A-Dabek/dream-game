@@ -77,6 +77,17 @@ child component -->
           </div>
         </app-player-hand>
 
+        <!-- StatusEffectsComponent (opponent) -->
+        <!-- File: components/_status-effects.scss -->
+        <app-status-effects>
+          <div class="status-effects-container opponent">
+            <div class="status-effect-item opponent">
+              <app-icon></app-icon>
+              <div class="charges-badge"></div>
+            </div>
+          </div>
+        </app-status-effects>
+
         <!-- HealthBarComponent -->
         <app-health-bar>
           <div class="center-content">
@@ -135,7 +146,18 @@ child component -->
       </div>
 
       <!-- Player Section -->
-      <div class="player-area [conditional: active]">
+      <div class="player-area" [class.active]="isPlayerTurn() && !s.isGameOver">
+        <!-- StatusEffectsComponent (player) -->
+        <!-- File: components/_status-effects.scss -->
+        <app-status-effects>
+          <div class="status-effects-container player">
+            <div class="status-effect-item player">
+              <app-icon></app-icon>
+              <div class="charges-badge"></div>
+            </div>
+          </div>
+        </app-status-effects>
+
         <!-- HealthBarComponent -->
         <app-health-bar>
           <div class="center-content">

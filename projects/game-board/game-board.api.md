@@ -5,15 +5,19 @@
 ```ts
 
 import { Board as Board_2 } from '../board';
+import { DurationState } from './engine/effects';
 import { Effect } from '../item';
+import { EffectInstanceState } from './engine/effects';
 import { GameAction as GameAction_2 } from '../board';
 import { Genre as Genre_2 } from '../item';
 import { ItemId as ItemId_2 } from '../../item';
 import { ItemId as ItemId_3 } from '../item';
+import { ListenerData } from './engine/effects';
 import { Loadout as Loadout_2 } from '../item';
 import { LogEntry as LogEntry_2 } from '../../engine';
 import { Rating } from '../rating';
 import { StatusEffect } from '../../item';
+import { StatusEffectType as StatusEffectType_2 } from '../item';
 import { Strategy as Strategy_2 } from '../ai';
 import { TurnEntry as TurnEntry_2 } from '../turn-manager';
 
@@ -56,7 +60,11 @@ export function createGamePlayers(config?: GamePlayersConfig): {
     player2: Player;
 };
 
-// @public
+export { DurationState }
+
+export { EffectInstanceState }
+
+// @public (undocumented)
 export interface GameAction {
     // (undocumented)
     itemId?: string;
@@ -66,7 +74,7 @@ export interface GameAction {
     type: GameActionType;
 }
 
-// @public
+// @public (undocumented)
 export interface GameActionResult {
     // (undocumented)
     action: GameAction;
@@ -78,7 +86,7 @@ export interface GameActionResult {
     success: boolean;
 }
 
-// @public
+// @public (undocumented)
 export enum GameActionType {
     // (undocumented)
     PLAY_ITEM = "PLAY_ITEM",
@@ -107,7 +115,7 @@ export interface GamePlayersConfig {
     player2?: PlayerConfig;
 }
 
-// @public
+// @public (undocumented)
 export interface GameState {
     // (undocumented)
     actionHistory: GameAction[];
@@ -116,7 +124,11 @@ export interface GameState {
     // (undocumented)
     opponent: BoardLoadout;
     // (undocumented)
+    opponentStatusEffects: StatusEffectDisplayData[];
+    // (undocumented)
     player: BoardLoadout;
+    // (undocumented)
+    playerStatusEffects: StatusEffectDisplayData[];
     // Warning: (ae-forgotten-export) The symbol "TurnInfo" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -143,6 +155,8 @@ export interface Item {
 
 // @public (undocumented)
 export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade';
+
+export { ListenerData }
 
 // @public (undocumented)
 export interface Loadout {
@@ -189,6 +203,20 @@ export type StateChangeLogEntry = {
     type: 'state-change';
     snapshot: EngineState;
 };
+
+// @public (undocumented)
+export interface StatusEffectDisplayData {
+    // (undocumented)
+    readonly durationType: 'turns' | 'charges' | 'permanent' | 'until_item_removed';
+    // (undocumented)
+    readonly iconName: string;
+    // (undocumented)
+    readonly instanceId: string;
+    // (undocumented)
+    readonly remainingCharges: number | null;
+    // (undocumented)
+    readonly type: StatusEffectType_2;
+}
 
 // @public (undocumented)
 export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';

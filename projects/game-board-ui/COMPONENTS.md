@@ -21,8 +21,14 @@ Overview of all UI components in the game-board-ui library.
 ### BoardUiComponent
 
 - **Selector:** `app-board-ui`
-- **Children:** `PlayerHandComponent`, `TurnQueueComponent`, `ItemDisplayComponent`, `ActionHistoryComponent`, `HealthBarComponent`
+- **Children:** `PlayerHandComponent`, `TurnQueueComponent`, `ItemDisplayComponent`, `ActionHistoryComponent`, `HealthBarComponent`, `StatusEffectsComponent`
 - **Purpose:** Main game board layout organizing opponent area, player area, and center game content.
+
+### StatusEffectsComponent
+
+- **Selector:** `app-status-effects`
+- **Children:** `IconComponent`
+- **Purpose:** Displays active status effects as a vertical list of icons with animations, positioned above the player's health bar and below the opponent's health bar.
 
 ### ActionHistoryComponent
 
@@ -88,12 +94,16 @@ GameContainerComponent
 │   ├── PlayerHandComponent (opponent)
 │   │   └── ItemDisplayComponent
 │   │       └── IconComponent
+│   ├── StatusEffectsComponent (opponent)
+│   │   └── IconComponent
 │   ├── HealthBarComponent (opponent)
 │   ├── TurnQueueComponent
 │   │   └── IconComponent
 │   ├── ItemDisplayComponent (last played)
 │   │   └── IconComponent
 │   ├── ActionHistoryComponent
+│   │   └── IconComponent
+│   ├── StatusEffectsComponent (player)
 │   │   └── IconComponent
 │   ├── HealthBarComponent (player)
 │   └── PlayerHandComponent (player)

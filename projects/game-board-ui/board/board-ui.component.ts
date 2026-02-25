@@ -13,6 +13,7 @@ import { ActionHistoryEntry } from './action-history-entry';
 import { PlayerHandComponent } from './player-hand.component';
 import { TurnQueueComponent } from './turn-queue.component';
 import { HealthBarComponent } from './health-bar.component';
+import { StatusEffectsComponent } from './status-effects.component';
 
 @Component({
   selector: 'app-board-ui',
@@ -24,6 +25,7 @@ import { HealthBarComponent } from './health-bar.component';
     ItemDisplayComponent,
     ActionHistoryComponent,
     HealthBarComponent,
+    StatusEffectsComponent,
   ],
   template: `
     @let s = state();
@@ -51,12 +53,26 @@ import { HealthBarComponent } from './health-bar.component';
         (skipTurn)="onSkipTurn()"
       />
       <div class="center-content">
+        <div class="status-effects-top">
+          <app-status-effects
+            [statusEffects]="s.opponentStatusEffects"
+            [playerId]="s.opponent.id"
+            side="opponent"
+          />
+        </div>
         <div class="last-played-wrapper" role="status" aria-live="polite">
           @if (lastPlayedItem(); as item) {
             <app-item-display class="last-played-item" [item]="item" />
           } @else {
             <div class="last-played-placeholder">Awaiting the first play</div>
           }
+        </div>
+        <div class="status-effects-bottom">
+          <app-status-effects
+            [statusEffects]="s.playerStatusEffects"
+            [playerId]="s.player.id"
+            side="player"
+          />
         </div>
       </div>
       <app-action-history

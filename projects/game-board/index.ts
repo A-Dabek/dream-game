@@ -7,6 +7,7 @@ export {
   type GameState,
   type GameAction,
   type GameActionResult,
+  type StatusEffectDisplayData,
 } from './board/board.model';
 export {
   type GameEvent,
@@ -30,3 +31,8 @@ export {
   type ActiveEffectId,
   type StatusEffectId,
 } from './effect-library/effect-ids';
+export {
+  type ListenerData,
+  type DurationState,
+  type EffectInstanceState,
+} from './engine/effects';

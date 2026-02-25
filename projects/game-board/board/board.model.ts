@@ -1,27 +1,30 @@
 import { LogEntry } from '../engine/engine.model';
-import { ItemId, Loadout } from '../item';
+import { ItemId, Loadout, StatusEffectType } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { Board } from './impl/board';
 
-/**
- * Represents a player's loadout with a unique identifier.
- */
+export interface StatusEffectDisplayData {
+  readonly instanceId: string;
+  readonly type: StatusEffectType;
+  readonly iconName: string;
+  readonly remainingCharges: number | null;
+  readonly durationType:
+    | 'turns'
+    | 'charges'
+    | 'permanent'
+    | 'until_item_removed';
+}
+
 export interface BoardLoadout extends Loadout {
   readonly id: string;
 }
 
-/**
- * Tracks the current and upcoming turn sequence.
- */
 export interface TurnInfo {
   currentPlayerId: string;
   nextPlayerId: string;
   turnQueue: TurnEntry[];
 }
 
-/**
- * Complete snapshot of the game state including players, turns, and action history.
- */
 export interface GameState {
   player: BoardLoadout;
   opponent: BoardLoadout;
@@ -29,28 +32,21 @@ export interface GameState {
   isGameOver: boolean;
   winnerId?: string;
   actionHistory: GameAction[];
+  playerStatusEffects: StatusEffectDisplayData[];
+  opponentStatusEffects: StatusEffectDisplayData[];
 }
 
-/**
- * Supported game actions a player can perform.
- */
 export enum GameActionType {
   PLAY_ITEM = 'PLAY_ITEM',
   SURRENDER = 'SURRENDER',
 }
 
-/**
- * Represents a single action performed during the game.
- */
 export interface GameAction {
   type: GameActionType;
   playerId: string;
   itemId?: string;
 }
 
-/**
- * Result of executing a game action, including success status and updated state.
- */
 export interface GameActionResult {
   success: boolean;
   action: GameAction;
@@ -58,9 +54,6 @@ export interface GameActionResult {
   newGameState?: GameState;
 }
 
-/**
- * Main board interface for managing game state, actions, and player turns.
- */
 export interface BoardInterface {
   readonly gameState: GameState;
   readonly isGameOver: boolean;

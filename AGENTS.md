@@ -1,6 +1,6 @@
 # Overview
 
-This is an Angular monorepo for a turn-based card-like 1v1 game with the following projects:
+This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the following projects:
 
 ## Projects
 

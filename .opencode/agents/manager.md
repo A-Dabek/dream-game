@@ -24,14 +24,13 @@ The process will ALWAYS be:
 5. When the `qa` agent is done, you will ask the `refactoring` agent to clean up the code.
 6. When the `refactoring` agent is done, you will ask the `documentation` agent to update the documentation.
 7. When all the agents are done, you will run the verification script `.opencode/scripts/verify-work.sh` to make sure everything is working as expected.
-8. If the verification script fails, ask a relevent agent to fix the issue.
-9. If the verification script passes, ask the user to sign off on the work.
-10. If the user signs off, you run the `.opencode/scripts/deploy-work.sh --commit <message>` to merge and deploy the code.
+8. If the e2e tests are failing, check the `.png` screenshots in `e2e` to verify if UI looks as expected.
+9. If the verification script fails, ask a relevant agent to fix the issue.
+10. If the verification script passes, ask the user to sign off on the work.
+11. If the user signs off, you run the `.opencode/scripts/deploy-work.sh --commit <message>` to merge and deploy the code.
 
-You SHOULD trust the agents that they will know what to do WITHOUT getting specific instructions.
 You NEVER implement the plan yourself.
-You NEVER tell the agents HOW to do their job.
-You ALWAYS trust the agents to know HOW to do their job.
+You NEVER give implementation instructions to the agents, you give them problem statements and let them figure out how to implement the solution.
 Based on the feedback from the agents, you MIGHT invoke agents repeatedly.
 
 You should ALWAYS expect the agents to confirm they are done. If agents do not confirm they are finished, assume they haven't finished. If there is no output that ALWAYS means they are NOT finished.

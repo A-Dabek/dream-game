@@ -8,12 +8,14 @@ import {
   getItemGenre,
   Item,
   ItemId,
+  ListenerData,
   LogEntry,
   StateChangeLogEntry,
+  StatusEffectDisplayData,
 } from '@dream/game-board';
 import { GameService } from '../../game-logic';
 import { ActionHistoryEntry } from '../action-history-entry';
-import { ItemDisplayRegistry } from '../../common';
+import { ItemDisplayRegistry, StatusEffectDisplayRegistry } from '../../common';
 import { SoundService } from './sound.service';
 
 @Injectable({
@@ -115,10 +117,42 @@ export class UiStateService {
     return delay;
   }
 
+  private mapListenerToDisplayData(
+    listener: ListenerData,
+  ): StatusEffectDisplayData {
+    const effectType = listener.effectState.effect.type;
+    const duration = listener.effectState.currentDuration;
+    const hasCharges = duration.type === 'turns' || duration.type === 'charges';
+
+    return {
+      instanceId: listener.instanceId,
+      type: effectType,
+      iconName: StatusEffectDisplayRegistry.getMetadata(effectType).iconName,
+      remainingCharges: hasCharges ? duration.remaining : null,
+      durationType: duration.type,
+    };
+  }
+
   private applyStateChangeLog(
     state: GameState,
     log: StateChangeLogEntry,
   ): number {
+    // Map listeners to status effect display data
+    const playerOneId = log.snapshot.playerOne.id;
+    const playerTwoId = log.snapshot.playerTwo.id;
+
+    const playerStatusEffects: StatusEffectDisplayData[] = [];
+    const opponentStatusEffects: StatusEffectDisplayData[] = [];
+
+    for (const listener of log.snapshot.listeners) {
+      const displayData = this.mapListenerToDisplayData(listener);
+      if (listener.playerId === playerOneId) {
+        playerStatusEffects.push(displayData);
+      } else if (listener.playerId === playerTwoId) {
+        opponentStatusEffects.push(displayData);
+      }
+    }
+
     const nextState: GameState = {
       ...state,
       turnInfo: {
@@ -138,6 +172,8 @@ export class UiStateService {
       },
       isGameOver: log.snapshot.gameOver ?? state.isGameOver,
       winnerId: log.snapshot.winnerId ?? state.winnerId,
+      playerStatusEffects,
+      opponentStatusEffects,
     };
 
     this._uiState.set(nextState);

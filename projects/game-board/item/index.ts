@@ -11,6 +11,7 @@ export {
   type Loadout,
   type PassiveEffect,
   type StatusEffect,
+  type StatusEffectType,
 } from './item.model';
 export { GAME_CONFIG, BASE_HEAL } from './game-config';
 export {

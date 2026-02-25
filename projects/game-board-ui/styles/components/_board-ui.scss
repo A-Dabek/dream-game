@@ -47,6 +47,7 @@ app-board-ui {
     box-sizing: border-box;
     flex: 1 1 0;
     min-width: 0;
+    justify-content: space-between;
   }
 
   .center-content {
@@ -106,28 +107,64 @@ app-board-ui {
     padding: 0 0.5rem;
   }
 
-  /* Constrain status areas inside top/bottom sections to fixed height */
-  .opponent-area .center-content,
-  .player-area .center-content {
-    height: var(--status-height);
-    min-height: var(--status-height);
+  /* Opponent area layout: hand on top, then health bar */
+  .opponent-area {
+    flex: 0 0 var(--side-area-height);
+    height: var(--side-area-height);
+    @include faction-theme('opponent', -4px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden;
+
+    app-player-hand {
+      flex: 0 0 var(--hand-height);
+      order: 1;
+    }
+
+    app-health-bar {
+      flex: 0 0 var(--health-bar-height);
+      order: 2;
+    }
+  }
+
+  /* Player area layout: health bar on top, then hand at bottom */
+  .player-area {
+    flex: 0 0 var(--side-area-height);
+    height: var(--side-area-height);
+    @include faction-theme('player', 4px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden;
+
+    app-health-bar {
+      flex: 0 0 var(--health-bar-height);
+      order: 1;
+    }
+
+    app-player-hand {
+      flex: 0 0 var(--hand-height);
+      order: 2;
+    }
+  }
+
+  /* Status effects positioning in center content area */
+  .status-effects-top,
+  .status-effects-bottom {
+    width: 100%;
+    min-height: 2.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .opponent-area {
-    /* Fixed height for the opponent section (hand + status) */
-    flex: 0 0 var(--side-area-height);
-    height: var(--side-area-height);
-    @include faction-theme('opponent', -4px);
+  .status-effects-top {
+    margin-bottom: 0.3rem;
   }
 
-  .player-area {
-    /* Fixed height for the player section (status + hand) */
-    flex: 0 0 var(--side-area-height);
-    height: var(--side-area-height);
-    @include faction-theme('player', 4px);
+  .status-effects-bottom {
+    margin-top: 0.3rem;
   }
 
   :not(.disable-animations) .opponent-area,
@@ -137,22 +174,28 @@ app-board-ui {
 
   app-health-bar {
     width: 100%;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+
+    .center-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .health-bar-container {
     width: 80%;
-    margin: 0.5rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.2rem;
-  }
-
-  /* In fixed-height status rows, avoid extra outer margins that would overflow */
-  .opponent-area .health-bar-container,
-  .player-area .health-bar-container {
-    margin: 0;
   }
 
   .health-bar {

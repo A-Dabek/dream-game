@@ -1,10 +1,34 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "openrouter": {
+      "models": {
+        "small": {
+          "id": "stepfun/step-3.5-flash:free"
+        },
+        "cheap": {
+          "id": "minimax/minimax-m2.5"
+        },
+        "reasoning": {
+          "id": "moonshotai/kimi-k2.5"
+        }
+      }
+    }
+  },
+  "model": "openrouter/reasoning",
+  "small_model": "openrouter/small",
   "mcp": {
     "angular-cli": {
       "type": "local",
       "enabled": true,
       "command": ["npx", "-y", "@angular/cli", "mcp"]
+    }
+  },
+  "permission": {
+    "bash": {
+      "npm i*": "deny",
+      "playwright test --update-snapshots": "deny",
+      "npm run e2e:update": "deny"
     }
   },
   "agent": {
@@ -23,7 +47,9 @@
         "reviewer": "deny"
       },
       "permission": {
-        "skill": "allow",
+        "skill": {
+          "*": "allow"
+        },
         "edit": {
           "*": "deny",
           "*\\specifications\\*": "allow",
@@ -49,22 +75,44 @@
       "task": {
         "developer": "allow",
         "reviewer": "allow"
+      },
+      "tools": {
+        "angular-cli": true
+      },
+      "permission": {
+        "skill": {
+          "*": "allow"
+        },
+        "bash": {
+          "playwright test --update-snapshots": "ask",
+          "npm run e2e:update": "ask"
+        }
       }
     },
     "documentation": {
       "description": "{file:./agents/documentation.md}",
       "mode": "subagent",
+      "model": "openrouter/cheap",
       "color": "#0000FF",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
       "steps": 40,
-      "repeat_penalty": 1.0
+      "repeat_penalty": 1.0,
+      "tools": {
+        "angular-cli": true
+      },
+      "permission": {
+        "skill": {
+          "*": "allow"
+        }
+      }
     },
     "developer": {
       "description": "{file:./agents/developer.md}",
       "mode": "subagent",
+      "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
@@ -72,28 +120,41 @@
       "steps": 40,
       "repeat_penalty": 1.0,
       "permission": {
-        "skill": "allow"
+        "skill": {
+          "*": "allow"
+        }
+      },
+      "tools": {
+        "angular-cli": true
       }
     },
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",
       "mode": "subagent",
+      "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
       "steps": 40,
-      "repeat_penalty": 1.0
+      "repeat_penalty": 1.0,
+      "tools": {
+        "angular-cli": true
+      }
     },
     "qa": {
       "description": "{file:./agents/qa.md}",
       "mode": "subagent",
+      "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
       "steps": 40,
-      "repeat_penalty": 1.0
+      "repeat_penalty": 1.0,
+      "tools": {
+        "angular-cli": true
+      }
     }
   }
 }

@@ -22,6 +22,8 @@ export class Board implements BoardInterface {
       },
       isGameOver: false,
       actionHistory: [],
+      playerStatusEffects: [],
+      opponentStatusEffects: [],
     };
 
     this.engine = new Engine({ ...player }, { ...opponent });
@@ -196,6 +198,27 @@ export class Board implements BoardInterface {
     const isGameOver = engineState.gameOver;
     const winnerId = engineState.winnerId;
 
+    // Map listeners to status effects for both players
+    const playerStatusEffects = [];
+    const opponentStatusEffects = [];
+
+    for (const listener of engineState.listeners) {
+      const effectData = {
+        instanceId: listener.instanceId,
+        type: listener.effectState.effect.type,
+        iconName: listener.effectState.effect.type,
+        remainingCharges:
+          listener.effectState.currentDuration.remaining || null,
+        durationType: listener.effectState.currentDuration.type,
+      };
+
+      if (listener.playerId === updatedPlayer.id) {
+        playerStatusEffects.push(effectData);
+      } else if (listener.playerId === updatedOpponent.id) {
+        opponentStatusEffects.push(effectData);
+      }
+    }
+
     return {
       ...state,
       player: {
@@ -217,6 +240,8 @@ export class Board implements BoardInterface {
       },
       isGameOver: isGameOver ?? state.isGameOver,
       winnerId: winnerId ?? state.winnerId,
+      playerStatusEffects,
+      opponentStatusEffects,
     };
   }
 }

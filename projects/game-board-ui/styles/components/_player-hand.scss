@@ -6,12 +6,12 @@ app-player-hand {
   padding: var(--hand-padding-y);
   /* Fixed hand height for stable top/bottom sections */
   height: var(--hand-height);
-  flex: 0 0 var(--hand-height);
   box-sizing: border-box; /* include borders in fixed height */
   overflow-x: auto;
   width: 100%;
   max-width: 100%;
   justify-content: center;
+  align-items: center;
   background: var(--color-surface-2);
   border-top: 1px solid var(--color-border-weak);
   border-bottom: 1px solid var(--color-border-weak);
