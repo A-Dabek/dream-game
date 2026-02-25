@@ -30,10 +30,12 @@ app-action-history {
     justify-content: center;
     overflow: hidden;
     box-shadow: 0 6px 18px var(--shadow-medium);
+    transition: transform 0.25s ease;
 
     &.history-slide-in {
       pointer-events: none; /* disable interaction during animation */
       z-index: 0;
+      animation: historySlideIn 0.5s ease-in-out both;
     }
 
     &.player {
@@ -45,16 +47,16 @@ app-action-history {
     }
   }
 
-  :not(.disable-animations) .history-item {
-    transition: transform 0.25s ease;
-
-    &.history-slide-in {
-      animation: historySlideIn 0.5s ease-in-out both;
-    }
-  }
-
   .history-item app-icon {
     --icon-size: 1.4rem;
+  }
+}
+
+.disable-animations .history-item {
+  transition: none;
+
+  &.history-slide-in {
+    animation: none;
   }
 }
 

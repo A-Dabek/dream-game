@@ -21,6 +21,7 @@ app-turn-queue {
     background: var(--color-surface-1);
     border: 1px solid var(--color-border);
     position: relative;
+    transition: transform 0.25s ease;
 
     &.player {
       @include faction-theme('player');
@@ -33,11 +34,14 @@ app-turn-queue {
     &.current {
       border-width: 2px;
       z-index: 1;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px var(--shadow-medium);
     }
 
     &.turn-slide-out {
       pointer-events: none; /* disable interaction during animation */
       z-index: 0;
+      animation: turnSlideOut 0.5s ease-in-out both;
     }
 
     .skip-button {
@@ -53,47 +57,47 @@ app-turn-queue {
       justify-content: center;
       cursor: pointer;
       border: 1px solid var(--color-border-strong);
-
-      &:hover {
-        background: var(--color-border-strong);
-      }
-    }
-  }
-
-  // :not(disable-animations) does not work here foe some reason
-  .turn-item {
-    transition: transform 0.25s ease;
-
-    &.current {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px var(--shadow-medium);
-    }
-
-    &.turn-slide-out {
-      animation: turnSlideOut 0.5s ease-in-out both;
-    }
-
-    .skip-button {
       animation: pulse 2s infinite ease-in-out;
       transition: transform 0.1s;
 
       &:hover {
+        background: var(--color-border-strong);
         transform: scale(1.1);
       }
 
       &:active {
         transform: scale(0.9);
       }
+
+      app-icon {
+        --icon-size: 0.6rem;
+      }
     }
   }
 
-  /* Icon sizing via CSS variables (no TS size input) */
-  .turn-item app-icon {
+  app-icon {
     --icon-size: 1.5rem;
   }
+}
 
-  .turn-item .skip-button app-icon {
-    --icon-size: 0.6rem;
+.disable-animations .turn-item {
+  transition: none;
+
+  &.turn-slide-out {
+    animation: none;
+  }
+
+  .skip-button {
+    transition: none;
+    animation: none;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: none;
+    }
   }
 }
 
