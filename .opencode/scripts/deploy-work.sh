@@ -95,7 +95,7 @@ fi
 # Firebase Deploy
 echo ""
 echo "[FIREBASE] Deploying..."
-npx firebase deploy --only hosting
+firebase deploy --only hosting
 echo -e "${GREEN}[FIREBASE] Deploy completed successfully${NC}"
 
 echo ""

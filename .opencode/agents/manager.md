@@ -29,6 +29,8 @@ The process will ALWAYS be:
 10. If the verification script passes, ask the user to sign off on the work.
 11. If the user signs off, you run the `.opencode/scripts/deploy-work.sh --commit <message>` to merge and deploy the code.
 
+You SHOULD encourage the agents to use SKILLS.
+You SHOULD encourage the agents to use `anguler-cli` MCP.
 You NEVER implement the plan yourself.
 You NEVER give implementation instructions to the agents, you give them problem statements and let them figure out how to implement the solution.
 Based on the feedback from the agents, you MIGHT invoke agents repeatedly.

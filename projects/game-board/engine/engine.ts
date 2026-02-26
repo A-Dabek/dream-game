@@ -2,7 +2,7 @@ import { Effect, ItemId, Loadout } from '../item';
 import { ActiveEffectLibrary } from '../effect-library';
 import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
-import { ListenerFactory, ListenerData } from './effects';
+import { ListenerFactory, ListenerData, EffectHandlerFactory } from './effects';
 import {
   EngineLoadout,
   EngineState,
@@ -73,14 +73,24 @@ export class Engine {
 
     const finalState = effects.reduce<EngineState>(
       (acc, effect) => {
-        const effectEvent: GameEvent = {
-          type: 'effect',
+        // Use the effect handler factory to process effects
+        // This allows handlers to compute dynamic values based on game state
+        const computedEvents = EffectHandlerFactory.processEffect(
           effect,
-          playerId: playerId,
-        };
+          acc,
+          playerId,
+        );
+
         // For effects, previous behavior logged the event BEFORE processing
-        this.log({ type: 'event', event: effectEvent } as LogEntry);
-        return this.processEvent(effectEvent, acc.listeners, acc);
+        // Log each computed event
+        for (const computedEvent of computedEvents) {
+          this.log({ type: 'event', event: computedEvent } as LogEntry);
+        }
+
+        // Process all computed events through the normal event chain
+        return computedEvents.reduce<EngineState>((innerAcc, effectEvent) => {
+          return this.processEvent(effectEvent, innerAcc.listeners, innerAcc);
+        }, acc);
       },
       {
         ...stateAfterOnPlay,

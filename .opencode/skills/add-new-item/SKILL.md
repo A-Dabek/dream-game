@@ -16,6 +16,21 @@ description: Use this skill when adding a new item to the game
 
 Create a class implementing `ItemBehavior` with a `whenPlayed()` method returning effects.
 
+> **Smart Active Effects (Advanced)**: For effects that need to compute values dynamically at runtime (e.g., damage based on item count, health differences), use smart effect types. Effect handlers are located in `projects/game-board/engine/effects/handlers/`. The `EffectHandlerFactory` maps effect types to handler instances.
+> 
+> **Example** - Using a smart effect handler:
+> ```typescript
+> whenPlayed() {
+>   return [{
+>     type: 'item_count_damage',  // Triggers ItemCountDamageHandler
+>     value: 0,  // Value is computed by handler at runtime
+>     target: 'enemy'
+>   }];
+> }
+> ```
+> 
+> For most items, continue using static effects via `ActiveEffectLibrary`. Use smart effects only when you need dynamic value computation based on game state.
+
 **Note**: To apply an effect to both players (area-effect), return two separate `ActiveEffectLibrary.add_status_effect` calls:
 ```typescript
 import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';

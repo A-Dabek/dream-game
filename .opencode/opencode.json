@@ -7,10 +7,23 @@
           "id": "stepfun/step-3.5-flash:free"
         },
         "cheap": {
-          "id": "minimax/minimax-m2.5"
+          "id": "minimax/minimax-m2.5",
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "min_p": 0.01,
+            "top_k": 40,
+            "repeat_penalty": 1.0
+          }
         },
         "reasoning": {
-          "id": "moonshotai/kimi-k2.5"
+          "id": "moonshotai/kimi-k2.5",
+          "options": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "min_p": 0.01,
+            "top_k": 40
+          }
         }
       }
     }
@@ -112,7 +125,7 @@
     "developer": {
       "description": "{file:./agents/developer.md}",
       "mode": "subagent",
-      "model": "openrouter/cheap",
+      "model": "openrouter/reasoning",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,

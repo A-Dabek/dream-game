@@ -54,4 +54,17 @@ export const ActiveEffectLibrary = {
       target,
     };
   },
+
+  /**
+   * Smart attack that deals damage equal to the total number of items
+   * both players have. The actual damage value is computed at runtime
+   * by the engine's EffectHandlerFactory.
+   */
+  smart_attack: (target: 'self' | 'enemy' = 'enemy'): Effect => {
+    return {
+      type: 'item_count_damage',
+      value: 0, // Value is computed by the handler based on game state
+      target,
+    };
+  },
 } as const;

@@ -13,7 +13,9 @@ Make sure that:
 4. Tests are not flaky and redundant. If they are, improve flaky tests and reduce redundancy.
 5. Tests have clear setup and explicit assertions. If not, simplify the test implementation.
 6. Tests are passing. If not, try to fix them unless they are failing due to incorrect implementation.
+7. Tests are verifying observable behavior instead of implementation details. 
 
+You SHOULD favor integration tests over unit tests.
 You MUST NOT commit any changes to the project.
 You MUST NOT change the business logic to fix the tests.
 You MUST NOT change assertions to fix the tests for behaviors that have NOT changed.
