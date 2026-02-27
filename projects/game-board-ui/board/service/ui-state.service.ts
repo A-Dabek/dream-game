@@ -15,7 +15,7 @@ import {
 } from '@dream/game-board';
 import { GameService } from '../../game-logic';
 import { ActionHistoryEntry } from '../action-history-entry';
-import { ItemDisplayRegistry, StatusEffectDisplayRegistry } from '../../common';
+import { ItemConventionRegistry } from '../../common';
 import { SoundService } from './sound.service';
 
 @Injectable({
@@ -50,9 +50,10 @@ export class UiStateService {
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {
     const iconName =
-      action.itemId != null && ItemDisplayRegistry.hasMetadata(action.itemId)
-        ? ItemDisplayRegistry.getMetadata(action.itemId as ItemId).iconName
-        : ItemDisplayRegistry.PASS_ICON_NAME;
+      action.itemId != null
+        ? ItemConventionRegistry.getItemDisplay(action.itemId as ItemId)
+            .iconName
+        : ItemConventionRegistry.PASS_ICON_NAME;
 
     // Look up genre from item registry if itemId is present
     let genre: Genre | undefined;
@@ -127,7 +128,6 @@ export class UiStateService {
     return {
       instanceId: listener.instanceId,
       type: effectType,
-      iconName: StatusEffectDisplayRegistry.getMetadata(effectType).iconName,
       remainingCharges: hasCharges ? duration.remaining : null,
       durationType: duration.type,
     };

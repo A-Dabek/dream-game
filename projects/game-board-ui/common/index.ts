@@ -1,13 +1,9 @@
 export { getGenreColor } from './genre-color.util';
 export {
-  ItemDisplayRegistry,
+  ItemConventionRegistry,
   type ItemDisplayMetadata,
-} from './item-display-map';
+} from '../conventions/convention-registry';
 export {
   ACTIVE_EFFECT_DISPLAY_MAP,
   type EffectDisplayMetadata,
 } from './active-effect-display-map';
-export {
-  StatusEffectDisplayRegistry,
-  type StatusEffectDisplayMetadata,
-} from './status-effect-display-map';

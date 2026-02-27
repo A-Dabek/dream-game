@@ -6,7 +6,6 @@ import { Board } from './impl/board';
 export interface StatusEffectDisplayData {
   readonly instanceId: string;
   readonly type: StatusEffectType;
-  readonly iconName: string;
   readonly remainingCharges: number | null;
   readonly durationType:
     | 'turns'

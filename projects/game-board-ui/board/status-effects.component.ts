@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { StatusEffectDisplayData } from '@dream/game-board';
 import { IconComponent } from '../common/icon.component';
-import { StatusEffectDisplayRegistry } from '../common/status-effect-display-map';
+import { ItemConventionRegistry } from '../conventions/convention-registry';
 
 @Component({
   selector: 'app-status-effects',
@@ -45,6 +45,6 @@ export class StatusEffectsComponent {
   readonly side = input.required<'player' | 'opponent'>();
 
   getIconName(type: string): string {
-    return StatusEffectDisplayRegistry.getMetadata(type as any).iconName;
+    return ItemConventionRegistry.getStatusEffectDisplay(type as any).iconName;
   }
 }

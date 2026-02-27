@@ -25,6 +25,7 @@ This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the f
 - Before starting development check out a new branch from `master`.
 - E2E tests are written in Playwright and are located in `e2e'.
 - Webapp assets are located in `assets`.
+- UI Conventions (icons, descriptions) are located in `projects/game-board-ui/conventions/`. They use naming conventions to automatically map IDs to resources.
 
 ## Useful scripts
 

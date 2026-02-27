@@ -206,7 +206,6 @@ export class Board implements BoardInterface {
       const effectData = {
         instanceId: listener.instanceId,
         type: listener.effectState.effect.type,
-        iconName: listener.effectState.effect.type,
         remainingCharges:
           listener.effectState.currentDuration.remaining || null,
         durationType: listener.effectState.currentDuration.type,

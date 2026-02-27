@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { Item } from '@dream/game-board';
 import { IconComponent } from './icon.component';
-import { ItemDisplayRegistry } from './item-display-map';
+import { ItemConventionRegistry } from '../conventions/convention-registry';
 import { getGenreColor } from './genre-color.util';
 
 @Component({
@@ -26,7 +26,7 @@ export class ItemDisplayComponent {
   readonly active = input(false);
 
   readonly iconName = computed(
-    () => ItemDisplayRegistry.getMetadata(this.item().id).iconName,
+    () => ItemConventionRegistry.getItemDisplay(this.item().id).iconName,
   );
 
   readonly label = computed(() => {

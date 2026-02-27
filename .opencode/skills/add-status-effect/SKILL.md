@@ -54,7 +54,25 @@ export class YourItemBehaviour implements ItemBehavior {
 - **`target`**: Who receives the status effect ('self' or 'enemy')
 - **`type`** (optional): Identifies the effect type (e.g., `type: 'poison'`) for interactions with items like antidotes or gas masks
 
-## 2. Create Integration Test
+## 2. (Optional) Add Display Metadata Override
+
+**Where:** `projects/game-board-ui/conventions/{genre}-status-effects.json` (e.g., `basic-status-effects.json`)
+
+By default, the UI derives the icon name and description from the status effect type:
+- `super_poison` -> icon `super-poison`, description `Super Poison`
+
+If you need a custom icon or a specific description, add an entry to the corresponding genre JSON file:
+
+```json
+{
+  "super_poison": {
+    "icon": "deadly-poison",
+    "description": "Deals massive damage over time."
+  }
+}
+```
+
+## 3. Create Integration Test
 
 **Where:** `projects/game-board/board/test/{item-name}.spec.ts`
 

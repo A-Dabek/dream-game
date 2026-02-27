@@ -5,75 +5,53 @@ description: Use this skill when adding a new item to the game
 
 # What you need
 
-1. Name of the item and its icon name.
-2. Description of the item's effects and any special interactions.
+1. Name of the item (e.g., `super_punch`).
+2. Description of the item's effects.
+3. Genre of the item (e.g., `basic` or `poison`).
 
 # What to do
 
-## 1. Create Behaviour
-
-**Where:** `projects/game-board/item-library/impl/{item-name}.behaviour.ts`
-
-Create a class implementing `ItemBehavior` with a `whenPlayed()` method returning effects.
-
-> **Smart Active Effects (Advanced)**: For effects that need to compute values dynamically at runtime (e.g., damage based on item count, health differences), use smart effect types. Effect handlers are located in `projects/game-board/engine/effects/handlers/`. The `EffectHandlerFactory` maps effect types to handler instances.
-> 
-> **Example** - Using a smart effect handler:
-> ```typescript
-> whenPlayed() {
->   return [{
->     type: 'item_count_damage',  // Triggers ItemCountDamageHandler
->     value: 0,  // Value is computed by handler at runtime
->     target: 'enemy'
->   }];
-> }
-> ```
-> 
-> For most items, continue using static effects via `ActiveEffectLibrary`. Use smart effects only when you need dynamic value computation based on game state.
-
-**Note**: To apply an effect to both players (area-effect), return two separate `ActiveEffectLibrary.add_status_effect` calls:
-```typescript
-import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
-
-// To apply an effect to both players:
-return [
-  ActiveEffectLibrary.add_status_effect(effect, 'self'),
-  ActiveEffectLibrary.add_status_effect(effect, 'enemy'),
-];
-```
-
-## 2. Add Item ID
+## 1. Add Item ID
 
 **Where:** `projects/game-board/item/item.model.ts`
 
 Add the item ID to the `ItemId` type union.
 
-## 3. Export Behaviour
-
-**Where:** `projects/game-board/item-library/impl/index.ts`
-
-Export the behaviour class.
-
-## 4. Register Behaviour
+## 2. Define Item Behavior
 
 **Where:** `projects/game-board/item-library/item-registry.ts`
 
-Import and add to `BEHAVIORS` record.
+Add a new function to the `ItemLibrary` object that returns an `ItemDefinition`.
+Ensure you specify the correct `genre` and `onPlayEffects`.
 
-## 5. Add Genre Mapping
+Example:
+```typescript
+  super_punch: (): ItemDefinition => ({
+    genre: 'basic',
+    onPlayEffects: [ActiveEffectLibrary.attack(10)],
+  }),
+```
 
-**Where:** `projects/game-board/item-library/item-registry.ts`
+## 3. (Optional) Add Display Metadata Override
 
-Add entry to `ITEM_GENRES` with the item's genre (usually 'basic' for new items).
+**Where:** `projects/game-board-ui/conventions/{genre}-items.json` (e.g., `basic-items.json`)
 
-## 6. Add Display Metadata
+By default, the UI derives the icon name and description from the Item ID:
+- `super_punch` -> icon `super-punch`, description `Super Punch`
 
-**Where:** `projects/game-board-ui/common/item-display-map.ts`
+If you need a custom icon or a specific description, add an entry to the corresponding genre JSON file:
 
-Add entry to `ITEM_DISPLAY_MAP` with icon name and description.
+```json
+{
+  "super_punch": {
+    "icon": "heavy-punch",
+    "description": "A powerful punch that deals 10 damage."
+  }
+}
+```
 
-## 7. Create Integration Test
+## 4. Create Integration Test
 
 **Where:** `projects/game-board/board/test/{item-name}.spec.ts`
 
-Test item effects and loadout removal.
+Test item effects and ensure they work as expected.

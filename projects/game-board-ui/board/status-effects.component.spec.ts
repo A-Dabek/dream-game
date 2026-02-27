@@ -12,21 +12,18 @@ describe('StatusEffectsComponent', () => {
     {
       instanceId: 'effect-1',
       type: 'poison',
-      iconName: 'poison',
       remainingCharges: 3,
       durationType: 'turns',
     },
     {
       instanceId: 'effect-2',
       type: 'negate',
-      iconName: 'negate',
       remainingCharges: null,
       durationType: 'permanent',
     },
     {
       instanceId: 'effect-3',
       type: 'invert',
-      iconName: 'invert',
       remainingCharges: 2,
       durationType: 'charges',
     },
@@ -76,7 +73,7 @@ describe('StatusEffectsComponent', () => {
       expect(icons.length).toBe(3);
     });
 
-    it('should use correct icon name from effect data', () => {
+    it('should derive correct icon name from effect type', () => {
       setInputs([mockStatusEffects[0]]);
       const icon = fixture.debugElement.query(By.css('app-icon'));
       expect(icon.componentInstance.name()).toBe('poison');

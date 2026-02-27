@@ -209,8 +209,6 @@ export interface StatusEffectDisplayData {
     // (undocumented)
     readonly durationType: 'turns' | 'charges' | 'permanent' | 'until_item_removed';
     // (undocumented)
-    readonly iconName: string;
-    // (undocumented)
     readonly instanceId: string;
     // (undocumented)
     readonly remainingCharges: number | null;

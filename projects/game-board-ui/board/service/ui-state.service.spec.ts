@@ -146,7 +146,6 @@ describe('UiStateService - Status Effects', () => {
       expect(data).toEqual({
         instanceId: 'e-123',
         type: 'poison',
-        iconName: 'poison',
         remainingCharges: 3,
         durationType: 'turns',
       });
@@ -215,35 +214,6 @@ describe('UiStateService - Status Effects', () => {
       await new Promise((r) => setTimeout(r, 300));
 
       expect(service.uiState()?.playerStatusEffects.length).toBe(0);
-    });
-  });
-
-  describe('icon mapping', () => {
-    it('should map status effect types to correct icons', async () => {
-      service.initialize(mockGameState());
-
-      const testCases = [
-        { type: 'poison', icon: 'poison' },
-        { type: 'negate', icon: 'negate' },
-        { type: 'invert', icon: 'invert' },
-        { type: 'fatigue', icon: 'fatigue' },
-        { type: 'advance_turn', icon: 'advance-turn' },
-      ];
-
-      logsSubject.next([
-        stateChangeLog(
-          testCases.map((tc, i) =>
-            mockListener(`e${i}`, 'player-1', tc.type, 'turns', 3),
-          ),
-        ),
-      ]);
-      await new Promise((r) => setTimeout(r, 50));
-
-      testCases.forEach((tc, i) => {
-        expect(service.uiState()?.playerStatusEffects[i].iconName).toBe(
-          tc.icon,
-        );
-      });
     });
   });
 });
