@@ -24,15 +24,6 @@ export class Engine {
     const p1 = this.prepareLoadout(playerOne);
     const p2 = this.prepareLoadout(playerTwo);
 
-    const listeners: ListenerData[] = [
-      ...this.scanForListeners(p1),
-      ...this.scanForListeners(p2),
-      ListenerFactory.createFatigue(p1.id).serialize(),
-      ListenerFactory.createFatigue(p2.id).serialize(),
-      ListenerFactory.createAdvanceTurn(p1.id).serialize(),
-      ListenerFactory.createAdvanceTurn(p2.id).serialize(),
-    ];
-
     this._state = {
       playerOne: p1,
       playerTwo: p2,
@@ -41,63 +32,73 @@ export class Engine {
         { id: p2.id, speed: p2.speed },
         10,
       ),
-      listeners,
+      listeners: this.initializeListeners(p1, p2),
       gameOver: false,
     };
   }
 
+  private initializeListeners(
+    p1: EngineLoadout,
+    p2: EngineLoadout,
+  ): ListenerData[] {
+    return [
+      ...this.scanForListeners(p1),
+      ...this.scanForListeners(p2),
+      ListenerFactory.createFatigue(p1.id).serialize(),
+      ListenerFactory.createFatigue(p2.id).serialize(),
+      ListenerFactory.createAdvanceTurn(p1.id).serialize(),
+      ListenerFactory.createAdvanceTurn(p2.id).serialize(),
+    ];
+  }
+
   play(playerId: string, itemId: ItemId): void {
     if (this._state.gameOver) return;
-    const itemDef = getItemBehavior(itemId);
-    const state = this._state;
 
+    const state = this._state;
     const player =
       state.playerOne.id === playerId ? state.playerOne : state.playerTwo;
     const item = player.items.find((i) => i.id === itemId);
     const instanceId = item?.instanceId ?? itemId;
 
     const onPlayEvent: GameEvent = { type: 'on_play', playerId, itemId };
-
     const stateAfterOnPlay = this.processEvent(
       onPlayEvent,
       state.listeners,
       state,
     );
-    // Preserve previous ordering: reactions first, then the on_play event itself
-    this.log({ type: 'event', event: onPlayEvent } as LogEntry);
+    this.log({ type: 'event', event: onPlayEvent });
 
+    const itemDef = getItemBehavior(itemId);
     const effects: Effect[] = [
       ActiveEffectLibrary.remove_item(instanceId),
       ...itemDef.onPlayEffects,
     ];
 
-    const finalState = effects.reduce<EngineState>(
-      (acc, effect) => {
-        // Use the effect handler factory to process effects
-        // This allows handlers to compute dynamic values based on game state
-        const computedEvents = EffectHandlerFactory.processEffect(
-          effect,
-          acc,
-          playerId,
-        );
+    this._state = effects.reduce<EngineState>(
+      (acc, effect) => this.processItemEffect(effect, acc, playerId),
+      stateAfterOnPlay,
+    );
+  }
 
-        // For effects, previous behavior logged the event BEFORE processing
-        // Log each computed event
-        for (const computedEvent of computedEvents) {
-          this.log({ type: 'event', event: computedEvent } as LogEntry);
-        }
-
-        // Process all computed events through the normal event chain
-        return computedEvents.reduce<EngineState>((innerAcc, effectEvent) => {
-          return this.processEvent(effectEvent, innerAcc.listeners, innerAcc);
-        }, acc);
-      },
-      {
-        ...stateAfterOnPlay,
-      },
+  private processItemEffect(
+    effect: Effect,
+    state: EngineState,
+    playerId: string,
+  ): EngineState {
+    const computedEvents = EffectHandlerFactory.processEffect(
+      effect,
+      state,
+      playerId,
     );
 
-    this._state = finalState;
+    for (const event of computedEvents) {
+      this.log({ type: 'event', event });
+    }
+
+    return computedEvents.reduce<EngineState>(
+      (acc, event) => this.processEvent(event, acc.listeners, acc),
+      state,
+    );
   }
 
   processEndOfTurn(playerId: string): void {
@@ -172,56 +173,62 @@ export class Engine {
     state: EngineState,
     depth = 0,
   ): EngineState {
-    if (state.gameOver) return state;
-    if (depth > 50) return state;
+    if (state.gameOver || depth > 50) return state;
 
-    if (listenersToProcess.length !== 0) {
-      const [currentData, ...remaining] = listenersToProcess;
-      const current = this.deserializeListener(currentData);
-      const { event: resultEvent } = current.handle(event, state);
-      // Serialize the listener after processing to persist any state changes (e.g., duration updates)
-      const serializedCurrent = current.serialize();
-      const processedState = resultEvent.reduce<EngineState>((acc, e) => {
-        return this.processEvent(e, remaining, acc, depth + 1);
-      }, state);
-      // After all processing, update the listener in the state with its updated serialized form
-      const updatedListeners = processedState.listeners.map((l) =>
-        l.instanceId === serializedCurrent.instanceId ? serializedCurrent : l,
-      );
-      return {
-        ...processedState,
-        listeners: updatedListeners,
-      };
+    if (listenersToProcess.length > 0) {
+      return this.processListeners(event, listenersToProcess, state, depth);
     }
-    // Basic effect processing via processors
-    if (event.type === 'effect') {
-      const processor =
-        PROCESSORS[event.effect.type as keyof typeof PROCESSORS];
-      if (processor) {
-        const playerId = event.playerId;
-        const playerKey =
-          state.playerOne.id === playerId ? 'playerOne' : 'playerTwo';
 
-        const effect = event.effect;
-        // Process the effect
-        const processed = processor(state, playerKey, effect);
-        // Log the engine state change snapshot after processor application
-        this.log({ type: 'state-change', snapshot: processed });
-        // If the processor resulted in game over, log the game_over event as processors used to do
-        if (!state.gameOver && processed.gameOver && processed.winnerId) {
-          this.log({
-            type: 'event',
-            event: {
-              type: 'lifecycle',
-              playerId: processed.winnerId,
-              phase: 'game_over',
-            },
-          });
-        }
-        return processed;
-      }
+    return this.applyProcessor(event, state);
+  }
+
+  private processListeners(
+    event: GameEvent,
+    [currentData, ...remaining]: ListenerData[],
+    state: EngineState,
+    depth: number,
+  ): EngineState {
+    const listener = this.deserializeListener(currentData);
+    const { event: reactionEvents } = listener.handle(event, state);
+    const serializedListener = listener.serialize();
+
+    const stateAfterReactions = reactionEvents.reduce<EngineState>(
+      (acc, e) => this.processEvent(e, remaining, acc, depth + 1),
+      state,
+    );
+
+    return {
+      ...stateAfterReactions,
+      listeners: stateAfterReactions.listeners.map((l) =>
+        l.instanceId === serializedListener.instanceId ? serializedListener : l,
+      ),
+    };
+  }
+
+  private applyProcessor(event: GameEvent, state: EngineState): EngineState {
+    if (event.type !== 'effect') return state;
+
+    const processor = PROCESSORS[event.effect.type as keyof typeof PROCESSORS];
+    if (!processor) return state;
+
+    const playerKey =
+      state.playerOne.id === event.playerId ? 'playerOne' : 'playerTwo';
+    const nextState = processor(state, playerKey, event.effect);
+
+    this.log({ type: 'state-change', snapshot: nextState });
+
+    if (!state.gameOver && nextState.gameOver && nextState.winnerId) {
+      this.log({
+        type: 'event',
+        event: {
+          type: 'lifecycle',
+          playerId: nextState.winnerId,
+          phase: 'game_over',
+        },
+      });
     }
-    return state;
+
+    return nextState;
   }
 
   // DRY helper for simple top-level events that only need logging + processing
