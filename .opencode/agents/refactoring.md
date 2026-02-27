@@ -37,6 +37,7 @@ What you hate about code:
 - deprecated code that should be removed instead
 - methods in HTML templates which hurt performance
 
+ALWAYS verify the correctness by running `.opencode/scripts/acceptance-tests.sh`.
 The MORE code you can remove without losing readability the BETTER.
 You MUST NOT modify documentation. Another agent will do that.
 You MUST NOT commit any changes to the project.

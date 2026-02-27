@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { GamePlayersConfig, ItemId, PlayerConfig } from '@dream/game-board';
 
 /**
@@ -23,18 +24,19 @@ import { GamePlayersConfig, ItemId, PlayerConfig } from '@dream/game-board';
   providedIn: 'root',
 })
 export class UrlGameConfigService {
+  private readonly document = inject(DOCUMENT);
+
   /**
    * Parses the URL query parameters and returns a GamePlayersConfig.
    * Returns undefined if no state parameter is present or if parsing fails.
    *
-   * Reads directly from window.location.search to ensure URL params are available
+   * Reads from document.location.search to ensure URL params are available
    * immediately, avoiding timing issues with ActivatedRoute.
    *
    * @returns GamePlayersConfig if valid state param exists, undefined otherwise
    */
   parseConfigFromUrl(): GamePlayersConfig | undefined {
-    // Read directly from window.location.search to avoid timing issues with ActivatedRoute
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(this.document.location.search);
     const stateParam = urlParams.get('state');
 
     if (!stateParam) {
@@ -59,9 +61,9 @@ export class UrlGameConfigService {
    */
   private parseStateString(state: string): GamePlayersConfig {
     // Split by semicolon to get player configs
-    const playerParts = state.split(';');
+    const [player1Str, player2Str, ...extra] = state.split(';');
 
-    if (playerParts.length === 0 || playerParts.length > 2) {
+    if (extra.length > 0) {
       throw new Error(
         'Invalid state format: expected 1-2 players separated by ;',
       );
@@ -69,14 +71,12 @@ export class UrlGameConfigService {
 
     const config: GamePlayersConfig = {};
 
-    // Parse player 1
-    if (playerParts[0]) {
-      config.player1 = this.parsePlayerConfig(playerParts[0]);
+    if (player1Str) {
+      config.player1 = this.parsePlayerConfig(player1Str);
     }
 
-    // Parse player 2
-    if (playerParts[1]) {
-      config.player2 = this.parsePlayerConfig(playerParts[1]);
+    if (player2Str) {
+      config.player2 = this.parsePlayerConfig(player2Str);
     }
 
     return config;
@@ -100,31 +100,28 @@ export class UrlGameConfigService {
 
     const [itemsStr, healthStr, speedStr] = parts;
 
-    // Parse items (comma-separated ItemIds)
-    const items = itemsStr
-      ? (itemsStr.split(',').filter((id) => id.trim() !== '') as ItemId[])
+    const items = this.parseItems(itemsStr);
+    const health = this.parsePositiveInt(healthStr);
+    const speed = this.parsePositiveInt(speedStr);
+
+    return {
+      ...(items.length > 0 ? { items } : {}),
+      ...(health !== undefined ? { health } : {}),
+      ...(speed !== undefined ? { speed } : {}),
+    };
+  }
+
+  private parseItems(itemsStr: string): ItemId[] {
+    return itemsStr
+      ? (itemsStr
+          .split(',')
+          .map((id) => id.trim())
+          .filter(Boolean) as ItemId[])
       : [];
+  }
 
-    // Parse health
-    const health = parseInt(healthStr, 10);
-    const healthValue = isNaN(health) || health <= 0 ? undefined : health;
-
-    // Parse speed
-    const speed = parseInt(speedStr, 10);
-    const speedValue = isNaN(speed) || speed <= 0 ? undefined : speed;
-
-    const config: PlayerConfig = {};
-
-    if (items.length > 0) {
-      config.items = items;
-    }
-    if (healthValue !== undefined) {
-      config.health = healthValue;
-    }
-    if (speedValue !== undefined) {
-      config.speed = speedValue;
-    }
-
-    return config;
+  private parsePositiveInt(valueStr: string): number | undefined {
+    const value = parseInt(valueStr, 10);
+    return isNaN(value) || value <= 0 ? undefined : value;
   }
 }
