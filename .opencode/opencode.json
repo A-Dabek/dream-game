@@ -3,10 +3,16 @@
   "provider": {
     "openrouter": {
       "models": {
+        "reasoning": {
+          "id": "google/gemini-3-flash-preview"
+        },
+        "cheap": {
+          "id": "google/gemini-3-flash-preview"
+        },
         "small": {
           "id": "stepfun/step-3.5-flash:free"
         },
-        "cheap": {
+        "backup2": {
           "id": "minimax/minimax-m2.5",
           "options": {
             "temperature": 1.0,
@@ -16,7 +22,7 @@
             "repeat_penalty": 1.0
           }
         },
-        "reasoning": {
+        "backup": {
           "id": "moonshotai/kimi-k2.5",
           "options": {
             "temperature": 1.0,
@@ -26,6 +32,28 @@
           }
         }
       }
+    }
+  },
+  "command": {
+    "develop": {
+      "agent": "developer",
+      "description": "Execute development plan from specification",
+      "template": "Execute the implementation plan from $1"
+    },
+    "qa": {
+      "agent": "qa",
+      "description": "Validate and test implementation",
+      "template": "Validate the implementation. Review these changed files:!`git diff --name-status`\n\nEnsure all acceptance criteria are met, tests are written and passing."
+    },
+    "refactor": {
+      "agent": "refactoring",
+      "description": "Clean up code after implementation",
+      "template": "Refactor and clean up the code. Review these changed files:!`git diff --name-status`\n\nApply refactoring improvements while maintaining business logic."
+    },
+    "docs": {
+      "agent": "documentation",
+      "description": "Update documentation",
+      "template": "Update documentation based on implementation. Review these changed files:!`git diff --name-status`\n\nUpdate relevant documentation files if needed."
     }
   },
   "model": "openrouter/reasoning",
@@ -53,7 +81,7 @@
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
-      "steps": 80,
+      "steps": 30,
       "repeat_penalty": 1.0,
       "task": {
         "developer": "deny",
@@ -79,11 +107,12 @@
       "description": "{file:./agents/manager.md}",
       "color": "#00FF00",
       "mode": "primary",
+      "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
-      "steps": 40,
+      "steps": 30,
       "repeat_penalty": 1.0,
       "task": {
         "developer": "allow",
@@ -104,14 +133,14 @@
     },
     "documentation": {
       "description": "{file:./agents/documentation.md}",
-      "mode": "subagent",
+      "mode": "all",
       "model": "openrouter/cheap",
       "color": "#0000FF",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
-      "steps": 40,
+      "steps": 30,
       "repeat_penalty": 1.0,
       "tools": {
         "angular-cli": true
@@ -124,13 +153,13 @@
     },
     "developer": {
       "description": "{file:./agents/developer.md}",
-      "mode": "subagent",
+      "mode": "all",
       "model": "openrouter/reasoning",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
-      "steps": 40,
+      "steps": 30,
       "repeat_penalty": 1.0,
       "permission": {
         "skill": {
@@ -143,13 +172,13 @@
     },
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",
-      "mode": "subagent",
+      "mode": "all",
       "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
-      "steps": 40,
+      "steps": 30,
       "repeat_penalty": 1.0,
       "tools": {
         "angular-cli": true
@@ -157,13 +186,13 @@
     },
     "qa": {
       "description": "{file:./agents/qa.md}",
-      "mode": "subagent",
+      "mode": "all",
       "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
       "top_k": 40,
-      "steps": 40,
+      "steps": 30,
       "repeat_penalty": 1.0,
       "tools": {
         "angular-cli": true

@@ -38,6 +38,7 @@ What you hate about code:
 - methods in HTML templates which hurt performance
 
 The MORE code you can remove without losing readability the BETTER.
+You MUST NOT modify documentation. Another agent will do that.
 You MUST NOT commit any changes to the project.
 You MUST NOT change the business logic.
 You MUST NOT update e2e screenshots by yourself, ask the manager agent for that.
