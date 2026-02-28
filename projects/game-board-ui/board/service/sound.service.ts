@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ItemId } from '@dream/game-board';
 import { ItemConventionRegistry } from '../../conventions/convention-registry';
 
-const SFX_BASE_PATH = '/assets/sfx';
+const SFX_BASE_PATH = '/assets/sfx/game-items';
 const FALLBACK_SOUND = `${SFX_BASE_PATH}/basic.wav`;
 
 @Injectable({
