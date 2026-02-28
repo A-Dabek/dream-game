@@ -56,6 +56,7 @@ export class PostGameScreenComponent {
   readonly opponent = input.required<Loadout>();
   readonly winnerId = input.required<string>();
 
+  // TODO instead of winnerId just accept 1 input "winner: 'top' | 'bottom'"
   readonly playerWon = computed(() => this.winnerId() === 'player');
   readonly opponentWon = computed(() => this.winnerId() === 'cpu');
 
