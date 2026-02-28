@@ -1,13 +1,13 @@
 import { ActiveEffectId } from '@dream/game-board';
 
 export interface EffectDisplayMetadata {
-  readonly iconName: string;
+  readonly pathD: string;
   readonly description: string;
 }
 
 export const ACTIVE_EFFECT_DISPLAY_MAP: Record<
   ActiveEffectId,
-  EffectDisplayMetadata
+  { readonly iconName: string; readonly description: string }
 > = {
   attack: {
     iconName: 'attack',

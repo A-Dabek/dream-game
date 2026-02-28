@@ -14,7 +14,7 @@ import { getGenreColor } from './genre-color.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
-    <app-icon [name]="iconName()" [color]="genreColor()" />
+    <app-icon [pathD]="pathD()" [color]="genreColor()" />
     <div class="label">{{ label() }}</div>
   `,
   host: {
@@ -25,8 +25,8 @@ export class ItemDisplayComponent {
   readonly item = input.required<Item>();
   readonly active = input(false);
 
-  readonly iconName = computed(
-    () => ItemConventionRegistry.getItemDisplay(this.item().id).iconName,
+  readonly pathD = computed(
+    () => ItemConventionRegistry.getItemDisplay(this.item().id).pathD,
   );
 
   readonly label = computed(() => {

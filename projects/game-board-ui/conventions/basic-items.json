@@ -1,1 +1,66 @@
-{}
+{
+  "hand": {
+    "icon": "hand",
+    "description": "A basic hand."
+  },
+  "punch": {
+    "icon": "punch",
+    "description": "A basic punch attack."
+  },
+  "sticking_plaster": {
+    "icon": "sticking-plaster",
+    "description": "Heals a small amount of health."
+  },
+  "sticky_boot": {
+    "icon": "sticky-boot",
+    "description": "Reduces enemy speed."
+  },
+  "wingfoot": {
+    "icon": "wingfoot",
+    "description": "Increases your speed."
+  },
+  "_blueprint_attack": {
+    "icon": "attack",
+    "description": "A blueprint attack."
+  },
+  "_blueprint_heal_5": {
+    "icon": "heal-5",
+    "description": "A blueprint heal for 5 health."
+  },
+  "_blueprint_passive_attack": {
+    "icon": "passive-attack",
+    "description": "Deals damage periodically."
+  },
+  "_blueprint_reactive_removal": {
+    "icon": "reactive-removal",
+    "description": "Removes items reactively."
+  },
+  "_blueprint_self_damage": {
+    "icon": "self-damage",
+    "description": "Deals damage to yourself."
+  },
+  "_blueprint_damage_to_heal_charges": {
+    "icon": "damage-to-heal-charges",
+    "description": "Converts damage to healing for a number of charges."
+  },
+  "_blueprint_damage_to_heal_permanent": {
+    "icon": "damage-to-heal-permanent",
+    "description": "Permanently converts damage to healing."
+  },
+  "_blueprint_damage_to_heal_turns": {
+    "icon": "damage-to-heal-turns",
+    "description": "Converts damage to healing for a number of turns."
+  },
+  "_dummy": {
+    "icon": "dummy",
+    "description": "A dummy item."
+  },
+  "_blueprint_negate_damage": {
+    "icon": "negate-damage",
+    "description": "Negates damage."
+  },
+  "_blueprint_triple_threat": {
+    "icon": "triple-threat",
+    "description": "A triple threat attack."
+  }
+}

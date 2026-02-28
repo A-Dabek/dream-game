@@ -1,10 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  input,
-  computed,
-} from '@angular/core';
-import iconCollection from '../../../assets/icons.json';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 @Component({
   selector: 'app-icon',
@@ -15,7 +9,7 @@ import iconCollection from '../../../assets/icons.json';
       viewBox="0 0 512 512"
       fill="currentColor"
     >
-      <path [attr.d]="shape()" />
+      <path [attr.d]="pathD()" />
     </svg>
   `,
   host: {
@@ -23,13 +17,6 @@ import iconCollection from '../../../assets/icons.json';
   },
 })
 export class IconComponent {
-  readonly name = input('');
+  readonly pathD = input.required<string>();
   readonly color = input('currentColor');
-
-  readonly shape = computed(
-    () =>
-      (iconCollection as any)[this.name()] ||
-      (iconCollection as any)['uncertainty'] ||
-      '',
-  );
 }

@@ -1,105 +1,106 @@
-import {
-  ItemId,
-  StatusEffectType,
-  ActiveEffectId,
-  Genre,
-  getItemGenre,
-} from '@dream/game-board';
+import { ItemId, StatusEffectType, ActiveEffectId } from '@dream/game-board';
 import {
   ACTIVE_EFFECT_DISPLAY_MAP,
   EffectDisplayMetadata,
 } from '../common/active-effect-display-map';
 
+import iconPathsJson from './icon-paths.json';
 import basicItemsJson from './basic-items.json';
 import basicStatusEffectsJson from './basic-status-effects.json';
 import poisonItemsJson from './poison-items.json';
 import poisonStatusEffectsJson from './poison-status-effects.json';
 
 export interface ItemDisplayMetadata {
-  readonly iconName: string;
+  readonly pathD: string;
   readonly description: string;
 }
 
-interface GenreConfig {
-  readonly items: Record<
-    string,
-    { readonly icon?: string; readonly description?: string }
-  >;
-  readonly statusEffects: Record<
-    string,
-    { readonly icon?: string; readonly description?: string }
-  >;
+export type IconName = keyof typeof iconPathsJson;
+
+export interface ConventionEntry {
+  readonly icon: string;
+  readonly description: string;
 }
 
-const GENRE_CONFIGS: Record<Genre, GenreConfig> = {
-  basic: {
-    items: basicItemsJson,
-    statusEffects: basicStatusEffectsJson,
-  },
-  poison: {
-    items: poisonItemsJson,
-    statusEffects: poisonStatusEffectsJson,
-  },
-} as const;
+export type ItemConventionMap = Record<ItemId, ConventionEntry>;
+export type StatusEffectConventionMap = Record<
+  StatusEffectType,
+  ConventionEntry
+>;
 
-function toKebabCase(id: string): string {
-  return id
-    .replace(/^_/, '')
-    .replace('blueprint_', '')
-    .replace(/_/g, '-')
-    .trim();
-}
+const ICON_PATHS = iconPathsJson as Record<string, string>;
 
-function deriveDescription(id: string): string {
-  return id.replace('_blueprint_', '').replace(/_/g, ' ');
+// Validate that all ItemId and StatusEffectType values have convention entries
+export const ALL_ITEMS = {
+  ...basicItemsJson,
+  ...poisonItemsJson,
+} satisfies ItemConventionMap;
+
+export const ALL_STATUS_EFFECTS = {
+  ...basicStatusEffectsJson,
+  ...poisonStatusEffectsJson,
+  ...basicItemsJson,
+  ...poisonItemsJson,
+} satisfies StatusEffectConventionMap;
+
+function resolveIconPath(iconName: string): string {
+  const path = ICON_PATHS[iconName];
+  if (path === undefined) {
+    throw new Error(`Icon "${iconName}" not found in icon-paths.json`);
+  }
+  return path;
 }
 
 export const ItemConventionRegistry = {
   getItemDisplay(itemId: ItemId): ItemDisplayMetadata {
-    const genre = getItemGenre(itemId);
-    const config = GENRE_CONFIGS[genre];
-    const itemConfig = config?.items?.[itemId];
-
+    const entry = this.getItemConvention(itemId);
     return {
-      iconName: itemConfig?.icon ?? toKebabCase(itemId),
-      description: itemConfig?.description ?? deriveDescription(itemId),
+      pathD: resolveIconPath(entry.icon),
+      description: entry.description,
     };
   },
 
+  getItemConvention(itemId: ItemId): ConventionEntry {
+    const itemConfig = ALL_ITEMS[itemId];
+
+    if (!itemConfig) {
+      throw new Error(`No convention entry for item: ${itemId}`);
+    }
+
+    return itemConfig;
+  },
+
   getStatusEffectDisplay(type: StatusEffectType): EffectDisplayMetadata {
-    // 1. Check for explicit overrides in any genre configuration
-    for (const genreConfig of Object.values(GENRE_CONFIGS)) {
-      const effectConfig = genreConfig.statusEffects?.[type];
-      if (effectConfig) {
-        return {
-          iconName: effectConfig.icon ?? toKebabCase(type),
-          description: effectConfig.description ?? deriveDescription(type),
-        };
-      }
+    const effectConfig = ALL_STATUS_EFFECTS[type];
+
+    if (!effectConfig) {
+      throw new Error(`No convention entry for status effect: ${type}`);
     }
 
-    // 2. Fallback to item display metadata if it matches an ItemId
-    for (const genreConfig of Object.values(GENRE_CONFIGS)) {
-      if (type in genreConfig.items) {
-        return this.getItemDisplay(type as ItemId);
-      }
-    }
-
-    // 3. Finally derive from naming conventions
     return {
-      iconName: toKebabCase(type),
-      description: deriveDescription(type),
+      pathD: resolveIconPath(effectConfig.icon),
+      description: effectConfig.description,
     };
   },
 
   getActiveEffectDisplay(effectId: ActiveEffectId): EffectDisplayMetadata {
-    return (
-      ACTIVE_EFFECT_DISPLAY_MAP[effectId] ?? {
-        iconName: 'active-effect',
+    const config = ACTIVE_EFFECT_DISPLAY_MAP[effectId];
+    if (!config) {
+      return {
+        pathD: resolveIconPath('active-effect'),
         description: 'Unknown active effect',
-      }
-    );
+      };
+    }
+
+    return {
+      pathD: resolveIconPath(config.iconName),
+      description: config.description,
+    };
   },
 
-  PASS_ICON_NAME: 'fast-forward-button' as const,
+  PASS_ICON_PATH: resolveIconPath('fast-forward-button'),
+
+  resolveIconPath(iconName: string): string {
+    return resolveIconPath(iconName);
+  },
 } as const;

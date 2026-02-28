@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { StatusEffectDisplayData } from '@dream/game-board';
 import { StatusEffectsComponent } from './status-effects.component';
 import { IconComponent } from '../common/icon.component';
+import { ItemConventionRegistry } from '../conventions/convention-registry';
 
 describe('StatusEffectsComponent', () => {
   let component: StatusEffectsComponent;
@@ -76,7 +77,9 @@ describe('StatusEffectsComponent', () => {
     it('should derive correct icon name from effect type', () => {
       setInputs([mockStatusEffects[0]]);
       const icon = fixture.debugElement.query(By.css('app-icon'));
-      expect(icon.componentInstance.name()).toBe('poison');
+      expect(icon.componentInstance.pathD()).toBe(
+        ItemConventionRegistry.getStatusEffectDisplay('poison').pathD,
+      );
     });
   });
 

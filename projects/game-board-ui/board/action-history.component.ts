@@ -17,7 +17,7 @@ import { getGenreColor } from '../common/genre-color.util';
           [class.opponent]="entry.playerId !== playerId()"
           animate.enter="history-slide-in"
         >
-          <app-icon [name]="entry.iconName" [color]="getColor(entry.genre)" />
+          <app-icon [pathD]="entry.pathD" [color]="getColor(entry.genre)" />
         </div>
       }
     </div>

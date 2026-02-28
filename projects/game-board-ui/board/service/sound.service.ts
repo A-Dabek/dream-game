@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ItemId } from '@dream/game-board';
-import { ItemConventionRegistry } from '../../common';
+import { ItemConventionRegistry } from '../../conventions/convention-registry';
 
 const SFX_BASE_PATH = '/assets/sfx';
 const FALLBACK_SOUND = `${SFX_BASE_PATH}/basic.wav`;
@@ -10,8 +10,8 @@ const FALLBACK_SOUND = `${SFX_BASE_PATH}/basic.wav`;
 })
 export class SoundService {
   playItemSound(itemId: ItemId): void {
-    const iconName = ItemConventionRegistry.getItemDisplay(itemId).iconName;
-    const soundPath = `${SFX_BASE_PATH}/${iconName}.wav`;
+    const entry = ItemConventionRegistry.getItemConvention(itemId);
+    const soundPath = `${SFX_BASE_PATH}/${entry.icon}.wav`;
 
     this.playAudio(soundPath).catch(() => {
       this.playAudio(FALLBACK_SOUND).catch((error) => {

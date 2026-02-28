@@ -16,25 +16,33 @@ description: Use this skill when adding a new genre to the game
 
 Add the new genre to the `Genre` type union.
 
-## 2. (Optional) Create UI Convention Files
+## 2. Create UI Convention Files
 
 **Where:** `projects/game-board-ui/conventions/`
 
-If items or status effects in this genre need custom display metadata (overriding naming conventions), create JSON files for them:
+All items and status effects in this genre **MUST** have display metadata in JSON files. Create:
 - `{genre}-items.json`
 - `{genre}-status-effects.json`
 
 Example `{genre}-items.json`:
 ```json
-{}
+{
+  "genre_item_id": {
+    "icon": "icon-name",
+    "description": "Item description"
+  }
+}
 ```
 
-## 3. Register Genre in Registry
+Ensure the icons referenced are present in `projects/game-board-ui/conventions/icon-paths.json`.
+
+## 3. Register Items and Status Effects
 
 **Where:** `projects/game-board-ui/conventions/convention-registry.ts`
 
 1. Import the new JSON files.
-2. Add the genre to `GENRE_CONFIGS` mapping.
+2. Add the items from your genre to `ALL_ITEMS` constant.
+3. Add the status effects from your genre to `ALL_STATUS_EFFECTS` constant.
 
 ```typescript
 import {genre}ItemsJson from './{genre}-items.json';
@@ -42,14 +50,17 @@ import {genre}StatusEffectsJson from './{genre}-status-effects.json';
 
 // ...
 
-const GENRE_CONFIGS: Record<Genre, GenreConfig> = {
+export const ALL_ITEMS = {
   // ...
-  {genre}: {
-    items: {genre}ItemsJson,
-    statusEffects: {genre}StatusEffectsJson,
-  },
-};
+  ...{genre}ItemsJson,
+} satisfies ItemConventionMap;
+
+export const ALL_STATUS_EFFECTS = {
+  // ...
+  ...{genre}StatusEffectsJson,
+} satisfies StatusEffectConventionMap;
 ```
+
 
 ## 4. Add Color Mapping
 

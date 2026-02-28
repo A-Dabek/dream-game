@@ -1,1 +1,26 @@
-{}
+{
+  "invert": {
+    "icon": "invert",
+    "description": "Inverts the effect of the next action."
+  },
+  "negate": {
+    "icon": "negate",
+    "description": "Negates the effect of the next action."
+  },
+  "reactive_removal": {
+    "icon": "reactive-removal",
+    "description": "Removes an item when receiving damage."
+  },
+  "advance_turn": {
+    "icon": "advance-turn",
+    "description": "Advances the turn order."
+  },
+  "fatigue": {
+    "icon": "fatigue",
+    "description": "Reduces efficiency over time."
+  },
+  "periodic_attack": {
+    "icon": "periodic-attack",
+    "description": "Deals damage at the end of each turn."
+  }
+}

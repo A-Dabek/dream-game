@@ -1,1 +1,6 @@
-{}
+{
+  "poison": {
+    "icon": "poison",
+    "description": "Deals damage at the end of each turn."
+  }
+}

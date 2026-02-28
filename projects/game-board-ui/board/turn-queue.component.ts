@@ -21,9 +21,7 @@ import { IconComponent } from '../common/icon.component';
         [class.current]="$first"
         animate.leave="turn-slide-out"
       >
-        <app-icon
-          [name]="turn.playerId === playerId() ? 'police-badge' : 'brutal-helm'"
-        />
+        <app-icon [pathD]="getPathD(turn.playerId)" />
         @if ($first && turn.playerId === playerId()) {
           <div
             class="skip-button"
@@ -35,7 +33,7 @@ import { IconComponent } from '../common/icon.component';
             (keydown.space)="$event.preventDefault(); skipTurn.emit()"
             data-testid="skip-turn-button"
           >
-            <app-icon [name]="passIconName" />
+            <app-icon [pathD]="passIconPath" />
           </div>
         }
       </div>
@@ -46,5 +44,11 @@ export class TurnQueueComponent {
   readonly turnQueue = input.required<TurnEntry[]>();
   readonly playerId = input.required<string>();
   readonly skipTurn = output<void>();
-  readonly passIconName = ItemConventionRegistry.PASS_ICON_NAME;
+  readonly passIconPath = ItemConventionRegistry.PASS_ICON_PATH;
+
+  getPathD(playerId: string): string {
+    const iconName =
+      playerId === this.playerId() ? 'police-badge' : 'brutal-helm';
+    return ItemConventionRegistry.resolveIconPath(iconName);
+  }
 }

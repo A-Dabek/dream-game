@@ -5,7 +5,7 @@ export interface ActionHistoryEntry {
   readonly id: string;
   readonly actionType: GameActionType;
   readonly playerId: string;
-  readonly iconName: string;
+  readonly pathD: string;
   readonly itemId?: string;
   readonly genre?: Genre;
 }

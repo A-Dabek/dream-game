@@ -26,7 +26,7 @@ import { ItemConventionRegistry } from '../conventions/convention-registry';
           [attr.aria-label]="effect.type"
         >
           <app-icon
-            [name]="getIconName(effect.type)"
+            [pathD]="getPathD(effect.type)"
             [color]="'var(--faction-color)'"
           />
           @if (effect.remainingCharges !== null) {
@@ -44,7 +44,7 @@ export class StatusEffectsComponent {
   readonly playerId = input.required<string>();
   readonly side = input.required<'player' | 'opponent'>();
 
-  getIconName(type: string): string {
-    return ItemConventionRegistry.getStatusEffectDisplay(type as any).iconName;
+  getPathD(type: string): string {
+    return ItemConventionRegistry.getStatusEffectDisplay(type as any).pathD;
   }
 }

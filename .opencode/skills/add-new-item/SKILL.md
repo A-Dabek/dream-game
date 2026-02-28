@@ -32,23 +32,25 @@ Example:
   }),
 ```
 
-## 3. (Optional) Add Display Metadata Override
+## 3. Add Display Metadata
 
 **Where:** `projects/game-board-ui/conventions/{genre}-items.json` (e.g., `basic-items.json`)
 
-By default, the UI derives the icon name and description from the Item ID:
-- `super_punch` -> icon `super-punch`, description `Super Punch`
-
-If you need a custom icon or a specific description, add an entry to the corresponding genre JSON file:
+You **MUST** add an entry for the new item to the corresponding genre JSON file. The UI no longer automatically derives icon names or descriptions.
 
 ```json
 {
   "super_punch": {
-    "icon": "heavy-punch",
+    "icon": "punch",
     "description": "A powerful punch that deals 10 damage."
   }
 }
 ```
+
+The `icon` field should reference a valid icon name from `projects/game-board-ui/conventions/icon-paths.json`.
+
+If you added a new genre, ensure the items from that genre are also registered in `projects/game-board-ui/conventions/convention-registry.ts` within the `ALL_ITEMS` constant.
+
 
 ## 4. Create Integration Test
 

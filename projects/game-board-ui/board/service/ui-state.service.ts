@@ -49,11 +49,10 @@ export class UiStateService {
   }
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {
-    const iconName =
+    const pathD =
       action.itemId != null
-        ? ItemConventionRegistry.getItemDisplay(action.itemId as ItemId)
-            .iconName
-        : ItemConventionRegistry.PASS_ICON_NAME;
+        ? ItemConventionRegistry.getItemDisplay(action.itemId as ItemId).pathD
+        : ItemConventionRegistry.PASS_ICON_PATH;
 
     // Look up genre from item registry if itemId is present
     let genre: Genre | undefined;
@@ -65,7 +64,7 @@ export class UiStateService {
       id: `history-${Math.random().toString(36).slice(2, 10)}`,
       actionType: action.type,
       playerId: action.playerId,
-      iconName,
+      pathD,
       itemId: action.itemId,
       genre,
     };

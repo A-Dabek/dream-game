@@ -56,7 +56,8 @@ Overview of all UI components in the game-board-ui library.
 
 - **Selector:** `app-icon`
 - **Children:** None
-- **Purpose:** Renders SVG icons with configurable size and color via CSS variables.
+- **Inputs:** `pathD: string` (required), `color: string` (optional)
+- **Purpose:** Renders SVG icons using a direct SVG path string, with configurable color.
 
 ---
 
