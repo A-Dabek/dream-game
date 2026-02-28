@@ -1,5 +1,36 @@
 @use '../mixins' as *;
 
+@mixin statusEffectSlide($direction: 'up', $phase: 'enter') {
+  @if $phase == 'enter' {
+    0% {
+      opacity: 0;
+      width: 0;
+    }
+    50% {
+      width: 1.8rem;
+      transform: translateY(if($direction == 'up', -100%, 100%));
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  } @else {
+    0% {
+      width: 1.8rem;
+      transform: translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(if($direction == 'up', -100%, 100%));
+    }
+    100% {
+      opacity: 0;
+      width: 0;
+    }
+  }
+}
+
 app-status-effects {
   display: flex;
   align-items: center;
@@ -63,19 +94,19 @@ app-status-effects {
     }
 
     &.player.status-effect-enter {
-      animation: statusEffectSlideUp 0.4s ease-out both;
+      animation: statusEffectSlideUpFromBottom 0.4s ease-out both;
     }
 
     &.player.status-effect-leave {
-      animation: statusEffectSlideDown 0.4s ease-in both;
+      animation: statusEffectSlideDownToBottom 0.4s ease-in both;
     }
 
     &.opponent.status-effect-enter {
-      animation: statusEffectSlideDown 0.4s ease-out both;
+      animation: statusEffectSlideDownFromTop 0.4s ease-out both;
     }
 
     &.opponent.status-effect-leave {
-      animation: statusEffectSlideUp 0.4s ease-in both;
+      animation: statusEffectSlideUpToTop 0.4s ease-in both;
     }
   }
 }
@@ -89,33 +120,19 @@ app-status-effects {
   }
 }
 
-@keyframes statusEffectSlideUp {
-  0% {
-    opacity: 0;
-    width: 0;
-  }
-  50% {
-    width: 1.8rem;
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@keyframes statusEffectSlideUpFromBottom {
+  @include statusEffectSlide('down', 'enter');
 }
 
-@keyframes statusEffectSlideDown {
-  0% {
-    width: 1.8rem;
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(100%);
-  }
-  100% {
-    opacity: 0;
-    width: 0;
-  }
+@keyframes statusEffectSlideDownToBottom {
+  @include statusEffectSlide('down', 'leave');
 }
+
+@keyframes statusEffectSlideDownFromTop {
+  @include statusEffectSlide('up', 'enter');
+}
+
+@keyframes statusEffectSlideUpToTop {
+  @include statusEffectSlide('up', 'leave');
+}
+
