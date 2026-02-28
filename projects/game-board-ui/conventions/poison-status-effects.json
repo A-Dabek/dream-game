@@ -2,5 +2,13 @@
   "poison": {
     "icon": "poison",
     "description": "Deals damage at the end of each turn."
+  },
+  "gas_mask": {
+    "icon": "gas-mask",
+    "description": "Negates incoming poison. Consumes charges."
+  },
+  "poison_darts": {
+    "icon": "poison-darts",
+    "description": "Applies poison at the end of each turn."
   }
 }

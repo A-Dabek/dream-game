@@ -1,31 +1,44 @@
-import { AFTER_EFFECT, BEFORE_EFFECT, ON_TURN_END } from '../../../item';
+import { GameEvent } from '../../engine.types';
+import {
+  AFTER_EFFECT,
+  BEFORE_EFFECT,
+  BEFORE_STATUS_EFFECT,
+  ON_TURN_END,
+  ON_TURN_START,
+} from '../../../item';
 import { isEffectEvent, isLifecycleGameEvent } from '../../type-guards';
 import { ConditionPredicate } from './reactive-condition';
+import { StatusEffect } from '../../../item/item.model';
+
+type Matcher = (event: GameEvent, conditionValue?: unknown) => boolean;
+
+const MATCHERS: Record<string, Matcher> = {
+  [ON_TURN_END]: (event) =>
+    isLifecycleGameEvent(event) && event.phase === ON_TURN_END,
+  [ON_TURN_START]: (event) =>
+    isLifecycleGameEvent(event) && event.phase === ON_TURN_START,
+  [BEFORE_STATUS_EFFECT]: (event, conditionValue) =>
+    isEffectEvent(event) &&
+    event.effect.type === 'add_status_effect' &&
+    (event.effect.value as StatusEffect).type === conditionValue,
+  [BEFORE_EFFECT]: (event, conditionValue) =>
+    matchEffectType(event, conditionValue),
+  [AFTER_EFFECT]: (event, conditionValue) =>
+    matchEffectType(event, conditionValue),
+};
+
+function matchEffectType(event: GameEvent, conditionValue?: unknown): boolean {
+  if (!isEffectEvent(event)) return false;
+  return conditionValue === undefined || event.effect.type === conditionValue;
+}
 
 export const matchType =
   (expectedType: string, conditionValue?: unknown): ConditionPredicate =>
-  (event) => {
-    const lifecycle = isLifecycleGameEvent(event);
-    // Special handling for lifecycle phases
-    if (expectedType === ON_TURN_END) {
-      return lifecycle && event.phase === ON_TURN_END;
+  (event: GameEvent) => {
+    const matcher = MATCHERS[expectedType];
+    if (matcher) {
+      return matcher(event, conditionValue);
     }
 
-    const isEffectType = event.type === 'effect';
-    const typeMatches =
-      event.type === expectedType ||
-      (isEffectType &&
-        (expectedType === BEFORE_EFFECT || expectedType === AFTER_EFFECT));
-
-    if (!typeMatches) return false;
-
-    if (conditionValue !== undefined) {
-      // Only effect events carry atomic effect type discriminants
-      if (isEffectEvent(event)) {
-        return event.effect.type === conditionValue;
-      }
-      return false;
-    }
-
-    return true;
+    return event.type === expectedType;
   };

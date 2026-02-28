@@ -1,18 +1,18 @@
 import {
-  Condition,
   Duration,
   Effect,
   StatusEffect,
   StatusEffectType,
 } from '../item/item.model';
-import { beforeEffect, onTurnEnd } from '../item/conditions';
-import { charges, permanent } from '../item/durations';
+import { ConditionLibrary } from '../item/conditions';
+import { charges, permanent, turns } from '../item/durations';
+import { ActiveEffectLibrary } from './active-effects';
 
 export const StatusEffectLibrary = {
   poison: (chargeCount: number): StatusEffect => {
     return {
       type: 'poison',
-      condition: onTurnEnd(),
+      condition: ConditionLibrary.onTurnEnd(),
       action: [
         {
           type: 'damage',
@@ -24,10 +24,33 @@ export const StatusEffectLibrary = {
     };
   },
 
+  gas_mask: (chargeCount: number): StatusEffect => {
+    return {
+      type: 'gas_mask',
+      condition: ConditionLibrary.beforeStatusEffect('poison'),
+      action: [{ type: 'negate', value: 'add_status_effect' }],
+      duration: charges(chargeCount),
+    };
+  },
+
+  poison_darts: (turnCount: number): StatusEffect => {
+    return {
+      type: 'poison_darts',
+      condition: ConditionLibrary.onTurnEnd(),
+      action: [
+        ActiveEffectLibrary.add_status_effect(
+          StatusEffectLibrary.poison(1),
+          'self',
+        ),
+      ],
+      duration: turns(turnCount),
+    };
+  },
+
   invert: (targetType: string, duration?: Duration): StatusEffect => {
     return {
       type: 'invert',
-      condition: beforeEffect(targetType),
+      condition: ConditionLibrary.beforeEffect(targetType),
       action: [{ type: 'invert', value: targetType }],
       duration,
     };
@@ -36,7 +59,7 @@ export const StatusEffectLibrary = {
   negate: (targetType: string, duration?: Duration): StatusEffect => {
     return {
       type: 'negate',
-      condition: beforeEffect(targetType),
+      condition: ConditionLibrary.beforeEffect(targetType),
       action: [{ type: 'negate', value: targetType }],
       duration,
     };
@@ -51,7 +74,7 @@ export const StatusEffectLibrary = {
       type: 'add_status_effect',
       value: {
         type,
-        condition: onTurnEnd(),
+        condition: ConditionLibrary.onTurnEnd(),
         action: [
           {
             type: 'damage',
@@ -65,12 +88,20 @@ export const StatusEffectLibrary = {
     };
   },
 
-  status_effect: (config: {
-    type: StatusEffectType;
-    condition: Condition;
-    action: Effect[];
-    duration?: Duration;
-  }): StatusEffect => {
-    return { ...config };
+  reactive_removal: (targetType: string): StatusEffect => {
+    return {
+      type: 'reactive_removal',
+      condition: ConditionLibrary.afterEffect(targetType),
+      action: [],
+    };
+  },
+
+  triple_threat: (damageValue: number): StatusEffect => {
+    return {
+      type: '_blueprint_triple_threat',
+      condition: ConditionLibrary.onTurnEnd(),
+      action: [ActiveEffectLibrary.attack(damageValue)],
+      duration: permanent(),
+    };
   },
 } as const;

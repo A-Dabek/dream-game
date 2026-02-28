@@ -2,5 +2,21 @@
   "gas_grenade": {
     "icon": "stun-grenade",
     "description": "Release poison gas that affects both players, dealing 1 damage at the end of each turn for 10 turns."
+  },
+  "antidote": {
+    "icon": "antidote",
+    "description": "Removes all poison status effects from the user."
+  },
+  "gas_mask": {
+    "icon": "gas-mask",
+    "description": "Applies a gas mask status effect that negates poison applications."
+  },
+  "poison_drink": {
+    "icon": "poison-drink",
+    "description": "Applies a high number of poison charges to the user."
+  },
+  "poison_darts": {
+    "icon": "poison-darts",
+    "description": "Applies a status to the enemy that results in a new poison stack at the end of each turn."
   }
 }

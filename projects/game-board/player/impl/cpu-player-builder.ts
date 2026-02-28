@@ -22,6 +22,10 @@ const AVAILABLE_ITEM_IDS: ItemId[] = [
   '_dummy',
   '_blueprint_negate_damage',
   '_blueprint_triple_threat',
+  'gas_mask',
+  'antidote',
+  'poison_drink',
+  'poison_darts',
 ];
 
 interface Defaults {

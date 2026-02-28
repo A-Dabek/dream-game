@@ -54,7 +54,7 @@ Uses recursive chain-of-responsibility pattern. Each listener can:
 
 1. **Creation:** Two paths:
    - Passive listeners from items: `scanForListeners()` → `ListenerFactory.createPassive()`
-   - Status effect listeners: `add_status_effect` processor → `ListenerFactory.createStatusEffect()`
+   - Status effect listeners: `add_status_effect` processor → `createInitialListenerData()` → `ListenerFactory.deserialize()`
 
 2. **Runtime:** `BaseEffectInstance.handle(event, state)`:
    - Checks `shouldReact()` using compiled condition
@@ -111,11 +111,12 @@ import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-librar
 
 passiveEffects(): PassiveEffect[] {
   return [
-    StatusEffectLibrary.status_effect({
-      condition: onTurnEnd(),
+    {
+      type: 'some_passive',
+      condition: ConditionLibrary.onTurnEnd(),
       action: [ActiveEffectLibrary.attack(1)],
       duration: permanent(),
-    }),
+    },
   ];
 }
 ```

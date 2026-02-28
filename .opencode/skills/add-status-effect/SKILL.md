@@ -25,16 +25,17 @@ Add a status effect to your `whenPlayed()` method using `ActiveEffectLibrary.add
 ```typescript
 import { Effect, ItemBehavior } from '../../item';
 import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
+import { ConditionLibrary } from '../../../item/conditions';
 
 export class YourItemBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
     return [
       ActiveEffectLibrary.add_status_effect(
-        StatusEffectLibrary.status_effect({
-          condition: onTurnEnd(),
+        {
+          condition: ConditionLibrary.onTurnEnd(),
           action: [ActiveEffectLibrary.modifySpeed(-1, 'enemy')],
           duration: charges(3),
-        }),
+        },
         'self',
       ),
     ];
@@ -44,7 +45,7 @@ export class YourItemBehaviour implements ItemBehavior {
 
 ### Key Components:
 
-- **`condition`**: When the effect triggers (e.g., `{ type: 'after_effect', value: 'damage' }`, `onTurnEnd()`)
+- **`condition`**: When the effect triggers (e.g., `ConditionLibrary.beforeEffect('damage')`, `ConditionLibrary.onTurnEnd()`)
 - **`action`**: What happens when triggered (e.g., `[modifySpeed(-1, 'enemy')]`, `[attack(5)]`, `[heal(3)]`)
   - For self-damage, use `attack(value, 'self')` (default target is 'enemy')
 - **`duration`**: How long the effect lasts:
@@ -53,6 +54,7 @@ export class YourItemBehaviour implements ItemBehavior {
   - `permanent()` - lasts until manually removed
 - **`target`**: Who receives the status effect ('self' or 'enemy')
 - **`type`** (optional): Identifies the effect type (e.g., `type: 'poison'`) for interactions with items like antidotes or gas masks
+
 
 ## 2. Add Display Metadata
 
@@ -116,10 +118,12 @@ For the complete list of available conditions and durations, read:
 
 ### Common Conditions:
 
-- `beforeEffect(type)` - Triggered before an effect of the given type is applied
-- `afterEffect(type)` - Triggered after an effect of the given type is applied
-- `onTurnEnd()` - Triggered at the end of the player's turn
-- `onPlay()` - Triggered when an item is played
+- `ConditionLibrary.beforeEffect(type)` - Triggered before an effect of the given type is applied
+- `ConditionLibrary.beforeStatusEffect(type)` - Triggered before a status effect of the given type is applied
+- `ConditionLibrary.afterEffect(type)` - Triggered after an effect of the given type is applied
+- `ConditionLibrary.onTurnEnd()` - Triggered at the end of the player's turn
+- `ConditionLibrary.onPlay()` - Triggered when an item is played
+
 
 ### Common Durations:
 

@@ -59,6 +59,13 @@ export function createInitialListenerData(
   };
 }
 
+const LISTENER_MAP: Record<string, new (data: ListenerData) => Listener> = {
+  negate: NegateListener,
+  gas_mask: NegateListener,
+  invert: InvertListener,
+  reactive_removal: ReactiveRemovalListener,
+};
+
 // ListenerFactory plain object
 
 export const ListenerFactory = {
@@ -109,51 +116,12 @@ export const ListenerFactory = {
           duration: { type: 'until_item_removed', value: instanceId },
         };
 
-    if (effectWithDuration.type === 'reactive_removal') {
-      const listenerData = createInitialListenerData(
-        instanceId,
-        playerId,
-        effectWithDuration,
-      );
-      return new ReactiveRemovalListener(listenerData);
-    }
-
-    const listenerData = createInitialListenerData(
+    const data = createInitialListenerData(
       instanceId,
       playerId,
       effectWithDuration,
     );
-    return new DefaultListener(listenerData);
-  },
-
-  createStatusEffect(
-    instanceId: string,
-    playerId: string,
-    effect: StatusEffect,
-  ): Listener {
-    if (effect.type === 'negate') {
-      const listenerData = createInitialListenerData(
-        instanceId,
-        playerId,
-        effect,
-      );
-      return new NegateListener(listenerData);
-    }
-    if (effect.type === 'invert') {
-      const listenerData = createInitialListenerData(
-        instanceId,
-        playerId,
-        effect,
-      );
-      return new InvertListener(listenerData);
-    }
-
-    const listenerData = createInitialListenerData(
-      instanceId,
-      playerId,
-      effect,
-    );
-    return new DefaultListener(listenerData);
+    return this.deserialize(data);
   },
 
   /**
@@ -161,17 +129,8 @@ export const ListenerFactory = {
    */
   deserialize(data: ListenerData): Listener {
     const effect = data.effectState.effect;
+    const Constructor = LISTENER_MAP[effect.type] || DefaultListener;
 
-    if (effect.type === 'negate') {
-      return new NegateListener(data);
-    }
-    if (effect.type === 'invert') {
-      return new InvertListener(data);
-    }
-    if (effect.type === 'reactive_removal') {
-      return new ReactiveRemovalListener(data);
-    }
-
-    return new DefaultListener(data);
+    return new Constructor(data);
   },
 };

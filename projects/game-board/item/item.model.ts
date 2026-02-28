@@ -17,7 +17,11 @@ export type ItemId =
   | 'hand'
   | 'sticky_boot'
   | 'wingfoot'
-  | 'gas_grenade';
+  | 'gas_grenade'
+  | 'antidote'
+  | 'gas_mask'
+  | 'poison_drink'
+  | 'poison_darts';
 
 export type StatusEffectType =
   | 'poison'

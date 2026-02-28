@@ -90,6 +90,7 @@ export class GameContainerComponent {
     effect(() => {
       const config = this.config();
       const { humanPlayer, cpuPlayer } = this.createPlayers(config);
+      console.log(config, humanPlayer);
       this.humanPlayer.set(humanPlayer);
       this.cpuPlayer.set(cpuPlayer);
     });

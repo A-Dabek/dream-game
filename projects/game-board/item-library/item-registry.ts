@@ -1,15 +1,58 @@
 import { Genre, ItemId, ItemDefinition } from '../item';
 import { ActiveEffectLibrary } from '../effect-library/active-effects';
 import { StatusEffectLibrary } from '../effect-library/status-effects';
-import {
-  charges,
-  permanent,
-  turns,
-  afterEffect,
-  onTurnEnd,
-  GAME_CONFIG,
-  BASE_HEAL,
-} from '../item';
+import { charges, permanent, turns, GAME_CONFIG, BASE_HEAL } from '../item';
+
+const PoisonItemLibrary = {
+  gas_grenade: (): ItemDefinition => ({
+    genre: 'poison',
+    onPlayEffects: [
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.poison(10),
+        'self',
+      ),
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.poison(10),
+        'enemy',
+      ),
+    ],
+  }),
+
+  antidote: (): ItemDefinition => ({
+    genre: 'poison',
+    onPlayEffects: [{ type: 'antidote', value: '' }],
+  }),
+
+  gas_mask: (): ItemDefinition => ({
+    genre: 'poison',
+    onPlayEffects: [
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.gas_mask(3),
+        'self',
+      ),
+    ],
+  }),
+
+  poison_drink: (): ItemDefinition => ({
+    genre: 'poison',
+    onPlayEffects: [
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.poison(20),
+        'self',
+      ),
+    ],
+  }),
+
+  poison_darts: (): ItemDefinition => ({
+    genre: 'poison',
+    onPlayEffects: [
+      ActiveEffectLibrary.add_status_effect(
+        StatusEffectLibrary.poison_darts(5),
+        'enemy',
+      ),
+    ],
+  }),
+} as const;
 
 export const ItemLibrary = {
   hand: (): ItemDefinition => ({
@@ -44,19 +87,7 @@ export const ItemLibrary = {
     ],
   }),
 
-  gas_grenade: (): ItemDefinition => ({
-    genre: 'poison',
-    onPlayEffects: [
-      ActiveEffectLibrary.add_status_effect(
-        StatusEffectLibrary.poison(10),
-        'self',
-      ),
-      ActiveEffectLibrary.add_status_effect(
-        StatusEffectLibrary.poison(10),
-        'enemy',
-      ),
-    ],
-  }),
+  ...PoisonItemLibrary,
 
   _blueprint_attack: (): ItemDefinition => ({
     genre: 'basic',
@@ -76,13 +107,7 @@ export const ItemLibrary = {
   _blueprint_reactive_removal: (): ItemDefinition => ({
     genre: 'basic',
     onPlayEffects: [],
-    passiveEffects: [
-      StatusEffectLibrary.status_effect({
-        type: 'reactive_removal',
-        condition: afterEffect('damage'),
-        action: [],
-      }),
-    ],
+    passiveEffects: [StatusEffectLibrary.reactive_removal('damage')],
   }),
 
   _blueprint_self_damage: (): ItemDefinition => ({
@@ -136,22 +161,10 @@ export const ItemLibrary = {
     onPlayEffects: [
       ActiveEffectLibrary.attack(2),
       ActiveEffectLibrary.add_status_effect(
-        StatusEffectLibrary.status_effect({
-          type: '_blueprint_triple_threat',
-          condition: onTurnEnd(),
-          action: [ActiveEffectLibrary.attack(3)],
-          duration: { type: 'permanent' },
-        }),
+        StatusEffectLibrary.triple_threat(3),
       ),
     ],
-    passiveEffects: [
-      StatusEffectLibrary.status_effect({
-        type: '_blueprint_triple_threat',
-        condition: onTurnEnd(),
-        action: [ActiveEffectLibrary.attack(1)],
-        duration: { type: 'permanent' },
-      }),
-    ],
+    passiveEffects: [StatusEffectLibrary.triple_threat(1)],
   }),
 } as const;
 

@@ -3,8 +3,7 @@ You can find the project overview in the AGENTS.md file.
 
 Your goal is to verify that the implementation plan is properly implemented and tested.
 
-You will be given an implementation plan from the manager agent to understand the context of changes.
-Based on the plan and git diff, you should analyze the code.
+You will be given an implementation plan from the manager agent and list of modified files to understand the context of changes.
 
 Make sure that:
 1. Acceptance criteria are met. If not, report that fact to the manager agent and stop the work.

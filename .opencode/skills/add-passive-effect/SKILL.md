@@ -28,7 +28,7 @@ Add the `passiveEffects()` method to your item behavior class:
 passiveEffects(): PassiveEffect[] {
   return [{
     type: 'your_item_id',  // Used by ListenerFactory to identify this effect
-    condition: onTurnStart(),  // When to trigger
+    condition: ConditionLibrary.onTurnStart(),  // When to trigger
     action: [],  // Static actions (optional for complex effects)
     duration: { type: 'permanent' },  // How long it lasts
   }];
@@ -44,14 +44,16 @@ For static effects that don't depend on game state (e.g., "deal 1 damage at end 
 ```typescript
 import { PassiveEffect } from '../../item';
 import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
+import { ConditionLibrary } from '../../../item/conditions';
 
 passiveEffects(): PassiveEffect[] {
   return [
-    StatusEffectLibrary.status_effect({
-      condition: onTurnEnd(),
+    {
+      type: 'your_item_id',
+      condition: ConditionLibrary.onTurnEnd(),
       action: [ActiveEffectLibrary.attack(1)],
       duration: permanent(),
-    }),
+    },
   ];
 }
 ```
@@ -73,13 +75,8 @@ import { EngineState, GameEvent } from '../../../engine.types';
 import { BaseEffectInstance } from '../base-effect-instance';
 
 export class YourItemListener extends BaseEffectInstance {
-  constructor(instanceId: string, playerId: string) {
-    const effect: StatusEffect = {
-      condition: onTurnStart(),
-      action: [],
-      duration: { type: 'permanent' },
-    };
-    super(instanceId, playerId, effect);
+  constructor(data: ListenerData) {
+    super(data);
   }
 
   protected override handleReaction(
@@ -132,30 +129,13 @@ import {
 } from './instances/listeners';
 ```
 
-2. Register in `createPassive()` method:
+2. Register in `LISTENER_MAP` object:
 
 ```typescript
-static createPassive(
-  instanceId: string,
-  playerId: string,
-  effect: StatusEffect,
-): Listener {
-  const itemDuration = new ItemDuration(instanceId);
-
-  // ... existing special cases ...
-
-  if (effect.type === 'your_item_id') {
-    return new YourItemListener(instanceId, playerId);
-  }
-
-  return new DefaultListener(
-    instanceId,
-    playerId,
-    effect,
-    undefined,
-    itemDuration,
-  );
-}
+const LISTENER_MAP: Record<string, new (data: ListenerData) => Listener> = {
+  // ... existing mappings
+  your_item_id: YourItemListener,
+};
 ```
 
 ## 3. Create Integration Test

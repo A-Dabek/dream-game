@@ -1,11 +1,14 @@
 import {
   AFTER_EFFECT,
   BEFORE_EFFECT,
+  BEFORE_STATUS_EFFECT,
   Condition,
   HAS_NO_ITEMS,
   ON_PLAY,
+  ON_TURN_START,
   ON_TURN_END,
 } from '../../../item';
+
 import { ReactiveCondition } from './reactive-condition';
 import { ComposableCondition } from './composable-condition';
 import { DefaultCondition } from './default-condition';
@@ -20,6 +23,7 @@ export function createCondition(condition: Condition): ReactiveCondition {
   switch (condition.type) {
     case BEFORE_EFFECT:
     case AFTER_EFFECT:
+    case BEFORE_STATUS_EFFECT:
       return new ComposableCondition(
         condition.type,
         and(matchType(condition.type, condition.value), isTargetMe),
@@ -29,10 +33,11 @@ export function createCondition(condition: Condition): ReactiveCondition {
         ON_PLAY,
         and(matchType(ON_PLAY), isNotEventOwner),
       );
+    case ON_TURN_START:
     case ON_TURN_END:
       return new ComposableCondition(
-        ON_TURN_END,
-        and(matchType(ON_TURN_END), isEventOwner),
+        condition.type,
+        and(matchType(condition.type), isEventOwner),
       );
     case HAS_NO_ITEMS:
       return new ComposableCondition(HAS_NO_ITEMS, hasNoItems);

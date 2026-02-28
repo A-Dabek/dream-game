@@ -3,10 +3,12 @@ import { EngineState, GameEvent } from '../../engine.types';
 import { EffectHandler } from './effect-handler.interface';
 import { DefaultEffectHandler } from './default-effect.handler';
 import { ItemCountDamageHandler } from './item-count-damage.handler';
+import { AntidoteHandler } from './antidote.handler';
 
 export const EffectHandlerFactory = {
   handlers: {
     item_count_damage: new ItemCountDamageHandler(),
+    antidote: new AntidoteHandler(),
   } as Record<string, EffectHandler>,
 
   defaultHandler: new DefaultEffectHandler(),
