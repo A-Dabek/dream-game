@@ -20,6 +20,8 @@ Guidelines:
 - use markdown syntax
 - read the documentation before updating it to understand the style of writing
 
+You MAY use SKILLS.
+You MAY use MCP TOOLS.
 You MUST NOT create new documentation files UNLESS specifically requested by the manager agent.
 You MIGHT find that the update is NOT necessary.
 You SHOULD NOT update documentation if there is no need to do so.

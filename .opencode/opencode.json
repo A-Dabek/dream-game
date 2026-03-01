@@ -101,6 +101,10 @@
         "developer": "deny",
         "reviewer": "deny"
       },
+      "tools": {
+        "angular-cli": true,
+        "serena": true
+      },
       "permission": {
         "skill": {
           "*": "allow"
@@ -117,34 +121,6 @@
         }
       }
     },
-    "manager": {
-      "description": "{file:./agents/manager.md}",
-      "color": "#00FF00",
-      "mode": "primary",
-      "model": "openrouter/cheap",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "min_p": 0.01,
-      "top_k": 40,
-      "steps": 30,
-      "repeat_penalty": 1.0,
-      "task": {
-        "developer": "allow",
-        "reviewer": "allow"
-      },
-      "tools": {
-        "angular-cli": true
-      },
-      "permission": {
-        "skill": {
-          "*": "allow"
-        },
-        "bash": {
-          "playwright test --update-snapshots": "ask",
-          "npm run e2e:update": "ask"
-        }
-      }
-    },
     "documentation": {
       "description": "{file:./agents/documentation.md}",
       "mode": "all",
@@ -157,7 +133,8 @@
       "steps": 30,
       "repeat_penalty": 1.0,
       "tools": {
-        "angular-cli": true
+        "angular-cli": true,
+        "serena": true
       },
       "permission": {
         "skill": {
@@ -181,7 +158,8 @@
         }
       },
       "tools": {
-        "angular-cli": true
+        "angular-cli": true,
+        "serena": true
       }
     },
     "refactoring": {
@@ -195,7 +173,8 @@
       "steps": 30,
       "repeat_penalty": 1.0,
       "tools": {
-        "angular-cli": true
+        "angular-cli": true,
+        "serena": true
       }
     },
     "qa": {
@@ -209,7 +188,8 @@
       "steps": 30,
       "repeat_penalty": 1.0,
       "tools": {
-        "angular-cli": true
+        "angular-cli": true,
+        "serena": true
       }
     }
   }

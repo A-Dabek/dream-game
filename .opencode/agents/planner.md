@@ -29,3 +29,6 @@ The specification MUST NOT include:
 - backward compatibility concerns; old code should be removed instead of kept for backward compatibility 
 
 ALWAYS write the specification in the `.opencode/specifiactions/` directory as a single Markdown file.
+You MAY use SKILLS.
+You MAY use MCP TOOLS.
+

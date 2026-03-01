@@ -87,6 +87,24 @@ describe('UiStateService - Status Effects', () => {
       expect(service.uiState()?.playerStatusEffects).toEqual([]);
       expect(service.uiState()?.opponentStatusEffects).toEqual([]);
     });
+
+    it('should transform initial status effects', () => {
+      const state = mockGameState();
+      state.playerStatusEffects = [
+        {
+          instanceId: 'e1',
+          type: 'poison',
+          remainingCharges: 3,
+          durationType: 'turns',
+        },
+      ];
+
+      service.initialize(state);
+
+      expect(service.uiState()?.playerStatusEffects.length).toBe(1);
+      expect(service.uiState()?.playerStatusEffects[0].pathD).toBeDefined();
+      expect(service.uiState()?.playerStatusEffects[0].genre).toBe('poison');
+    });
   });
 
   describe('player mapping', () => {

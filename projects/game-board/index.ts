@@ -13,6 +13,7 @@ export {
   type GameEvent,
   type LogEntry,
   type StateChangeLogEntry,
+  type EngineState,
 } from './engine/engine.model';
 export { type TurnEntry } from './turn-manager/turn-manager.model';
 export {

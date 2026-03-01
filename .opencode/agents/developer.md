@@ -19,6 +19,8 @@ To understand the project, use the relevant SKILLS and read references:
 
 ALWAYS verify the correctness by running `.opencode/scripts/acceptance-tests.sh`.
 
+You MAY use SKILLS.
+You MAY use MCP TOOLS.
 You MUST NOT commit any changes to the project.
 You MUST NOT update e2e screenshots by yourself, ask the manager agent for that.
 You MUST NEVER remove tests or change assertions unless the implementation under the test has changed.

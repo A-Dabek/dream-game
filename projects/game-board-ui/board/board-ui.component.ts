@@ -5,7 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { GameActionType, GameState, Item } from '@dream/game-board';
+import { GameActionType, Item } from '@dream/game-board';
 import { HumanInputService } from './service/human-input.service';
 import { ItemDisplayComponent } from '../common/item-display.component';
 import { ActionHistoryComponent } from './action-history.component';
@@ -15,6 +15,7 @@ import { TurnQueueComponent } from './turn-queue.component';
 import { HealthBarComponent } from './health-bar.component';
 import { StatusEffectsComponent } from './status-effects.component';
 import { StatusEffectDisplayData } from './status-effects-display-data';
+import { UiGameState } from './ui-game-state';
 
 @Component({
   selector: 'app-board-ui',
@@ -99,7 +100,7 @@ import { StatusEffectDisplayData } from './status-effects-display-data';
 export class BoardUiComponent {
   private readonly humanInputService = inject(HumanInputService);
 
-  readonly state = input.required<GameState>();
+  readonly state = input.required<UiGameState>();
   readonly lastPlayedItem = input<Item | null>(null);
   readonly actionHistory = input.required<ActionHistoryEntry[]>();
 
@@ -116,12 +117,11 @@ export class BoardUiComponent {
   );
 
   readonly playerStatusEffects = computed<StatusEffectDisplayData[]>(
-    () => (this.state().playerStatusEffects ?? []) as StatusEffectDisplayData[],
+    () => this.state().playerStatusEffects,
   );
 
   readonly opponentStatusEffects = computed<StatusEffectDisplayData[]>(
-    () =>
-      (this.state().opponentStatusEffects ?? []) as StatusEffectDisplayData[],
+    () => this.state().opponentStatusEffects,
   );
 
   readonly turnQueue = computed(() => this.state().turnInfo.turnQueue ?? []);

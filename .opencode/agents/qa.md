@@ -14,6 +14,8 @@ Make sure that:
 6. Tests are passing. If not, try to fix them unless they are failing due to incorrect implementation.
 7. Tests are verifying observable behavior instead of implementation details. 
 
+You MAY use SKILLS.
+You MAY use MCP TOOLS.
 ALWAYS verify the correctness by running `.opencode/scripts/acceptance-tests.sh`.
 You SHOULD ignore documentation changes from the acceptance criteria. Another agent is responsible for that.
 You SHOULD favor integration tests over unit tests.
