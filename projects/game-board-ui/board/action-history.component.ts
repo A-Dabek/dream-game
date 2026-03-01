@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Genre } from '@dream/game-board';
-import { ActionHistoryEntry } from './action-history-entry';
 import { IconComponent } from '../common/icon.component';
-import { getGenreColor } from '../common/genre-color.util';
+import { ActionHistoryEntry } from './action-history-entry';
 
 @Component({
   selector: 'app-action-history',
@@ -17,7 +15,12 @@ import { getGenreColor } from '../common/genre-color.util';
           [class.opponent]="entry.playerId !== playerId()"
           animate.enter="history-slide-in"
         >
-          <app-icon [pathD]="entry.pathD" [color]="getColor(entry.genre)" />
+          <app-icon
+            [pathD]="entry.pathD"
+            [color]="
+              entry.genre ? 'var(--genre-' + entry.genre + ')' : 'currentColor'
+            "
+          />
         </div>
       }
     </div>
@@ -26,8 +29,4 @@ import { getGenreColor } from '../common/genre-color.util';
 export class ActionHistoryComponent {
   readonly actions = input.required<ActionHistoryEntry[]>();
   readonly playerId = input.required<string>();
-
-  getColor(genre: Genre | undefined): string {
-    return getGenreColor(genre);
-  }
 }

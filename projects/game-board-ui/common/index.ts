@@ -1,4 +1,3 @@
-export { getGenreColor } from './genre-color.util';
 export {
   ItemConventionRegistry,
   type ItemDisplayMetadata,

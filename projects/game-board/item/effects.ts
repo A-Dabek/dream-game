@@ -1,4 +1,4 @@
-import { beforeEffect, onTurnEnd } from './conditions';
+import { ConditionLibrary } from './conditions';
 import { charges, permanent } from './durations';
 import {
   Condition,
@@ -47,7 +47,7 @@ export function passiveAttack(
   return addStatusEffect(
     statusEffect({
       type,
-      condition: onTurnEnd(),
+      condition: ConditionLibrary.onTurnEnd(),
       action: [attack(value)],
       duration: permanent(),
     }),
@@ -62,7 +62,7 @@ export function passiveAttack(
 export function poison(chargeCount: number): StatusEffect {
   return statusEffect({
     type: 'poison',
-    condition: onTurnEnd(),
+    condition: ConditionLibrary.onTurnEnd(),
     action: [attack(1, 'self')],
     duration: charges(chargeCount),
   });
@@ -88,7 +88,7 @@ export function removeItem(
 export function invert(targetType: string, duration?: Duration): StatusEffect {
   return statusEffect({
     type: 'invert',
-    condition: beforeEffect(targetType),
+    condition: ConditionLibrary.beforeEffect(targetType),
     action: [{ type: 'invert', value: targetType }],
     duration,
   });
@@ -100,7 +100,7 @@ export function invert(targetType: string, duration?: Duration): StatusEffect {
 export function negate(targetType: string, duration?: Duration): StatusEffect {
   return statusEffect({
     type: 'negate',
-    condition: beforeEffect(targetType),
+    condition: ConditionLibrary.beforeEffect(targetType),
     action: [{ type: 'negate', value: targetType }],
     duration,
   });

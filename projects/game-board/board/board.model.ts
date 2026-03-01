@@ -43,7 +43,7 @@ export enum GameActionType {
 export interface GameAction {
   type: GameActionType;
   playerId: string;
-  itemId?: string;
+  itemId?: ItemId;
 }
 
 export interface GameActionResult {

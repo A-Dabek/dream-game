@@ -7,14 +7,18 @@ import {
 import { Item } from '@dream/game-board';
 import { IconComponent } from './icon.component';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
-import { getGenreColor } from './genre-color.util';
 
 @Component({
   selector: 'app-item-display',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
-    <app-icon [pathD]="pathD()" [color]="genreColor()" />
+    <app-icon
+      [pathD]="pathD()"
+      [color]="
+        item().genre ? 'var(--genre-' + item().genre + ')' : 'currentColor'
+      "
+    />
     <div class="label">{{ label() }}</div>
   `,
   host: {
@@ -33,10 +37,4 @@ export class ItemDisplayComponent {
     const id = this.item().id;
     return id.replace('_blueprint_', '').replace(/_/g, ' ');
   });
-
-  /**
-   * Maps the item's genre to its corresponding CSS variable color.
-   * Falls back to 'currentColor' if no genre is defined.
-   */
-  readonly genreColor = computed(() => getGenreColor(this.item().genre));
 }

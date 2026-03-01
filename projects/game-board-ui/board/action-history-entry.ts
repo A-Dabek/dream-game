@@ -1,4 +1,4 @@
-import { Genre, GameActionType } from '@dream/game-board';
+import { Genre, GameActionType, ItemId } from '@dream/game-board';
 
 /** Presentation-friendly representation of a historical action for animation/display. */
 export interface ActionHistoryEntry {
@@ -6,6 +6,6 @@ export interface ActionHistoryEntry {
   readonly actionType: GameActionType;
   readonly playerId: string;
   readonly pathD: string;
-  readonly itemId?: string;
+  readonly itemId?: ItemId;
   readonly genre?: Genre;
 }
