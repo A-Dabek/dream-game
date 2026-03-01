@@ -11,12 +11,13 @@ import {
   ListenerData,
   LogEntry,
   StateChangeLogEntry,
-  StatusEffectDisplayData,
+  StatusEffectData,
 } from '@dream/game-board';
 import { GameService } from '../../game-logic';
 import { ActionHistoryEntry } from '../action-history-entry';
 import { ItemConventionRegistry } from '../../common';
 import { SoundService } from './sound.service';
+import { StatusEffectDisplayData } from '../status-effects-display-data';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,7 @@ export class UiStateService {
   private logSubscription = new Subscription();
 
   initialize(initialState: GameState): void {
+    this.logSubscription.unsubscribe();
     this._uiState.set(JSON.parse(JSON.stringify(initialState)));
     this._lastPlayedItem.set(null);
     this._actionHistory.set([]);
@@ -123,12 +125,17 @@ export class UiStateService {
     const effectType = listener.effectState.effect.type;
     const duration = listener.effectState.currentDuration;
     const hasCharges = duration.type === 'turns' || duration.type === 'charges';
+    const pathD =
+      ItemConventionRegistry.getStatusEffectDisplay(effectType).pathD;
+    const genre = listener.effectState.effect.genre;
 
     return {
       instanceId: listener.instanceId,
       type: effectType,
       remainingCharges: hasCharges ? duration.remaining : null,
       durationType: duration.type,
+      pathD,
+      genre,
     };
   }
 
@@ -136,43 +143,46 @@ export class UiStateService {
     state: GameState,
     log: StateChangeLogEntry,
   ): number {
-    // Map listeners to status effect display data
-    const playerOneId = log.snapshot.playerOne.id;
-    const playerTwoId = log.snapshot.playerTwo.id;
+    const { playerOne, playerTwo, listeners, turnQueue, gameOver, winnerId } =
+      log.snapshot;
 
-    const playerStatusEffects: StatusEffectDisplayData[] = [];
-    const opponentStatusEffects: StatusEffectDisplayData[] = [];
-
-    for (const listener of log.snapshot.listeners) {
-      const displayData = this.mapListenerToDisplayData(listener);
-      if (listener.playerId === playerOneId) {
-        playerStatusEffects.push(displayData);
-      } else if (listener.playerId === playerTwoId) {
-        opponentStatusEffects.push(displayData);
-      }
-    }
+    const { playerStatusEffects, opponentStatusEffects } = listeners.reduce(
+      (acc, listener) => {
+        const displayData = this.mapListenerToDisplayData(listener);
+        if (listener.playerId === playerOne.id) {
+          acc.playerStatusEffects.push(displayData);
+        } else if (listener.playerId === playerTwo.id) {
+          acc.opponentStatusEffects.push(displayData);
+        }
+        return acc;
+      },
+      {
+        playerStatusEffects: [] as StatusEffectDisplayData[],
+        opponentStatusEffects: [] as StatusEffectDisplayData[],
+      },
+    );
 
     const nextState: GameState = {
       ...state,
       turnInfo: {
-        turnQueue: log.snapshot.turnQueue,
-        currentPlayerId: log.snapshot.turnQueue[0].playerId,
-        nextPlayerId: log.snapshot.turnQueue[1].playerId,
+        turnQueue,
+        currentPlayerId: turnQueue[0].playerId,
+        nextPlayerId: turnQueue[1].playerId,
       },
       player: {
         ...state.player,
-        health: log.snapshot.playerOne.health,
-        items: log.snapshot.playerOne.items,
+        health: playerOne.health,
+        items: playerOne.items,
       },
       opponent: {
         ...state.opponent,
-        health: log.snapshot.playerTwo.health,
-        items: log.snapshot.playerTwo.items,
+        health: playerTwo.health,
+        items: playerTwo.items,
       },
-      isGameOver: log.snapshot.gameOver ?? state.isGameOver,
-      winnerId: log.snapshot.winnerId ?? state.winnerId,
-      playerStatusEffects,
-      opponentStatusEffects,
+      isGameOver: gameOver ?? state.isGameOver,
+      winnerId: winnerId ?? state.winnerId,
+      playerStatusEffects: playerStatusEffects as StatusEffectData[],
+      opponentStatusEffects: opponentStatusEffects as StatusEffectData[],
     };
 
     this._uiState.set(nextState);

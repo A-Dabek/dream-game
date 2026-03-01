@@ -28,20 +28,13 @@ export interface ListenerData {
 // Helper functions moved from listener-data.ts
 
 function deriveInitialDurationState(duration?: Duration): DurationState {
-  if (!duration) {
-    return { type: 'permanent', remaining: 0 };
-  }
-  switch (duration.type) {
-    case 'charges':
-      return { type: 'charges', remaining: (duration.value as number) ?? 0 };
-    case 'turns':
-      return { type: 'turns', remaining: (duration.value as number) ?? 0 };
-    case 'until_item_removed':
-      return { type: 'until_item_removed', remaining: 0 };
-    case 'permanent':
-    default:
-      return { type: 'permanent', remaining: 0 };
-  }
+  const type = duration?.type ?? 'permanent';
+  const hasRemaining = type === 'charges' || type === 'turns';
+
+  return {
+    type,
+    remaining: hasRemaining ? ((duration?.value as number) ?? 0) : 0,
+  };
 }
 
 export function createInitialListenerData(
@@ -75,6 +68,7 @@ export const ListenerFactory = {
       condition: { type: 'on_turn_end' },
       action: [{ type: 'advance_turn', value: 0, target: 'self' }],
       duration: { type: 'permanent' },
+      genre: 'basic',
     };
     const listenerData = createInitialListenerData(
       `advance_turn-${playerId}`,
@@ -93,6 +87,7 @@ export const ListenerFactory = {
       },
       action: [{ type: 'damage', value: 1, target: 'self' }],
       duration: { type: 'permanent' },
+      genre: 'basic',
     };
     const listenerData = createInitialListenerData(
       `fatigue-${playerId}`,

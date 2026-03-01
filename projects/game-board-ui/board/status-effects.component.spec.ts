@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { StatusEffectDisplayData } from '@dream/game-board';
 import { StatusEffectsComponent } from './status-effects.component';
 import { IconComponent } from '../common/icon.component';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
+import { StatusEffectDisplayData } from './status-effects-display-data';
 
 describe('StatusEffectsComponent', () => {
   let component: StatusEffectsComponent;
@@ -15,18 +15,24 @@ describe('StatusEffectsComponent', () => {
       type: 'poison',
       remainingCharges: 3,
       durationType: 'turns',
+      pathD: ItemConventionRegistry.getStatusEffectDisplay('poison').pathD,
+      genre: 'basic',
     },
     {
       instanceId: 'effect-2',
       type: 'negate',
       remainingCharges: null,
       durationType: 'permanent',
+      pathD: ItemConventionRegistry.getStatusEffectDisplay('negate').pathD,
+      genre: 'basic',
     },
     {
       instanceId: 'effect-3',
       type: 'invert',
       remainingCharges: 2,
       durationType: 'charges',
+      pathD: ItemConventionRegistry.getStatusEffectDisplay('invert').pathD,
+      genre: 'basic',
     },
   ];
 
@@ -77,9 +83,7 @@ describe('StatusEffectsComponent', () => {
     it('should derive correct icon name from effect type', () => {
       setInputs([mockStatusEffects[0]]);
       const icon = fixture.debugElement.query(By.css('app-icon'));
-      expect(icon.componentInstance.pathD()).toBe(
-        ItemConventionRegistry.getStatusEffectDisplay('poison').pathD,
-      );
+      expect(icon.componentInstance.pathD()).toBe(mockStatusEffects[0].pathD);
     });
   });
 

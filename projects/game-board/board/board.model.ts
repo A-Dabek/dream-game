@@ -1,17 +1,13 @@
 import { LogEntry } from '../engine/engine.model';
-import { ItemId, Loadout, StatusEffectType } from '../item';
+import { Duration, ItemId, Loadout, StatusEffectType } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { Board } from './impl/board';
 
-export interface StatusEffectDisplayData {
+export interface StatusEffectData {
   readonly instanceId: string;
   readonly type: StatusEffectType;
   readonly remainingCharges: number | null;
-  readonly durationType:
-    | 'turns'
-    | 'charges'
-    | 'permanent'
-    | 'until_item_removed';
+  readonly durationType: Duration['type'];
 }
 
 export interface BoardLoadout extends Loadout {
@@ -31,8 +27,8 @@ export interface GameState {
   isGameOver: boolean;
   winnerId?: string;
   actionHistory: GameAction[];
-  playerStatusEffects: StatusEffectDisplayData[];
-  opponentStatusEffects: StatusEffectDisplayData[];
+  playerStatusEffects: StatusEffectData[];
+  opponentStatusEffects: StatusEffectData[];
 }
 
 export enum GameActionType {

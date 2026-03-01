@@ -92,9 +92,28 @@ GameContainerComponent
 │       └── ItemDisplayComponent
 │           └── IconComponent
 ├── BoardUiComponent
-│   ├── PlayerHandComponent (opponent)
-│   │   └── ItemDisplayComponent
+│   ├── (opponent-area)
+│   │   ├── PlayerHandComponent
+│   │   │   └── ItemDisplayComponent
+│   │   │       └── IconComponent
+│   │   └── HealthBarComponent
+│   ├── (main-area)
+│   │   ├── TurnQueueComponent
+│   │   │   └── IconComponent
+│   │   ├── (center-content)
+│   │   │   ├── StatusEffectsComponent (opponent)
+│   │   │   │   └── IconComponent
+│   │   │   ├── ItemDisplayComponent (last played)
+│   │   │   │   └── IconComponent
+│   │   │   └── StatusEffectsComponent (player)
+│   │   │       └── IconComponent
+│   │   └── ActionHistoryComponent
 │   │       └── IconComponent
+│   └── (player-area)
+│       ├── HealthBarComponent
+│       └── PlayerHandComponent
+│           └── ItemDisplayComponent
+│               └── IconComponent
 │   ├── StatusEffectsComponent (opponent)
 │   │   └── IconComponent
 │   ├── HealthBarComponent (opponent)

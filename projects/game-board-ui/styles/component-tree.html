@@ -77,17 +77,6 @@ child component -->
           </div>
         </app-player-hand>
 
-        <!-- StatusEffectsComponent (opponent) -->
-        <!-- File: components/_status-effects.scss -->
-        <app-status-effects>
-          <div class="status-effects-container opponent">
-            <div class="status-effect-item opponent">
-              <app-icon></app-icon>
-              <div class="charges-badge"></div>
-            </div>
-          </div>
-        </app-status-effects>
-
         <!-- HealthBarComponent -->
         <app-health-bar>
           <div class="center-content">
@@ -120,6 +109,19 @@ child component -->
 
         <!-- Center Content -->
         <div class="center-content">
+          <!-- StatusEffectsComponent (opponent) -->
+          <!-- File: components/_status-effects.scss -->
+          <div class="status-effects-top">
+            <app-status-effects>
+              <div class="status-effects-container opponent">
+                <div class="status-effect-item opponent">
+                  <app-icon></app-icon>
+                  <div class="charges-badge"></div>
+                </div>
+              </div>
+            </app-status-effects>
+          </div>
+
           <div class="last-played-wrapper">
             <!-- ItemDisplayComponent (Last Played) -->
             <app-item-display class="last-played-item [host: active]">
@@ -129,6 +131,19 @@ child component -->
 
             <!-- Placeholder (when no item played) -->
             <div class="last-played-placeholder"></div>
+          </div>
+
+          <!-- StatusEffectsComponent (player) -->
+          <!-- File: components/_status-effects.scss -->
+          <div class="status-effects-bottom">
+            <app-status-effects>
+              <div class="status-effects-container player">
+                <div class="status-effect-item player">
+                  <app-icon></app-icon>
+                  <div class="charges-badge"></div>
+                </div>
+              </div>
+            </app-status-effects>
           </div>
         </div>
 
@@ -146,18 +161,7 @@ child component -->
       </div>
 
       <!-- Player Section -->
-      <div class="player-area" [class.active]="isPlayerTurn() && !s.isGameOver">
-        <!-- StatusEffectsComponent (player) -->
-        <!-- File: components/_status-effects.scss -->
-        <app-status-effects>
-          <div class="status-effects-container player">
-            <div class="status-effect-item player">
-              <app-icon></app-icon>
-              <div class="charges-badge"></div>
-            </div>
-          </div>
-        </app-status-effects>
-
+      <div class="player-area [conditional: active]">
         <!-- HealthBarComponent -->
         <app-health-bar>
           <div class="center-content">

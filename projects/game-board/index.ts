@@ -7,7 +7,7 @@ export {
   type GameState,
   type GameAction,
   type GameActionResult,
-  type StatusEffectDisplayData,
+  type StatusEffectData,
 } from './board/board.model';
 export {
   type GameEvent,

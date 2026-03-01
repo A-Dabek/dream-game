@@ -34,6 +34,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'match_type', value: 'damage' },
         action: [],
         duration: { type: 'charges', value: 1 },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -57,6 +58,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'match_type', value: 'damage' },
         action: [],
         duration: { type: 'turns', value: 3 },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -78,6 +80,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'match_type', value: 'damage' },
         action: [],
         duration: { type: 'until_item_removed', value: 'item-123' },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -98,6 +101,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [{ type: 'attack', value: 3 }],
         duration: { type: 'permanent' },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -120,6 +124,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'match_type', value: 'damage' },
         action: [],
         duration: { type: 'charges', value: 1 },
+        genre: 'basic',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -143,6 +148,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [],
         duration: { type: 'charges', value: 2 },
+        genre: 'basic',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -168,6 +174,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [],
         duration: { type: 'turns', value: 3 },
+        genre: 'basic',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -193,6 +200,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'match_type', value: 'damage' },
         action: [],
         duration: { type: 'charges', value: 1 },
+        genre: 'basic',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -223,6 +231,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [],
         duration: { type: 'charges', value: 2 },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -260,6 +269,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [],
         duration: { type: 'turns', value: 3 },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -297,6 +307,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [{ type: 'attack', value: 3 }],
         duration: { type: 'charges', value: 3 },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(
@@ -340,6 +351,7 @@ describe('ListenerFactory', () => {
         condition: { type: 'on_turn_end' },
         action: [{ type: 'attack', value: 3 }],
         duration: { type: 'permanent' },
+        genre: 'basic',
       };
 
       const listenerData = createInitialListenerData(

@@ -59,6 +59,7 @@ export interface StatusEffect {
   readonly condition: Condition;
   readonly action: Effect[];
   readonly duration?: Duration;
+  readonly genre: Genre;
   readonly extraParams?: Record<string, unknown>;
 }
 

@@ -63,6 +63,20 @@
       "type": "local",
       "enabled": true,
       "command": ["npx", "-y", "@angular/cli", "mcp"]
+    },
+    "serena": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--project-from-cwd",
+        "--context",
+        "ide"
+      ]
     }
   },
   "permission": {

@@ -21,6 +21,7 @@ export const StatusEffectLibrary = {
         },
       ],
       duration: charges(chargeCount),
+      genre: 'poison',
     };
   },
 
@@ -30,6 +31,7 @@ export const StatusEffectLibrary = {
       condition: ConditionLibrary.beforeStatusEffect('poison'),
       action: [{ type: 'negate', value: 'add_status_effect' }],
       duration: charges(chargeCount),
+      genre: 'poison',
     };
   },
 
@@ -44,6 +46,7 @@ export const StatusEffectLibrary = {
         ),
       ],
       duration: turns(turnCount),
+      genre: 'poison',
     };
   },
 
@@ -53,6 +56,7 @@ export const StatusEffectLibrary = {
       condition: ConditionLibrary.beforeEffect(targetType),
       action: [{ type: 'invert', value: targetType }],
       duration,
+      genre: 'basic',
     };
   },
 
@@ -62,6 +66,7 @@ export const StatusEffectLibrary = {
       condition: ConditionLibrary.beforeEffect(targetType),
       action: [{ type: 'negate', value: targetType }],
       duration,
+      genre: 'basic',
     };
   },
 
@@ -83,6 +88,7 @@ export const StatusEffectLibrary = {
           },
         ],
         duration: permanent(),
+        genre: 'basic',
       },
       target,
     };
@@ -93,6 +99,7 @@ export const StatusEffectLibrary = {
       type: 'reactive_removal',
       condition: ConditionLibrary.afterEffect(targetType),
       action: [],
+      genre: 'basic',
     };
   },
 
@@ -102,6 +109,7 @@ export const StatusEffectLibrary = {
       condition: ConditionLibrary.onTurnEnd(),
       action: [ActiveEffectLibrary.attack(damageValue)],
       duration: permanent(),
+      genre: 'basic',
     };
   },
 } as const;

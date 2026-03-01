@@ -41,6 +41,7 @@ describe('UiStateService - Status Effects', () => {
         type: effectType as never,
         condition: { type: 'on_turn_end' },
         action: [],
+        genre: 'basic',
       },
       currentDuration: { type: durationType, remaining },
     },
@@ -143,12 +144,14 @@ describe('UiStateService - Status Effects', () => {
       await new Promise((r) => setTimeout(r, 50));
 
       const data = service.uiState()?.playerStatusEffects[0];
-      expect(data).toEqual({
-        instanceId: 'e-123',
-        type: 'poison',
-        remainingCharges: 3,
-        durationType: 'turns',
-      });
+      expect(data).toEqual(
+        expect.objectContaining({
+          instanceId: 'e-123',
+          type: 'poison',
+          remainingCharges: 3,
+          durationType: 'turns',
+        }),
+      );
     });
 
     it('should set remainingCharges to null for permanent duration', async () => {

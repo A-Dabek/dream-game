@@ -14,6 +14,7 @@ import { PlayerHandComponent } from './player-hand.component';
 import { TurnQueueComponent } from './turn-queue.component';
 import { HealthBarComponent } from './health-bar.component';
 import { StatusEffectsComponent } from './status-effects.component';
+import { StatusEffectDisplayData } from './status-effects-display-data';
 
 @Component({
   selector: 'app-board-ui',
@@ -33,7 +34,7 @@ import { StatusEffectsComponent } from './status-effects.component';
     <div
       data-testid="board-ui"
       class="opponent-area"
-      [class.active]="!isPlayerTurn() && !s.isGameOver"
+      [class.active]="isOpponentActive()"
     >
       <app-player-hand
         [items]="s.opponent.items"
@@ -48,14 +49,14 @@ import { StatusEffectsComponent } from './status-effects.component';
 
     <div class="main-area">
       <app-turn-queue
-        [turnQueue]="s.turnInfo.turnQueue || []"
+        [turnQueue]="turnQueue()"
         [playerId]="s.player.id"
         (skipTurn)="onSkipTurn()"
       />
       <div class="center-content">
         <div class="status-effects-top">
           <app-status-effects
-            [statusEffects]="s.opponentStatusEffects"
+            [statusEffects]="opponentStatusEffects()"
             [playerId]="s.opponent.id"
             side="opponent"
           />
@@ -69,7 +70,7 @@ import { StatusEffectsComponent } from './status-effects.component';
         </div>
         <div class="status-effects-bottom">
           <app-status-effects
-            [statusEffects]="s.playerStatusEffects"
+            [statusEffects]="playerStatusEffects()"
             [playerId]="s.player.id"
             side="player"
           />
@@ -81,14 +82,14 @@ import { StatusEffectsComponent } from './status-effects.component';
       />
     </div>
 
-    <div class="player-area" [class.active]="isPlayerTurn() && !s.isGameOver">
+    <div class="player-area" [class.active]="isPlayerActive()">
       <app-health-bar
         [health]="s.player.health"
         variant="player"
       ></app-health-bar>
       <app-player-hand
         [items]="s.player.items"
-        [interactive]="isPlayerTurn() && !s.isGameOver"
+        [interactive]="isPlayerActive()"
         side="player"
         (itemSelected)="onItemPlayed($event)"
       />
@@ -102,7 +103,30 @@ export class BoardUiComponent {
   readonly lastPlayedItem = input<Item | null>(null);
   readonly actionHistory = input.required<ActionHistoryEntry[]>();
 
-  onItemPlayed(item: Item) {
+  readonly isPlayerTurn = computed(
+    () => this.state().turnInfo.currentPlayerId === this.state().player.id,
+  );
+
+  readonly isPlayerActive = computed(
+    () => this.isPlayerTurn() && !this.state().isGameOver,
+  );
+
+  readonly isOpponentActive = computed(
+    () => !this.isPlayerTurn() && !this.state().isGameOver,
+  );
+
+  readonly playerStatusEffects = computed<StatusEffectDisplayData[]>(
+    () => (this.state().playerStatusEffects ?? []) as StatusEffectDisplayData[],
+  );
+
+  readonly opponentStatusEffects = computed<StatusEffectDisplayData[]>(
+    () =>
+      (this.state().opponentStatusEffects ?? []) as StatusEffectDisplayData[],
+  );
+
+  readonly turnQueue = computed(() => this.state().turnInfo.turnQueue ?? []);
+
+  onItemPlayed(item: Item): void {
     this.humanInputService.submitAction({
       type: GameActionType.PLAY_ITEM,
       playerId: this.state().player.id,
@@ -110,14 +134,10 @@ export class BoardUiComponent {
     });
   }
 
-  onSkipTurn() {
+  onSkipTurn(): void {
     this.humanInputService.submitAction({
       type: GameActionType.PLAY_ITEM,
       playerId: this.state().player.id,
     });
   }
-
-  readonly isPlayerTurn = computed(
-    () => this.state().turnInfo.currentPlayerId === this.state().player.id,
-  );
 }
