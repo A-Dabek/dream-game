@@ -68,9 +68,10 @@
       "type": "local",
       "enabled": true,
       "command": [
-        "uvx",
-        "--from",
-        "git+https://github.com/oraios/serena",
+        "uv",
+        "--directory",
+        "C:\\Users\\asan_\\IdeaProjects\\serena",
+        "run",
         "serena",
         "start-mcp-server",
         "--project-from-cwd",
