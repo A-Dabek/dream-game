@@ -54,11 +54,10 @@ import { PlayerHandComponent } from '../board/player-hand.component';
 export class PostGameScreenComponent {
   readonly player = input.required<Loadout>();
   readonly opponent = input.required<Loadout>();
-  readonly winnerId = input.required<string>();
+  readonly winner = input.required<'player' | 'opponent'>();
 
-  // TODO instead of winnerId just accept 1 input "winner: 'top' | 'bottom'"
-  readonly playerWon = computed(() => this.winnerId() === 'player');
-  readonly opponentWon = computed(() => this.winnerId() === 'cpu');
+  readonly playerWon = computed(() => this.winner() === 'player');
+  readonly opponentWon = computed(() => this.winner() === 'opponent');
 
   readonly restart = output<void>();
 }

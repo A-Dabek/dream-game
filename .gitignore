@@ -47,7 +47,6 @@ Thumbs.db
 .firebase
 
 # Playwright
-e2e/**/*.spec.ts
 playwright-report/
 test-results/
 playwright/.cache/

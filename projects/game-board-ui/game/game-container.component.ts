@@ -57,7 +57,7 @@ import { GameService } from '../game-logic/game.service';
               data-testid="post-game-screen"
               [player]="humanPlayer().loadout"
               [opponent]="cpuPlayer().loadout"
-              [winnerId]="s.winnerId!"
+              [winner]="s.winnerId === humanPlayer().id ? 'player' : 'opponent'"
               (restart)="handleRestart()"
               animate.enter="slide-in"
               animate.leave="slide-out"

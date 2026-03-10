@@ -177,5 +177,9 @@ export function getItemBehavior(itemId: ItemId): ItemDefinition {
 }
 
 export function getItemGenre(itemId: ItemId): Genre {
-  return getItemBehavior(itemId).genre;
+  try {
+    return getItemBehavior(itemId).genre;
+  } catch {
+    return 'basic';
+  }
 }
