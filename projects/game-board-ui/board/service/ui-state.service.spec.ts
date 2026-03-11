@@ -74,7 +74,17 @@ describe('UiStateService - Status Effects', () => {
             gameState: vi.fn().mockReturnValue(null),
           },
         },
-        { provide: SoundService, useValue: { playItemSound: vi.fn() } },
+        {
+          provide: SoundService,
+          useValue: {
+            playItemSound: vi.fn(),
+            playBackground: vi.fn(),
+            playWin: vi.fn(),
+            playLoss: vi.fn(),
+            playPass: vi.fn(),
+            stopBackground: vi.fn(),
+          },
+        },
       ],
     });
 
@@ -106,6 +116,19 @@ describe('UiStateService - Status Effects', () => {
       expect(service.uiState()?.playerStatusEffects.length).toBe(1);
       expect(service.uiState()?.playerStatusEffects[0].pathD).toBeDefined();
       expect(service.uiState()?.playerStatusEffects[0].genre).toBe('poison');
+    });
+
+    it('should reset state when clear() is called', () => {
+      const soundService = TestBed.inject(SoundService);
+      service.initialize(mockGameState());
+      expect(service.uiState()).not.toBeNull();
+
+      service.clear();
+
+      expect(service.uiState()).toBeNull();
+      expect(service.lastPlayedItem()).toBeNull();
+      expect(service.actionHistory()).toEqual([]);
+      expect(soundService.stopBackground).toHaveBeenCalled();
     });
   });
 

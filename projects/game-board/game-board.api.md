@@ -4,6 +4,7 @@
 
 ```ts
 import { Board as Board_2 } from '../board';
+import { Duration } from '../item';
 import { DurationState } from './engine/effects';
 import { Effect } from '../item';
 import { EffectInstanceState } from './engine/effects';
@@ -64,9 +65,29 @@ export { DurationState };
 export { EffectInstanceState };
 
 // @public (undocumented)
+export interface EngineState {
+  // (undocumented)
+  readonly gameOver: boolean;
+  // Warning: (ae-forgotten-export) The symbol "ListenerData_2" needs to be exported by the entry point index.d.ts
+  //
+  // (undocumented)
+  readonly listeners: ListenerData_2[];
+  // Warning: (ae-forgotten-export) The symbol "EngineLoadout" needs to be exported by the entry point index.d.ts
+  //
+  // (undocumented)
+  readonly playerOne: EngineLoadout;
+  // (undocumented)
+  readonly playerTwo: EngineLoadout;
+  // (undocumented)
+  readonly turnQueue: TurnEntry_2[];
+  // (undocumented)
+  readonly winnerId?: string;
+}
+
+// @public (undocumented)
 export interface GameAction {
   // (undocumented)
-  itemId?: string;
+  itemId?: ItemId_3;
   // (undocumented)
   playerId: string;
   // (undocumented)
@@ -126,11 +147,11 @@ export interface GameState {
   // (undocumented)
   opponent: BoardLoadout;
   // (undocumented)
-  opponentStatusEffects: StatusEffectDisplayData[];
+  opponentStatusEffects: StatusEffectData[];
   // (undocumented)
   player: BoardLoadout;
   // (undocumented)
-  playerStatusEffects: StatusEffectDisplayData[];
+  playerStatusEffects: StatusEffectData[];
   // Warning: (ae-forgotten-export) The symbol "TurnInfo" needs to be exported by the entry point index.d.ts
   //
   // (undocumented)
@@ -156,7 +177,7 @@ export interface Item {
 }
 
 // @public (undocumented)
-export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade';
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts';
 
 export { ListenerData };
 
@@ -209,9 +230,11 @@ export type StateChangeLogEntry = {
 };
 
 // @public (undocumented)
-export interface StatusEffectDisplayData {
+export interface StatusEffectData {
   // (undocumented)
-  readonly durationType: 'turns' | 'charges' | 'permanent' | 'until_item_removed';
+  readonly durationType: Duration['type'];
+  // (undocumented)
+  readonly genre: Genre_2;
   // (undocumented)
   readonly instanceId: string;
   // (undocumented)
@@ -240,10 +263,6 @@ export interface TurnEntry {
   // (undocumented)
   readonly turnId: string;
 }
-
-// Warnings were encountered during analysis:
-//
-// dist/types/game-board/engine/engine.types.d.ts:40:5 - (ae-forgotten-export) The symbol "EngineState" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 ```

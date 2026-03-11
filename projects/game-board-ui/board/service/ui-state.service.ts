@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import {
   GameAction,
+  GameActionType,
   GameEvent,
   GameState,
   getItemGenre,
@@ -36,6 +37,7 @@ export class UiStateService {
 
   initialize(initialState: GameState): void {
     this.logSubscription.unsubscribe();
+    this.soundService.playBackground();
     this._uiState.set(mapToUiState(initialState));
     this._lastPlayedItem.set(null);
     this._actionHistory.set([]);
@@ -46,6 +48,15 @@ export class UiStateService {
         concatMap((log) => timer(this.applyLog(log))),
       )
       .subscribe();
+  }
+
+  clear(): void {
+    this.logSubscription.unsubscribe();
+    this.soundService.stopBackground();
+    this._uiState.set(null);
+    this._lastPlayedItem.set(null);
+    this._actionHistory.set([]);
+    this.lastObservedActionCount = 0;
   }
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {
@@ -78,6 +89,13 @@ export class UiStateService {
     }
 
     const newActions = allActions.slice(this.lastObservedActionCount);
+
+    newActions.forEach((action) => {
+      if (action.type === GameActionType.PLAY_ITEM && !action.itemId) {
+        this.soundService.playPass();
+      }
+    });
+
     const newEntries = newActions.map((a) => this.createHistoryEntry(a));
 
     this._actionHistory.update((history) =>

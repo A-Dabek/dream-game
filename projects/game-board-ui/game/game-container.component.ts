@@ -18,6 +18,7 @@ import { PostGameScreenComponent } from './post-game-screen.component';
 import { UiStateService } from '../board/service/ui-state.service';
 import { HumanStrategy } from '../board/service/human-strategy';
 import { GameService } from '../game-logic/game.service';
+import { SoundService } from '../board/service/sound.service';
 
 @Component({
   selector: 'app-game-container',
@@ -75,6 +76,8 @@ export class GameContainerComponent {
 
   private readonly humanStrategy = inject(HumanStrategy);
 
+  private readonly soundService = inject(SoundService);
+
   readonly config = input.required<GamePlayersConfig>();
 
   readonly state = this.uiStateService.uiState;
@@ -97,8 +100,13 @@ export class GameContainerComponent {
 
     effect(() => {
       const s = this.state();
-      if (s?.isGameOver) {
+      if (s?.isGameOver && this.stage() !== 'post') {
         this.stage.set('post');
+        if (s.winnerId === this.humanPlayer().id) {
+          this.soundService.playWin();
+        } else {
+          this.soundService.playLoss();
+        }
       }
     });
   }
@@ -111,6 +119,7 @@ export class GameContainerComponent {
   }
 
   handleRestart() {
+    this.uiStateService.clear();
     this.stage.set('pre');
     // Re-create players on restart to ensure fresh state
     const config = this.config();

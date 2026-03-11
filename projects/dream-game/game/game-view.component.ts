@@ -5,13 +5,13 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { UrlGameConfigService } from './url-game-config.service';
 import { GamePlayersConfig } from '@dream/game-board';
 import { GameContainerComponent } from '@dream/game-board-ui';
 import {
   DEFAULT_CPU_CONFIG,
   DEFAULT_HUMAN_CONFIG,
 } from './game-view.constants';
+import { UrlGameConfigService } from './url-game-config.service';
 
 @Component({
   selector: 'app-game-view',
@@ -20,10 +20,8 @@ import {
   template: ` <app-game-container [config]="resolvedConfig()" /> `,
 })
 export class GameViewComponent {
-  private readonly urlConfigService = inject(UrlGameConfigService);
-
   readonly config = input<GamePlayersConfig>();
-
+  private readonly urlConfigService = inject(UrlGameConfigService);
   readonly resolvedConfig = computed(() => {
     return (
       this.config() ??
