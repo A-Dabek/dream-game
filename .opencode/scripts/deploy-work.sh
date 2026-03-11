@@ -69,6 +69,12 @@ echo "[CLEANUP] Removing specification files..."
 rm -f .opencode/specifications/*.md
 echo -e "${GREEN}[CLEANUP] Specification files removed successfully${NC}"
 
+# Format code
+echo ""
+echo "[FORMAT] Running prettier..."
+npx prettier --write .
+echo -e "${GREEN}[FORMAT] Code formatted successfully${NC}"
+
 # Git Commit
 echo "[GIT] Creating commit..."
 git add -A
