@@ -15,6 +15,7 @@ describe('ui-state-mapper', () => {
         type: 'poison',
         remainingCharges: 3,
         durationType: 'turns',
+        genre: 'poison',
       };
 
       const result = mapStatusEffectToDisplayData(effect);
@@ -33,6 +34,7 @@ describe('ui-state-mapper', () => {
         type: 'unknown' as any,
         remainingCharges: 3,
         durationType: 'turns',
+        genre: 'basic',
       };
 
       const result = mapStatusEffectToDisplayData(effect);
@@ -54,6 +56,7 @@ describe('ui-state-mapper', () => {
             condition: { type: 'on_turn_end' },
             action: [],
             genre: 'poison',
+            mergeStrategy: 'new' as const,
           },
           currentDuration: { type: 'turns', remaining: 3 },
         },
@@ -79,6 +82,7 @@ describe('ui-state-mapper', () => {
             condition: { type: 'on_turn_end' },
             action: [],
             genre: 'basic',
+            mergeStrategy: 'new' as const,
           },
           currentDuration: { type: 'turns', remaining: 3 },
         },
@@ -109,6 +113,7 @@ describe('ui-state-mapper', () => {
             type: 'poison',
             remainingCharges: 3,
             durationType: 'turns',
+            genre: 'poison',
           },
         ],
         opponentStatusEffects: [],

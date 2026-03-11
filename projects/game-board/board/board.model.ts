@@ -1,5 +1,5 @@
 import { LogEntry } from '../engine/engine.model';
-import { Duration, ItemId, Loadout, StatusEffectType } from '../item';
+import { Duration, Genre, ItemId, Loadout, StatusEffectType } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { Board } from './impl/board';
 
@@ -8,6 +8,7 @@ export interface StatusEffectData {
   readonly type: StatusEffectType;
   readonly remainingCharges: number | null;
   readonly durationType: Duration['type'];
+  readonly genre: Genre;
 }
 
 export interface BoardLoadout extends Loadout {

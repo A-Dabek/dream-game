@@ -66,6 +66,52 @@ function checkGameOver(
   return state;
 }
 
+function mergeStatusEffect(
+  state: EngineState,
+  targetPlayerId: string,
+  statusEffect: StatusEffect,
+): EngineState | null {
+  if (
+    statusEffect.mergeStrategy !== 'increase' ||
+    statusEffect.duration?.type !== 'charges'
+  ) {
+    return null;
+  }
+
+  const existingListenerIndex = state.listeners.findIndex(
+    (listener) =>
+      listener.playerId === targetPlayerId &&
+      listener.effectState.effect.type === statusEffect.type &&
+      listener.effectState.currentDuration.type === 'charges',
+  );
+
+  if (existingListenerIndex === -1) {
+    return null;
+  }
+
+  const incomingCharges = statusEffect.duration.value as number;
+
+  return {
+    ...state,
+    listeners: state.listeners.map((listener, index) =>
+      index === existingListenerIndex
+        ? {
+            ...listener,
+            effectState: {
+              ...listener.effectState,
+              currentDuration: {
+                ...listener.effectState.currentDuration,
+                remaining:
+                  listener.effectState.currentDuration.remaining +
+                  incomingCharges,
+              },
+            },
+          }
+        : listener,
+    ),
+  };
+}
+
 export const PROCESSORS: Processors = {
   damage: (state, playerKey, effect) =>
     adjustStat(
@@ -125,6 +171,13 @@ export const PROCESSORS: Processors = {
     const targetKey = getTargetKey(playerKey, effect.target);
     const statusEffect = effect.value as StatusEffect;
     const targetPlayer = state[targetKey];
+
+    const mergedState = mergeStatusEffect(state, targetPlayer.id, statusEffect);
+    if (mergedState) {
+      return mergedState;
+    }
+
+    // Default behavior: create new listener
     return {
       ...state,
       listeners: [

@@ -69,6 +69,7 @@ export const ListenerFactory = {
       action: [{ type: 'advance_turn', value: 0, target: 'self' }],
       duration: { type: 'permanent' },
       genre: 'basic',
+      mergeStrategy: 'new',
     };
     const listenerData = createInitialListenerData(
       `advance_turn-${playerId}`,
@@ -88,6 +89,7 @@ export const ListenerFactory = {
       action: [{ type: 'damage', value: 1, target: 'self' }],
       duration: { type: 'permanent' },
       genre: 'basic',
+      mergeStrategy: 'new',
     };
     const listenerData = createInitialListenerData(
       `fatigue-${playerId}`,

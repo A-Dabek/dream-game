@@ -42,6 +42,7 @@ describe('UiStateService - Status Effects', () => {
         condition: { type: 'on_turn_end' },
         action: [],
         genre: 'basic',
+        mergeStrategy: 'new' as const,
       },
       currentDuration: { type: durationType, remaining },
     },
@@ -96,6 +97,7 @@ describe('UiStateService - Status Effects', () => {
           type: 'poison',
           remainingCharges: 3,
           durationType: 'turns',
+          genre: 'poison',
         },
       ];
 

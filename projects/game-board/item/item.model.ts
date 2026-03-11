@@ -1,5 +1,7 @@
 export type Genre = 'basic' | 'poison';
 
+export type MergeStrategy = 'new' | 'increase';
+
 export type ItemId =
   | '_blueprint_attack'
   | '_blueprint_passive_attack'
@@ -61,6 +63,7 @@ export interface StatusEffect {
   readonly duration?: Duration;
   readonly genre: Genre;
   readonly extraParams?: Record<string, unknown>;
+  readonly mergeStrategy: MergeStrategy;
 }
 
 export type PassiveEffect = StatusEffect;

@@ -4,6 +4,8 @@ import {
   Condition,
   Duration,
   Effect,
+  Genre,
+  MergeStrategy,
   StatusEffect,
   StatusEffectType,
 } from './item.model';
@@ -62,9 +64,11 @@ export function passiveAttack(
 export function poison(chargeCount: number): StatusEffect {
   return statusEffect({
     type: 'poison',
+    genre: 'poison',
     condition: ConditionLibrary.onTurnEnd(),
     action: [attack(1, 'self')],
     duration: charges(chargeCount),
+    mergeStrategy: 'increase',
   });
 }
 
@@ -114,8 +118,14 @@ export function statusEffect(config: {
   condition: Condition;
   action: Effect[];
   duration?: Duration;
+  genre?: Genre;
+  mergeStrategy?: MergeStrategy;
 }): StatusEffect {
-  return { ...config };
+  return {
+    ...config,
+    genre: config.genre ?? 'basic',
+    mergeStrategy: config.mergeStrategy ?? 'new',
+  };
 }
 
 /**

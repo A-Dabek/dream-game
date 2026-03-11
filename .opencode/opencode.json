@@ -68,11 +68,7 @@
       "type": "local",
       "enabled": true,
       "command": [
-        "uv",
-        "--directory",
-        "C:\\Users\\asan_\\IdeaProjects\\serena",
-        "run",
-        "serena",
+        "C:\\Users\\asan_\\IdeaProjects\\serena\\.venv\\Scripts\\serena.exe",
         "start-mcp-server",
         "--project-from-cwd",
         "--context",

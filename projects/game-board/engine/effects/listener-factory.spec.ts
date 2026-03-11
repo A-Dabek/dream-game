@@ -35,6 +35,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'charges', value: 1 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -59,6 +60,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'turns', value: 3 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -81,6 +83,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'until_item_removed', value: 'item-123' },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -102,6 +105,7 @@ describe('ListenerFactory', () => {
         action: [{ type: 'attack', value: 3 }],
         duration: { type: 'permanent' },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -125,6 +129,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'charges', value: 1 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -149,6 +154,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'charges', value: 2 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -175,6 +181,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'turns', value: 3 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -201,6 +208,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'charges', value: 1 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const originalListenerData = createInitialListenerData(
@@ -232,6 +240,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'charges', value: 2 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -270,6 +279,7 @@ describe('ListenerFactory', () => {
         action: [],
         duration: { type: 'turns', value: 3 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -308,6 +318,7 @@ describe('ListenerFactory', () => {
         action: [{ type: 'attack', value: 3 }],
         duration: { type: 'charges', value: 3 },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(
@@ -352,6 +363,7 @@ describe('ListenerFactory', () => {
         action: [{ type: 'attack', value: 3 }],
         duration: { type: 'permanent' },
         genre: 'basic',
+      mergeStrategy: 'new',
       };
 
       const listenerData = createInitialListenerData(

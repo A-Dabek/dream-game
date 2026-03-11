@@ -22,6 +22,7 @@ export const StatusEffectLibrary = {
       ],
       duration: charges(chargeCount),
       genre: 'poison',
+      mergeStrategy: 'increase',
     };
   },
 
@@ -32,6 +33,7 @@ export const StatusEffectLibrary = {
       action: [{ type: 'negate', value: 'add_status_effect' }],
       duration: charges(chargeCount),
       genre: 'poison',
+      mergeStrategy: 'new',
     };
   },
 
@@ -47,6 +49,7 @@ export const StatusEffectLibrary = {
       ],
       duration: turns(turnCount),
       genre: 'poison',
+      mergeStrategy: 'new',
     };
   },
 
@@ -57,6 +60,7 @@ export const StatusEffectLibrary = {
       action: [{ type: 'invert', value: targetType }],
       duration,
       genre: 'basic',
+      mergeStrategy: 'new',
     };
   },
 
@@ -67,6 +71,7 @@ export const StatusEffectLibrary = {
       action: [{ type: 'negate', value: targetType }],
       duration,
       genre: 'basic',
+      mergeStrategy: 'new',
     };
   },
 
@@ -89,6 +94,7 @@ export const StatusEffectLibrary = {
         ],
         duration: permanent(),
         genre: 'basic',
+        mergeStrategy: 'new',
       },
       target,
     };
@@ -100,6 +106,7 @@ export const StatusEffectLibrary = {
       condition: ConditionLibrary.afterEffect(targetType),
       action: [],
       genre: 'basic',
+      mergeStrategy: 'new',
     };
   },
 
@@ -110,6 +117,7 @@ export const StatusEffectLibrary = {
       action: [ActiveEffectLibrary.attack(damageValue)],
       duration: permanent(),
       genre: 'basic',
+      mergeStrategy: 'new',
     };
   },
 } as const;

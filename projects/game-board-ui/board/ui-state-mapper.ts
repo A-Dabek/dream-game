@@ -1,8 +1,6 @@
 import {
   EngineState,
   GameState,
-  getItemGenre,
-  ItemId,
   ListenerData,
   StatusEffectData,
   StatusEffectType,
@@ -31,7 +29,6 @@ export function mapStatusEffectToDisplayData(
   return {
     ...data,
     pathD: resolveStatusEffectIcon(data.type),
-    genre: getItemGenre(data.type as ItemId),
   };
 }
 

@@ -190,19 +190,24 @@ export class Engine {
   ): EngineState {
     const listener = this.deserializeListener(currentData);
     const { event: reactionEvents } = listener.handle(event, state);
+    // Serialize the listener AFTER handling to capture any duration changes
     const serializedListener = listener.serialize();
 
-    const stateAfterReactions = reactionEvents.reduce<EngineState>(
-      (acc, e) => this.processEvent(e, remaining, acc, depth + 1),
-      state,
-    );
-
-    return {
-      ...stateAfterReactions,
-      listeners: stateAfterReactions.listeners.map((l) =>
+    // Update the state with the serialized listener before processing reactions
+    // This ensures processors see the updated duration
+    const stateWithUpdatedListener = {
+      ...state,
+      listeners: state.listeners.map((l) =>
         l.instanceId === serializedListener.instanceId ? serializedListener : l,
       ),
     };
+
+    const stateAfterReactions = reactionEvents.reduce<EngineState>(
+      (acc, e) => this.processEvent(e, remaining, acc, depth + 1),
+      stateWithUpdatedListener,
+    );
+
+    return stateAfterReactions;
   }
 
   private applyProcessor(event: GameEvent, state: EngineState): EngineState {

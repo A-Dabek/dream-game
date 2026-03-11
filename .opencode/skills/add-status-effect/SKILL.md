@@ -26,6 +26,7 @@ Add a status effect to your `whenPlayed()` method using `ActiveEffectLibrary.add
 import { Effect, ItemBehavior } from '../../item';
 import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
 import { ConditionLibrary } from '../../../item/conditions';
+import { charges } from '../../../item/durations';
 
 export class YourItemBehaviour implements ItemBehavior {
   whenPlayed(): Effect[] {
@@ -35,6 +36,7 @@ export class YourItemBehaviour implements ItemBehavior {
           condition: ConditionLibrary.onTurnEnd(),
           action: [ActiveEffectLibrary.modifySpeed(-1, 'enemy')],
           duration: charges(3),
+          mergeStrategy: 'increase', // Optional: merge with existing effects of same type
         },
         'self',
       ),
@@ -54,6 +56,11 @@ export class YourItemBehaviour implements ItemBehavior {
   - `permanent()` - lasts until manually removed
 - **`target`**: Who receives the status effect ('self' or 'enemy')
 - **`type`** (optional): Identifies the effect type (e.g., `type: 'poison'`) for interactions with items like antidotes or gas masks
+- **`mergeStrategy`** (optional): Controls how the effect behaves when applied multiple times:
+  - `'new'` (default): Creates a new status effect instance each time (duplicate effects)
+  - `'increase'`: Merges charges with an existing effect of the same type on the target player
+  - Only applies to effects with `duration.type === 'charges'`
+  - Use `'increase'` for effects like poison that should stack (e.g., `mergeStrategy: 'increase'`)
 
 
 ## 2. Add Display Metadata

@@ -209,6 +209,7 @@ export class Board implements BoardInterface {
         remainingCharges:
           listener.effectState.currentDuration.remaining || null,
         durationType: listener.effectState.currentDuration.type,
+        genre: listener.effectState.effect.genre,
       };
 
       if (listener.playerId === updatedPlayer.id) {

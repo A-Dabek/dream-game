@@ -135,8 +135,8 @@ describe('gas_grenade Integration Test', () => {
 
     // Play second gas_grenade
     board.playItem('gas_grenade', 'p1');
-    // p1 takes 2 damage (1 from each poison stack)
-    expect(board.playerHealth).toBe(97);
+    // p1 takes 1 damage from poison
+    expect(board.playerHealth).toBe(98);
 
     // Verify p2 took damage from first poison during wait
     expect(board.opponentHealth).toBe(p2HealthBefore - p2TurnsTaken);
@@ -145,14 +145,14 @@ describe('gas_grenade Integration Test', () => {
     passUntilTurn(board, 'p2');
     const p2HealthAfter = board.opponentHealth;
     board.pass('p2');
-    // p2 takes 2 damage (1 from each poison stack)
-    expect(board.opponentHealth).toBe(p2HealthAfter - 2);
+    // p2 takes 1 damage from poison
+    expect(board.opponentHealth).toBe(p2HealthAfter - 1);
 
     // Wait until it's p1's turn again and pass
     passUntilTurn(board, 'p1');
     const p1HealthBefore = board.playerHealth;
     board.pass('p1');
     // p1 takes another 2 damage
-    expect(board.playerHealth).toBe(p1HealthBefore - 2);
+    expect(board.playerHealth).toBe(p1HealthBefore - 1);
   });
 });
