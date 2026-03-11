@@ -9,13 +9,16 @@ import { DurationState } from './engine/effects';
 import { Effect } from '../item';
 import { EffectInstanceState } from './engine/effects';
 import { GameAction as GameAction_2 } from '../board';
+import { GameState as GameState_2 } from '../board';
 import { Genre as Genre_2 } from '../item';
 import { ItemId as ItemId_2 } from '../../item';
 import { ItemId as ItemId_3 } from '../item';
 import { ListenerData } from './engine/effects';
 import { Loadout as Loadout_2 } from '../item';
-import { LogEntry as LogEntry_2 } from '../../engine';
-import { Rating } from '../rating';
+import { LogEntry as LogEntry_2 } from '../engine';
+import { LogEntry as LogEntry_3 } from '../../engine';
+import { Player as Player_2 } from '../player';
+import { Rating as Rating_2 } from '../rating';
 import { StatusEffect } from '../../item';
 import { StatusEffectType as StatusEffectType_2 } from '../item';
 import { Strategy as Strategy_2 } from '../ai';
@@ -33,7 +36,7 @@ export class Board implements BoardInterface {
   // (undocumented)
   clone(): Board;
   // (undocumented)
-  consumeLog(): LogEntry_2[];
+  consumeLog(): LogEntry_3[];
   // (undocumented)
   get currentPlayerId(): string;
   // (undocumented)
@@ -52,6 +55,27 @@ export class Board implements BoardInterface {
   playItem(itemId: ItemId_2, playerId: string): GameActionResult;
   // (undocumented)
   surrender(playerId: string): GameActionResult;
+}
+
+// @public
+export class CpuPlayerBuilder {
+  constructor(id: string, name: string);
+  build(): Player;
+  // (undocumented)
+  readonly id: string;
+  // (undocumented)
+  readonly name: string;
+  withConfig(config: PlayerConfig): this;
+  withHealth(health: number): this;
+  withItems(itemIds: ItemId_2[]): this;
+  withLeftMostStrategy(): this;
+  withNormalHealth(mean: number, stdDev: number, min?: number): this;
+  withNormalSpeed(mean: number, stdDev: number, min?: number): this;
+  withRandomHealth(min: number, max: number): this;
+  withRandomItems(count: number): this;
+  withRandomItemsInRange(min: number, max: number): this;
+  withRandomSpeed(min: number, max: number): this;
+  withSpeed(speed: number): this;
 }
 
 // @public
@@ -83,6 +107,17 @@ export interface EngineState {
   // (undocumented)
   readonly winnerId?: string;
 }
+
+// @public
+export const GAME_CONFIG: {
+  readonly BASE_HEALTH: 100;
+  readonly HEALTH_STD_DEV: 20;
+  readonly BASE_SPEED: 10;
+  readonly SPEED_STD_DEV: 3;
+  readonly BASE_ATTACK: 5;
+  readonly HEAL_MODIFIER: 1.2;
+  readonly BASE_SPEED_MODIFIER: 3;
+};
 
 // @public (undocumented)
 export interface GameAction {
@@ -129,6 +164,12 @@ export type GameEvent =
       effect: Effect;
       playerId: string;
     };
+
+// @public
+export class GameOrchestrator {
+  constructor(callbacks?: { onGameStateChange?: (state: GameState_2) => void; onLogs?: (logs: LogEntry_2[]) => void });
+  startGame(player1: Player_2, player2: Player_2): Promise<Board_2>;
+}
 
 // @public (undocumented)
 export interface GamePlayersConfig {
@@ -208,7 +249,7 @@ export interface Player {
   // (undocumented)
   readonly name: string;
   // (undocumented)
-  readonly rating: Rating;
+  readonly rating: Rating_2;
   // (undocumented)
   readonly strategy: Strategy_2;
 }
@@ -221,6 +262,18 @@ export interface PlayerConfig {
   items?: ItemId_2[];
   // (undocumented)
   speed?: number;
+}
+
+// Warning: (ae-forgotten-export) The symbol "Rating" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export class PlayerRating implements Rating {
+  // (undocumented)
+  lose(opponentRating: number): number;
+  // (undocumented)
+  get value(): number;
+  // (undocumented)
+  win(opponentRating: number): number;
 }
 
 // @public (undocumented)

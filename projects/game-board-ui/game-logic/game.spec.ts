@@ -103,7 +103,7 @@ describe('GameService', () => {
     );
 
     // Accessing private method for testing purposes
-    (service as any).updateRatings(board, p1, p2);
+    ((service as any).orchestrator as any).updateRatings(board, p1, p2);
 
     expect(p1.rating.value).toBe(initialRating1);
     expect(p2.rating.value).toBe(initialRating2);

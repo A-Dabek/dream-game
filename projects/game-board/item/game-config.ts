@@ -4,7 +4,13 @@
  */
 export const GAME_CONFIG = {
   /** Average player health baseline */
-  BASE_HEALTH: 20,
+  BASE_HEALTH: 100,
+  /** Standard deviation for health */
+  HEALTH_STD_DEV: 20,
+  /** Average player speed baseline */
+  BASE_SPEED: 10,
+  /** Standard deviation for speed */
+  SPEED_STD_DEV: 3,
   /** Baseline attack damage */
   BASE_ATTACK: 5,
   /** Heal is 120% of attack damage */

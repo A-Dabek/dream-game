@@ -1,32 +1,10 @@
 import { FirstAvailableStrategy, Strategy } from '../../ai';
 import { Item, ItemId, Loadout } from '../../item';
-import { getItemGenre } from '../../item-library';
+import { getItemGenre, ItemLibrary } from '../../item-library';
 import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
 
-const AVAILABLE_ITEM_IDS: ItemId[] = [
-  'hand',
-  'punch',
-  'sticking_plaster',
-  'sticky_boot',
-  'wingfoot',
-  'gas_grenade',
-  '_blueprint_attack',
-  '_blueprint_heal_5',
-  '_blueprint_passive_attack',
-  '_blueprint_reactive_removal',
-  '_blueprint_self_damage',
-  '_blueprint_damage_to_heal_charges',
-  '_blueprint_damage_to_heal_permanent',
-  '_blueprint_damage_to_heal_turns',
-  '_dummy',
-  '_blueprint_negate_damage',
-  '_blueprint_triple_threat',
-  'gas_mask',
-  'antidote',
-  'poison_drink',
-  'poison_darts',
-];
+const AVAILABLE_ITEM_IDS: ItemId[] = Object.keys(ItemLibrary) as ItemId[];
 
 interface Defaults {
   HEALTH_MIN: number;
@@ -56,9 +34,20 @@ const DEFAULTS: Defaults = {
 export class CpuPlayerBuilder {
   private healthMin = DEFAULTS.HEALTH_MIN;
   private healthMax = DEFAULTS.HEALTH_MAX;
+  private healthMean: number | null = null;
+  private healthStdDev: number | null = null;
+  private healthLimitMin: number = 10;
+
   private speedMin = DEFAULTS.SPEED_MIN;
   private speedMax = DEFAULTS.SPEED_MAX;
+  private speedMean: number | null = null;
+  private speedStdDev: number | null = null;
+  private speedLimitMin: number = 1;
+
   private itemCount = DEFAULTS.ITEM_COUNT;
+  private itemCountMin: number | null = null;
+  private itemCountMax: number | null = null;
+
   private exactHealth: number | null = null;
   private exactSpeed: number | null = null;
   private exactItems: ItemId[] | null = null;
@@ -75,6 +64,17 @@ export class CpuPlayerBuilder {
   withRandomHealth(min: number, max: number): this {
     this.healthMin = Math.min(min, max);
     this.healthMax = Math.max(min, max);
+    this.healthMean = null;
+    return this;
+  }
+
+  /**
+   * Sets random health using normal distribution.
+   */
+  withNormalHealth(mean: number, stdDev: number, min: number = 10): this {
+    this.healthMean = mean;
+    this.healthStdDev = stdDev;
+    this.healthLimitMin = min;
     return this;
   }
 
@@ -84,6 +84,17 @@ export class CpuPlayerBuilder {
   withRandomSpeed(min: number, max: number): this {
     this.speedMin = Math.min(min, max);
     this.speedMax = Math.max(min, max);
+    this.speedMean = null;
+    return this;
+  }
+
+  /**
+   * Sets random speed using normal distribution.
+   */
+  withNormalSpeed(mean: number, stdDev: number, min: number = 1): this {
+    this.speedMean = mean;
+    this.speedStdDev = stdDev;
+    this.speedLimitMin = min;
     return this;
   }
 
@@ -92,6 +103,17 @@ export class CpuPlayerBuilder {
    */
   withRandomItems(count: number): this {
     this.itemCount = Math.max(0, count);
+    this.itemCountMin = null;
+    this.itemCountMax = null;
+    return this;
+  }
+
+  /**
+   * Sets a range for the number of random items to include in the loadout.
+   */
+  withRandomItemsInRange(min: number, max: number): this {
+    this.itemCountMin = Math.min(min, max);
+    this.itemCountMax = Math.max(min, max);
     return this;
   }
 
@@ -192,7 +214,12 @@ export class CpuPlayerBuilder {
 
     // Fall back to random items
     const availableItemIds = AVAILABLE_ITEM_IDS;
-    return Array.from({ length: this.itemCount }, (_, i) => {
+    const count =
+      this.itemCountMin !== null && this.itemCountMax !== null
+        ? this.generateRandomValue(this.itemCountMin, this.itemCountMax)
+        : this.itemCount;
+
+    return Array.from({ length: count }, (_, i) => {
       const id =
         availableItemIds[Math.floor(Math.random() * availableItemIds.length)];
       return {
@@ -213,7 +240,15 @@ export class CpuPlayerBuilder {
     if (this.exactHealth !== null && this.exactHealth > 0) {
       return this.exactHealth;
     }
-    // Fall back to random value
+    // Use normal distribution if configured
+    if (this.healthMean !== null && this.healthStdDev !== null) {
+      return this.generateNormalValue(
+        this.healthMean,
+        this.healthStdDev,
+        this.healthLimitMin,
+      );
+    }
+    // Fall back to uniform random value
     return this.generateRandomValue(this.healthMin, this.healthMax);
   }
 
@@ -222,8 +257,30 @@ export class CpuPlayerBuilder {
     if (this.exactSpeed !== null && this.exactSpeed > 0) {
       return this.exactSpeed;
     }
-    // Fall back to random value
+    // Use normal distribution if configured
+    if (this.speedMean !== null && this.speedStdDev !== null) {
+      return this.generateNormalValue(
+        this.speedMean,
+        this.speedStdDev,
+        this.speedLimitMin,
+      );
+    }
+    // Fall back to uniform random value
     return this.generateRandomValue(this.speedMin, this.speedMax);
+  }
+
+  private generateNormalValue(
+    mean: number,
+    stdDev: number,
+    min: number,
+  ): number {
+    let u = 0,
+      v = 0;
+    while (u === 0) u = Math.random(); // Converting [0,1) to (0,1)
+    while (v === 0) v = Math.random();
+    const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    const val = Math.round(z * stdDev + mean);
+    return Math.max(min, val);
   }
 
   private generateRandomValue(min: number, max: number): number {

@@ -7,6 +7,7 @@ This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the f
 - `projects/game-board` (`game-board`): Core gameplay modules (engine, board, item, player, rating, AI, turn-manager).
 - `projects/game-board-ui` (`game-board-ui`): Angular UI application for the game board.
 - `projects/dream-game` (`dream-game`): Main app code responsible mainly for routing and bootstrapping.
+- `projects/game-initialization` (`game-initialization`): Project for creating randomized players and calculating their ELO rating via game orchestration.
 
 ## Gameplay
 

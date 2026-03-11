@@ -1,4 +1,4 @@
-import { LogEntry } from '../engine/engine.model';
+import { LogEntry } from '../engine';
 import { Duration, Genre, ItemId, Loadout, StatusEffectType } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { Board } from './impl/board';

@@ -1,3 +1,6 @@
+export { GameOrchestrator } from './game/game-orchestrator';
+export { GAME_CONFIG } from './item/game-config';
+export { PlayerRating } from './rating/impl/player-rating';
 export { createGamePlayers } from './player/player';
 export { type Player } from './player/player.model';
 export { type Strategy } from './ai/ai.model';
@@ -17,6 +20,7 @@ export {
 } from './engine/engine.model';
 export { type TurnEntry } from './turn-manager/turn-manager.model';
 export {
+  CpuPlayerBuilder,
   type PlayerConfig,
   type GamePlayersConfig,
 } from './player/impl/cpu-player-builder';

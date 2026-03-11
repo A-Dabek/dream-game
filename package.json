@@ -22,6 +22,7 @@
     "e2e:ui": "playwright test --ui",
     "e2e:debug": "playwright test --debug",
     "e2e:update": "playwright test --update-snapshots",
+    "init-game": "tsc -p projects/game-initialization/tsconfig.app.json && node out-tsc/game-initialization/game-initialization/src/main.js",
     "deploy-work": "bash .opencode/scripts/deploy-work.sh --commit"
   },
   "private": true,

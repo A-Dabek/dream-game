@@ -49,6 +49,9 @@
     },
     {
       "path": "./projects/dream-game/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/game-initialization/tsconfig.app.json"
     }
   ]
 }
