@@ -54,4 +54,4 @@ playwright/.cache/
 /ideas
 /temp
 .output.txt
-projects/game-initialization/src/players_elo.csv
+projects/game-initialization/src/*.csv

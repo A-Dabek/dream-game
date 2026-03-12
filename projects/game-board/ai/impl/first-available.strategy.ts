@@ -12,9 +12,7 @@ export class FirstAvailableStrategy implements Strategy {
    * @returns A promise that resolves to the chosen game action.
    */
   async decide(board: Board): Promise<GameAction> {
-    // Clone the board to interact with it without modifying the original state
-    const simulationBoard = board.clone();
-    const state = simulationBoard.gameState;
+    const state = board.gameState;
     const currentPlayerId = state.turnInfo.currentPlayerId;
 
     const player =

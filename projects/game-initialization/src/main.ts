@@ -5,6 +5,7 @@ import {
   GAME_CONFIG,
   GameOrchestrator,
   type Player,
+  type ItemId,
 } from '../../game-board';
 import { environment } from '../../game-board-ui/environments/environment';
 
@@ -26,7 +27,7 @@ function serializePlayer(p: Player): string {
 
 async function main() {
   const numGames = environment.initializationGames || 1000;
-  const numPlayers = 50;
+  const numPlayers = 100;
   const players: Player[] = [];
 
   for (let i = 0; i < numPlayers; i++) {
@@ -44,6 +45,12 @@ async function main() {
       p2Idx = Math.floor(Math.random() * players.length);
     }
 
+    console.log(
+      'Fight between items: ',
+      serializePlayer(players[p1Idx]),
+      'vs',
+      serializePlayer(players[p2Idx]),
+    );
     await orchestrator.startGame(players[p1Idx], players[p2Idx]);
 
     if ((i + 1) % 100 === 0) {
@@ -53,6 +60,65 @@ async function main() {
 
   // Sort players by elo rating ascending
   players.sort((a, b) => a.rating.value - b.rating.value);
+
+  // Collect item statistics
+  const numTopPlayers = Math.ceil(numPlayers * 0.25);
+  const numBottomPlayers = Math.ceil(numPlayers * 0.25);
+
+  const bottomPlayers = players.slice(0, numBottomPlayers);
+  const topPlayers = players.slice(-numTopPlayers);
+
+  interface ItemStats {
+    topCount: number;
+    bottomCount: number;
+    totalCount: number;
+  }
+
+  const itemStatsMap = new Map<ItemId, ItemStats>();
+
+  for (const p of players) {
+    const isTop = topPlayers.includes(p);
+    const isBottom = bottomPlayers.includes(p);
+
+    const itemIds = new Set(p.loadout.items.map((item) => item.id));
+
+    for (const itemId of itemIds) {
+      if (!itemStatsMap.has(itemId)) {
+        itemStatsMap.set(itemId, {
+          topCount: 0,
+          bottomCount: 0,
+          totalCount: 0,
+        });
+      }
+      const stats = itemStatsMap.get(itemId)!;
+      stats.totalCount++;
+      if (isTop) stats.topCount++;
+      if (isBottom) stats.bottomCount++;
+    }
+  }
+
+  const itemCsvLines = Array.from(itemStatsMap.entries())
+    .map(([id, stats]) => {
+      const balance = (stats.topCount - stats.bottomCount) / stats.totalCount;
+      return `${id},${stats.topCount},${stats.bottomCount},${stats.totalCount},${balance.toFixed(2)}`;
+    })
+    .sort((a, b) => {
+      // Sort by balance descending
+      const balanceA = parseFloat(a.split(',').pop()!);
+      const balanceB = parseFloat(b.split(',').pop()!);
+      return balanceB - balanceA;
+    });
+
+  const itemCsvContent = `itemId,topCount,bottomCount,totalCount,balance\n${itemCsvLines.join('\n')}`;
+
+  const itemOutputPath = path.join(
+    process.cwd(),
+    'projects',
+    'game-initialization',
+    'src',
+    'items_balance.csv',
+  );
+  fs.writeFileSync(itemOutputPath, itemCsvContent);
 
   const csvLines = players.map(
     (p) => `"${serializePlayer(p)}",${p.rating.value}`,
@@ -68,7 +134,7 @@ async function main() {
   );
   fs.writeFileSync(outputPath, csvContent);
 
-  console.log(`Results written to ${outputPath}`);
+  console.log(`Results written to ${outputPath} and ${itemOutputPath}`);
 }
 
 main().catch((err) => {

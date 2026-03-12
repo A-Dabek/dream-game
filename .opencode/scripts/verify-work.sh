@@ -106,6 +106,29 @@ echo "[API-EXTRACTOR] PASSED"
 # Step 9: E2E Tests
 run_step "E2E" npx playwright test
 
+# Step 10: Init Game (Performance check)
+echo "[INIT-GAME] RUNNING..."
+start_time=$(date +%s)
+set +e
+output=$(timeout 5s npm run init-game 2>&1)
+exit_code=$?
+set -e
+end_time=$(date +%s)
+duration=$((end_time - start_time))
+
+if [ $exit_code -eq 124 ]; then
+    echo -e "${RED}[INIT-GAME] FAILED (Timed out after 5s)${NC}"
+    echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
+    exit 1
+elif [ $exit_code -ne 0 ]; then
+    echo -e "${RED}[INIT-GAME] FAILED${NC}"
+    echo "$output"
+    echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
+    exit 1
+fi
+
+echo "[INIT-GAME] PASSED (${duration}s)"
+
 echo ""
 echo "========================================="
 echo -e "${GREEN}ALL VERIFICATIONS PASSED!${NC}"

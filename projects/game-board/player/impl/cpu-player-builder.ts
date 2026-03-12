@@ -4,7 +4,9 @@ import { getItemGenre, ItemLibrary } from '../../item-library';
 import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
 
-const AVAILABLE_ITEM_IDS: ItemId[] = Object.keys(ItemLibrary) as ItemId[];
+const AVAILABLE_ITEM_IDS: ItemId[] = (
+  Object.keys(ItemLibrary) as ItemId[]
+).filter((id) => id !== '_blueprint_damage_to_heal_permanent'); // TODO this item is unbalanced, it causes games to never finish
 
 interface Defaults {
   HEALTH_MIN: number;

@@ -137,20 +137,37 @@ export class Board implements BoardInterface {
   }
 
   clone(): Board {
-    const clonedBoard = new Board(
-      JSON.parse(JSON.stringify(this._gameState.player)),
-      JSON.parse(JSON.stringify(this._gameState.opponent)),
-    );
-    clonedBoard._gameState = JSON.parse(JSON.stringify(this._gameState));
-    // Since Engine is not easily clonable (it uses signals and private state),
-    // and Board.clone() seems to be used for simulation, we might have a problem.
-    // However, the original code also had this issue if Engine wasn't cloned.
-    // Wait, the original code didn't clone the engine! It just created a NEW Board,
-    // which created a NEW Engine, and then it overwrote _gameState.
-    // This meant the NEW engine was NOT in sync with the cloned _gameState.
-    // This looks like a bug in the original code or Engine is supposed to be stateless (it's not).
+    const clonedBoard = Object.create(Board.prototype);
+    const state = this._gameState;
 
-    // For now, I'll keep the behavior consistent with original:
+    // Fast manual clone of the board's game state
+    clonedBoard._gameState = {
+      player: {
+        ...state.player,
+        items: state.player.items.map((i) => ({ ...i })),
+      },
+      opponent: {
+        ...state.opponent,
+        items: state.opponent.items.map((i) => ({ ...i })),
+      },
+      turnInfo: {
+        ...state.turnInfo,
+        turnQueue: state.turnInfo.turnQueue.map((t) => ({ ...t })),
+      },
+      isGameOver: state.isGameOver,
+      winnerId: state.winnerId,
+      actionHistory: state.actionHistory.map((a) => ({ ...a })),
+      playerStatusEffects: state.playerStatusEffects.map((e) => ({ ...e })),
+      opponentStatusEffects: state.opponentStatusEffects.map((e) => ({ ...e })),
+    };
+
+    // Manually initialize the readonly engine field for the cloned instance
+    Object.defineProperty(clonedBoard, 'engine', {
+      value: this.engine.clone(),
+      writable: false,
+      configurable: true,
+    });
+
     return clonedBoard;
   }
 

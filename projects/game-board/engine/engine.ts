@@ -249,4 +249,43 @@ export class Engine {
   private log(entry: LogEntry): void {
     this.logBuffer.push(entry);
   }
+
+  /**
+   * Creates a deep clone of the engine, including its current state.
+   * The clone will have its own state and an empty log buffer.
+   */
+  clone(): Engine {
+    const cloned = Object.create(Engine.prototype);
+    const state = this._state;
+
+    // Fast manual deep clone of the engine state
+    cloned._state = {
+      playerOne: {
+        ...state.playerOne,
+        items: state.playerOne.items.map((i) => ({ ...i })),
+      },
+      playerTwo: {
+        ...state.playerTwo,
+        items: state.playerTwo.items.map((i) => ({ ...i })),
+      },
+      turnQueue: state.turnQueue.map((t) => ({ ...t })),
+      listeners: state.listeners.map((l) => ({
+        ...l,
+        effectState: {
+          ...l.effectState,
+          currentDuration: { ...l.effectState.currentDuration },
+        },
+      })),
+      gameOver: state.gameOver,
+      winnerId: state.winnerId,
+    };
+
+    // Initialize private readonly logBuffer for the cloned instance.
+    Object.defineProperty(cloned, 'logBuffer', {
+      value: [],
+      writable: false,
+      configurable: true,
+    });
+    return cloned;
+  }
 }
