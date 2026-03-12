@@ -12,11 +12,11 @@
     "description": "Removes an item when receiving damage."
   },
   "advance_turn": {
-    "icon": "advance-turn",
+    "icon": "fast-forward-button",
     "description": "Advances the turn order."
   },
   "fatigue": {
-    "icon": "fatigue",
+    "icon": "nothing-to-say",
     "description": "Reduces efficiency over time."
   },
   "periodic_attack": {

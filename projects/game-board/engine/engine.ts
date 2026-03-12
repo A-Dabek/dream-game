@@ -1,8 +1,8 @@
-import { Effect, ItemId, Loadout } from '../item';
 import { ActiveEffectLibrary } from '../effect-library';
+import { Effect, ItemId, Loadout } from '../item';
 import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
-import { ListenerFactory, ListenerData, EffectHandlerFactory } from './effects';
+import { EffectHandlerFactory, ListenerData, ListenerFactory } from './effects';
 import {
   EngineLoadout,
   EngineState,
@@ -163,16 +163,13 @@ export class Engine {
     });
   }
 
-  private deserializeListener(data: ListenerData) {
-    return ListenerFactory.deserialize(data);
-  }
-
   private processEvent(
     event: GameEvent,
     listenersToProcess: ListenerData[],
     state: EngineState,
     depth = 0,
   ): EngineState {
+    // TODO there should be a warning or error if we hit the depth limit, but for now we'll just return the current state to prevent infinite loops
     if (state.gameOver || depth > 50) return state;
 
     if (listenersToProcess.length > 0) {
@@ -188,7 +185,7 @@ export class Engine {
     state: EngineState,
     depth: number,
   ): EngineState {
-    const listener = this.deserializeListener(currentData);
+    const listener = ListenerFactory.deserialize(currentData);
     const { event: reactionEvents } = listener.handle(event, state);
     // Serialize the listener AFTER handling to capture any duration changes
     const serializedListener = listener.serialize();
