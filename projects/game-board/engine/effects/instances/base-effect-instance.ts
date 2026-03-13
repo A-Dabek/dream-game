@@ -86,7 +86,13 @@ export abstract class BaseEffectInstance implements Listener {
 
     this.duration.update(event, this.playerId);
 
-    return this.wrapResult(resultEvents);
+    const wrapped = this.wrapResult(resultEvents);
+    return {
+      event: wrapped.event.map((e) => ({
+        ...e,
+        processedBy: [...(e.processedBy ?? []), this.instanceId],
+      })),
+    };
   }
 
   protected abstract handleReaction(

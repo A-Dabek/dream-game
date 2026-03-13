@@ -60,7 +60,7 @@ describe('Negate Damage Integration Tests', () => {
     expect(board.gameState.player.health).toBe(95);
   });
 
-  it('should NOT negate end-of-turn damage if negate was played AFTER status attack, but charge should remain', () => {
+  it('should negate end-of-turn damage if negate was played AFTER status attack, and charge should be consumed', () => {
     const p1 = createMockPlayer('p1', {
       speed: 100,
       items: ['_blueprint_negate_damage', '_blueprint_attack'],
@@ -84,11 +84,11 @@ describe('Negate Damage Integration Tests', () => {
     passUntilTurn(board, 'p2');
     board.pass('p2');
 
-    // status attack (older) triggers and its damage is NOT seen by negate (newer).
-    expect(board.gameState.player.health).toBe(90);
+    // status attack damage IS seen by negate because of engine loop-until-done logic.
+    expect(board.gameState.player.health).toBe(95);
   });
 
-  it('should verify negate is still active after being skipped by older status attack', () => {
+  it('should verify negate is consumed by older status attack', () => {
     const p1 = createMockPlayer('p1', {
       speed: 100,
       items: ['_blueprint_negate_damage'],
@@ -111,15 +111,15 @@ describe('Negate Damage Integration Tests', () => {
     // 3. End p2's turn again. Passive attack (Older) triggers.
     passUntilTurn(board, 'p2');
     board.pass('p2');
-    // Damage should be applied because negate is newer.
-    expect(board.gameState.player.health).toBe(90);
+    // Damage should be negated because negate sees it now.
+    expect(board.gameState.player.health).toBe(95);
 
-    // 4. Verify negate is STILL active by using an active attack from p2.
+    // 4. Verify negate is CONSUMED by using an active attack from p2.
     passUntilTurn(board, 'p2');
     board.playItem('_blueprint_attack', 'p2');
-    // The active attack is negated (90 -> 90),
-    // but p2's end-of-turn status attack still triggers (90 -> 85).
-    // If negate didn't work, it would be 80.
-    expect(board.gameState.player.health).toBe(85);
+    // The active attack is NOT negated anymore (95 -> 85),
+    // because negate was consumed by the passive attack.
+    // Passive attack also triggers (85 -> 80).
+    expect(board.gameState.player.health).toBe(80);
   });
 });

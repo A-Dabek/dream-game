@@ -16,16 +16,6 @@ export class BlueprintHealOnDamageListener extends BaseEffectInstance {
       return null;
     }
 
-    // No infinite loop expected here as healing != damage,
-    // but good practice to keep it consistent with other blueprint items
-    if (
-      event.type === 'effect' &&
-      event.playerId === this.playerId &&
-      event.effect.type === 'healing'
-    ) {
-      return null;
-    }
-
     const healEvent: GameEvent = {
       type: 'effect',
       effect: ActiveEffectLibrary.heal(1, 'self'),

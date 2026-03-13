@@ -185,6 +185,11 @@ export class Engine {
     state: EngineState,
     depth: number,
   ): EngineState {
+    // If event already processed by this listener, skip to the next one in the chain
+    if (event.processedBy?.includes(currentData.instanceId)) {
+      return this.processEvent(event, remaining, state, depth);
+    }
+
     const listener = ListenerFactory.deserialize(currentData);
     const { event: reactionEvents } = listener.handle(event, state);
     // Serialize the listener AFTER handling to capture any duration changes
@@ -200,7 +205,7 @@ export class Engine {
     };
 
     const stateAfterReactions = reactionEvents.reduce<EngineState>(
-      (acc, e) => this.processEvent(e, remaining, acc, depth + 1),
+      (acc, e) => this.processEvent(e, acc.listeners, acc, depth + 1),
       stateWithUpdatedListener,
     );
 

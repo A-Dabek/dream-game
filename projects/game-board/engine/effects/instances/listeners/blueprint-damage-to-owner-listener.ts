@@ -16,12 +16,6 @@ export class BlueprintDamageToOwnerListener extends BaseEffectInstance {
       return null;
     }
 
-    // Avoid infinite loop: if the damage was caused by this passive effect
-    // (identified by the event being emitted by the same player)
-    if (event.type === 'effect' && event.playerId === this.playerId) {
-      return null;
-    }
-
     const extraDamageEvent: GameEvent = {
       type: 'effect',
       effect: ActiveEffectLibrary.attack(1, 'self'),

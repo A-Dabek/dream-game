@@ -125,7 +125,7 @@ describe('Blueprint Passive Effect Integration Test', () => {
       board.playerHealth,
     );
 
-    // Order matters: damage-to-owner only reacts to punch, heal-on-damage only reacts to punch
-    expect(board.playerHealth).toBe(45);
+    // Both items now react to each other's effects through the engine's loop-until-done logic
+    expect(board.playerHealth).toBe(46);
   });
 });

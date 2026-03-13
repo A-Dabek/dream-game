@@ -39,10 +39,11 @@ export type LifecycleGameEvent = {
   phase: LifecyclePhase;
 };
 
-export type GameEvent =
+export type GameEvent = (
   | { type: 'on_play'; playerId: string; itemId: ItemId }
   | LifecycleGameEvent
-  | { type: 'effect'; effect: Effect; playerId: string };
+  | { type: 'effect'; effect: Effect; playerId: string }
+) & { processedBy?: string[] };
 
 export type StateChangeLogEntry = {
   type: 'state-change';
