@@ -171,6 +171,20 @@ export const ItemLibrary = {
     ],
   }),
 
+  _blueprint_heal_on_damage: (): ItemDefinition => ({
+    genre: 'basic',
+    onPlayEffects: [],
+    passiveEffects: [
+      {
+        type: '_blueprint_heal_on_damage',
+        condition: ConditionLibrary.afterEffect('damage'),
+        action: [],
+        genre: 'basic',
+        mergeStrategy: 'new',
+      },
+    ],
+  }),
+
   _blueprint_triple_threat: (): ItemDefinition => ({
     genre: 'basic',
     onPlayEffects: [

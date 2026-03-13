@@ -34,4 +34,38 @@ describe('Blueprint Passive Effect Integration Test', () => {
 
     expect(board.playerHealth).toBe(44);
   });
+
+  it('should heal 1 when owner is damaged', () => {
+    // Player 1 has the new blueprint item
+    const player1 = createMockPlayer('p1', {
+      health: 50,
+      speed: 1, // Slow player
+      items: ['_blueprint_heal_on_damage'],
+    });
+
+    // Player 2 has a punch item
+    const player2 = createMockPlayer('p2', {
+      health: 50,
+      speed: 10, // Fast player to start first
+      items: ['punch'],
+    });
+
+    const board = new Board(player1, player2);
+
+    // Ensure it's p2's turn to attack
+    passUntilTurn(board, 'p2');
+
+    // Player 2 uses punch on Player 1
+    // Punch deals 5 damage
+    // Passive should heal 1
+    board.playItem('punch', 'p2');
+
+    // Expected: 50 - 5 (punch) + 1 (passive heal) = 46
+    console.log(
+      'Player 1 health after punch with heal-on-damage:',
+      board.playerHealth,
+    );
+
+    expect(board.playerHealth).toBe(46);
+  });
 });

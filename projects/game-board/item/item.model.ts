@@ -12,6 +12,7 @@ export type ItemId =
   | '_blueprint_self_damage'
   | '_blueprint_negate_damage'
   | '_blueprint_damage_to_owner'
+  | '_blueprint_heal_on_damage'
   | '_blueprint_triple_threat'
   | '_dummy'
   | '_blueprint_heal_5'
