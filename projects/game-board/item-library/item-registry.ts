@@ -1,6 +1,7 @@
 import { Genre, ItemId, ItemDefinition } from '../item';
 import { ActiveEffectLibrary } from '../effect-library/active-effects';
 import { StatusEffectLibrary } from '../effect-library/status-effects';
+import { ConditionLibrary } from '../item/conditions';
 import { charges, permanent, turns, GAME_CONFIG, BASE_HEAL } from '../item';
 
 const PoisonItemLibrary = {
@@ -153,6 +154,20 @@ export const ItemLibrary = {
       ActiveEffectLibrary.add_status_effect(
         StatusEffectLibrary.negate('damage', charges(1)),
       ),
+    ],
+  }),
+
+  _blueprint_damage_to_owner: (): ItemDefinition => ({
+    genre: 'basic',
+    onPlayEffects: [],
+    passiveEffects: [
+      {
+        type: '_blueprint_damage_to_owner',
+        condition: ConditionLibrary.afterEffect('damage'),
+        action: [],
+        genre: 'basic',
+        mergeStrategy: 'new',
+      },
     ],
   }),
 

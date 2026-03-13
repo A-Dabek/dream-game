@@ -5,6 +5,7 @@ import {
   InvertListener,
   NegateListener,
   ReactiveRemovalListener,
+  BlueprintDamageToOwnerListener,
 } from './instances/listeners';
 
 // Types moved from listener-data.ts
@@ -57,6 +58,7 @@ const LISTENER_MAP: Record<string, new (data: ListenerData) => Listener> = {
   gas_mask: NegateListener,
   invert: InvertListener,
   reactive_removal: ReactiveRemovalListener,
+  _blueprint_damage_to_owner: BlueprintDamageToOwnerListener,
 };
 
 // ListenerFactory plain object
