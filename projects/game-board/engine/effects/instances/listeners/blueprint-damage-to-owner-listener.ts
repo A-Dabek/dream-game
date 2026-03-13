@@ -1,4 +1,8 @@
-import { EngineState, GameEvent } from '../../../engine.types';
+import {
+  EngineState,
+  GameEvent,
+  GameEventFactory,
+} from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
 import { ListenerData } from '../../types';
 import { ActiveEffectLibrary } from '../../../../effect-library';
@@ -16,12 +20,10 @@ export class BlueprintDamageToOwnerListener extends BaseEffectInstance {
       return null;
     }
 
-    const extraDamageEvent: GameEvent = {
-      type: 'effect',
-      effect: ActiveEffectLibrary.attack(1, 'self'),
-      playerId: this.playerId,
-      processedBy: [],
-    };
+    const extraDamageEvent = GameEventFactory.createEffect(
+      this.playerId,
+      ActiveEffectLibrary.attack(1, 'self'),
+    );
 
     return [event, extraDamageEvent];
   }

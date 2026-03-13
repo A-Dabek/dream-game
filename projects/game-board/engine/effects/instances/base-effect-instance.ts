@@ -1,5 +1,10 @@
 import { BEFORE_EFFECT, StatusEffect } from '../../../item';
-import { EngineState, GameEvent, Listener } from '../../engine.types';
+import {
+  EngineState,
+  GameEvent,
+  GameEventFactory,
+  Listener,
+} from '../../engine.model';
 import { ListenerData } from '../types';
 import { createCondition, ReactiveCondition } from '../conditions';
 import { createDuration, ReactiveDuration } from '../durations';
@@ -95,15 +100,14 @@ export abstract class BaseEffectInstance implements Listener {
   ): GameEvent[] | null;
 
   private wrapResult(events: GameEvent[]): { event: GameEvent[] } {
-    const removeSelfEvent: GameEvent = {
-      type: 'effect',
-      effect: {
+    const removeSelfEvent = GameEventFactory.createEffect(
+      this.playerId,
+      {
         type: 'remove_listener',
         value: this.instanceId,
       },
-      playerId: this.playerId,
-      processedBy: events[0]?.processedBy ?? [],
-    };
+      events[0]?.processedBy,
+    );
 
     // Check if duration expired
     if (this.duration.isExpired) {
@@ -146,20 +150,14 @@ export abstract class BaseEffectInstance implements Listener {
     if (isReplacement) {
       const playerId = event.playerId;
 
-      return this.effect.action.map((e) => ({
-        type: 'effect',
-        effect: e,
-        playerId,
-        processedBy: [],
-      }));
+      return this.effect.action.map((e) =>
+        GameEventFactory.createEffect(playerId, e),
+      );
     }
 
-    const reactions: GameEvent[] = this.effect.action.map((e) => ({
-      type: 'effect',
-      effect: e,
-      playerId: this.playerId,
-      processedBy: [],
-    }));
+    const reactions: GameEvent[] = this.effect.action.map((e) =>
+      GameEventFactory.createEffect(this.playerId, e),
+    );
 
     return [event, ...reactions];
   }

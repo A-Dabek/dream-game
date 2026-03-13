@@ -1,5 +1,5 @@
 import { Effect } from '../../../item';
-import { EngineState, GameEvent } from '../../engine.types';
+import { EngineState, GameEvent, GameEventFactory } from '../../engine.model';
 import { EffectHandler } from './effect-handler.interface';
 
 export class DefaultEffectHandler implements EffectHandler {
@@ -10,13 +10,6 @@ export class DefaultEffectHandler implements EffectHandler {
     playerId: string,
     originalEffect: Effect,
   ): GameEvent[] {
-    return [
-      {
-        type: 'effect',
-        effect: originalEffect,
-        playerId,
-        processedBy: [],
-      },
-    ];
+    return [GameEventFactory.createEffect(playerId, originalEffect)];
   }
 }

@@ -1,5 +1,5 @@
 import { Effect } from '../../../item';
-import { EngineState, GameEvent } from '../../engine.types';
+import { EngineState, GameEvent, GameEventFactory } from '../../engine.model';
 import { EffectHandler } from './effect-handler.interface';
 
 export class AntidoteHandler implements EffectHandler {
@@ -14,14 +14,11 @@ export class AntidoteHandler implements EffectHandler {
       (l) => l.playerId === playerId && l.effectState.effect.type === 'poison',
     );
 
-    return poisonListeners.map((l) => ({
-      type: 'effect',
-      effect: {
+    return poisonListeners.map((l) =>
+      GameEventFactory.createEffect(playerId, {
         type: 'remove_listener',
         value: l.instanceId,
-      },
-      playerId,
-      processedBy: [],
-    }));
+      }),
+    );
   }
 }

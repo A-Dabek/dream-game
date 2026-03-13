@@ -4,6 +4,7 @@ import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
 import { EffectHandlerFactory, ListenerData, ListenerFactory } from './effects';
 import {
+  GameEventFactory,
   EngineLoadout,
   EngineState,
   GameEvent,
@@ -60,12 +61,7 @@ export class Engine {
     const item = player.items.find((i) => i.id === itemId);
     const instanceId = item?.instanceId ?? itemId;
 
-    const onPlayEvent: GameEvent = {
-      type: 'on_play',
-      playerId,
-      itemId,
-      processedBy: [],
-    };
+    const onPlayEvent = GameEventFactory.createOnPlay(playerId, itemId);
     const stateAfterOnPlay = this.processEvent(
       onPlayEvent,
       state.listeners,
@@ -108,36 +104,29 @@ export class Engine {
 
   processEndOfTurn(playerId: string): void {
     if (this._state.gameOver) return;
-    const turnEndEvent: GameEvent = {
-      type: 'lifecycle',
+    const turnEndEvent = GameEventFactory.createLifecycle(
       playerId,
-      phase: 'on_turn_end',
-      processedBy: [],
-    };
+      'on_turn_end',
+    );
     this.processSimpleEvent(turnEndEvent);
   }
 
   processGameStart(): void {
     if (this._state.gameOver) return;
     const state = this._state;
-    const gameStartEvent: GameEvent = {
-      type: 'lifecycle',
-      // use the current player from the turn queue
-      playerId: state.turnQueue[0].playerId,
-      phase: 'game_start',
-      processedBy: [],
-    };
+    const gameStartEvent = GameEventFactory.createLifecycle(
+      state.turnQueue[0].playerId,
+      'game_start',
+    );
     this.processSimpleEvent(gameStartEvent);
   }
 
   processTurnStart(playerId: string): void {
     if (this._state.gameOver) return;
-    const turnStartEvent: GameEvent = {
-      type: 'lifecycle',
+    const turnStartEvent = GameEventFactory.createLifecycle(
       playerId,
-      phase: 'on_turn_start',
-      processedBy: [],
-    };
+      'on_turn_start',
+    );
     this.processSimpleEvent(turnStartEvent);
   }
 
@@ -209,12 +198,14 @@ export class Engine {
       ),
     };
 
-    const reactionEvents = reactionEventsRaw.map((e) => ({
-      ...e,
-      processedBy: Array.from(
-        new Set([...(e.processedBy ?? []), currentData.instanceId]),
-      ),
-    }));
+    const reactionEvents = reactionEventsRaw.map((e) =>
+      GameEventFactory.create({
+        ...e,
+        processedBy: Array.from(
+          new Set([...(e.processedBy ?? []), currentData.instanceId]),
+        ),
+      }),
+    );
 
     // Restart processing for all resulting events from the BEGINNING of the listener chain
     return reactionEvents.reduce<EngineState>(
@@ -238,12 +229,10 @@ export class Engine {
     if (!state.gameOver && nextState.gameOver && nextState.winnerId) {
       this.log({
         type: 'event',
-        event: {
-          type: 'lifecycle',
-          playerId: nextState.winnerId,
-          phase: 'game_over',
-          processedBy: [],
-        },
+        event: GameEventFactory.createLifecycle(
+          nextState.winnerId,
+          'game_over',
+        ),
       });
     }
 

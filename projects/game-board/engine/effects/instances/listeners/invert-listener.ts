@@ -1,4 +1,8 @@
-import { EngineState, GameEvent } from '../../../engine.types';
+import {
+  EngineState,
+  GameEvent,
+  GameEventFactory,
+} from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
 import { ListenerData } from '../../types';
 
@@ -19,12 +23,10 @@ export class InvertListener extends BaseEffectInstance {
       return null;
     }
     return [
-      {
-        type: 'effect',
-        effect: { ...event.effect, value: -value },
-        playerId: event.playerId,
-        processedBy: [],
-      },
+      GameEventFactory.createEffect(event.playerId, {
+        ...event.effect,
+        value: -value,
+      }),
     ];
   }
 }

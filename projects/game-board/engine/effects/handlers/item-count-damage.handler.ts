@@ -1,5 +1,5 @@
 import { Effect } from '../../../item';
-import { EngineState, GameEvent } from '../../engine.types';
+import { EngineState, GameEvent, GameEventFactory } from '../../engine.model';
 import { EffectHandler } from './effect-handler.interface';
 
 export class ItemCountDamageHandler implements EffectHandler {
@@ -22,13 +22,6 @@ export class ItemCountDamageHandler implements EffectHandler {
       target: originalEffect.target ?? 'enemy',
     };
 
-    return [
-      {
-        type: 'effect',
-        effect: computedEffect,
-        playerId,
-        processedBy: [],
-      },
-    ];
+    return [GameEventFactory.createEffect(playerId, computedEffect)];
   }
 }

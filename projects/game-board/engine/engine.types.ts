@@ -42,6 +42,15 @@ export type GameEvent = (
   processedBy: string[];
 };
 
+export type GameEventInput = (
+  | { type: 'on_play'; itemId: ItemId }
+  | { type: 'lifecycle'; phase: LifecyclePhase }
+  | { type: 'effect'; effect: Effect }
+) & {
+  playerId: string;
+  processedBy?: string[];
+};
+
 export type LifecycleGameEvent = GameEvent & { type: 'lifecycle' };
 
 export type StateChangeLogEntry = {
