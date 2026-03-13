@@ -68,4 +68,64 @@ describe('Blueprint Passive Effect Integration Test', () => {
 
     expect(board.playerHealth).toBe(46);
   });
+
+  it('should handle both items: [damage-to-owner, heal-on-damage]', () => {
+    // Player 1 has both blueprint items in this order
+    const player1 = createMockPlayer('p1', {
+      health: 50,
+      speed: 1,
+      items: ['_blueprint_damage_to_owner', '_blueprint_heal_on_damage'],
+    });
+
+    // Player 2 has a punch item
+    const player2 = createMockPlayer('p2', {
+      health: 50,
+      speed: 10,
+      items: ['punch'],
+    });
+
+    const board = new Board(player1, player2);
+    passUntilTurn(board, 'p2');
+
+    // Player 2 uses punch on Player 1
+    board.playItem('punch', 'p2');
+
+    console.log(
+      'Player 1 health with [damage-to-owner, heal-on-damage]:',
+      board.playerHealth,
+    );
+
+    // Order matters: heal-on-damage reacts to both punch and damage-to-owner proc
+    expect(board.playerHealth).toBe(46);
+  });
+
+  it('should handle both items: [heal-on-damage, damage-to-owner]', () => {
+    // Player 1 has both blueprint items in this order
+    const player1 = createMockPlayer('p1', {
+      health: 50,
+      speed: 1,
+      items: ['_blueprint_heal_on_damage', '_blueprint_damage_to_owner'],
+    });
+
+    // Player 2 has a punch item
+    const player2 = createMockPlayer('p2', {
+      health: 50,
+      speed: 10,
+      items: ['punch'],
+    });
+
+    const board = new Board(player1, player2);
+    passUntilTurn(board, 'p2');
+
+    // Player 2 uses punch on Player 1
+    board.playItem('punch', 'p2');
+
+    console.log(
+      'Player 1 health with [heal-on-damage, damage-to-owner]:',
+      board.playerHealth,
+    );
+
+    // Order matters: damage-to-owner only reacts to punch, heal-on-damage only reacts to punch
+    expect(board.playerHealth).toBe(45);
+  });
 });
