@@ -60,7 +60,12 @@ export class Engine {
     const item = player.items.find((i) => i.id === itemId);
     const instanceId = item?.instanceId ?? itemId;
 
-    const onPlayEvent: GameEvent = { type: 'on_play', playerId, itemId };
+    const onPlayEvent: GameEvent = {
+      type: 'on_play',
+      playerId,
+      itemId,
+      processedBy: [],
+    };
     const stateAfterOnPlay = this.processEvent(
       onPlayEvent,
       state.listeners,
@@ -107,6 +112,7 @@ export class Engine {
       type: 'lifecycle',
       playerId,
       phase: 'on_turn_end',
+      processedBy: [],
     };
     this.processSimpleEvent(turnEndEvent);
   }
@@ -119,6 +125,7 @@ export class Engine {
       // use the current player from the turn queue
       playerId: state.turnQueue[0].playerId,
       phase: 'game_start',
+      processedBy: [],
     };
     this.processSimpleEvent(gameStartEvent);
   }
@@ -129,6 +136,7 @@ export class Engine {
       type: 'lifecycle',
       playerId,
       phase: 'on_turn_start',
+      processedBy: [],
     };
     this.processSimpleEvent(turnStartEvent);
   }
@@ -185,18 +193,15 @@ export class Engine {
     state: EngineState,
     depth: number,
   ): EngineState {
-    // If event already processed by this listener, skip to the next one in the chain
     if (event.processedBy?.includes(currentData.instanceId)) {
       return this.processEvent(event, remaining, state, depth);
     }
 
     const listener = ListenerFactory.deserialize(currentData);
-    const { event: reactionEvents } = listener.handle(event, state);
+    const { event: reactionEventsRaw } = listener.handle(event, state);
+
     // Serialize the listener AFTER handling to capture any duration changes
     const serializedListener = listener.serialize();
-
-    // Update the state with the serialized listener before processing reactions
-    // This ensures processors see the updated duration
     const stateWithUpdatedListener = {
       ...state,
       listeners: state.listeners.map((l) =>
@@ -204,12 +209,18 @@ export class Engine {
       ),
     };
 
-    const stateAfterReactions = reactionEvents.reduce<EngineState>(
+    const reactionEvents = reactionEventsRaw.map((e) => ({
+      ...e,
+      processedBy: Array.from(
+        new Set([...(e.processedBy ?? []), currentData.instanceId]),
+      ),
+    }));
+
+    // Restart processing for all resulting events from the BEGINNING of the listener chain
+    return reactionEvents.reduce<EngineState>(
       (acc, e) => this.processEvent(e, acc.listeners, acc, depth + 1),
       stateWithUpdatedListener,
     );
-
-    return stateAfterReactions;
   }
 
   private applyProcessor(event: GameEvent, state: EngineState): EngineState {
@@ -231,6 +242,7 @@ export class Engine {
           type: 'lifecycle',
           playerId: nextState.winnerId,
           phase: 'game_over',
+          processedBy: [],
         },
       });
     }

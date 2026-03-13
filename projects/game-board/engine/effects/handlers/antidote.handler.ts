@@ -21,6 +21,7 @@ export class AntidoteHandler implements EffectHandler {
         value: l.instanceId,
       },
       playerId,
+      processedBy: [],
     }));
   }
 }

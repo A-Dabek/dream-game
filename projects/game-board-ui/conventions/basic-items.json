@@ -62,5 +62,13 @@
   "_blueprint_triple_threat": {
     "icon": "triple-threat",
     "description": "A triple threat attack."
+  },
+  "_blueprint_damage_to_owner": {
+    "icon": "damage-to-owner",
+    "description": "Deals 1 damage to owner when they are damaged."
+  },
+  "_blueprint_heal_on_damage": {
+    "icon": "heal-on-damage",
+    "description": "Heals 1 to owner when they are damaged."
   }
 }

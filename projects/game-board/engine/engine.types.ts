@@ -33,17 +33,16 @@ export type LifecyclePhase =
   | 'on_turn_end'
   | 'game_over';
 
-export type LifecycleGameEvent = {
-  type: 'lifecycle';
+export type GameEvent = (
+  | { type: 'on_play'; itemId: ItemId }
+  | { type: 'lifecycle'; phase: LifecyclePhase }
+  | { type: 'effect'; effect: Effect }
+) & {
   playerId: string;
-  phase: LifecyclePhase;
+  processedBy: string[];
 };
 
-export type GameEvent = (
-  | { type: 'on_play'; playerId: string; itemId: ItemId }
-  | LifecycleGameEvent
-  | { type: 'effect'; effect: Effect; playerId: string }
-) & { processedBy?: string[] };
+export type LifecycleGameEvent = GameEvent & { type: 'lifecycle' };
 
 export type StateChangeLogEntry = {
   type: 'state-change';

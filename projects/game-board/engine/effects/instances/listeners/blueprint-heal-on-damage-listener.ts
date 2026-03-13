@@ -20,6 +20,7 @@ export class BlueprintHealOnDamageListener extends BaseEffectInstance {
       type: 'effect',
       effect: ActiveEffectLibrary.heal(1, 'self'),
       playerId: this.playerId,
+      processedBy: [],
     };
 
     return [event, healEvent];

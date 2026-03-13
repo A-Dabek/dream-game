@@ -22,6 +22,7 @@ export class ReactiveRemovalListener extends BaseEffectInstance {
             target: 'self',
           },
           playerId: this.playerId,
+          processedBy: [],
         },
       ];
     }

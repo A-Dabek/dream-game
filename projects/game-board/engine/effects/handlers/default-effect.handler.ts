@@ -15,6 +15,7 @@ export class DefaultEffectHandler implements EffectHandler {
         type: 'effect',
         effect: originalEffect,
         playerId,
+        processedBy: [],
       },
     ];
   }

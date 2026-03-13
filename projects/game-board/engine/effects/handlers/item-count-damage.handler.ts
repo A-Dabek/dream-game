@@ -27,6 +27,7 @@ export class ItemCountDamageHandler implements EffectHandler {
         type: 'effect',
         effect: computedEffect,
         playerId,
+        processedBy: [],
       },
     ];
   }

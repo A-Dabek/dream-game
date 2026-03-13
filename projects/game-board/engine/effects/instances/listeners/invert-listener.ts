@@ -23,6 +23,7 @@ export class InvertListener extends BaseEffectInstance {
         type: 'effect',
         effect: { ...event.effect, value: -value },
         playerId: event.playerId,
+        processedBy: [],
       },
     ];
   }

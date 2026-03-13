@@ -86,13 +86,7 @@ export abstract class BaseEffectInstance implements Listener {
 
     this.duration.update(event, this.playerId);
 
-    const wrapped = this.wrapResult(resultEvents);
-    return {
-      event: wrapped.event.map((e) => ({
-        ...e,
-        processedBy: [...(e.processedBy ?? []), this.instanceId],
-      })),
-    };
+    return this.wrapResult(resultEvents);
   }
 
   protected abstract handleReaction(
@@ -101,14 +95,15 @@ export abstract class BaseEffectInstance implements Listener {
   ): GameEvent[] | null;
 
   private wrapResult(events: GameEvent[]): { event: GameEvent[] } {
-    const removeSelfEvent = {
+    const removeSelfEvent: GameEvent = {
       type: 'effect',
       effect: {
         type: 'remove_listener',
         value: this.instanceId,
       },
       playerId: this.playerId,
-    } as const;
+      processedBy: events[0]?.processedBy ?? [],
+    };
 
     // Check if duration expired
     if (this.duration.isExpired) {
@@ -155,6 +150,7 @@ export abstract class BaseEffectInstance implements Listener {
         type: 'effect',
         effect: e,
         playerId,
+        processedBy: [],
       }));
     }
 
@@ -162,6 +158,7 @@ export abstract class BaseEffectInstance implements Listener {
       type: 'effect',
       effect: e,
       playerId: this.playerId,
+      processedBy: [],
     }));
 
     return [event, ...reactions];

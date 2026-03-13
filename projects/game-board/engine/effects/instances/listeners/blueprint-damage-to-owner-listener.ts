@@ -20,6 +20,7 @@ export class BlueprintDamageToOwnerListener extends BaseEffectInstance {
       type: 'effect',
       effect: ActiveEffectLibrary.attack(1, 'self'),
       playerId: this.playerId,
+      processedBy: [],
     };
 
     return [event, extraDamageEvent];
