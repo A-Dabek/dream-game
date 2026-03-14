@@ -16,6 +16,8 @@ export interface Listener {
     event: GameEvent[];
   };
   serialize(): ListenerData;
+  canPossiblyReact(event: GameEvent): boolean;
+  sync(data: ListenerData): void;
 }
 
 export interface EngineState {

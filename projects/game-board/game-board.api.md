@@ -321,8 +321,8 @@ export interface TurnEntry {
 
 // Warnings were encountered during analysis:
 //
-// dist/types/game-board/engine/engine.types.d.ts:36:5 - (ae-forgotten-export) The symbol "LifecyclePhase" needs to be exported by the entry point index.d.ts
-// dist/types/game-board/engine/engine.types.d.ts:43:5 - (ae-forgotten-export) The symbol "GameEventStatus" needs to be exported by the entry point index.d.ts
+// dist/types/game-board/engine/engine.types.d.ts:38:5 - (ae-forgotten-export) The symbol "LifecyclePhase" needs to be exported by the entry point index.d.ts
+// dist/types/game-board/engine/engine.types.d.ts:45:5 - (ae-forgotten-export) The symbol "GameEventStatus" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

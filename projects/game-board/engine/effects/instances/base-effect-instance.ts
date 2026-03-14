@@ -1,10 +1,21 @@
-import { BEFORE_EFFECT, StatusEffect } from '../../../item';
+import {
+  AFTER_EFFECT,
+  BEFORE_EFFECT,
+  BEFORE_NULLIFY,
+  BEFORE_STATUS_EFFECT,
+  ON_PLAY,
+  ON_TURN_END,
+  ON_TURN_START,
+  StatusEffect,
+} from '../../../item';
 import {
   EngineState,
   GameEvent,
   GameEventFactory,
+  GameEventStatus,
   Listener,
 } from '../../engine.model';
+import { isLifecycleGameEvent } from '../../type-guards';
 import { ListenerData } from '../types';
 import { createCondition, ReactiveCondition } from '../conditions';
 import { createDuration, ReactiveDuration } from '../durations';
@@ -30,7 +41,7 @@ export abstract class BaseEffectInstance implements Listener {
   protected readonly condition: ReactiveCondition;
   protected readonly duration: ReactiveDuration;
 
-  constructor(protected readonly listenerData: ListenerData) {
+  constructor(protected listenerData: ListenerData) {
     this.condition = createCondition(listenerData.effectState.effect.condition);
     this.duration = createDuration(listenerData.effectState.effect.duration);
     // Sync the runtime state with the duration state if it exists
@@ -79,6 +90,50 @@ export abstract class BaseEffectInstance implements Listener {
 
   get effect(): StatusEffect {
     return this.listenerData.effectState.effect;
+  }
+
+  canPossiblyReact(event: GameEvent): boolean {
+    const status = event.status;
+    const type = this.condition.type;
+
+    // Check if the condition can match this status
+    let conditionCanMatch = true;
+    switch (type) {
+      case BEFORE_EFFECT:
+      case BEFORE_STATUS_EFFECT:
+      case ON_TURN_START:
+      case ON_TURN_END:
+      case ON_PLAY:
+        if (status !== GameEventStatus.PROGRESS) conditionCanMatch = false;
+        break;
+      case AFTER_EFFECT:
+        if (status !== GameEventStatus.DONE) conditionCanMatch = false;
+        break;
+      case BEFORE_NULLIFY:
+        if (status !== GameEventStatus.NULLIFY) conditionCanMatch = false;
+        break;
+    }
+
+    if (conditionCanMatch) return true;
+
+    // Even if condition doesn't match, the duration might need an update
+    // e.g. a turns-based duration needs on_turn_end events.
+    if (
+      this.duration.type === 'turns' &&
+      isLifecycleGameEvent(event) &&
+      event.phase === 'on_turn_end' &&
+      event.playerId === this.playerId &&
+      status === GameEventStatus.PROGRESS
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  sync(data: ListenerData): void {
+    this.listenerData = data;
+    this.syncDurationFromState();
   }
 
   handle(event: GameEvent, state: EngineState): { event: GameEvent[] } {

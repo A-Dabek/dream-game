@@ -10,6 +10,7 @@ import {
   GameEventFactory,
   GameEventStatus,
   LogEntry,
+  Listener,
 } from './engine.model';
 import { PROCESSORS } from './processors';
 
@@ -204,10 +205,18 @@ export class Engine {
     let currentState = state;
     let iterations = 0;
 
+    // Cache listener instances for the whole event loop to avoid redundant deserialization
+    const listenerInstances = new Map<string, Listener>();
+    this.syncCache(currentState.listeners, listenerInstances);
+
     while (eventQueue.length > 0 && iterations < 100) {
       iterations++;
 
-      const passResult = this.processListenersPass(eventQueue, currentState);
+      const passResult = this.processListenersPass(
+        eventQueue,
+        currentState,
+        listenerInstances,
+      );
       eventQueue = passResult.events;
       currentState = passResult.state;
 
@@ -223,6 +232,7 @@ export class Engine {
 
       for (const event of activeEvents) {
         currentState = this.applyProcessor(event, currentState);
+        this.syncCache(currentState.listeners, listenerInstances);
       }
 
       if (currentState.gameOver) break;
@@ -233,19 +243,56 @@ export class Engine {
       }));
     }
 
+    // Final serialize back to state to ensure any internal listener changes (duration, charges)
+    // are reflected in the EngineState listeners.
+    currentState = {
+      ...currentState,
+      listeners: currentState.listeners.map(
+        (l) => listenerInstances.get(l.instanceId)?.serialize() ?? l,
+      ),
+    };
+
     return currentState;
+  }
+
+  private syncCache(
+    listenersData: ListenerData[],
+    listenerInstances: Map<string, Listener>,
+  ): void {
+    const activeIds = new Set(listenersData.map((l) => l.instanceId));
+
+    // Remove old ones
+    for (const id of listenerInstances.keys()) {
+      if (!activeIds.has(id)) {
+        listenerInstances.delete(id);
+      }
+    }
+
+    // Add or Update
+    for (const data of listenersData) {
+      const existing = listenerInstances.get(data.instanceId);
+      if (!existing) {
+        listenerInstances.set(
+          data.instanceId,
+          ListenerFactory.deserialize(data),
+        );
+      } else {
+        existing.sync(data);
+      }
+    }
   }
 
   private processListenersPass(
     events: GameEvent[],
     state: EngineState,
+    listenerInstances: Map<string, Listener>,
   ): { events: GameEvent[]; state: EngineState } {
     let currentState = state;
     const nextPassQueue: GameEvent[] = [];
 
     for (const event of events) {
       const { events: reactions, state: updatedState } =
-        this.handleEventReactions(event, currentState);
+        this.handleEventReactions(event, currentState, listenerInstances);
       currentState = updatedState;
       nextPassQueue.push(...reactions);
     }
@@ -256,6 +303,7 @@ export class Engine {
   private handleEventReactions(
     event: GameEvent,
     state: EngineState,
+    listenerInstances: Map<string, Listener>,
   ): { events: GameEvent[]; state: EngineState } {
     let currentState = state;
     let currentEvent: GameEvent | null = event;
@@ -269,26 +317,31 @@ export class Engine {
     while (statusChanged && currentEvent) {
       statusChanged = false;
 
-      for (const listenerData of currentState.listeners) {
+      const listeners = currentState.listeners;
+      for (let i = 0; i < listeners.length; i++) {
+        const listenerData = listeners[i];
         if (!currentEvent) break;
+
+        const listener = listenerInstances.get(listenerData.instanceId);
+        if (!listener) continue;
+
+        // Skip listeners that cannot possibly react to this event status
+        if (!listener.canPossiblyReact(currentEvent)) continue;
 
         const marker: string = `${listenerData.instanceId}-${currentEvent.status}`;
         if (currentEvent.processedBy.includes(marker)) continue;
 
-        const listener = ListenerFactory.deserialize(listenerData);
-        const { event: reactions } = listener.handle(
-          currentEvent,
+        const { event: reactions }: { event: GameEvent[] } = listener.handle(
+          currentEvent!,
           currentState,
         );
 
-        const serializedListener = listener.serialize();
+        // Update currentState with serialized listener to keep state in sync for other handlers
+        const updatedListeners = [...currentState.listeners];
+        updatedListeners[i] = listener.serialize();
         currentState = {
           ...currentState,
-          listeners: currentState.listeners.map((l) =>
-            l.instanceId === serializedListener.instanceId
-              ? serializedListener
-              : l,
-          ),
+          listeners: updatedListeners,
         };
 
         if (reactions.length <= 0) {
@@ -297,7 +350,7 @@ export class Engine {
         }
 
         const transformation = reactions[0];
-        const oldStatus = currentEvent.status;
+        const oldStatus = currentEvent!.status;
 
         currentEvent = {
           ...transformation,
