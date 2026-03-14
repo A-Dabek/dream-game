@@ -51,6 +51,24 @@ The engine uses a **multi-pass event loop**. Each event transitions through life
 - **NULLIFY (-1):** Request to cancel the event.
 - **NULLIFIED (-2):** Event has been cancelled and will not proceed.
 
+### Status Transformation & Loop Restart
+
+The engine supports dynamic status transformation within the listener chain. If any listener changes the status of an event (e.g., from `PROGRESS` to `NULLIFY`), the pass **restarts** for that event. 
+
+This ensures that all listeners get a chance to react to the new status regardless of their position in the listener array. 
+
+Recursion is prevented by the `processedBy` markers, which track both the listener ID and the status (`listenerId-status`). Once a listener has processed an event at a specific status, it will skip it in subsequent passes for that same status.
+
+### Example: Anti-Nullify Flow
+
+1. **Attack (PROGRESS)** is in the queue.
+2. **Negate Listener** reacts to `PROGRESS` → Changes status to `NULLIFY`. Loop restarts.
+   - Event `processedBy`: `[negate-PROGRESS]`
+3. **Anti-Nullify Listener** reacts to `NULLIFY` → Changes status back to `PROGRESS`. Loop restarts.
+   - Event `processedBy`: `[negate-PROGRESS, antiNullify-NULLIFY]`
+4. **Negate Listener** sees `PROGRESS` again. It checks its `processedBy` marker (`negate-PROGRESS`). It's already there, so it **skips**.
+5. **Attack (PROGRESS)** is successfully applied to state.
+
 ### Listener Processing
 
 At each pass (`processListenersPass`), listeners react to events based on their status. 

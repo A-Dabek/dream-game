@@ -120,4 +120,15 @@ export const StatusEffectLibrary = {
       mergeStrategy: 'new',
     };
   },
+
+  anti_nullify: (): StatusEffect => {
+    return {
+      type: 'anti_nullify',
+      condition: ConditionLibrary.beforeNullify(),
+      action: [],
+      duration: permanent(),
+      genre: 'basic',
+      mergeStrategy: 'new',
+    };
+  },
 } as const;

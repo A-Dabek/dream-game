@@ -222,7 +222,7 @@ export interface Item {
 }
 
 // @public (undocumented)
-export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_damage_to_owner' | '_blueprint_heal_on_damage' | '_blueprint_triple_threat' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts';
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_passive_negate' | '_blueprint_damage_to_owner' | '_blueprint_heal_on_damage' | '_blueprint_triple_threat' | '_blueprint_anti_nullify' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts';
 
 export { ListenerData }
 
@@ -302,7 +302,7 @@ export interface StatusEffectData {
 export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';
 
 // @public (undocumented)
-export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'fatigue' | 'periodic_attack' | ItemId;
+export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'fatigue' | 'periodic_attack' | 'anti_nullify' | ItemId;
 
 // @public
 export interface Strategy {

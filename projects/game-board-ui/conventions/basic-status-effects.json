@@ -22,5 +22,9 @@
   "periodic_attack": {
     "icon": "periodic-attack",
     "description": "Deals damage at the end of each turn."
+  },
+  "anti_nullify": {
+    "icon": "anti-nullify",
+    "description": "Prevents nullification of events."
   }
 }

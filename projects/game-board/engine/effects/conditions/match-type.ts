@@ -6,6 +6,7 @@ import {
   ON_TURN_END,
   ON_TURN_START,
   ON_PLAY,
+  BEFORE_NULLIFY,
 } from '../../../item';
 import { isEffectEvent, isLifecycleGameEvent } from '../../type-guards';
 import { ConditionPredicate } from './reactive-condition';
@@ -35,6 +36,7 @@ const MATCHERS: Record<string, Matcher> = {
     event.status === GameEventStatus.DONE,
   [ON_PLAY]: (event) =>
     event.type === 'on_play' && event.status === GameEventStatus.PROGRESS,
+  [BEFORE_NULLIFY]: (event) => event.status === GameEventStatus.NULLIFY,
 };
 
 function matchEffectType(event: GameEvent, conditionValue?: unknown): boolean {

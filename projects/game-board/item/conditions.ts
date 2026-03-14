@@ -8,6 +8,7 @@ export const ON_TURN_END = 'on_turn_end';
 
 export const HAS_NO_ITEMS = 'has_no_items';
 export const ON_PLAY = 'on_play';
+export const BEFORE_NULLIFY = 'before_nullify';
 
 export const ConditionLibrary = {
   beforeEffect(effectType?: string): Condition {
@@ -36,6 +37,10 @@ export const ConditionLibrary = {
 
   onPlay(): Condition {
     return { type: ON_PLAY };
+  },
+
+  beforeNullify(): Condition {
+    return { type: BEFORE_NULLIFY };
   },
 
   and(...conditions: Condition[]): Condition {

@@ -22,6 +22,7 @@ export {
   ON_TURN_END,
   HAS_NO_ITEMS,
   ON_PLAY,
+  BEFORE_NULLIFY,
   ConditionLibrary,
   isLifecycleEvent,
 } from './conditions';

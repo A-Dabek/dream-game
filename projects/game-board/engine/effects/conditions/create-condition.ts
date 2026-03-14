@@ -7,6 +7,7 @@ import {
   ON_PLAY,
   ON_TURN_START,
   ON_TURN_END,
+  BEFORE_NULLIFY,
 } from '../../../item';
 
 import { ReactiveCondition } from './reactive-condition';
@@ -27,6 +28,11 @@ export function createCondition(condition: Condition): ReactiveCondition {
       return new ComposableCondition(
         condition.type,
         and(matchType(condition.type, condition.value), isTargetMe),
+      );
+    case BEFORE_NULLIFY:
+      return new ComposableCondition(
+        condition.type,
+        matchType(condition.type, condition.value),
       );
     case ON_PLAY:
       return new ComposableCondition(

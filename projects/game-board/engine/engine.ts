@@ -4,21 +4,18 @@ import { getItemBehavior } from '../item-library';
 import { TurnManager } from '../turn-manager';
 import { EffectHandlerFactory, ListenerData, ListenerFactory } from './effects';
 import {
-  GameEventFactory,
   EngineLoadout,
   EngineState,
   GameEvent,
+  GameEventFactory,
   GameEventStatus,
   LogEntry,
 } from './engine.model';
 import { PROCESSORS } from './processors';
 
 export class Engine {
-  private _state: EngineState = null!;
-  get state(): EngineState {
-    return this._state;
-  }
   private readonly logBuffer: LogEntry[] = [];
+
   constructor(
     playerOne: Loadout & { id: string },
     playerTwo: Loadout & { id: string },
@@ -39,18 +36,10 @@ export class Engine {
     };
   }
 
-  private initializeListeners(
-    p1: EngineLoadout,
-    p2: EngineLoadout,
-  ): ListenerData[] {
-    return [
-      ...this.scanForListeners(p1),
-      ...this.scanForListeners(p2),
-      ListenerFactory.createFatigue(p1.id).serialize(),
-      ListenerFactory.createFatigue(p2.id).serialize(),
-      ListenerFactory.createAdvanceTurn(p1.id).serialize(),
-      ListenerFactory.createAdvanceTurn(p2.id).serialize(),
-    ];
+  private _state: EngineState = null!;
+
+  get state(): EngineState {
+    return this._state;
   }
 
   play(playerId: string, itemId: ItemId): void {
@@ -76,24 +65,6 @@ export class Engine {
       (acc, effect) => this.processItemEffect(effect, acc, playerId),
       stateAfterOnPlay,
     );
-  }
-
-  private processItemEffect(
-    effect: Effect,
-    state: EngineState,
-    playerId: string,
-  ): EngineState {
-    const computedEvents = EffectHandlerFactory.processEffect(
-      effect,
-      state,
-      playerId,
-    );
-
-    for (const event of computedEvents) {
-      this.log({ type: 'event', event });
-    }
-
-    return this.runEventLoop(computedEvents, state);
   }
 
   processEndOfTurn(playerId: string): void {
@@ -128,6 +99,77 @@ export class Engine {
     const out = [...this.logBuffer];
     this.logBuffer.length = 0;
     return out;
+  }
+
+  /**
+   * Creates a deep clone of the engine, including its current state.
+   * The clone will have its own state and an empty log buffer.
+   */
+  clone(): Engine {
+    const cloned = Object.create(Engine.prototype);
+    const state = this._state;
+
+    // Fast manual deep clone of the engine state
+    cloned._state = {
+      playerOne: {
+        ...state.playerOne,
+        items: state.playerOne.items.map((i) => ({ ...i })),
+      },
+      playerTwo: {
+        ...state.playerTwo,
+        items: state.playerTwo.items.map((i) => ({ ...i })),
+      },
+      turnQueue: state.turnQueue.map((t) => ({ ...t })),
+      listeners: state.listeners.map((l) => ({
+        ...l,
+        effectState: {
+          ...l.effectState,
+          currentDuration: { ...l.effectState.currentDuration },
+        },
+      })),
+      gameOver: state.gameOver,
+      winnerId: state.winnerId,
+    };
+
+    // Initialize private readonly logBuffer for the cloned instance.
+    Object.defineProperty(cloned, 'logBuffer', {
+      value: [],
+      writable: false,
+      configurable: true,
+    });
+    return cloned;
+  }
+
+  private initializeListeners(
+    p1: EngineLoadout,
+    p2: EngineLoadout,
+  ): ListenerData[] {
+    return [
+      ...this.scanForListeners(p1),
+      ...this.scanForListeners(p2),
+      ListenerFactory.createFatigue(p1.id).serialize(),
+      ListenerFactory.createFatigue(p2.id).serialize(),
+      ListenerFactory.createAdvanceTurn(p1.id).serialize(),
+      ListenerFactory.createAdvanceTurn(p2.id).serialize(),
+    ];
+  }
+
+  private processItemEffect(
+    effect: Effect,
+    state: EngineState,
+    playerId: string,
+  ): EngineState {
+    const computedEvents = EffectHandlerFactory.processEffect(
+      effect,
+      state,
+      playerId,
+    );
+
+    for (const event of computedEvents) {
+      this.log({ type: 'event', event });
+    }
+
+    return this.runEventLoop(computedEvents, state);
   }
 
   private prepareLoadout(loadout: Loadout & { id: string }): EngineLoadout {
@@ -220,31 +262,49 @@ export class Engine {
     const extraEvents: GameEvent[] = [];
     const originalProcessedBy = [...event.processedBy];
 
-    for (const listenerData of currentState.listeners) {
-      if (!currentEvent) break;
+    // Status change loop: if any listener transforms the event status,
+    // we restart the pass to allow all listeners to react to the new status.
+    // Recursion is prevented by the 'marker' in currentEvent.processedBy.
+    let statusChanged = true;
+    while (statusChanged && currentEvent) {
+      statusChanged = false;
 
-      const marker: string = `${listenerData.instanceId}-${currentEvent.status}`;
-      if (currentEvent.processedBy.includes(marker)) continue;
+      for (const listenerData of currentState.listeners) {
+        if (!currentEvent) break;
 
-      const listener = ListenerFactory.deserialize(listenerData);
-      const { event: reactions } = listener.handle(currentEvent, currentState);
+        const marker: string = `${listenerData.instanceId}-${currentEvent.status}`;
+        if (currentEvent.processedBy.includes(marker)) continue;
 
-      const serializedListener = listener.serialize();
-      currentState = {
-        ...currentState,
-        listeners: currentState.listeners.map((l) =>
-          l.instanceId === serializedListener.instanceId
-            ? serializedListener
-            : l,
-        ),
-      };
+        const listener = ListenerFactory.deserialize(listenerData);
+        const { event: reactions } = listener.handle(
+          currentEvent,
+          currentState,
+        );
 
-      if (reactions.length > 0) {
-        currentEvent = {
-          ...reactions[0],
-          processedBy: [...(reactions[0].processedBy ?? []), marker],
+        const serializedListener = listener.serialize();
+        currentState = {
+          ...currentState,
+          listeners: currentState.listeners.map((l) =>
+            l.instanceId === serializedListener.instanceId
+              ? serializedListener
+              : l,
+          ),
         };
 
+        if (reactions.length <= 0) {
+          currentEvent = null;
+          break;
+        }
+
+        const transformation = reactions[0];
+        const oldStatus = currentEvent.status;
+
+        currentEvent = {
+          ...transformation,
+          processedBy: [...(transformation.processedBy ?? []), marker],
+        };
+
+        // Collect extra events from this reaction
         for (let i = 1; i < reactions.length; i++) {
           extraEvents.push(
             GameEventFactory.create({
@@ -254,9 +314,11 @@ export class Engine {
             }),
           );
         }
-      } else {
-        currentEvent = null;
-        break;
+
+        if (currentEvent.status !== oldStatus) {
+          statusChanged = true;
+          break; // Restart the listener loop for the new status
+        }
       }
     }
 
@@ -319,44 +381,5 @@ export class Engine {
 
   private log(entry: LogEntry): void {
     this.logBuffer.push(entry);
-  }
-
-  /**
-   * Creates a deep clone of the engine, including its current state.
-   * The clone will have its own state and an empty log buffer.
-   */
-  clone(): Engine {
-    const cloned = Object.create(Engine.prototype);
-    const state = this._state;
-
-    // Fast manual deep clone of the engine state
-    cloned._state = {
-      playerOne: {
-        ...state.playerOne,
-        items: state.playerOne.items.map((i) => ({ ...i })),
-      },
-      playerTwo: {
-        ...state.playerTwo,
-        items: state.playerTwo.items.map((i) => ({ ...i })),
-      },
-      turnQueue: state.turnQueue.map((t) => ({ ...t })),
-      listeners: state.listeners.map((l) => ({
-        ...l,
-        effectState: {
-          ...l.effectState,
-          currentDuration: { ...l.effectState.currentDuration },
-        },
-      })),
-      gameOver: state.gameOver,
-      winnerId: state.winnerId,
-    };
-
-    // Initialize private readonly logBuffer for the cloned instance.
-    Object.defineProperty(cloned, 'logBuffer', {
-      value: [],
-      writable: false,
-      configurable: true,
-    });
-    return cloned;
   }
 }

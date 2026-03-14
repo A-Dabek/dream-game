@@ -70,5 +70,13 @@
   "_blueprint_heal_on_damage": {
     "icon": "heal-on-damage",
     "description": "Heals 1 to owner when they are damaged."
+  },
+  "_blueprint_passive_negate": {
+    "icon": "negate-damage",
+    "description": "Negates damage as a passive effect."
+  },
+  "_blueprint_anti_nullify": {
+    "icon": "anti-nullify",
+    "description": "Prevents nullification of events."
   }
 }

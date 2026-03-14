@@ -11,9 +11,11 @@ export type ItemId =
   | '_blueprint_damage_to_heal_permanent'
   | '_blueprint_self_damage'
   | '_blueprint_negate_damage'
+  | '_blueprint_passive_negate'
   | '_blueprint_damage_to_owner'
   | '_blueprint_heal_on_damage'
   | '_blueprint_triple_threat'
+  | '_blueprint_anti_nullify'
   | '_dummy'
   | '_blueprint_heal_5'
   | 'punch'
@@ -35,6 +37,7 @@ export type StatusEffectType =
   | 'advance_turn'
   | 'fatigue'
   | 'periodic_attack'
+  | 'anti_nullify'
   | ItemId; // Allow item IDs for custom passive effects
 
 export type EffectValue = number | string | StatusEffect;

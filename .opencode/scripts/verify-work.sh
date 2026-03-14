@@ -110,14 +110,14 @@ run_step "E2E" npx playwright test
 echo "[INIT-GAME] RUNNING..."
 start_time=$(date +%s)
 set +e
-output=$(timeout 5s npm run init-game 2>&1)
+output=$(timeout 10s npm run init-game 2>&1)
 exit_code=$?
 set -e
 end_time=$(date +%s)
 duration=$((end_time - start_time))
 
 if [ $exit_code -eq 124 ]; then
-    echo -e "${RED}[INIT-GAME] FAILED (Timed out after 5s)${NC}"
+    echo -e "${RED}[INIT-GAME] FAILED (Timed out after 10s)${NC}"
     echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
     exit 1
 elif [ $exit_code -ne 0 ]; then

@@ -156,6 +156,11 @@ export const ItemLibrary = {
       ),
     ],
   }),
+  _blueprint_passive_negate: (): ItemDefinition => ({
+    genre: 'basic',
+    onPlayEffects: [],
+    passiveEffects: [StatusEffectLibrary.negate('damage', permanent())],
+  }),
 
   _blueprint_damage_to_owner: (): ItemDefinition => ({
     genre: 'basic',
@@ -194,6 +199,11 @@ export const ItemLibrary = {
       ),
     ],
     passiveEffects: [StatusEffectLibrary.triple_threat(1)],
+  }),
+  _blueprint_anti_nullify: (): ItemDefinition => ({
+    genre: 'basic',
+    onPlayEffects: [],
+    passiveEffects: [StatusEffectLibrary.anti_nullify()],
   }),
 } as const;
 
