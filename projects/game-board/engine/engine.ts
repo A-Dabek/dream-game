@@ -8,6 +8,7 @@ import {
   EngineLoadout,
   EngineState,
   GameEvent,
+  GameEventStatus,
   LogEntry,
 } from './engine.model';
 import { PROCESSORS } from './processors';
@@ -62,12 +63,8 @@ export class Engine {
     const instanceId = item?.instanceId ?? itemId;
 
     const onPlayEvent = GameEventFactory.createOnPlay(playerId, itemId);
-    const stateAfterOnPlay = this.processEvent(
-      onPlayEvent,
-      state.listeners,
-      state,
-    );
     this.log({ type: 'event', event: onPlayEvent });
+    const stateAfterOnPlay = this.runEventLoop([onPlayEvent], state);
 
     const itemDef = getItemBehavior(itemId);
     const effects: Effect[] = [
@@ -96,10 +93,7 @@ export class Engine {
       this.log({ type: 'event', event });
     }
 
-    return computedEvents.reduce<EngineState>(
-      (acc, event) => this.processEvent(event, acc.listeners, acc),
-      state,
-    );
+    return this.runEventLoop(computedEvents, state);
   }
 
   processEndOfTurn(playerId: string): void {
@@ -160,58 +154,132 @@ export class Engine {
     });
   }
 
-  private processEvent(
-    event: GameEvent,
-    listenersToProcess: ListenerData[],
+  private runEventLoop(
+    initialEvents: GameEvent[],
     state: EngineState,
-    depth = 0,
   ): EngineState {
-    // TODO there should be a warning or error if we hit the depth limit, but for now we'll just return the current state to prevent infinite loops
-    if (state.gameOver || depth > 50) return state;
+    let eventQueue = [...initialEvents];
+    let currentState = state;
+    let iterations = 0;
 
-    if (listenersToProcess.length > 0) {
-      return this.processListeners(event, listenersToProcess, state, depth);
+    while (eventQueue.length > 0 && iterations < 100) {
+      iterations++;
+
+      const passResult = this.processListenersPass(eventQueue, currentState);
+      eventQueue = passResult.events;
+      currentState = passResult.state;
+
+      const activeEvents = eventQueue.filter(
+        (e) => e.status === GameEventStatus.PROGRESS,
+      );
+
+      eventQueue = eventQueue.filter(
+        (e) =>
+          e.status !== GameEventStatus.DONE &&
+          e.status !== GameEventStatus.NULLIFIED,
+      );
+
+      for (const event of activeEvents) {
+        currentState = this.applyProcessor(event, currentState);
+      }
+
+      if (currentState.gameOver) break;
+
+      eventQueue = eventQueue.map((e) => ({
+        ...e,
+        status: this.getNextStatus(e.status),
+      }));
     }
 
-    return this.applyProcessor(event, state);
+    return currentState;
   }
 
-  private processListeners(
-    event: GameEvent,
-    [currentData, ...remaining]: ListenerData[],
+  private processListenersPass(
+    events: GameEvent[],
     state: EngineState,
-    depth: number,
-  ): EngineState {
-    if (event.processedBy?.includes(currentData.instanceId)) {
-      return this.processEvent(event, remaining, state, depth);
+  ): { events: GameEvent[]; state: EngineState } {
+    let currentState = state;
+    const nextPassQueue: GameEvent[] = [];
+
+    for (const event of events) {
+      const { events: reactions, state: updatedState } =
+        this.handleEventReactions(event, currentState);
+      currentState = updatedState;
+      nextPassQueue.push(...reactions);
     }
 
-    const listener = ListenerFactory.deserialize(currentData);
-    const { event: reactionEventsRaw } = listener.handle(event, state);
+    return { events: nextPassQueue, state: currentState };
+  }
 
-    // Serialize the listener AFTER handling to capture any duration changes
-    const serializedListener = listener.serialize();
-    const stateWithUpdatedListener = {
-      ...state,
-      listeners: state.listeners.map((l) =>
-        l.instanceId === serializedListener.instanceId ? serializedListener : l,
-      ),
-    };
+  private handleEventReactions(
+    event: GameEvent,
+    state: EngineState,
+  ): { events: GameEvent[]; state: EngineState } {
+    let currentState = state;
+    let currentEvent: GameEvent | null = event;
+    const extraEvents: GameEvent[] = [];
+    const originalProcessedBy = [...event.processedBy];
 
-    const reactionEvents = reactionEventsRaw.map((e) =>
-      GameEventFactory.create({
-        ...e,
-        processedBy: Array.from(
-          new Set([...(e.processedBy ?? []), currentData.instanceId]),
+    for (const listenerData of currentState.listeners) {
+      if (!currentEvent) break;
+
+      const marker: string = `${listenerData.instanceId}-${currentEvent.status}`;
+      if (currentEvent.processedBy.includes(marker)) continue;
+
+      const listener = ListenerFactory.deserialize(listenerData);
+      const { event: reactions } = listener.handle(currentEvent, currentState);
+
+      const serializedListener = listener.serialize();
+      currentState = {
+        ...currentState,
+        listeners: currentState.listeners.map((l) =>
+          l.instanceId === serializedListener.instanceId
+            ? serializedListener
+            : l,
         ),
-      }),
-    );
+      };
 
-    // Restart processing for all resulting events from the BEGINNING of the listener chain
-    return reactionEvents.reduce<EngineState>(
-      (acc, e) => this.processEvent(e, acc.listeners, acc, depth + 1),
-      stateWithUpdatedListener,
-    );
+      if (reactions.length > 0) {
+        currentEvent = {
+          ...reactions[0],
+          processedBy: [...(reactions[0].processedBy ?? []), marker],
+        };
+
+        for (let i = 1; i < reactions.length; i++) {
+          extraEvents.push(
+            GameEventFactory.create({
+              ...reactions[i],
+              processedBy: [...originalProcessedBy, marker],
+              status: GameEventStatus.NEW,
+            }),
+          );
+        }
+      } else {
+        currentEvent = null;
+        break;
+      }
+    }
+
+    const resultEvents: GameEvent[] = [];
+    if (currentEvent) {
+      resultEvents.push(currentEvent);
+    }
+    resultEvents.push(...extraEvents);
+
+    return { events: resultEvents, state: currentState };
+  }
+
+  private getNextStatus(status: GameEventStatus): GameEventStatus {
+    switch (status) {
+      case GameEventStatus.NEW:
+        return GameEventStatus.PROGRESS;
+      case GameEventStatus.PROGRESS:
+        return GameEventStatus.DONE;
+      case GameEventStatus.NULLIFY:
+        return GameEventStatus.NULLIFIED;
+      default:
+        return status;
+    }
   }
 
   private applyProcessor(event: GameEvent, state: EngineState): EngineState {
@@ -245,7 +313,7 @@ export class Engine {
     if (state.gameOver) return;
     // Log first (previous behavior), then process
     this.log({ type: 'event', event } as LogEntry);
-    const nextState = this.processEvent(event, state.listeners, state);
+    const nextState = this.runEventLoop([event], state);
     this._state = nextState;
   }
 

@@ -1,4 +1,4 @@
-import { GameEvent } from '../../engine.types';
+import { GameEvent, GameEventStatus } from '../../engine.types';
 import { ReactiveDuration } from './reactive-duration';
 
 export class ItemDuration implements ReactiveDuration {
@@ -26,7 +26,8 @@ export class ItemDuration implements ReactiveDuration {
     if (
       event.type === 'effect' &&
       event.effect.type === 'remove_item' &&
-      event.effect.value === this._itemInstanceId
+      event.effect.value === this._itemInstanceId &&
+      event.status === GameEventStatus.PROGRESS
     ) {
       this._isExpired = true;
     }

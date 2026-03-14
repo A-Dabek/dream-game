@@ -33,6 +33,14 @@ export type LifecyclePhase =
   | 'on_turn_end'
   | 'game_over';
 
+export enum GameEventStatus {
+  NEW = 0,
+  PROGRESS = 1,
+  DONE = 2,
+  NULLIFY = -1,
+  NULLIFIED = -2,
+}
+
 export type GameEvent = (
   | { type: 'on_play'; itemId: ItemId }
   | { type: 'lifecycle'; phase: LifecyclePhase }
@@ -40,6 +48,7 @@ export type GameEvent = (
 ) & {
   playerId: string;
   processedBy: string[];
+  status: GameEventStatus;
 };
 
 export type GameEventInput = (
@@ -49,6 +58,7 @@ export type GameEventInput = (
 ) & {
   playerId: string;
   processedBy?: string[];
+  status?: GameEventStatus;
 };
 
 export type LifecycleGameEvent = GameEvent & { type: 'lifecycle' };

@@ -12,11 +12,11 @@ The game engine uses an **event-driven pipeline architecture** with three main s
 ```
 Item Played
     ↓
-[Stage 1: Event Generation] → Creates GameEvent
+[Stage 1: Event Generation] → Creates GameEvent (Status: NEW)
     ↓
-[Stage 2: Listener Chain] → Listeners transform/consume/emit events
+[Stage 2: Listener Chain] → Multiple passes through listeners (Status: PROGRESS → DONE)
     ↓
-[Stage 3: Effect Processing] → Processors apply effects to state
+[Stage 3: Effect Processing] → Processors apply effects to state (at Status: PROGRESS)
     ↓
 State Updated
 ```
@@ -41,14 +41,27 @@ When an item is played:
 
 ## Stage 2: Listener Chain (The Heart of the Engine)
 
-**Where:** `projects/game-board/engine/engine.ts:#processEvent`
+**Where:** `projects/game-board/engine/engine.ts:#runEventLoop`
 
-Uses recursive chain-of-responsibility pattern. Each listener can:
+The engine uses a **multi-pass event loop**. Each event transitions through lifecycle statuses:
+
+- **NEW (0):** Initial state. Ready for processing.
+- **PROGRESS (1):** Pre-action phase. Listeners can transform/negate (e.g., negate incoming damage).
+- **DONE (2):** Post-action phase. Reactions to effects (e.g., heal after taking damage).
+- **NULLIFY (-1):** Request to cancel the event.
+- **NULLIFIED (-2):** Event has been cancelled and will not proceed.
+
+### Listener Processing
+
+At each pass (`processListenersPass`), listeners react to events based on their status. 
+To prevent infinite recursion, each reaction is marked with `listenerId-status` in the `processedBy` array.
+
+Each listener can:
 
 - **Pass through:** Return `null` (event continues unchanged)
-- **Transform:** Return modified array of events
-- **Swallow:** Return empty array `[]` (event disappears)
-- **Emit additional:** Return `[event, newEvent1, newEvent2]` (adds effects)
+- **Transform:** Return modified event (e.g., change value or status)
+- **Negate:** Return event with status `NULLIFY`
+- **Emit additional:** Return `[event, newEvent1, newEvent2]` (adds effects with status `NEW`)
 
 ### Listener Lifecycle
 
@@ -87,7 +100,7 @@ They should NEVER be modified unless the EngineState interface changes.
 
 Read these type definitions:
 - `projects/game-board/item/item.model.ts` - Effect, StatusEffect, PassiveEffect types
-- `projects/game-board/engine/engine.types.ts` - GameEvent, Listener, EngineState types
+- `projects/game-board/engine/engine.types.ts` - GameEvent, GameEventStatus, Listener, EngineState types
 
 **Type Hierarchy:**
 ```
@@ -140,38 +153,39 @@ protected handleReaction(event, state) {
 ```
 
 ### Pattern 3: Event Interceptor (Negate)
-Consumes events by returning empty array:
+Request event cancellation by setting status to `NULLIFY`:
 
 ```typescript
 protected handleReaction(event, state) {
-  return this.shouldReact(event, state) ? [] : null;
+  if (!this.shouldReact(event, state)) return null;
+  return [{ ...event, status: GameEventStatus.NULLIFY }];
 }
 ```
 
 ### Pattern 4: Event Transformer (Invert)
-Modifies effect values:
+Modifies effect values at `PROGRESS` status:
 
 ```typescript
 protected handleReaction(event, state) {
   if (!this.shouldReact(event, state)) return null;
   
-  // Transform the effect
-  const transformed = {
+  // Transform the effect value
+  return [{
     ...event,
     effect: { ...event.effect, value: -event.effect.value }
-  };
-  
-  return [transformed];
+  }];
 }
 ```
 
 ## Important Design Principles
 
-1. **Events are immutable** - Transform, never mutate
-2. **State changes only in processors** - Listeners emit events, processors apply them
-3. **Conditions are compiled** - `Condition` → `ReactiveCondition` at creation time
-4. **Listeners are long-lived** - They persist across turns until removed
-5. **Depth limit** - Event chain has max depth of 50 to prevent infinite loops
+1. **Event Status Lifecycle** - Events progress `NEW` → `PROGRESS` → `DONE` (or `NULLIFY` → `NULLIFIED`).
+2. **Processors apply at PROGRESS** - Core logic (damage, heal, etc.) is applied to state when event status is `PROGRESS`.
+3. **Durations decrement at PROGRESS** - Listener durations (Turns, Charges) only decrement once per event lifecycle, specifically when status is `PROGRESS`.
+4. **Events are immutable** - Transform via cloning, never mutate original event objects.
+5. **State changes only in processors** - Listeners emit events, processors apply them to state snapshot.
+6. **Conditions are compiled** - `Condition` → `ReactiveCondition` at creation time for high-performance matching.
+7. **Infinite Loop Protection** - Each reaction is tracked via `processedBy: listenerId-status`. Total event depth limit is 50.
 
 ## Debugging Tips
 

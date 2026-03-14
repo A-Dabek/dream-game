@@ -2,12 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { StatusEffect } from '../../item';
 import { ListenerFactory } from './listener-factory';
 import { createInitialListenerData } from './types';
-import { EngineState, GameEvent } from '../engine.types';
+import { EngineState, GameEvent, GameEventStatus } from '../engine.types';
 
 describe('ListenerFactory', () => {
   const createMockEvent = (
     playerId: string = 'player-1',
     phase?: string,
+    status: GameEventStatus = GameEventStatus.PROGRESS,
   ): GameEvent =>
     ({
       type: phase ? 'lifecycle' : 'effect',
@@ -16,6 +17,8 @@ describe('ListenerFactory', () => {
         ? undefined
         : { type: 'damage', value: 5, target: 'enemy' as const },
       playerId,
+      status,
+      processedBy: [],
     }) as unknown as GameEvent;
 
   const createMockState = (): EngineState =>
