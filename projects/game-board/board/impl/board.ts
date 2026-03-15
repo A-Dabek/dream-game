@@ -161,9 +161,13 @@ export class Board implements BoardInterface {
       opponentStatusEffects: state.opponentStatusEffects.map((e) => ({ ...e })),
     };
 
+    // Optimization: Create a new engine instance and reset it to the current state
+    const clonedEngine = new Engine(state.player, state.opponent);
+    clonedEngine.reset(this.engine.state);
+
     // Manually initialize the readonly engine field for the cloned instance
     Object.defineProperty(clonedBoard, 'engine', {
-      value: this.engine.clone(),
+      value: clonedEngine,
       writable: false,
       configurable: true,
     });

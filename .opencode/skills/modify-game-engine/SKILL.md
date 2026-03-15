@@ -16,14 +16,15 @@ Item Played
     ↓
 [Stage 2: Listener Chain] → Multiple passes through listeners (Status: PROGRESS → DONE)
     ↓
-[Stage 3: Effect Processing] → Processors apply effects to state (at Status: PROGRESS)
+[Stage 3: Effect Processing] → StateManager applies atomic effects to state (at Status: PROGRESS)
     ↓
 State Updated
 ```
 
 Read these files to understand the complete flow:
 - `projects/game-board/engine/engine.ts` - Main engine orchestration
-- `projects/game-board/engine/processors.ts` - Effect processors
+- `projects/game-board/engine/events-processor.ts` - Event loop logic
+- `projects/game-board/engine/state-manager.ts` - State management and atomic mutations
 - `projects/game-board/engine/effects/listener-factory.ts` - Listener creation
 - `projects/game-board/engine/effects/instances/base-effect-instance.ts` - Base listener logic
 
@@ -100,19 +101,17 @@ Each listener can:
 
 ## Stage 3: Effect Processing
 
-**Where:** `projects/game-board/engine/processors.ts:#play`
+**Where:** `projects/game-board/engine/events-processor.ts:#applyProcessor`
 
-After all listeners process the event, basic effects hit processors:
+After all listeners process the event, basic effects hit the `EngineStateManager` via `EngineEventsProcessor`:
 
 ```typescript
-PROCESSORS: Record<ProcessorType, EffectProcessor>
+stateManager.applyEffect(playerKey, effect)
 ```
 
-Each processor is a pure function: `(state, playerKey, effect) => newState`. 
-Processors are responsible for applying the most basic and atomic effects. 
-They should NEVER be modified unless the EngineState interface changes.
+The `EngineStateManager` is responsible for applying the most basic and atomic effects to the engine state.
 
-**Available Processors:** Read `projects/game-board/engine/processors.ts` for the complete list.
+**Available Atomic Operations:** Read `projects/game-board/engine/state-manager.ts` for the complete list of methods like `applyEffect`, `removeListener`, `addStatusEffect`, `advanceTurn`, `updateListener`, and `updateAllListeners`.
 
 ## Key Types and Relationships
 
@@ -128,7 +127,7 @@ BaseEffectInstance (runtime listener)
     ↓ produces
 GameEvent (event flow)
     ↓ if type === 'effect'
-Effect (atomic operation processed by Processors)
+Effect (atomic operation processed by StateManager)
 ```
 
 ## Common Patterns
@@ -198,10 +197,10 @@ protected handleReaction(event, state) {
 ## Important Design Principles
 
 1. **Event Status Lifecycle** - Events progress `NEW` → `PROGRESS` → `DONE` (or `NULLIFY` → `NULLIFIED`).
-2. **Processors apply at PROGRESS** - Core logic (damage, heal, etc.) is applied to state when event status is `PROGRESS`.
+2. **StateManager apply at PROGRESS** - Core logic (damage, heal, etc.) is applied to state when event status is `PROGRESS`.
 3. **Durations decrement at PROGRESS** - Listener durations (Turns, Charges) only decrement once per event lifecycle, specifically when status is `PROGRESS`.
 4. **Events are immutable** - Transform via cloning, never mutate original event objects.
-5. **State changes only in processors** - Listeners emit events, processors apply them to state snapshot.
+5. **State changes only in StateManager** - Listeners emit events, EngineStateManager applies them to state snapshot.
 6. **Conditions are compiled** - `Condition` → `ReactiveCondition` at creation time for high-performance matching.
 7. **Infinite Loop Protection** - Each reaction is tracked via `processedBy: listenerId-status`. Total event depth limit is 50.
 
@@ -216,7 +215,8 @@ protected handleReaction(event, state) {
 
 **Core Flow:**
 - `projects/game-board/engine/engine.ts` - Main orchestration
-- `projects/game-board/engine/processors.ts` - State mutations
+- `projects/game-board/engine/events-processor.ts` - Event loop logic
+- `projects/game-board/engine/state-manager.ts` - State management and atomic mutations
 - `projects/game-board/engine/effects/listener-factory.ts` - Listener creation
 
 **Base Classes:**

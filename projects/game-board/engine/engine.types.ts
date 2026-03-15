@@ -82,11 +82,3 @@ export type ProcessorType =
   | 'remove_listener'
   | 'advance_turn'
   | 'add_status_effect';
-
-export type EffectProcessor = (
-  state: EngineState,
-  playerKey: 'playerOne' | 'playerTwo',
-  effect: Effect,
-) => EngineState;
-
-export type Processors = Record<ProcessorType, EffectProcessor>;
