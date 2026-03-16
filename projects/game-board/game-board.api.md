@@ -8,7 +8,9 @@ import { Duration } from '../item';
 import { DurationState } from './engine/effects';
 import { Effect } from '../item';
 import { EffectInstanceState } from './engine/effects';
+import { GameAction } from '../engine';
 import { GameAction as GameAction_2 } from '../board';
+import { GameActionType } from '../engine';
 import { GameState as GameState_2 } from '../board';
 import { Genre as Genre_2 } from '../item';
 import { ItemId as ItemId_2 } from '../../item';
@@ -90,22 +92,26 @@ export { EffectInstanceState };
 
 // @public (undocumented)
 export interface EngineState {
+  // Warning: (ae-forgotten-export) The symbol "GameAction_3" needs to be exported by the entry point index.d.ts
+  //
   // (undocumented)
-  readonly gameOver: boolean;
+  actionHistory: GameAction_3[];
+  // (undocumented)
+  gameOver: boolean;
   // Warning: (ae-forgotten-export) The symbol "ListenerData_2" needs to be exported by the entry point index.d.ts
   //
   // (undocumented)
-  readonly listeners: ListenerData_2[];
+  listeners: ListenerData_2[];
   // Warning: (ae-forgotten-export) The symbol "EngineLoadout" needs to be exported by the entry point index.d.ts
   //
   // (undocumented)
-  readonly playerOne: EngineLoadout;
+  playerOne: EngineLoadout;
   // (undocumented)
-  readonly playerTwo: EngineLoadout;
+  playerTwo: EngineLoadout;
   // (undocumented)
-  readonly turnQueue: TurnEntry_2[];
+  turnQueue: TurnEntry_2[];
   // (undocumented)
-  readonly winnerId?: string;
+  winnerId?: string;
 }
 
 // @public
@@ -119,15 +125,7 @@ export const GAME_CONFIG: {
   readonly BASE_SPEED_MODIFIER: 3;
 };
 
-// @public (undocumented)
-export interface GameAction {
-  // (undocumented)
-  itemId?: ItemId_3;
-  // (undocumented)
-  playerId: string;
-  // (undocumented)
-  type: GameActionType;
-}
+export { GameAction };
 
 // @public (undocumented)
 export interface GameActionResult {
@@ -141,13 +139,7 @@ export interface GameActionResult {
   success: boolean;
 }
 
-// @public (undocumented)
-export enum GameActionType {
-  // (undocumented)
-  PLAY_ITEM = 'PLAY_ITEM',
-  // (undocumented)
-  SURRENDER = 'SURRENDER',
-}
+export { GameActionType };
 
 // @public (undocumented)
 export type GameEvent = (
@@ -231,9 +223,9 @@ export interface Loadout {
   // (undocumented)
   health: number;
   // (undocumented)
-  readonly items: Item[];
+  items: Item[];
   // (undocumented)
-  readonly speed: number;
+  speed: number;
 }
 
 // @public (undocumented)
@@ -289,15 +281,15 @@ export type StateChangeLogEntry = {
 // @public (undocumented)
 export interface StatusEffectData {
   // (undocumented)
-  readonly durationType: Duration['type'];
+  durationType: Duration['type'];
   // (undocumented)
-  readonly genre: Genre_2;
+  genre: Genre_2;
   // (undocumented)
-  readonly instanceId: string;
+  instanceId: string;
   // (undocumented)
-  readonly remainingCharges: number | null;
+  remainingCharges: number | null;
   // (undocumented)
-  readonly type: StatusEffectType_2;
+  type: StatusEffectType_2;
 }
 
 // @public (undocumented)

@@ -19,13 +19,25 @@ export interface Listener {
   canPossiblyReact(event: GameEvent, data: ListenerData): boolean;
 }
 
+export enum GameActionType {
+  PLAY_ITEM = 'PLAY_ITEM',
+  SURRENDER = 'SURRENDER',
+}
+
+export interface GameAction {
+  type: GameActionType;
+  playerId: string;
+  itemId?: ItemId;
+}
+
 export interface EngineState {
-  readonly playerOne: EngineLoadout;
-  readonly playerTwo: EngineLoadout;
-  readonly turnQueue: TurnEntry[];
-  readonly listeners: ListenerData[];
-  readonly gameOver: boolean;
-  readonly winnerId?: string;
+  playerOne: EngineLoadout;
+  playerTwo: EngineLoadout;
+  turnQueue: TurnEntry[];
+  listeners: ListenerData[];
+  gameOver: boolean;
+  winnerId?: string;
+  actionHistory: GameAction[];
 }
 
 export type LifecyclePhase =

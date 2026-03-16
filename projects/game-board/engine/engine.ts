@@ -6,6 +6,7 @@ import { EffectHandlerFactory, ListenerData, ListenerFactory } from './effects';
 import {
   EngineLoadout,
   EngineState,
+  GameActionType,
   GameEvent,
   GameEventFactory,
   LogEntry,
@@ -15,18 +16,17 @@ import { EngineStateManager } from './state-manager';
 
 export class Engine implements LogCollector {
   private readonly logBuffer: LogEntry[] = [];
-  private readonly stateManager = new EngineStateManager();
   private readonly eventsProcessor: EngineEventsProcessor;
 
   constructor(
     playerOne: Loadout & { id: string },
     playerTwo: Loadout & { id: string },
   ) {
-    this.eventsProcessor = new EngineEventsProcessor(this.stateManager, this);
+    this.eventsProcessor = new EngineEventsProcessor(this);
     const p1 = this.prepareLoadout(playerOne);
     const p2 = this.prepareLoadout(playerTwo);
 
-    this.stateManager.setState({
+    this.eventsProcessor.setState({
       playerOne: p1,
       playerTwo: p2,
       turnQueue: TurnManager.initializeTurnQueue(
@@ -36,15 +36,22 @@ export class Engine implements LogCollector {
       ),
       listeners: this.initializeListeners(p1, p2),
       gameOver: false,
+      actionHistory: [],
     });
   }
 
   get state(): EngineState {
-    return this.stateManager.getState();
+    return this.eventsProcessor.getState();
   }
 
   play(playerId: string, itemId: ItemId): void {
     if (this.state.gameOver) return;
+
+    this.state.actionHistory.push({
+      type: GameActionType.PLAY_ITEM,
+      playerId,
+      itemId,
+    });
 
     const state = this.state;
     const player =
@@ -65,6 +72,34 @@ export class Engine implements LogCollector {
     for (const effect of effects) {
       this.processItemEffect(effect, playerId);
     }
+  }
+
+  pass(playerId: string): void {
+    if (this.state.gameOver) return;
+
+    this.state.actionHistory.push({
+      type: GameActionType.PLAY_ITEM,
+      playerId,
+      itemId: undefined,
+    });
+
+    this.processEndOfTurn(playerId);
+  }
+
+  surrender(playerId: string): void {
+    if (this.state.gameOver) return;
+
+    const state = this.state;
+    const winnerId =
+      state.playerOne.id === playerId ? state.playerTwo.id : state.playerOne.id;
+
+    state.gameOver = true;
+    state.winnerId = winnerId;
+
+    state.actionHistory.push({
+      type: GameActionType.SURRENDER,
+      playerId,
+    });
   }
 
   processEndOfTurn(playerId: string): void {
@@ -105,7 +140,7 @@ export class Engine implements LogCollector {
    * Resets the engine to a specific state.
    */
   reset(state: EngineState): void {
-    this.stateManager.setState(state);
+    this.eventsProcessor.setState(state);
     this.eventsProcessor.reset();
     this.logBuffer.length = 0;
   }

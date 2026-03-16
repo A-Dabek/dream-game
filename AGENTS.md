@@ -16,6 +16,7 @@ This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the f
 - When a player's health reaches 0, the game is over.
 - Speed is responsible for turn order and can be modified by items.
 - Each player has a loadout of items that can be played once per turn.
+- The game state tracks all actions taken by players in a chronological action history.
 - Items can inflict effects on players, and those can be: active, passive and status.
 - Active effects are one-time effects applied immediately.
 - Status effects are lingering effects that last for a certain duration.

@@ -75,8 +75,8 @@ export type PassiveEffect = StatusEffect;
 
 export type ItemDefinition = {
   readonly genre: Genre;
-  readonly onPlayEffects: readonly Effect[];
-  readonly passiveEffects?: readonly PassiveEffect[];
+  readonly onPlayEffects: Effect[];
+  readonly passiveEffects?: PassiveEffect[];
 };
 
 export interface Item {
@@ -86,7 +86,7 @@ export interface Item {
 }
 
 export interface Loadout {
-  readonly items: Item[];
+  items: Item[];
   health: number;
-  readonly speed: number;
+  speed: number;
 }

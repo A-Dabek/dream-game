@@ -42,9 +42,9 @@ When an item is played:
 
 ## Stage 2: Listener Chain (The Heart of the Engine)
 
-**Where:** `projects/game-board/engine/engine.ts:#runEventLoop`
+**Where:** `projects/game-board/engine/events-processor.ts:#runEventLoop`
 
-The engine uses a **multi-pass event loop**. Each event transitions through lifecycle statuses:
+The engine uses a **multi-pass iterative event loop** optimized for performance. Each event transitions through lifecycle statuses:
 
 - **NEW (0):** Initial state. Ready for processing.
 - **PROGRESS (1):** Pre-action phase. Listeners can transform/negate (e.g., negate incoming damage).
@@ -52,157 +52,64 @@ The engine uses a **multi-pass event loop**. Each event transitions through life
 - **NULLIFY (-1):** Request to cancel the event.
 - **NULLIFIED (-2):** Event has been cancelled and will not proceed.
 
+### Iterative Loop Structure
+
+The event loop (`runEventLoop`) executes up to 100 iterations. Each iteration consists of three passes:
+
+1.  **Pass 1: Reactions:** Listeners are given a chance to react to each event in the queue. If a listener reacts, it can mutate the event (e.g., change its status) or emit additional events. If the status changes, the listener loop restarts for that event to ensure all listeners see the new status.
+2.  **Pass 2: Processors:** For events that reached the `PROGRESS` status, the corresponding effect is applied to the state via the `StateManager`.
+3.  **Pass 3: Queue Advancement:** Events that are `DONE` or `NULLIFIED` are removed. Remaining events have their status advanced (e.g., `NEW` → `PROGRESS`, `PROGRESS` → `DONE`).
+
 ### Status Transformation & Loop Restart
 
-The engine supports dynamic status transformation within the listener chain. If any listener changes the status of an event (e.g., from `PROGRESS` to `NULLIFY`), the pass **restarts** for that event. 
+The engine supports dynamic status transformation within the listener chain. If any listener changes the status of an event (e.g., from `PROGRESS` to `NULLIFY`), the listener pass **restarts** for that event.
 
-This ensures that all listeners get a chance to react to the new status regardless of their position in the listener array. 
+This ensures that all listeners get a chance to react to the new status regardless of their position in the listener array.
 
 Recursion is prevented by the `processedBy` markers, which track both the listener ID and the status (`listenerId-status`). Once a listener has processed an event at a specific status, it will skip it in subsequent passes for that same status.
 
 ### Example: Anti-Nullify Flow
 
-1. **Attack (PROGRESS)** is in the queue.
-2. **Negate Listener** reacts to `PROGRESS` → Changes status to `NULLIFY`. Loop restarts.
-   - Event `processedBy`: `[negate-PROGRESS]`
-3. **Anti-Nullify Listener** reacts to `NULLIFY` → Changes status back to `PROGRESS`. Loop restarts.
-   - Event `processedBy`: `[negate-PROGRESS, antiNullify-NULLIFY]`
-4. **Negate Listener** sees `PROGRESS` again. It checks its `processedBy` marker (`negate-PROGRESS`). It's already there, so it **skips**.
-5. **Attack (PROGRESS)** is successfully applied to state.
+1.  **Attack (PROGRESS)** is in the queue.
+2.  **Negate Listener** reacts to `PROGRESS` → Changes status to `NULLIFY`. Loop restarts.
+    - Event `processedBy`: `[negate-PROGRESS]`
+3.  **Anti-Nullify Listener** reacts to `NULLIFY` → Changes status back to `PROGRESS`. Loop restarts.
+    - Event `processedBy`: `[negate-PROGRESS, antiNullify-NULLIFY]`
+4.  **Negate Listener** sees `PROGRESS` again. It checks its `processedBy` marker (`negate-PROGRESS`). It's already there, so it **skips**.
+5.  **Attack (PROGRESS)** is successfully applied to state.
 
 ### Listener Processing
-
-At each pass (`processListenersPass`), listeners react to events based on their status. 
-To prevent infinite recursion, each reaction is marked with `listenerId-status` in the `processedBy` array.
 
 Each listener can:
 
 - **Pass through:** Return `null` (event continues unchanged)
-- **Transform:** Return modified event (e.g., change value or status)
-- **Negate:** Return event with status `NULLIFY`
+- **Transform:** Mutate the event and return it (e.g., change value or status)
+- **Negate:** Change event status to `NULLIFY`
 - **Emit additional:** Return `[event, newEvent1, newEvent2]` (adds effects with status `NEW`)
-
-### Listener Lifecycle
-
-1. **Creation:** Two paths:
-   - Passive listeners from items: `scanForListeners()` → `ListenerFactory.createPassive()`
-   - Status effect listeners: `add_status_effect` processor → `createInitialListenerData()` → `ListenerFactory.deserialize()`
-
-2. **Runtime:** `BaseEffectInstance.handle(event, state)`:
-   - Checks `shouldReact()` using compiled condition
-   - Calls `handleReaction()` for custom behavior
-   - Updates duration tracking
-   - Wraps result with potential self-removal
-
-3. **Removal:** Happens automatically when:
-   - Duration expires (charges/turns run out)
-   - Associated item is removed
-   - Listener emits `remove_listener` effect
 
 ## Stage 3: Effect Processing
 
 **Where:** `projects/game-board/engine/events-processor.ts:#applyProcessor`
 
-After all listeners process the event, basic effects hit the `EngineStateManager` via `EngineEventsProcessor`:
+After listeners react to an event, if it is in the `PROGRESS` status, the `EngineEventsProcessor` applies it to the state using its internal `EngineStateManager`:
 
 ```typescript
-stateManager.applyEffect(playerKey, effect)
+this.stateManager.applyEffect(playerKey, event.effect);
 ```
 
-The `EngineStateManager` is responsible for applying the most basic and atomic effects to the engine state.
+The `EngineStateManager` is responsible for applying atomic effects and managing the game state (health, speed, items, status effects, turn queue, and action history).
 
-**Available Atomic Operations:** Read `projects/game-board/engine/state-manager.ts` for the complete list of methods like `applyEffect`, `removeListener`, `addStatusEffect`, `advanceTurn`, `updateListener`, and `updateAllListeners`.
-
-## Key Types and Relationships
-
-Read these type definitions:
-- `projects/game-board/item/item.model.ts` - Effect, StatusEffect, PassiveEffect types
-- `projects/game-board/engine/engine.types.ts` - GameEvent, GameEventStatus, Listener, EngineState types
-
-**Type Hierarchy:**
-```
-StatusEffect (declarative config)
-    ↓ wrapped by
-BaseEffectInstance (runtime listener)
-    ↓ produces
-GameEvent (event flow)
-    ↓ if type === 'effect'
-Effect (atomic operation processed by StateManager)
-```
-
-## Common Patterns
-
-### Pattern 1: Static Passive Effect
-Uses DefaultListener automatically. Just define in behavior:
-
-```typescript
-import { PassiveEffect } from '../../item';
-import { ActiveEffectLibrary, StatusEffectLibrary } from '../../../effect-library';
-
-passiveEffects(): PassiveEffect[] {
-  return [
-    {
-      type: 'some_passive',
-      condition: ConditionLibrary.onTurnEnd(),
-      action: [ActiveEffectLibrary.attack(1)],
-      duration: permanent(),
-    },
-  ];
-}
-```
-
-### Pattern 2: Dynamic Value Effect
-Custom listener reads from state:
-
-```typescript
-protected handleReaction(event, state) {
-  if (!this.shouldReact(event, state)) return null;
-  
-  const player = getPlayer(state, this.playerId);
-  const value = calculateFrom(player);
-  
-  return [event, {
-    type: 'effect',
-    effect: { type: 'healing', value, target: 'self' },
-    playerId: this.playerId,
-  }];
-}
-```
-
-### Pattern 3: Event Interceptor (Negate)
-Request event cancellation by setting status to `NULLIFY`:
-
-```typescript
-protected handleReaction(event, state) {
-  if (!this.shouldReact(event, state)) return null;
-  return [{ ...event, status: GameEventStatus.NULLIFY }];
-}
-```
-
-### Pattern 4: Event Transformer (Invert)
-Modifies effect values at `PROGRESS` status:
-
-```typescript
-protected handleReaction(event, state) {
-  if (!this.shouldReact(event, state)) return null;
-  
-  // Transform the effect value
-  return [{
-    ...event,
-    effect: { ...event.effect, value: -event.effect.value }
-  }];
-}
-```
+**Available Atomic Operations:** Read `projects/game-board/engine/state-manager.ts`. Operations now mutate the state directly for performance.
 
 ## Important Design Principles
 
-1. **Event Status Lifecycle** - Events progress `NEW` → `PROGRESS` → `DONE` (or `NULLIFY` → `NULLIFIED`).
-2. **StateManager apply at PROGRESS** - Core logic (damage, heal, etc.) is applied to state when event status is `PROGRESS`.
-3. **Durations decrement at PROGRESS** - Listener durations (Turns, Charges) only decrement once per event lifecycle, specifically when status is `PROGRESS`.
-4. **Events are immutable** - Transform via cloning, never mutate original event objects.
-5. **State changes only in StateManager** - Listeners emit events, EngineStateManager applies them to state snapshot.
-6. **Conditions are compiled** - `Condition` → `ReactiveCondition` at creation time for high-performance matching.
-7. **Infinite Loop Protection** - Each reaction is tracked via `processedBy: listenerId-status`. Total event depth limit is 50.
+1.  **Event Status Lifecycle** - Events progress `NEW` → `PROGRESS` → `DONE` (or `NULLIFY` → `NULLIFIED`).
+2.  **StateManager apply at PROGRESS** - Core logic (damage, heal, etc.) is applied to state when event status is `PROGRESS`.
+3.  **Durations decrement at PROGRESS** - Listener durations (Turns, Charges) only decrement once per event lifecycle, specifically when status is `PROGRESS`.
+4.  **Performance Optimization via Mutation** - Events and state are mutated during the event loop to reduce object allocations and improve performance.
+5.  **Action History** - All primary actions (`PLAY_ITEM`, `PASS`, `SURRENDER`) are recorded in the `actionHistory` within the state.
+6.  **Conditions are compiled** - `Condition` → `ReactiveCondition` at creation time for high-performance matching.
+7.  **Infinite Loop Protection** - Each reaction is tracked via `processedBy: listenerId-status`. Total event depth limit is 50, and loop iteration limit is 100.
 
 ## Debugging Tips
 

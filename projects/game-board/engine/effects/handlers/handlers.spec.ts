@@ -53,6 +53,7 @@ describe('EffectHandlerFactory', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     it('should process item_count_damage effect and compute damage based on item count', () => {
@@ -150,6 +151,7 @@ describe('DefaultEffectHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const originalEffect: Effect = {
@@ -188,6 +190,7 @@ describe('DefaultEffectHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const originalEffect: Effect = {
@@ -243,6 +246,7 @@ describe('ItemCountDamageHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const effect: Effect = {
@@ -282,6 +286,7 @@ describe('ItemCountDamageHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const effect: Effect = {
@@ -322,6 +327,7 @@ describe('ItemCountDamageHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const effect: Effect = {
@@ -359,6 +365,7 @@ describe('ItemCountDamageHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const effect: Effect = {
@@ -394,6 +401,7 @@ describe('ItemCountDamageHandler', () => {
       turnQueue: [],
       listeners: [],
       gameOver: false,
+      actionHistory: [],
     };
 
     const effect: Effect = {

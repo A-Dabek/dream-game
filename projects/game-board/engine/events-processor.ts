@@ -15,11 +15,17 @@ export interface LogCollector {
 
 export class EngineEventsProcessor {
   private readonly listenerCache = new Map<string, Listener>();
+  private readonly stateManager = new EngineStateManager();
 
-  constructor(
-    private readonly stateManager: EngineStateManager,
-    private readonly logCollector: LogCollector,
-  ) {}
+  constructor(private readonly logCollector: LogCollector) {}
+
+  getState(): EngineState {
+    return this.stateManager.getState();
+  }
+
+  setState(state: EngineState): void {
+    this.stateManager.setState(state);
+  }
 
   private getListener(type: string): Listener {
     let instance = this.listenerCache.get(type);
@@ -165,6 +171,7 @@ export class EngineEventsProcessor {
     if (event.type !== 'effect') return;
 
     const state = this.stateManager.getState();
+    const wasGameOver = state.gameOver;
     const playerKey =
       state.playerOne.id === event.playerId ? 'playerOne' : 'playerTwo';
 
@@ -173,7 +180,7 @@ export class EngineEventsProcessor {
     const nextState = this.stateManager.getState();
     this.logCollector.logStateChange(nextState);
 
-    if (!state.gameOver && nextState.gameOver && nextState.winnerId) {
+    if (!wasGameOver && nextState.gameOver && nextState.winnerId) {
       this.logCollector.logEvent(
         GameEventFactory.createLifecycle(nextState.winnerId, 'game_over'),
       );

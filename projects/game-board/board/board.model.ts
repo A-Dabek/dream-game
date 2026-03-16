@@ -1,18 +1,21 @@
-import { LogEntry } from '../engine';
+import { type GameAction, GameActionType, LogEntry } from '../engine';
 import { Duration, Genre, ItemId, Loadout, StatusEffectType } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { Board } from './impl/board';
 
+export type { GameAction };
+export { GameActionType };
+
 export interface StatusEffectData {
-  readonly instanceId: string;
-  readonly type: StatusEffectType;
-  readonly remainingCharges: number | null;
-  readonly durationType: Duration['type'];
-  readonly genre: Genre;
+  instanceId: string;
+  type: StatusEffectType;
+  remainingCharges: number | null;
+  durationType: Duration['type'];
+  genre: Genre;
 }
 
 export interface BoardLoadout extends Loadout {
-  readonly id: string;
+  id: string;
 }
 
 export interface TurnInfo {
@@ -30,17 +33,6 @@ export interface GameState {
   actionHistory: GameAction[];
   playerStatusEffects: StatusEffectData[];
   opponentStatusEffects: StatusEffectData[];
-}
-
-export enum GameActionType {
-  PLAY_ITEM = 'PLAY_ITEM',
-  SURRENDER = 'SURRENDER',
-}
-
-export interface GameAction {
-  type: GameActionType;
-  playerId: string;
-  itemId?: ItemId;
 }
 
 export interface GameActionResult {
