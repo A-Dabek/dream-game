@@ -74,7 +74,7 @@ export function createMockPlayer(
 ): BoardLoadout {
   const normalizedItems = normalizeItems(overrides.items);
 
-  // Ensure dummy item is present to prevent fatigue damage in tests
+  // Ensure dummy item is present to prevent impatience damage in tests
   const items = normalizedItems.some((i) => i.id === '_dummy')
     ? normalizedItems
     : [...normalizedItems, createTestItem('_dummy')];

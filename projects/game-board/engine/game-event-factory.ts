@@ -4,6 +4,7 @@ import {
   GameEventInput,
   GameEventStatus,
   LifecyclePhase,
+  ModifyStatusEffectPayload,
 } from './engine.types';
 
 export const GameEventFactory = {
@@ -28,6 +29,23 @@ export const GameEventFactory = {
       processedBy,
       status,
     };
+  },
+
+  createModifyStatusEffect(
+    playerId: string,
+    payload: ModifyStatusEffectPayload,
+    processedBy: string[] = [],
+    status = GameEventStatus.NEW,
+  ): GameEvent {
+    return this.createEffect(
+      playerId,
+      {
+        type: 'modify_status_effect',
+        value: payload as any,
+      },
+      processedBy,
+      status,
+    );
   },
 
   createLifecycle(

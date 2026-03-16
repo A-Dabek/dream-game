@@ -178,7 +178,8 @@ export class EngineEventsProcessor {
     this.stateManager.applyEffect(playerKey, event.effect);
 
     const nextState = this.stateManager.getState();
-    this.logCollector.logStateChange(nextState);
+    // Deep clone the state before logging to preserve snapshot at this point in time
+    this.logCollector.logStateChange(EngineStateManager.cloneState(nextState));
 
     if (!wasGameOver && nextState.gameOver && nextState.winnerId) {
       this.logCollector.logEvent(

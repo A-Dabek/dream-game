@@ -68,6 +68,42 @@ export class EngineStateManager {
       case 'advance_turn':
         this.advanceTurn();
         break;
+      case 'modify_status_effect':
+        this.modifyStatusEffect(
+          effect.value as unknown as {
+            instanceId: string;
+            charges?: number;
+            extraParams?: Record<string, unknown>;
+          },
+        );
+        break;
+    }
+  }
+
+  modifyStatusEffect(payload: {
+    instanceId: string;
+    charges?: number;
+    extraParams?: Record<string, unknown>;
+  }): void {
+    const listener = this._state.listeners.find(
+      (l) => l.instanceId === payload.instanceId,
+    );
+    if (!listener) {
+      return;
+    }
+
+    if (payload.charges !== undefined) {
+      listener.effectState.currentDuration.remaining = payload.charges;
+    }
+
+    if (payload.extraParams !== undefined) {
+      listener.effectState.effect = {
+        ...listener.effectState.effect,
+        extraParams: {
+          ...(listener.effectState.effect.extraParams || {}),
+          ...payload.extraParams,
+        },
+      };
     }
   }
 

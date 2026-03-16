@@ -1,4 +1,5 @@
 import { GameEvent } from '../../engine.types';
+import { DurationState } from '../listener-factory';
 
 export interface ReactiveDuration {
   readonly isExpired: boolean;
@@ -7,6 +8,8 @@ export interface ReactiveDuration {
   readonly itemInstanceId?: string;
   update(event: GameEvent, playerId: string): void;
   onHandle(): void;
+  serialize(): DurationState;
+  sync(state: DurationState): void;
 }
 
 export type DurationType = 'permanent' | 'charges' | 'turns';

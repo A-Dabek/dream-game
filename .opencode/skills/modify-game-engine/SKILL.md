@@ -100,13 +100,18 @@ this.stateManager.applyEffect(playerKey, event.effect);
 The `EngineStateManager` is responsible for applying atomic effects and managing the game state (health, speed, items, status effects, turn queue, and action history).
 
 **Available Atomic Operations:** Read `projects/game-board/engine/state-manager.ts`. Operations now mutate the state directly for performance.
+Common operations include:
+- `damage` / `healing`
+- `add_status_effect` / `remove_listener`
+- `modify_status_effect` - updates charges or `extraParams` of a listener by `instanceId`
 
 ## Important Design Principles
 
 1.  **Event Status Lifecycle** - Events progress `NEW` → `PROGRESS` → `DONE` (or `NULLIFY` → `NULLIFIED`).
 2.  **StateManager apply at PROGRESS** - Core logic (damage, heal, etc.) is applied to state when event status is `PROGRESS`.
 3.  **Durations decrement at PROGRESS** - Listener durations (Turns, Charges) only decrement once per event lifecycle, specifically when status is `PROGRESS`.
-4.  **Performance Optimization via Mutation** - Events and state are mutated during the event loop to reduce object allocations and improve performance.
+4.  **Serialization & Syncing** - Engine listeners must support `serialize()` and `sync(state)` to ensure they can be correctly cloned or restored from state snapshots.
+5.  **Performance Optimization via Mutation** - Events and state are mutated during the event loop to reduce object allocations and improve performance.
 5.  **Action History** - All primary actions (`PLAY_ITEM`, `PASS`, `SURRENDER`) are recorded in the `actionHistory` within the state.
 6.  **Conditions are compiled** - `Condition` → `ReactiveCondition` at creation time for high-performance matching.
 7.  **Infinite Loop Protection** - Each reaction is tracked via `processedBy: listenerId-status`. Total event depth limit is 50, and loop iteration limit is 100.

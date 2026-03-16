@@ -28,7 +28,7 @@ Overview of all UI components in the game-board-ui library.
 
 - **Selector:** `app-status-effects`
 - **Children:** `IconComponent`
-- **Purpose:** Displays active status effects as a vertical list of icons with animations, positioned above the player's health bar and below the opponent's health bar.
+- **Purpose:** Displays active status effects as a vertical list of icons with animations. Shows remaining charges/turns for temporary effects, and counters for permanent effects if they have a non-zero value. Positioned above the player's health bar and below the opponent's health bar.
 
 ### ActionHistoryComponent
 

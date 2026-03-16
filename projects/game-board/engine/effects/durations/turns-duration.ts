@@ -1,5 +1,6 @@
 import { GameEvent, GameEventStatus } from '../../engine.types';
 import { isLifecycleGameEvent } from '../../type-guards';
+import { DurationState } from '../listener-factory';
 import { ReactiveDuration } from './reactive-duration';
 
 export class TurnsDuration implements ReactiveDuration {
@@ -29,4 +30,14 @@ export class TurnsDuration implements ReactiveDuration {
   }
 
   onHandle(): void {}
+
+  serialize(): DurationState {
+    return { type: 'turns', remaining: this.remainingTurns };
+  }
+
+  sync(state: DurationState): void {
+    if (state.type === 'turns') {
+      this.remainingTurns = state.remaining;
+    }
+  }
 }

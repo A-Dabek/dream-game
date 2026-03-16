@@ -38,17 +38,21 @@ export function mapStatusEffectToDisplayData(
 export function mapListenerToDisplayData(
   listener: ListenerData,
 ): StatusEffectDisplayData {
-  const effectType = listener.effectState.effect.type;
-  const duration = listener.effectState.currentDuration;
-  const hasCharges = duration.type === 'turns' || duration.type === 'charges';
+  const { effectState, instanceId } = listener;
+  const { effect, currentDuration } = effectState;
+
+  const shouldShowCharges =
+    currentDuration.type === 'turns' ||
+    currentDuration.type === 'charges' ||
+    (currentDuration.type === 'permanent' && currentDuration.remaining > 0);
 
   return {
-    instanceId: listener.instanceId,
-    type: effectType,
-    remainingCharges: hasCharges ? duration.remaining : null,
-    durationType: duration.type,
-    pathD: resolveStatusEffectIcon(effectType),
-    genre: listener.effectState.effect.genre,
+    instanceId,
+    type: effect.type,
+    remainingCharges: shouldShowCharges ? currentDuration.remaining : null,
+    durationType: currentDuration.type,
+    pathD: resolveStatusEffectIcon(effect.type),
+    genre: effect.genre,
   };
 }
 

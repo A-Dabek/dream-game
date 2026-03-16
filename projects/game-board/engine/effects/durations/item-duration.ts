@@ -1,4 +1,5 @@
 import { GameEvent, GameEventStatus } from '../../engine.types';
+import { DurationState } from '../listener-factory';
 import { ReactiveDuration } from './reactive-duration';
 
 export class ItemDuration implements ReactiveDuration {
@@ -34,4 +35,10 @@ export class ItemDuration implements ReactiveDuration {
   }
 
   onHandle(): void {}
+
+  serialize(): DurationState {
+    return { type: 'until_item_removed', remaining: 0 };
+  }
+
+  sync(): void {}
 }

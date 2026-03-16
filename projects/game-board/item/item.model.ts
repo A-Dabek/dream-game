@@ -35,7 +35,7 @@ export type StatusEffectType =
   | 'negate'
   | 'reactive_removal'
   | 'advance_turn'
-  | 'fatigue'
+  | 'impatience'
   | 'periodic_attack'
   | 'anti_nullify'
   | ItemId; // Allow item IDs for custom passive effects

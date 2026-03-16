@@ -15,9 +15,9 @@
     "icon": "fast-forward-button",
     "description": "Advances the turn order."
   },
-  "fatigue": {
+  "impatience": {
     "icon": "nothing-to-say",
-    "description": "Reduces efficiency over time."
+    "description": "Deals increasing damage when you have no items left."
   },
   "periodic_attack": {
     "icon": "periodic-attack",

@@ -1,7 +1,9 @@
-import { Duration, StatusEffect } from '../../item';
+import { StatusEffect } from '../../item';
 import { Listener } from '../engine.types';
+import { deriveInitialDurationState } from './durations';
 import {
   DefaultListener,
+  ImpatienceListener,
   InvertListener,
   NegateListener,
   ReactiveRemovalListener,
@@ -30,16 +32,6 @@ export interface ListenerData {
 
 // Helper functions moved from listener-data.ts
 
-function deriveInitialDurationState(duration?: Duration): DurationState {
-  const type = duration?.type ?? 'permanent';
-  const hasRemaining = type === 'charges' || type === 'turns';
-
-  return {
-    type,
-    remaining: hasRemaining ? ((duration?.value as number) ?? 0) : 0,
-  };
-}
-
 export function createInitialListenerData(
   instanceId: string,
   playerId: string,
@@ -63,6 +55,7 @@ const LISTENER_MAP: Record<string, new () => Listener> = {
   _blueprint_damage_to_owner: BlueprintDamageToOwnerListener,
   _blueprint_heal_on_damage: BlueprintHealOnDamageListener,
   anti_nullify: AntiNullifyListener,
+  impatience: ImpatienceListener,
 };
 
 // ListenerFactory plain object
@@ -94,17 +87,21 @@ export const ListenerFactory = {
 
   createFatigueData(playerId: string): ListenerData {
     const effect: StatusEffect = {
-      type: 'fatigue',
+      type: 'impatience',
       condition: {
         type: 'and',
         subConditions: [{ type: 'on_turn_end' }, { type: 'has_no_items' }],
       },
-      action: [{ type: 'damage', value: 1, target: 'self' }],
-      duration: { type: 'permanent' },
+      action: [], // Handled by ImpatienceListener directly to allow multi-step
+      duration: { type: 'permanent', value: 1 },
       genre: 'basic',
       mergeStrategy: 'new',
     };
-    return createInitialListenerData(`fatigue-${playerId}`, playerId, effect);
+    return createInitialListenerData(
+      `impatience-${playerId}`,
+      playerId,
+      effect,
+    );
   },
 
   createPassiveData(

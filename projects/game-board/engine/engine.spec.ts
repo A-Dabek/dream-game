@@ -129,7 +129,7 @@ describe('Engine', () => {
     expect(hasRemoveListener).toBe(true);
   });
 
-  it('should damage player on turn end if they have no items', () => {
+  it('should damage player on turn end if they have no items (impatience) and increase damage', () => {
     const p1: Loadout & { id: string } = {
       id: 'p1',
       health: 100,
@@ -145,8 +145,13 @@ describe('Engine', () => {
     const engine = new Engine(p1, p2);
 
     engine.processEndOfTurn('p1');
+    expect(engine.state.playerOne.health).toBe(99); // 1st trigger: 1 damage
 
-    expect(engine.state.playerOne.health).toBe(99);
+    engine.processEndOfTurn('p1');
+    expect(engine.state.playerOne.health).toBe(97); // 2nd trigger: 2 damage (99 - 2)
+
+    engine.processEndOfTurn('p1');
+    expect(engine.state.playerOne.health).toBe(94); // 3rd trigger: 3 damage (97 - 3)
   });
 
   it('should mark game over and log event when health drops to zero or below', () => {

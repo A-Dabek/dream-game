@@ -296,7 +296,7 @@ export interface StatusEffectData {
 export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';
 
 // @public (undocumented)
-export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'fatigue' | 'periodic_attack' | 'anti_nullify' | ItemId;
+export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'impatience' | 'periodic_attack' | 'anti_nullify' | ItemId;
 
 // @public
 export interface Strategy {

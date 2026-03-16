@@ -85,6 +85,12 @@ export type LogEntry =
   | { type: 'event'; event: GameEvent }
   | StateChangeLogEntry;
 
+export interface ModifyStatusEffectPayload {
+  instanceId: string;
+  charges?: number;
+  extraParams?: Record<string, unknown>;
+}
+
 export type ProcessorType =
   | 'damage'
   | 'healing'
@@ -93,4 +99,5 @@ export type ProcessorType =
   | 'remove_item'
   | 'remove_listener'
   | 'advance_turn'
-  | 'add_status_effect';
+  | 'add_status_effect'
+  | 'modify_status_effect';

@@ -53,7 +53,7 @@ export class YourItemBehaviour implements ItemBehavior {
 - **`duration`**: How long the effect lasts:
   - `charges(n)` - lasts for n triggers
   - `turns(n)` - lasts for n turns
-  - `permanent()` - lasts until manually removed
+  - `permanent()` - lasts until manually removed; can store a counter in its `value` property that will be displayed in the UI if greater than 0
 - **`target`**: Who receives the status effect ('self' or 'enemy')
 - **`type`** (optional): Identifies the effect type (e.g., `type: 'poison'`) for interactions with items like antidotes or gas masks
 - **`mergeStrategy`** (optional): Controls how the effect behaves when applied multiple times:

@@ -21,6 +21,7 @@ This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the f
 - Active effects are one-time effects applied immediately.
 - Status effects are lingering effects that last for a certain duration.
 - Passive effects are special case of a status effect that lasts as long as the player has an item which applies the effect.
+- When a player has no items left, they suffer increasing damage from "Impatience" at the end of each of their turns.
 
 ## Development
 

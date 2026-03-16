@@ -1,3 +1,4 @@
+import { DurationState } from '../listener-factory';
 import { ReactiveDuration } from './reactive-duration';
 
 export class ChargesDuration implements ReactiveDuration {
@@ -19,5 +20,15 @@ export class ChargesDuration implements ReactiveDuration {
 
   onHandle(): void {
     this.remainingCharges--;
+  }
+
+  serialize(): DurationState {
+    return { type: 'charges', remaining: this.remainingCharges };
+  }
+
+  sync(state: DurationState): void {
+    if (state.type === 'charges') {
+      this.remainingCharges = state.remaining;
+    }
   }
 }
