@@ -137,6 +137,14 @@ export class Engine implements LogCollector {
   }
 
   /**
+   * Returns the internal log buffer without clearing it.
+   * Useful for testing state snapshot integrity.
+   */
+  peekLog(): readonly LogEntry[] {
+    return [...this.logBuffer];
+  }
+
+  /**
    * Resets the engine to a specific state.
    */
   reset(state: EngineState): void {
