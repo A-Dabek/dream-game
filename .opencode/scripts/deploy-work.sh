@@ -81,11 +81,11 @@ git add -A
 git commit -m "$COMMIT_MSG"
 echo -e "${GREEN}[GIT] Commit created: $COMMIT_MSG${NC}"
 
-# Git Merge to master
-if [ "$CURRENT_BRANCH" != "master" ]; then
+# Git Merge to develop
+if [ "$CURRENT_BRANCH" != "develop" ]; then
     echo ""
-    echo "[GIT] Merging $CURRENT_BRANCH into master..."
-    git checkout master
+    echo "[GIT] Merging $CURRENT_BRANCH into develop..."
+    git checkout develop
     git merge "$CURRENT_BRANCH"
     echo -e "${GREEN}[GIT] Merge completed successfully${NC}"
 
@@ -95,7 +95,7 @@ if [ "$CURRENT_BRANCH" != "master" ]; then
     git branch -d "$CURRENT_BRANCH"
     echo -e "${GREEN}[GIT] Branch deleted successfully${NC}"
 else
-    echo -e "${YELLOW}[GIT] Currently on master, skipping merge/branch deletion${NC}"
+    echo -e "${YELLOW}[GIT] Currently on develop, skipping merge/branch deletion${NC}"
 fi
 
 # Firebase Deploy
