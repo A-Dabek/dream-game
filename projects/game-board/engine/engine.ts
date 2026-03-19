@@ -16,6 +16,17 @@ import { PROCESSORS } from './processors';
 
 export class Engine {
   private readonly logBuffer: LogEntry[] = [];
+  private readonly listenerCache = new Map<string, Listener>();
+
+  private getListener(type: string): Listener {
+    let instance = this.listenerCache.get(type);
+    if (!instance) {
+      const Constructor = ListenerFactory.getConstructor(type);
+      instance = new Constructor();
+      this.listenerCache.set(type, instance);
+    }
+    return instance;
+  }
 
   constructor(
     playerOne: Loadout & { id: string },
@@ -138,6 +149,14 @@ export class Engine {
       writable: false,
       configurable: true,
     });
+
+    // Initialize listenerCache for the cloned instance.
+    Object.defineProperty(cloned, 'listenerCache', {
+      value: new Map<string, Listener>(),
+      writable: false,
+      configurable: true,
+    });
+
     return cloned;
   }
 
@@ -148,10 +167,10 @@ export class Engine {
     return [
       ...this.scanForListeners(p1),
       ...this.scanForListeners(p2),
-      ListenerFactory.createFatigue(p1.id).serialize(),
-      ListenerFactory.createFatigue(p2.id).serialize(),
-      ListenerFactory.createAdvanceTurn(p1.id).serialize(),
-      ListenerFactory.createAdvanceTurn(p2.id).serialize(),
+      ListenerFactory.createFatigueData(p1.id),
+      ListenerFactory.createFatigueData(p2.id),
+      ListenerFactory.createAdvanceTurnData(p1.id),
+      ListenerFactory.createAdvanceTurnData(p2.id),
     ];
   }
 
@@ -188,11 +207,7 @@ export class Engine {
       const itemDef = getItemBehavior(item.id);
       const effects = itemDef.passiveEffects ?? [];
       return effects.map((effect) =>
-        ListenerFactory.createPassive(
-          item.instanceId!,
-          player.id,
-          effect,
-        ).serialize(),
+        ListenerFactory.createPassiveData(item.instanceId!, player.id, effect),
       );
     });
   }
@@ -205,18 +220,10 @@ export class Engine {
     let currentState = state;
     let iterations = 0;
 
-    // Cache listener instances for the whole event loop to avoid redundant deserialization
-    const listenerInstances = new Map<string, Listener>();
-    this.syncCache(currentState.listeners, listenerInstances);
-
     while (eventQueue.length > 0 && iterations < 100) {
       iterations++;
 
-      const passResult = this.processListenersPass(
-        eventQueue,
-        currentState,
-        listenerInstances,
-      );
+      const passResult = this.processListenersPass(eventQueue, currentState);
       eventQueue = passResult.events;
       currentState = passResult.state;
 
@@ -232,7 +239,6 @@ export class Engine {
 
       for (const event of activeEvents) {
         currentState = this.applyProcessor(event, currentState);
-        this.syncCache(currentState.listeners, listenerInstances);
       }
 
       if (currentState.gameOver) break;
@@ -243,56 +249,19 @@ export class Engine {
       }));
     }
 
-    // Final serialize back to state to ensure any internal listener changes (duration, charges)
-    // are reflected in the EngineState listeners.
-    currentState = {
-      ...currentState,
-      listeners: currentState.listeners.map(
-        (l) => listenerInstances.get(l.instanceId)?.serialize() ?? l,
-      ),
-    };
-
     return currentState;
-  }
-
-  private syncCache(
-    listenersData: ListenerData[],
-    listenerInstances: Map<string, Listener>,
-  ): void {
-    const activeIds = new Set(listenersData.map((l) => l.instanceId));
-
-    // Remove old ones
-    for (const id of listenerInstances.keys()) {
-      if (!activeIds.has(id)) {
-        listenerInstances.delete(id);
-      }
-    }
-
-    // Add or Update
-    for (const data of listenersData) {
-      const existing = listenerInstances.get(data.instanceId);
-      if (!existing) {
-        listenerInstances.set(
-          data.instanceId,
-          ListenerFactory.deserialize(data),
-        );
-      } else {
-        existing.sync(data);
-      }
-    }
   }
 
   private processListenersPass(
     events: GameEvent[],
     state: EngineState,
-    listenerInstances: Map<string, Listener>,
   ): { events: GameEvent[]; state: EngineState } {
     let currentState = state;
     const nextPassQueue: GameEvent[] = [];
 
     for (const event of events) {
       const { events: reactions, state: updatedState } =
-        this.handleEventReactions(event, currentState, listenerInstances);
+        this.handleEventReactions(event, currentState);
       currentState = updatedState;
       nextPassQueue.push(...reactions);
     }
@@ -303,7 +272,6 @@ export class Engine {
   private handleEventReactions(
     event: GameEvent,
     state: EngineState,
-    listenerInstances: Map<string, Listener>,
   ): { events: GameEvent[]; state: EngineState } {
     let currentState = state;
     let currentEvent: GameEvent | null = event;
@@ -322,23 +290,24 @@ export class Engine {
         const listenerData = listeners[i];
         if (!currentEvent) break;
 
-        const listener = listenerInstances.get(listenerData.instanceId);
+        const listener = this.getListener(listenerData.effectState.effect.type);
         if (!listener) continue;
 
         // Skip listeners that cannot possibly react to this event status
-        if (!listener.canPossiblyReact(currentEvent)) continue;
+        if (!listener.canPossiblyReact(currentEvent, listenerData)) continue;
 
         const marker: string = `${listenerData.instanceId}-${currentEvent.status}`;
         if (currentEvent.processedBy.includes(marker)) continue;
 
-        const { event: reactions }: { event: GameEvent[] } = listener.handle(
-          currentEvent!,
+        const { event: reactions, data: updatedData } = listener.handle(
+          currentEvent,
           currentState,
+          listenerData,
         );
 
-        // Update currentState with serialized listener to keep state in sync for other handlers
+        // Update currentState with updated listener data
         const updatedListeners = [...currentState.listeners];
-        updatedListeners[i] = listener.serialize();
+        updatedListeners[i] = updatedData;
         currentState = {
           ...currentState,
           listeners: updatedListeners,
@@ -350,7 +319,7 @@ export class Engine {
         }
 
         const transformation = reactions[0];
-        const oldStatus = currentEvent!.status;
+        const oldStatus = currentEvent.status;
 
         currentEvent = {
           ...transformation,
@@ -358,10 +327,10 @@ export class Engine {
         };
 
         // Collect extra events from this reaction
-        for (let i = 1; i < reactions.length; i++) {
+        for (let j = 1; j < reactions.length; j++) {
           extraEvents.push(
             GameEventFactory.create({
-              ...reactions[i],
+              ...reactions[j],
               processedBy: [...originalProcessedBy, marker],
               status: GameEventStatus.NEW,
             }),

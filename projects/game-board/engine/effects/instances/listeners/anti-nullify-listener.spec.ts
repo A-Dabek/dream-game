@@ -16,7 +16,7 @@ describe('AntiNullifyListener', () => {
       mergeStrategy: 'new' as const,
     };
     const data = createInitialListenerData('anti-1', 'p1', effect);
-    const listener = new AntiNullifyListener(data);
+    const listener = new AntiNullifyListener();
 
     const event: GameEvent = {
       type: 'effect',
@@ -27,7 +27,7 @@ describe('AntiNullifyListener', () => {
     };
 
     const state: any = { playerOne: { id: 'p1' }, playerTwo: { id: 'p2' } };
-    const { event: reactions } = listener.handle(event, state);
+    const { event: reactions } = listener.handle(event, state, data);
 
     expect(reactions.length).toBe(1);
     expect(reactions[0].status).toBe(GameEventStatus.PROGRESS);

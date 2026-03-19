@@ -45,12 +45,12 @@ async function main() {
       p2Idx = Math.floor(Math.random() * players.length);
     }
 
-    console.log(
-      'Fight between items: ',
-      serializePlayer(players[p1Idx]),
-      'vs',
-      serializePlayer(players[p2Idx]),
-    );
+    // console.log(
+    //   'Fight between items: ',
+    //   serializePlayer(players[p1Idx]),
+    //   'vs',
+    //   serializePlayer(players[p2Idx]),
+    // );
     await orchestrator.startGame(players[p1Idx], players[p2Idx]);
 
     if ((i + 1) % 100 === 0) {

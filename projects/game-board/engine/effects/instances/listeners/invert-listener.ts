@@ -2,20 +2,24 @@ import {
   EngineState,
   GameEvent,
   GameEventFactory,
+  ListenerData,
 } from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
-import { ListenerData } from '../../types';
+import { ReactiveCondition } from '../../conditions';
 
 export class InvertListener extends BaseEffectInstance {
-  constructor(listenerData: ListenerData) {
-    super(listenerData);
-  }
-
   protected handleReaction(
     event: GameEvent,
     state: EngineState,
+    data: ListenerData,
+    condition: ReactiveCondition,
   ): GameEvent[] | null {
-    if (!(this.shouldReact(event, state) && event.type === 'effect')) {
+    if (
+      !(
+        this.shouldReact(event, state, data, condition) &&
+        event.type === 'effect'
+      )
+    ) {
       return null;
     }
     const value = event.effect.value;

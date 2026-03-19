@@ -4,13 +4,13 @@
     "openrouter": {
       "models": {
         "reasoning": {
-          "id": "google/gemini-3-flash-preview"
+          "id": "minimax/minimax-m2.7"
         },
         "cheap": {
-          "id": "google/gemini-3-flash-preview"
+          "id": "minimax/minimax-m2.7"
         },
         "small": {
-          "id": "stepfun/step-3.5-flash:free"
+          "id": "minimax/minimax-m2.7"
         },
         "backup2": {
           "id": "minimax/minimax-m2.5",
@@ -54,6 +54,11 @@
       "agent": "documentation",
       "description": "Update documentation",
       "template": "Update documentation based on implementation. Review these changed files:\n!`git diff --name-status`\n\nUpdate relevant documentation files if needed."
+    },
+    "signoff": {
+      "agent": "developer",
+      "description": "Create a branch and deploy work",
+      "template": "Create a feature branch based on current changes and run script .opencode/scripts/deploy-work.sh --commit <message>"
     }
   },
   "model": "openrouter/reasoning",

@@ -71,25 +71,25 @@ For dynamic behavior that depends on game state (e.g., "heal based on item count
 ```typescript
 import { onTurnStart, StatusEffect } from '../../../../item';
 import { ActiveEffectLibrary } from '../../../effect-library';
-import { EngineState, GameEvent } from '../../../engine.types';
+import { EngineState, GameEvent } from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
+import { ListenerData } from '../../listener-factory';
+import { ReactiveCondition } from '../../conditions';
 
 export class YourItemListener extends BaseEffectInstance {
-  constructor(data: ListenerData) {
-    super(data);
-  }
-
   protected override handleReaction(
     event: GameEvent,
     state: EngineState,
+    data: ListenerData,
+    condition: ReactiveCondition,
   ): GameEvent[] | null {
-    if (!this.shouldReact(event, state)) {
+    if (!this.shouldReact(event, state, data, condition)) {
       return null;
     }
 
     // Calculate value from game state
     const player =
-      state.playerOne.id === this.playerId
+      state.playerOne.id === data.playerId
         ? state.playerOne
         : state.playerTwo;
     const healAmount = player.items.length;
@@ -98,7 +98,7 @@ export class YourItemListener extends BaseEffectInstance {
      const healEvent: GameEvent = {
        type: 'effect',
        effect: ActiveEffectLibrary.heal(healAmount, 'self'),
-       playerId: this.playerId,
+       playerId: data.playerId,
      };
 
     return [event, healEvent];

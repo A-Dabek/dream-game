@@ -1,17 +1,20 @@
-import { EngineState, GameEvent, GameEventStatus } from '../../../engine.types';
+import {
+  EngineState,
+  GameEvent,
+  GameEventStatus,
+  ListenerData,
+} from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
-import { ListenerData } from '../../types';
+import { ReactiveCondition } from '../../conditions';
 
 export class NegateListener extends BaseEffectInstance {
-  constructor(listenerData: ListenerData) {
-    super(listenerData);
-  }
-
   protected handleReaction(
     event: GameEvent,
     state: EngineState,
+    data: ListenerData,
+    condition: ReactiveCondition,
   ): GameEvent[] | null {
-    if (this.shouldReact(event, state)) {
+    if (this.shouldReact(event, state, data, condition)) {
       return [{ ...event, status: GameEventStatus.NULLIFY }];
     }
     return null;

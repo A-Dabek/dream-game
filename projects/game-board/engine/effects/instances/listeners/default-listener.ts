@@ -1,16 +1,14 @@
-import { EngineState, GameEvent } from '../../../engine.types';
+import { EngineState, GameEvent, ListenerData } from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
-import { ListenerData } from '../../types';
+import { ReactiveCondition } from '../../conditions';
 
 export class DefaultListener extends BaseEffectInstance {
-  constructor(listenerData: ListenerData) {
-    super(listenerData);
-  }
-
   protected handleReaction(
     event: GameEvent,
     state: EngineState,
+    data: ListenerData,
+    condition: ReactiveCondition,
   ): GameEvent[] | null {
-    return this.defaultHandleReaction(event, state);
+    return this.defaultHandleReaction(event, state, data, condition);
   }
 }

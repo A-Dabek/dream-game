@@ -2,26 +2,25 @@ import {
   EngineState,
   GameEvent,
   GameEventFactory,
+  ListenerData,
 } from '../../../engine.model';
 import { BaseEffectInstance } from '../base-effect-instance';
-import { ListenerData } from '../../types';
 import { ActiveEffectLibrary } from '../../../../effect-library';
+import { ReactiveCondition } from '../../conditions';
 
 export class BlueprintDamageToOwnerListener extends BaseEffectInstance {
-  constructor(data: ListenerData) {
-    super(data);
-  }
-
   protected override handleReaction(
     event: GameEvent,
     state: EngineState,
+    data: ListenerData,
+    condition: ReactiveCondition,
   ): GameEvent[] | null {
-    if (!this.shouldReact(event, state)) {
+    if (!this.shouldReact(event, state, data, condition)) {
       return null;
     }
 
     const extraDamageEvent = GameEventFactory.createEffect(
-      this.playerId,
+      data.playerId,
       ActiveEffectLibrary.attack(1, 'self'),
     );
 

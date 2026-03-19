@@ -1,3 +1,4 @@
+export type { ListenerData } from './effects/listener-factory';
 import { Effect, ItemId, Loadout } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { ListenerData } from './effects/listener-factory';
@@ -7,17 +8,15 @@ export interface EngineLoadout extends Loadout {
 }
 
 export interface Listener {
-  readonly instanceId: string;
-  readonly playerId: string;
   handle(
     event: GameEvent,
     state: EngineState,
+    data: ListenerData,
   ): {
     event: GameEvent[];
+    data: ListenerData;
   };
-  serialize(): ListenerData;
-  canPossiblyReact(event: GameEvent): boolean;
-  sync(data: ListenerData): void;
+  canPossiblyReact(event: GameEvent, data: ListenerData): boolean;
 }
 
 export interface EngineState {
