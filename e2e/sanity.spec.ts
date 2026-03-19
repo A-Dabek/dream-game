@@ -5,15 +5,14 @@ test('visual sanity check - game loads and board renders', async ({ page }) => {
   // Format: items|health|speed;items|health|speed
   await page.goto('/?state=punch,sticking_plaster|20|10;wingfoot|15|8');
 
-  await page.addStyleTag({
-    content: `
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    `,
+  // Disable animations via existing CSS class and delay via localStorage
+  await page.evaluate(() => {
+    document.body.classList.add('disable-animations');
+    localStorage.setItem('dream-game:delay', '0');
   });
+
+  // Reload to apply localStorage changes
+  await page.reload();
 
   await expect(page.getByTestId('ready-button')).toBeVisible();
 

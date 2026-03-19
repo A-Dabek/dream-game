@@ -6,16 +6,14 @@ test('Full game flow: human wins in 2 moves', async ({ page }) => {
   const stateParam = 'punch,punch|20|10;punch,punch|10|5';
   await page.goto(`/?state=${stateParam}`);
 
-  // Disable animations for faster, more predictable tests
-  await page.addStyleTag({
-    content: `
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    `,
+  // Disable animations via existing CSS class and delay via localStorage
+  await page.evaluate(() => {
+    document.body.classList.add('disable-animations');
+    localStorage.setItem('dream-game:delay', '0');
   });
+
+  // Reload to apply localStorage changes
+  await page.reload();
 
   // 1. New game screen with loadout of both players is shown
   await expect(page.getByTestId('pre-game-screen')).toBeVisible();

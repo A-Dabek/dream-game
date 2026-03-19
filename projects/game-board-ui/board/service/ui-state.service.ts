@@ -22,7 +22,9 @@ import { mapEngineStateToUiState, mapToUiState } from '../ui-state-mapper';
   providedIn: 'root',
 })
 export class UiStateService {
+  private static readonly delayStorageKey = 'dream-game:delay';
   private readonly defaultDelay = 200;
+  private cachedDelay: number | null = null;
   private readonly gameService = inject(GameService);
   private readonly soundService = inject(SoundService);
   private readonly _uiState = signal<UiGameState | null>(null);
@@ -34,6 +36,23 @@ export class UiStateService {
   readonly actionHistory = computed(() => this._actionHistory());
   private lastObservedActionCount = 0;
   private logSubscription = new Subscription();
+
+  private getDelayFromConfig(): number {
+    if (this.cachedDelay !== null) {
+      return this.cachedDelay;
+    }
+
+    const stored = localStorage.getItem(UiStateService.delayStorageKey);
+
+    if (stored === null) {
+      this.cachedDelay = this.defaultDelay;
+    } else {
+      const parsed = parseInt(stored, 10);
+      this.cachedDelay = isNaN(parsed) ? this.defaultDelay : parsed;
+    }
+
+    return this.cachedDelay;
+  }
 
   initialize(initialState: GameState): void {
     this.logSubscription.unsubscribe();
@@ -106,9 +125,9 @@ export class UiStateService {
 
   private applyLog(log: LogEntry): number {
     const state = this._uiState();
-    if (!state) return this.defaultDelay;
+    if (!state) return this.getDelayFromConfig();
 
-    let delay = this.defaultDelay;
+    let delay = this.getDelayFromConfig();
     switch (log.type) {
       case 'state-change':
         delay = this.applyStateChangeLog(state, log as StateChangeLogEntry);
@@ -132,7 +151,7 @@ export class UiStateService {
     log: StateChangeLogEntry,
   ): number {
     this._uiState.set(mapEngineStateToUiState(log.snapshot, state));
-    return this.defaultDelay;
+    return this.getDelayFromConfig();
   }
 
   private applyEventLog(event: GameEvent): void {
