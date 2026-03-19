@@ -31,7 +31,7 @@ export const StatusEffectLibrary = {
     return {
       type: 'gas_mask',
       condition: ConditionLibrary.beforeStatusEffect('poison'),
-      action: [{ type: 'negate', value: 'add_status_effect' }],
+      action: [{ type: 'negate', value: 'add_status_effect', target: 'self' }],
       duration: charges(chargeCount),
       genre: 'poison',
       mergeStrategy: 'new',
@@ -58,7 +58,7 @@ export const StatusEffectLibrary = {
     return {
       type: 'invert',
       condition: ConditionLibrary.beforeEffect(targetType),
-      action: [{ type: 'invert', value: targetType }],
+      action: [{ type: 'invert', value: targetType, target: 'self' }],
       duration,
       genre: 'basic',
       mergeStrategy: 'new',
@@ -69,7 +69,7 @@ export const StatusEffectLibrary = {
     return {
       type: 'negate',
       condition: ConditionLibrary.beforeEffect(targetType),
-      action: [{ type: 'negate', value: targetType }],
+      action: [{ type: 'negate', value: targetType, target: 'self' }],
       duration,
       genre: 'basic',
       mergeStrategy: 'new',

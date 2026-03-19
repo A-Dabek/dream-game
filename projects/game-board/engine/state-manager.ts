@@ -1,7 +1,13 @@
 import { StatusEffect, Effect } from '../item';
 import { TurnManager } from '../turn-manager';
 import { createInitialListenerData, ListenerData } from './effects';
-import { EngineState } from './engine.types';
+import {
+  EngineState,
+  GameEvent,
+  GameEventStatus,
+  ModifyStatusEffectPayload,
+} from './engine.types';
+import { GameEventFactory } from './game-event-factory';
 
 export class EngineStateManager {
   private _state!: EngineState;
@@ -38,22 +44,33 @@ export class EngineStateManager {
     this._state = state;
   }
 
-  applyEffect(playerKey: 'playerOne' | 'playerTwo', effect: Effect): void {
-    const { type, value, target } = effect;
+  applyEffect(
+    playerKey: 'playerOne' | 'playerTwo',
+    effect: Effect,
+  ): GameEvent | GameEvent[] {
+    const { type } = effect;
 
     switch (type) {
       case 'damage':
-        this.adjustStat(playerKey, 'health', -(value as number), target);
-        break;
+        return this.applyDamage(playerKey, effect);
       case 'healing':
-        this.adjustStat(playerKey, 'health', value as number, target);
-        break;
+        return this.applyHealing(playerKey, effect);
       case 'speed_up':
-        this.adjustStat(playerKey, 'speed', value as number, target);
+        this.adjustStat(
+          playerKey,
+          'speed',
+          effect.value as number,
+          effect.target,
+        );
         this.refreshTurnQueue();
         break;
       case 'slow_down':
-        this.adjustStat(playerKey, 'speed', -(value as number), target);
+        this.adjustStat(
+          playerKey,
+          'speed',
+          -(effect.value as number),
+          effect.target,
+        );
         this.refreshTurnQueue();
         break;
       case 'remove_item':
@@ -63,28 +80,60 @@ export class EngineStateManager {
         this.removeListener(effect);
         break;
       case 'add_status_effect':
-        this.addStatusEffect(playerKey, effect);
-        break;
+        return this.addStatusEffect(playerKey, effect);
       case 'advance_turn':
         this.advanceTurn();
         break;
       case 'modify_status_effect':
         this.modifyStatusEffect(
-          effect.value as unknown as {
-            instanceId: string;
-            charges?: number;
-            extraParams?: Record<string, unknown>;
-          },
+          effect.value as unknown as ModifyStatusEffectPayload,
         );
         break;
     }
+
+    return this.createDoneEvent(this._state[playerKey].id, effect);
   }
 
-  modifyStatusEffect(payload: {
-    instanceId: string;
-    charges?: number;
-    extraParams?: Record<string, unknown>;
-  }): void {
+  private applyDamage(
+    playerKey: 'playerOne' | 'playerTwo',
+    effect: Effect,
+  ): GameEvent | GameEvent[] {
+    const targetKey = this.getTargetKey(playerKey, effect.target);
+    const targetPlayer = this._state[targetKey];
+
+    const actualDamage = Math.min(effect.value as number, targetPlayer.health);
+    this._state[targetKey].health -= actualDamage;
+
+    effect.value = actualDamage;
+
+    const gameOverEvent = this.checkGameOver(targetKey);
+    if (gameOverEvent) {
+      return [
+        this.createDoneEvent(this._state[playerKey].id, effect),
+        gameOverEvent,
+      ];
+    }
+
+    return this.createDoneEvent(this._state[playerKey].id, effect);
+  }
+
+  private applyHealing(
+    playerKey: 'playerOne' | 'playerTwo',
+    effect: Effect,
+  ): GameEvent {
+    const targetKey = this.getTargetKey(playerKey, effect.target);
+    const targetPlayer = this._state[targetKey];
+
+    const healthDeficit = targetPlayer.maxHealth - targetPlayer.health;
+    const actualHealing = Math.min(effect.value as number, healthDeficit);
+    this._state[targetKey].health += actualHealing;
+
+    effect.value = actualHealing;
+
+    return this.createDoneEvent(this._state[playerKey].id, effect);
+  }
+
+  modifyStatusEffect(payload: ModifyStatusEffectPayload): void {
     const listener = this._state.listeners.find(
       (l) => l.instanceId === payload.instanceId,
     );
@@ -124,24 +173,44 @@ export class EngineStateManager {
     );
   }
 
-  addStatusEffect(playerKey: 'playerOne' | 'playerTwo', effect: Effect): void {
+  addStatusEffect(
+    playerKey: 'playerOne' | 'playerTwo',
+    effect: Effect,
+  ): GameEvent {
     const targetKey = this.getTargetKey(playerKey, effect.target);
     const statusEffect = effect.value as StatusEffect;
     const targetPlayer = this._state[targetKey];
+    const sourcePlayerId = this._state[playerKey].id;
 
-    const merged = this.mergeStatusEffect(targetPlayer.id, statusEffect);
-    if (merged) {
-      return;
+    const mergeResult = this.mergeStatusEffect(targetPlayer.id, statusEffect);
+    if (mergeResult) {
+      return GameEventFactory.createModifyStatusEffect(
+        sourcePlayerId,
+        {
+          instanceId: mergeResult.instanceId,
+          charges: mergeResult.newCharges,
+        },
+        [],
+        GameEventStatus.DONE,
+      );
     }
 
-    // Default behavior: create new listener
+    const instanceId = `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`;
     this._state.listeners.unshift(
-      createInitialListenerData(
-        `buff-${targetPlayer.id}-${Date.now()}-${Math.random()}`,
-        targetPlayer.id,
-        statusEffect,
-      ),
+      createInitialListenerData(instanceId, targetPlayer.id, statusEffect),
     );
+
+    return this.createDoneEvent(sourcePlayerId, effect);
+  }
+
+  private createDoneEvent(playerId: string, effect: Effect): GameEvent {
+    return {
+      type: 'effect',
+      playerId,
+      effect,
+      processedBy: [],
+      status: GameEventStatus.DONE,
+    };
   }
 
   advanceTurn(): void {
@@ -155,10 +224,6 @@ export class EngineStateManager {
 
   updateListener(index: number, data: ListenerData): void {
     this._state.listeners[index] = data;
-  }
-
-  updateAllListeners(listeners: ListenerData[]): void {
-    this._state.listeners = listeners;
   }
 
   private getTargetKey(
@@ -179,9 +244,6 @@ export class EngineStateManager {
   ): void {
     const targetKey = this.getTargetKey(playerKey, target);
     this._state[targetKey][stat] += delta;
-    if (stat === 'health') {
-      this.checkGameOver(targetKey);
-    }
   }
 
   private refreshTurnQueue(): void {
@@ -192,23 +254,33 @@ export class EngineStateManager {
     );
   }
 
-  private checkGameOver(targetKey: 'playerOne' | 'playerTwo'): void {
+  private checkGameOver(
+    targetKey: 'playerOne' | 'playerTwo',
+  ): GameEvent | null {
     if (this._state[targetKey].health <= 0 && !this._state.gameOver) {
       const winnerKey = targetKey === 'playerOne' ? 'playerTwo' : 'playerOne';
       this._state.gameOver = true;
       this._state.winnerId = this._state[winnerKey].id;
+
+      return GameEventFactory.createLifecycle(
+        this._state[winnerKey].id,
+        'game_over',
+        [],
+        GameEventStatus.DONE,
+      );
     }
+    return null;
   }
 
   private mergeStatusEffect(
     targetPlayerId: string,
     statusEffect: StatusEffect,
-  ): boolean {
+  ): { instanceId: string; newCharges: number } | null {
     if (
       statusEffect.mergeStrategy !== 'increase' ||
       statusEffect.duration?.type !== 'charges'
     ) {
-      return false;
+      return null;
     }
 
     const existingListener = this._state.listeners.find(
@@ -219,12 +291,17 @@ export class EngineStateManager {
     );
 
     if (!existingListener) {
-      return false;
+      return null;
     }
 
     const incomingCharges = statusEffect.duration.value as number;
-    existingListener.effectState.currentDuration.remaining += incomingCharges;
+    const newCharges =
+      existingListener.effectState.currentDuration.remaining + incomingCharges;
+    existingListener.effectState.currentDuration.remaining = newCharges;
 
-    return true;
+    return {
+      instanceId: existingListener.instanceId,
+      newCharges,
+    };
   }
 }

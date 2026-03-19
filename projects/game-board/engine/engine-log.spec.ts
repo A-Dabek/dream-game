@@ -44,17 +44,31 @@ describe('Engine Log', () => {
       },
     });
 
-    // 3. state change after remove_item is processed
+    // 3. returned remove_item event from state manager (with DONE status)
     expect(log[2]).toMatchObject({
+      type: 'event',
+      event: {
+        type: 'effect',
+        effect: {
+          type: 'remove_item',
+          value: expect.any(String),
+          target: 'self',
+        },
+        playerId: 'p1',
+      },
+    });
+
+    // 4. state change after remove_item is processed
+    expect(log[3]).toMatchObject({
       type: 'state-change',
     });
     // After remove_item, playerOne should have no items
     expect(
-      (log[2] as StateChangeLogEntry).snapshot.playerOne.items.length,
+      (log[3] as StateChangeLogEntry).snapshot.playerOne.items.length,
     ).toBe(0);
 
-    // 4. damage event
-    expect(log[3]).toMatchObject({
+    // 5. damage event
+    expect(log[4]).toMatchObject({
       type: 'event',
       event: {
         type: 'effect',
@@ -63,11 +77,21 @@ describe('Engine Log', () => {
       },
     });
 
-    // 5. state change after damage is processed
-    expect(log[4]).toMatchObject({
+    // 6. returned damage event from state manager (with DONE status)
+    expect(log[5]).toMatchObject({
+      type: 'event',
+      event: {
+        type: 'effect',
+        effect: { type: 'damage', value: 10, target: 'enemy' },
+        playerId: 'p1',
+      },
+    });
+
+    // 7. state change after damage is processed
+    expect(log[6]).toMatchObject({
       type: 'state-change',
     });
-    expect((log[4] as StateChangeLogEntry).snapshot.playerTwo.health).toBe(90);
+    expect((log[6] as StateChangeLogEntry).snapshot.playerTwo.health).toBe(90);
   });
 
   it('should log turn end', () => {

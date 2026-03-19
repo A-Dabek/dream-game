@@ -8,6 +8,8 @@ import { EngineStateManager } from './state-manager';
 import { ListenerFactory } from './effects';
 import { GameEventFactory } from './game-event-factory';
 
+type EffectGameEvent = Extract<GameEvent, { type: 'effect' }>;
+
 export interface LogCollector {
   logEvent(event: GameEvent): void;
   logStateChange(snapshot: EngineState): void;
@@ -171,21 +173,38 @@ export class EngineEventsProcessor {
     if (event.type !== 'effect') return;
 
     const state = this.stateManager.getState();
-    const wasGameOver = state.gameOver;
     const playerKey =
       state.playerOne.id === event.playerId ? 'playerOne' : 'playerTwo';
 
-    this.stateManager.applyEffect(playerKey, event.effect);
+    const returnedEvents = this.stateManager.applyEffect(
+      playerKey,
+      event.effect,
+    );
+
+    const primaryReturnedEvent = Array.isArray(returnedEvents)
+      ? returnedEvents[0]
+      : returnedEvents;
+
+    if (primaryReturnedEvent.type === 'effect') {
+      const effectEvent = event as EffectGameEvent;
+      const returnedEffectEvent = primaryReturnedEvent as EffectGameEvent;
+
+      effectEvent.effect = {
+        ...effectEvent.effect,
+        value: returnedEffectEvent.effect.value,
+      };
+      effectEvent.status = returnedEffectEvent.status;
+    }
+
+    const eventsToLog = Array.isArray(returnedEvents)
+      ? returnedEvents
+      : [returnedEvents];
+    for (const returnedEvent of eventsToLog) {
+      this.logCollector.logEvent(returnedEvent);
+    }
 
     const nextState = this.stateManager.getState();
-    // Deep clone the state before logging to preserve snapshot at this point in time
     this.logCollector.logStateChange(EngineStateManager.cloneState(nextState));
-
-    if (!wasGameOver && nextState.gameOver && nextState.winnerId) {
-      this.logCollector.logEvent(
-        GameEventFactory.createLifecycle(nextState.winnerId, 'game_over'),
-      );
-    }
   }
 
   reset(): void {

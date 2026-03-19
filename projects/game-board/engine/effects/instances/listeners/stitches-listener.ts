@@ -91,6 +91,7 @@ export class StitchesListener extends BaseEffectInstance {
       const removeListenerEvent = GameEventFactory.createEffect(data.playerId, {
         type: 'remove_listener',
         value: data.instanceId,
+        target: 'self',
       });
       events.push(removeListenerEvent);
     }
