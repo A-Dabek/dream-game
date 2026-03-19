@@ -198,7 +198,7 @@ export interface GameState {
 }
 
 // @public (undocumented)
-export type Genre = 'basic' | 'poison';
+export type Genre = 'basic' | 'poison' | 'doctor';
 
 // @public (undocumented)
 export function getItemGenre(itemId: ItemId_3): Genre_2;
@@ -214,7 +214,7 @@ export interface Item {
 }
 
 // @public (undocumented)
-export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_passive_negate' | '_blueprint_damage_to_owner' | '_blueprint_heal_on_damage' | '_blueprint_triple_threat' | '_blueprint_anti_nullify' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts';
+export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_passive_negate' | '_blueprint_damage_to_owner' | '_blueprint_heal_on_damage' | '_blueprint_triple_threat' | '_blueprint_anti_nullify' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts' | 'stitches' | 'adrenaline' | 'drip';
 
 export { ListenerData }
 
@@ -294,7 +294,7 @@ export interface StatusEffectData {
 export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';
 
 // @public (undocumented)
-export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'impatience' | 'periodic_attack' | 'anti_nullify' | ItemId;
+export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'impatience' | 'periodic_attack' | 'anti_nullify' | 'stitches' | 'heart_strain' | 'drip' | ItemId;
 
 // @public
 export interface Strategy {
@@ -313,8 +313,8 @@ export interface TurnEntry {
 
 // Warnings were encountered during analysis:
 //
-// dist/types/game-board/engine/engine.types.d.ts:46:5 - (ae-forgotten-export) The symbol "LifecyclePhase" needs to be exported by the entry point index.d.ts
-// dist/types/game-board/engine/engine.types.d.ts:53:5 - (ae-forgotten-export) The symbol "GameEventStatus" needs to be exported by the entry point index.d.ts
+// dist/types/game-board/engine/engine.types.d.ts:47:5 - (ae-forgotten-export) The symbol "LifecyclePhase" needs to be exported by the entry point index.d.ts
+// dist/types/game-board/engine/engine.types.d.ts:54:5 - (ae-forgotten-export) The symbol "GameEventStatus" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

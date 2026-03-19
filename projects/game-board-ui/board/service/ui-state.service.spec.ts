@@ -11,8 +11,20 @@ describe('UiStateService - Status Effects', () => {
   let logsSubject: Subject<any[]>;
 
   const mockGameState = (): GameState => ({
-    player: { id: 'player-1', health: 100, speed: 10, items: [] },
-    opponent: { id: 'opponent-1', health: 100, speed: 10, items: [] },
+    player: {
+      id: 'player-1',
+      health: 100,
+      maxHealth: 100,
+      speed: 10,
+      items: [],
+    },
+    opponent: {
+      id: 'opponent-1',
+      health: 100,
+      maxHealth: 100,
+      speed: 10,
+      items: [],
+    },
     turnInfo: {
       currentPlayerId: 'player-1',
       nextPlayerId: 'opponent-1',

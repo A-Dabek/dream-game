@@ -10,6 +10,7 @@ import {
   BlueprintDamageToOwnerListener,
   BlueprintHealOnDamageListener,
   AntiNullifyListener,
+  StitchesListener,
 } from './instances/listeners';
 
 // Types moved from listener-data.ts
@@ -56,6 +57,7 @@ const LISTENER_MAP: Record<string, new () => Listener> = {
   _blueprint_heal_on_damage: BlueprintHealOnDamageListener,
   anti_nullify: AntiNullifyListener,
   impatience: ImpatienceListener,
+  stitches: StitchesListener,
 };
 
 // ListenerFactory plain object
@@ -85,7 +87,7 @@ export const ListenerFactory = {
     );
   },
 
-  createFatigueData(playerId: string): ListenerData {
+  createImpatience(playerId: string): ListenerData {
     const effect: StatusEffect = {
       type: 'impatience',
       condition: {

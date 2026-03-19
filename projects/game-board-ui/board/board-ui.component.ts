@@ -44,6 +44,7 @@ import { UiGameState } from './ui-game-state';
       />
       <app-health-bar
         [health]="s.opponent.health"
+        [maxHealth]="s.opponent.maxHealth"
         variant="opponent"
       ></app-health-bar>
     </div>
@@ -86,6 +87,7 @@ import { UiGameState } from './ui-game-state';
     <div class="player-area" [class.active]="isPlayerActive()">
       <app-health-bar
         [health]="s.player.health"
+        [maxHealth]="s.player.maxHealth"
         variant="player"
       ></app-health-bar>
       <app-player-hand

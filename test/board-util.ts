@@ -9,6 +9,7 @@ export class TestBoardBuilder {
   private player1Config: BoardLoadout = {
     id: 'player1',
     health: 100,
+    maxHealth: 100,
     speed: 100,
     items: [],
   };
@@ -16,6 +17,7 @@ export class TestBoardBuilder {
   private player2Config: BoardLoadout = {
     id: 'player2',
     health: 100,
+    maxHealth: 100,
     speed: 1,
     items: [],
   };

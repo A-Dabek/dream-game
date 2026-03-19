@@ -9,6 +9,8 @@ import basicItemsJson from './basic-items.json';
 import basicStatusEffectsJson from './basic-status-effects.json';
 import poisonItemsJson from './poison-items.json';
 import poisonStatusEffectsJson from './poison-status-effects.json';
+import doctorItemsJson from './doctor-items.json';
+import doctorStatusEffectsJson from './doctor-status-effects.json';
 
 export interface ItemDisplayMetadata {
   readonly pathD: string;
@@ -34,13 +36,16 @@ const ICON_PATHS = iconPathsJson as Record<string, string>;
 export const ALL_ITEMS = {
   ...basicItemsJson,
   ...poisonItemsJson,
+  ...doctorItemsJson,
 } satisfies ItemConventionMap;
 
 export const ALL_STATUS_EFFECTS = {
   ...basicStatusEffectsJson,
   ...poisonStatusEffectsJson,
+  ...doctorStatusEffectsJson,
   ...basicItemsJson,
   ...poisonItemsJson,
+  ...doctorItemsJson,
 } satisfies StatusEffectConventionMap;
 
 function resolveIconPath(iconName: string): string {

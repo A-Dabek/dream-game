@@ -23,8 +23,20 @@ describe('ListenerFactory', () => {
 
   const createMockState = (): EngineState =>
     ({
-      playerOne: { id: 'player-1', items: [], health: 100, speed: 10 },
-      playerTwo: { id: 'player-2', items: [], health: 100, speed: 10 },
+      playerOne: {
+        id: 'player-1',
+        items: [],
+        health: 100,
+        maxHealth: 100,
+        speed: 10,
+      },
+      playerTwo: {
+        id: 'player-2',
+        items: [],
+        health: 100,
+        maxHealth: 100,
+        speed: 10,
+      },
       turnQueue: [],
       listeners: [],
       gameOver: false,

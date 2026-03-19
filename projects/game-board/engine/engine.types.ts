@@ -5,6 +5,7 @@ import { ListenerData } from './effects/listener-factory';
 
 export interface EngineLoadout extends Loadout {
   readonly id: string;
+  readonly maxHealth: number;
 }
 
 export interface Listener {

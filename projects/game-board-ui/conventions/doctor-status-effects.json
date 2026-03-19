@@ -1,0 +1,14 @@
+{
+  "stitches": {
+    "icon": "stitched-wound",
+    "description": "Absorbs incoming damage by consuming charges. When charges reach 0, deals damage equal to the initial heal back to the player."
+  },
+  "heart_strain": {
+    "icon": "defibrilate",
+    "description": "Reduces speed by 3 at the start of each turn. Lasts for 5 charges."
+  },
+  "drip": {
+    "icon": "medical-drip",
+    "description": "Heals 1 health at the start and end of each turn. Lasts for 25 activations. Additional drips increase the duration."
+  }
+}

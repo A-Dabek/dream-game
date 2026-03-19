@@ -16,6 +16,7 @@ export interface StatusEffectData {
 
 export interface BoardLoadout extends Loadout {
   id: string;
+  maxHealth: number;
 }
 
 export interface TurnInfo {

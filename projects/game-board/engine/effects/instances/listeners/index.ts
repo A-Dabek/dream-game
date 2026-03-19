@@ -7,3 +7,4 @@ export { ReactiveRemovalListener } from './reactive-removal-listener';
 export { BlueprintDamageToOwnerListener } from './blueprint-damage-to-owner-listener';
 export { BlueprintHealOnDamageListener } from './blueprint-heal-on-damage-listener';
 export { AntiNullifyListener } from './anti-nullify-listener';
+export { StitchesListener } from './stitches-listener';

@@ -182,8 +182,8 @@ export class Engine implements LogCollector {
     return [
       ...this.scanForListeners(p1),
       ...this.scanForListeners(p2),
-      ListenerFactory.createFatigueData(p1.id),
-      ListenerFactory.createFatigueData(p2.id),
+      ListenerFactory.createImpatience(p1.id),
+      ListenerFactory.createImpatience(p2.id),
       ListenerFactory.createAdvanceTurnData(p1.id),
       ListenerFactory.createAdvanceTurnData(p2.id),
     ];
@@ -203,9 +203,12 @@ export class Engine implements LogCollector {
     this.eventsProcessor.runEventLoop(computedEvents);
   }
 
-  private prepareLoadout(loadout: Loadout & { id: string }): EngineLoadout {
+  private prepareLoadout(
+    loadout: Loadout & { id: string; maxHealth?: number },
+  ): EngineLoadout {
     return {
       ...loadout,
+      maxHealth: loadout.maxHealth ?? loadout.health,
       items: loadout.items.map((item, index) => ({
         ...item,
         instanceId: item.instanceId ?? `${loadout.id}-${item.id}-${index}`,

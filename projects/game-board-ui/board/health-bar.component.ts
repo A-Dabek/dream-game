@@ -19,7 +19,7 @@ import {
             [class.opponent-health]="variant() === 'opponent'"
             [style.width.%]="healthPercent()"
           ></div>
-          <span class="health-text">{{ health() }}</span>
+          <span class="health-text">{{ health() }} / {{ maxHealth() }}</span>
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@ import {
 })
 export class HealthBarComponent {
   readonly health = input.required<number>();
-  readonly maxHealth = input(100);
+  readonly maxHealth = input.required<number>();
   readonly variant = input<'player' | 'opponent'>('player');
 
   readonly healthPercent = computed(() =>

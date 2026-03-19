@@ -31,8 +31,8 @@ export class GameOrchestrator {
   async startGame(player1: Player, player2: Player): Promise<Board> {
     const players = [player1, player2];
     const board = new Board(
-      { ...player1.loadout, id: player1.id },
-      { ...player2.loadout, id: player2.id },
+      { ...player1.loadout, id: player1.id, maxHealth: player1.loadout.health },
+      { ...player2.loadout, id: player2.id, maxHealth: player2.loadout.health },
     );
 
     this._onGameStateChange?.(board.gameState);

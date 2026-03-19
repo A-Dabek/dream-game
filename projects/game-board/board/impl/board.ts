@@ -103,6 +103,11 @@ export class Board implements BoardInterface {
     this.engine.play(playerId, itemId);
     this.engine.processEndOfTurn(playerId);
 
+    // Trigger turn start for the next player if game is not over
+    if (!this.engine.state.gameOver) {
+      this.engine.processTurnStart(this.engine.state.turnQueue[0].playerId);
+    }
+
     const action =
       this.engine.state.actionHistory[
         this.engine.state.actionHistory.length - 1
@@ -119,6 +124,11 @@ export class Board implements BoardInterface {
     this.validateAction(playerId, GameActionType.PLAY_ITEM);
 
     this.engine.pass(playerId);
+
+    // Trigger turn start for the next player if game is not over
+    if (!this.engine.state.gameOver) {
+      this.engine.processTurnStart(this.engine.state.turnQueue[0].playerId);
+    }
 
     const action =
       this.engine.state.actionHistory[

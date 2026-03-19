@@ -7,6 +7,7 @@ import {
 import { ConditionLibrary } from '../item/conditions';
 import { charges, permanent, turns } from '../item/durations';
 import { ActiveEffectLibrary } from './active-effects';
+import { DoctorStatusEffectLibrary } from './doctor-status-effects';
 
 export const StatusEffectLibrary = {
   poison: (chargeCount: number): StatusEffect => {
@@ -131,4 +132,6 @@ export const StatusEffectLibrary = {
       mergeStrategy: 'new',
     };
   },
+
+  ...DoctorStatusEffectLibrary,
 } as const;

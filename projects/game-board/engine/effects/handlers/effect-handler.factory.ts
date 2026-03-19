@@ -4,11 +4,13 @@ import { EffectHandler } from './effect-handler.interface';
 import { DefaultEffectHandler } from './default-effect.handler';
 import { ItemCountDamageHandler } from './item-count-damage.handler';
 import { AntidoteHandler } from './antidote.handler';
+import { StitchesHandler } from './stitches.handler';
 
 export const EffectHandlerFactory = {
   handlers: {
     item_count_damage: new ItemCountDamageHandler(),
     antidote: new AntidoteHandler(),
+    stitches_heal: new StitchesHandler(),
   } as Record<string, EffectHandler>,
 
   defaultHandler: new DefaultEffectHandler(),

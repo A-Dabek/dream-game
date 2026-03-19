@@ -3,6 +3,7 @@ import { ActiveEffectLibrary } from '../effect-library/active-effects';
 import { StatusEffectLibrary } from '../effect-library/status-effects';
 import { ConditionLibrary } from '../item/conditions';
 import { charges, permanent, turns, GAME_CONFIG, BASE_HEAL } from '../item';
+import { DoctorItemLibrary } from './doctor-items';
 
 const PoisonItemLibrary = {
   gas_grenade: (): ItemDefinition => ({
@@ -205,6 +206,8 @@ export const ItemLibrary = {
     onPlayEffects: [],
     passiveEffects: [StatusEffectLibrary.anti_nullify()],
   }),
+
+  ...DoctorItemLibrary,
 } as const;
 
 export function getItemBehavior(itemId: ItemId): ItemDefinition {

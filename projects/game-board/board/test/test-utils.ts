@@ -45,6 +45,7 @@ function normalizeItems(items: TestItemInput | undefined): Item[] {
  */
 export interface MockPlayerOverrides {
   health?: number;
+  maxHealth?: number;
   speed?: number;
   items?: TestItemInput;
   [key: string]: unknown;
@@ -79,9 +80,12 @@ export function createMockPlayer(
     ? normalizedItems
     : [...normalizedItems, createTestItem('_dummy')];
 
+  const health = overrides.health ?? 100;
+
   return {
     id,
-    health: 100,
+    health,
+    maxHealth: overrides.maxHealth ?? health,
     speed: 1,
     ...overrides,
     items,

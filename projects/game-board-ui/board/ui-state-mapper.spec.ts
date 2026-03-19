@@ -98,8 +98,14 @@ describe('ui-state-mapper', () => {
   describe('mapToUiState', () => {
     it('should map a whole GameState', () => {
       const state: GameState = {
-        player: { id: 'p1', health: 100, speed: 10, items: [] },
-        opponent: { id: 'o1', health: 100, speed: 10, items: [] },
+        player: { id: 'p1', health: 100, maxHealth: 100, speed: 10, items: [] },
+        opponent: {
+          id: 'o1',
+          health: 100,
+          maxHealth: 100,
+          speed: 10,
+          items: [],
+        },
         turnInfo: {
           currentPlayerId: 'p1',
           nextPlayerId: 'o1',

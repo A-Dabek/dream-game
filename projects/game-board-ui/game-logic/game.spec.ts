@@ -98,8 +98,8 @@ describe('GameService', () => {
 
     // Manually call updateRatings with a board that has no winner
     const board = new Board(
-      { ...p1.loadout, id: p1.id },
-      { ...p2.loadout, id: p2.id },
+      { ...p1.loadout, id: p1.id, maxHealth: p1.loadout.health },
+      { ...p2.loadout, id: p2.id, maxHealth: p2.loadout.health },
     );
 
     // Accessing private method for testing purposes

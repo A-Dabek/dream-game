@@ -41,12 +41,14 @@ describe('EffectHandlerFactory', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [],
       },
@@ -139,12 +141,14 @@ describe('DefaultEffectHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [],
       },
@@ -178,12 +182,14 @@ describe('DefaultEffectHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [],
       },
@@ -230,6 +236,7 @@ describe('ItemCountDamageHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [
           { id: '_dummy', genre: 'basic' } as Item,
@@ -240,6 +247,7 @@ describe('ItemCountDamageHandler', () => {
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [{ id: 'sticky_boot', genre: 'basic' } as Item],
       },
@@ -274,12 +282,14 @@ describe('ItemCountDamageHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [],
       },
@@ -312,12 +322,14 @@ describe('ItemCountDamageHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [{ id: '_dummy', genre: 'basic' } as Item],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [
           { id: 'punch', genre: 'basic' } as Item,
@@ -353,12 +365,14 @@ describe('ItemCountDamageHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [],
       },
@@ -389,12 +403,14 @@ describe('ItemCountDamageHandler', () => {
       playerOne: {
         id: 'player1',
         health: 100,
+        maxHealth: 100,
         speed: 10,
         items: [],
       },
       playerTwo: {
         id: 'player2',
         health: 100,
+        maxHealth: 100,
         speed: 5,
         items: [],
       },

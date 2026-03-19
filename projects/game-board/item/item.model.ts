@@ -1,4 +1,4 @@
-export type Genre = 'basic' | 'poison';
+export type Genre = 'basic' | 'poison' | 'doctor';
 
 export type MergeStrategy = 'new' | 'increase';
 
@@ -27,7 +27,10 @@ export type ItemId =
   | 'antidote'
   | 'gas_mask'
   | 'poison_drink'
-  | 'poison_darts';
+  | 'poison_darts'
+  | 'stitches'
+  | 'adrenaline'
+  | 'drip';
 
 export type StatusEffectType =
   | 'poison'
@@ -38,6 +41,9 @@ export type StatusEffectType =
   | 'impatience'
   | 'periodic_attack'
   | 'anti_nullify'
+  | 'stitches'
+  | 'heart_strain'
+  | 'drip'
   | ItemId; // Allow item IDs for custom passive effects
 
 export type EffectValue = number | string | StatusEffect;
