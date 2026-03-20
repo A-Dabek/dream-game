@@ -58,7 +58,7 @@
     "signoff": {
       "agent": "developer",
       "description": "Create a branch and deploy work",
-      "template": "Create a feature branch based on current changes and run script .opencode/scripts/deploy-work.sh --commit <message>"
+      "template": "Create a feature branch based on current changes, unless it's already created, and run script .opencode/scripts/deploy-work.sh --commit <message>"
     }
   },
   "mcp": {

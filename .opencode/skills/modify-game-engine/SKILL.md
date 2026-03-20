@@ -24,7 +24,7 @@ State Updated
 Read these files to understand the complete flow:
 - `projects/game-board/engine/engine.ts` - Main engine orchestration
 - `projects/game-board/engine/events-processor.ts` - Event loop logic
-- `projects/game-board/engine/state-manager.ts` - State management and atomic mutations
+- `projects/game-board/engine/state-manager.ts` - State management orchestration
 - `projects/game-board/engine/effects/listener-factory.ts` - Listener creation
 - `projects/game-board/engine/effects/instances/base-effect-instance.ts` - Base listener logic
 
@@ -99,11 +99,21 @@ this.stateManager.applyEffect(playerKey, event.effect);
 
 The `EngineStateManager` is responsible for applying atomic effects and managing the game state (health, speed, items, status effects, turn queue, and action history).
 
-**Available Atomic Operations:** Read `projects/game-board/engine/state-manager.ts`. Operations now mutate the state directly for performance.
-Common operations include:
+**Effect Handler Architecture:** Effects are handled via the State Effect Handler pattern:
+- `projects/game-board/engine/state-effects/` - Contains all state effect handlers
+- `projects/game-board/engine/state-effects/handlers/` - Individual handler implementations
+- Each effect type (damage, healing, speed_up, etc.) has its own handler class
+
+**Available Atomic Operations:** Read `projects/game-board/engine/state-effects/handlers/`. Common operations include:
 - `damage` / `healing`
+- `speed_up` / `slow_down`
 - `add_status_effect` / `remove_listener`
 - `modify_status_effect` - updates charges or `extraParams` of a listener by `instanceId`
+
+**Adding New Effect Types:** To add a new effect type:
+1. Create a handler in `projects/game-board/engine/state-effects/handlers/`
+2. Implement the `StateEffectHandler` interface
+3. Register it in `EngineStateManager` constructor
 
 ## Important Design Principles
 
@@ -128,7 +138,8 @@ Common operations include:
 **Core Flow:**
 - `projects/game-board/engine/engine.ts` - Main orchestration
 - `projects/game-board/engine/events-processor.ts` - Event loop logic
-- `projects/game-board/engine/state-manager.ts` - State management and atomic mutations
+- `projects/game-board/engine/state-manager.ts` - State management orchestration
+- `projects/game-board/engine/state-effects/` - Effect handler implementations
 - `projects/game-board/engine/effects/listener-factory.ts` - Listener creation
 
 **Base Classes:**
