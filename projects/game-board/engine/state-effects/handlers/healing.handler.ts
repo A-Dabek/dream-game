@@ -19,9 +19,14 @@ export class HealingHandler implements StateEffectHandler {
     const actualHealing = Math.min(effect.value as number, healthDeficit);
     targetPlayer.health += actualHealing;
 
-    effect.value = actualHealing;
+    // Create a new effect with the actual healing value applied
+    // Do NOT mutate the original effect as it's referenced by listener data
+    const effectWithActualValue: Effect = {
+      ...effect,
+      value: actualHealing,
+    };
 
-    return this.createDoneEvent(sourcePlayer.id, effect);
+    return this.createDoneEvent(sourcePlayer.id, effectWithActualValue);
   }
 
   private createDoneEvent(playerId: string, effect: Effect): GameEvent {

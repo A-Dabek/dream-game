@@ -18,14 +18,22 @@ export class DamageHandler implements StateEffectHandler {
     const actualDamage = Math.min(effect.value as number, targetPlayer.health);
     targetPlayer.health -= actualDamage;
 
-    effect.value = actualDamage;
+    // Create a new effect with the actual damage value applied
+    // Do NOT mutate the original effect as it's referenced by listener data
+    const effectWithActualValue: Effect = {
+      ...effect,
+      value: actualDamage,
+    };
 
     const gameOverEvent = checkGameOver(state, targetKey);
     if (gameOverEvent) {
-      return [this.createDoneEvent(sourcePlayer.id, effect), gameOverEvent];
+      return [
+        this.createDoneEvent(sourcePlayer.id, effectWithActualValue),
+        gameOverEvent,
+      ];
     }
 
-    return this.createDoneEvent(sourcePlayer.id, effect);
+    return this.createDoneEvent(sourcePlayer.id, effectWithActualValue);
   }
 
   private createDoneEvent(playerId: string, effect: Effect): GameEvent {

@@ -138,4 +138,65 @@ describe('Doctor Items', () => {
       expect(board.gameState.player.health).toBeGreaterThan(51);
     });
   });
+
+  it('does heal when played on full hp as first item', () => {
+    const p1 = createMockPlayer('p1', {
+      health: 10,
+      maxHealth: 10,
+      speed: 100,
+      items: ['drip', 'hand'],
+    });
+    const p2 = createMockPlayer('p2', {
+      health: 100,
+      speed: 99,
+      items: ['punch', 'punch'],
+    });
+    const board = new Board(p1, p2);
+
+    board.playItem('drip', 'p1');
+    expect(board.gameState.player.health).toBe(10);
+
+    board.playItem('punch', 'p2');
+    expect(board.gameState.player.health).toBe(6);
+
+    board.pass('p1');
+    expect(board.gameState.player.health).toBe(7);
+
+    board.playItem('punch', 'p2');
+    expect(board.gameState.player.health).toBe(3);
+  });
+
+  it('does heal when played on damaged hp as first item', () => {
+    const p1 = createMockPlayer('p1', {
+      health: 9,
+      maxHealth: 10,
+      speed: 100,
+      items: ['drip', 'hand'],
+    });
+    const p2 = createMockPlayer('p2', {
+      health: 100,
+      speed: 99,
+      items: ['punch', 'punch'],
+    });
+    const board = new Board(p1, p2);
+
+    board.playItem('drip', 'p1');
+    // healed 1
+    expect(board.gameState.player.health).toBe(10);
+
+    board.playItem('punch', 'p2');
+    // damaged 5, start of turn - healed 1
+    expect(board.gameState.player.health).toBe(6);
+
+    board.pass('p1');
+    // healed 1
+    expect(board.gameState.player.health).toBe(7);
+
+    board.playItem('punch', 'p2');
+    // damaged 5, start of turn - healed 1
+    expect(board.gameState.player.health).toBe(3);
+
+    // No error - game is not over yet
+    board.pass('p1');
+  });
 });
