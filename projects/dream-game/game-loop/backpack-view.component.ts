@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForOf, NgIf } from '@angular/common';
 import { IconComponent } from '../common/icon.component';
+import { ButtonComponent } from '../common/button.component';
 import { ItemDisplayComponent } from './item-display.component';
 import { GameLoopStateService, Position } from './game-loop-state.service';
 import { InterfaceIconRegistry } from '../common/interface-icon-registry';
@@ -9,7 +10,13 @@ import { InterfaceIconRegistry } from '../common/interface-icon-registry';
 @Component({
   selector: 'app-backpack-view',
   standalone: true,
-  imports: [NgForOf, NgIf, IconComponent, ItemDisplayComponent],
+  imports: [
+    NgForOf,
+    NgIf,
+    IconComponent,
+    ButtonComponent,
+    ItemDisplayComponent,
+  ],
   template: `
     <section class="equipment-section">
       <div
@@ -23,9 +30,14 @@ import { InterfaceIconRegistry } from '../common/interface-icon-registry';
       </div>
     </section>
 
-    <button class="expand-btn" (click)="expandBackpack()">
+    <app-button
+      class="expand-btn"
+      [variant]="'secondary'"
+      [disabled]="!canExpand()"
+      (click)="expandBackpack()"
+    >
       Expand <app-icon [pathD]="matrixIconPath()" /> 1
-    </button>
+    </app-button>
 
     <section class="backpack-section">
       <div class="backpack-grid">
@@ -41,7 +53,7 @@ import { InterfaceIconRegistry } from '../common/interface-icon-registry';
       </div>
 
       <div class="footer-buttons">
-        <button class="proceed-btn" (click)="proceedToForge()">Proceed</button>
+        <app-button (click)="proceedToForge()">Proceed</app-button>
       </div>
     </section>
   `,
@@ -54,9 +66,12 @@ export class BackpackViewComponent {
   readonly equippedItems = this.service.equippedItems;
   readonly backpackItems = this.service.backpackItems;
   readonly isMoveModeActive = computed(() => this.service.moveMode() !== null);
+  readonly matrices = computed(() => this.service.playerStats().matrices);
   readonly matrixIconPath = computed(() =>
     InterfaceIconRegistry.resolveIconPath('matrices'),
   );
+
+  readonly canExpand = computed(() => this.matrices() >= 1);
 
   isSlotInMoveMode(area: 'equip' | 'backpack', index: number): boolean {
     const moveMode = this.service.moveMode();

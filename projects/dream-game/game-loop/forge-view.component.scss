@@ -1,0 +1,98 @@
+.forge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.item-card {
+  width: 300px;
+  min-height: 350px;
+  background-color: #2a2a2a;
+  border: 2px solid #555;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  transition:
+    transform 0.2s ease-out,
+    opacity 0.2s ease-out;
+
+  &.animating {
+    animation: forge-craft 0.3s ease-out;
+  }
+
+  .item-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .item-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .item-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .item-description {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #aaa;
+    line-height: 1.4;
+  }
+
+  .item-stats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+
+    .stat {
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      &.hp {
+        color: #4caf50;
+      }
+
+      &.speed {
+        color: #2196f3;
+      }
+    }
+  }
+
+  .question-mark {
+    font-size: 6rem;
+    color: #666;
+    font-weight: bold;
+  }
+}
+
+@keyframes forge-craft {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}

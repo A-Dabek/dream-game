@@ -1,5 +1,5 @@
-import { Injectable, signal } from '@angular/core';
-import { Item } from '@dream/game-board';
+import { Injectable, signal, computed } from '@angular/core';
+import { Item, ItemId } from '@dream/game-board';
 
 export interface PlayerStats {
   hp: number;
@@ -18,22 +18,56 @@ export interface MoveMode {
   fromIndex: number;
 }
 
+// Base stats - player starts with these
+const BASE_HP = 1;
+const BASE_SPEED = 1;
+const BASE_MATRICES = 10;
+
+// Stats lookup for items (hp/speed bonuses)
+const ITEM_STATS: Partial<Record<ItemId, { hp: number; speed: number }>> = {
+  hand: { hp: 0, speed: 0 },
+  punch: { hp: 0, speed: 0 },
+  sticking_plaster: { hp: 10, speed: 0 },
+  sticky_boot: { hp: 0, speed: -2 },
+  wingfoot: { hp: 0, speed: 5 },
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class GameLoopStateService {
-  readonly playerStats = signal<PlayerStats>({
-    hp: 100,
-    speed: 10,
-    matrices: 100,
-  });
+  readonly matrices = signal(BASE_MATRICES);
+
   readonly backpackItems = signal<(Item | null)[]>(Array(1).fill(null));
   readonly equippedItems = signal<(Item | null)[]>(Array(5).fill(null));
   readonly backpackRows = signal<number>(1);
   readonly moveMode = signal<MoveMode | null>(null);
 
+  // Computed stats based on base + equipped items
+  readonly playerStats = computed<PlayerStats>(() => {
+    const equipped = this.equippedItems();
+    let bonusHp = 0;
+    let bonusSpeed = 0;
+
+    for (const item of equipped) {
+      if (item) {
+        const stats = ITEM_STATS[item.id];
+        if (stats) {
+          bonusHp += stats.hp;
+          bonusSpeed += stats.speed;
+        }
+      }
+    }
+
+    return {
+      hp: BASE_HP + bonusHp,
+      speed: BASE_SPEED + bonusSpeed,
+      matrices: this.matrices(),
+    };
+  });
+
   resetRun(): void {
-    this.playerStats.set({ hp: 100, speed: 10, matrices: 100 });
+    this.matrices.set(BASE_MATRICES);
     this.backpackItems.set(Array(1).fill(null));
     this.equippedItems.set(Array(5).fill(null));
     this.backpackRows.set(1);
@@ -86,16 +120,13 @@ export class GameLoopStateService {
   }
 
   expandBackpack(): void {
-    if (this.playerStats().matrices >= 1) {
+    if (this.matrices() >= 1) {
       this.deductMatrices(1);
       this.backpackItems.update((items) => [...items, null]);
     }
   }
 
   deductMatrices(amount: number): void {
-    this.playerStats.update((stats) => ({
-      ...stats,
-      matrices: stats.matrices - amount,
-    }));
+    this.matrices.update((value) => value - amount);
   }
 }
