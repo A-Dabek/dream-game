@@ -1,0 +1,70 @@
+:host {
+  position: relative;
+}
+
+.equipment-section {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.slot {
+  width: var(--hand-item-size);
+  height: var(--hand-item-size);
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.filled {
+    border-style: solid;
+    border-width: 3px;
+  }
+
+  &.move-mode {
+    border-color: yellow;
+  }
+}
+
+.equip-slot {
+  @extend .slot;
+  border: 2px dashed #ccc;
+}
+
+.backpack-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.backpack-grid {
+  display: grid;
+  grid-template-columns: repeat(5, var(--hand-item-size));
+  gap: 0.5rem;
+}
+
+.backpack-slot {
+  @extend .slot;
+  border: 2px solid #ccc;
+}
+
+.footer-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.expand-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.proceed-btn {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}

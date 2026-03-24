@@ -1,4 +1,4 @@
-import { Component, input, InputSignal } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { IconTextComponent } from '../common/icon-text.component';
 import { PlayerStats } from './game-loop-state.service';
 
@@ -23,7 +23,6 @@ import { PlayerStats } from './game-loop-state.service';
       display: flex;
       gap: 16px;
       padding: 16px;
-      border-bottom: 1px solid #ccc;
     }
 
     .spacer {
@@ -32,5 +31,5 @@ import { PlayerStats } from './game-loop-state.service';
   `,
 })
 export class StatsBarComponent {
-  readonly stats: InputSignal<PlayerStats> = input.required();
+  readonly stats = input.required<PlayerStats>();
 }

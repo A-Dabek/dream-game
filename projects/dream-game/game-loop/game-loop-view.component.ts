@@ -12,11 +12,11 @@ import { DialogComponent } from '../common/dialog.component';
     <app-stats-bar [stats]="stateService.playerStats()" />
     <router-outlet />
     <div class="spacer"></div>
-    <button class="abandon-btn" (click)="showAbandonDialog()">Abandon</button>
+    <button class="abandon-btn" (click)="openAbandonDialog()">Abandon</button>
     <app-dialog
       #abandonDialog
-      [message]="ABANDON_CONFIRMATION_MESSAGE"
-      (confirmed)="onAbandonConfirm($event)"
+      [message]="abandonMessage"
+      (confirmed)="onAbandonConfirmed($event)"
     ></app-dialog>
   `,
   styles: `
@@ -48,19 +48,18 @@ import { DialogComponent } from '../common/dialog.component';
 export class GameLoopViewComponent {
   @ViewChild('abandonDialog') private readonly abandonDialog!: DialogComponent;
 
-  readonly ABANDON_CONFIRMATION_MESSAGE =
+  readonly stateService = inject(GameLoopStateService);
+  readonly abandonMessage =
     'Are you sure you want to abandon the run? This will reset all progress.';
 
-  readonly stateService = inject(GameLoopStateService);
-
-  showAbandonDialog(): void {
+  openAbandonDialog(): void {
     this.abandonDialog.open();
   }
 
-  onAbandonConfirm(confirmed: boolean): void {
+  onAbandonConfirmed(confirmed: boolean): void {
     if (confirmed) {
       this.stateService.resetRun();
-      // TODO: Navigate back to main menu or something
+      // TODO: Navigate back to main menu
     }
   }
 }
