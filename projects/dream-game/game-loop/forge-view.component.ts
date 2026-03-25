@@ -2,9 +2,12 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IconComponent } from '../common/icon.component';
 import { ButtonComponent } from '../common/button.component';
-import { GameLoopStateService } from './game-loop-state.service';
+import {
+  GameLoopStateService,
+  getItemBonusStats,
+} from './game-loop-state.service';
 import { InterfaceIconRegistry } from '../common/interface-icon-registry';
-import { ItemConventionRegistry } from '@dream/game-board-ui';
+import { ItemCardComponent, ItemStats } from '@dream/game-board-ui';
 import { ItemId } from '@dream/game-board';
 
 // Basic items pool for forging (excluding blueprints)
@@ -16,7 +19,7 @@ const FORGE_ITEM_POOL: ItemId[] = [
   'wingfoot',
 ];
 
-// Icon placeholders for craft button
+// Icon names
 const CRAFT_ICON = 'arrow';
 const COST_ICON = 'matrices';
 
@@ -26,35 +29,21 @@ const CRAFT_COST = 2;
 // Animation duration in milliseconds
 const ANIMATION_DURATION_MS = 300;
 
-interface ForgeItemDisplay {
-  id: ItemId;
-  name: string;
-  description: string;
-  hp: number;
-  speed: number;
-}
-
 @Component({
   selector: 'app-forge-view',
   standalone: true,
-  imports: [IconComponent, ButtonComponent],
+  imports: [IconComponent, ButtonComponent, ItemCardComponent],
   template: `
     <main class="forge-container">
-      <article class="item-card" [class.animating]="isAnimating()">
+      <div class="card-wrapper" [class.animating]="isAnimating()">
         @if (craftedItem(); as item) {
-          <div class="item-content">
-            <app-icon [pathD]="itemIconPath()" class="item-icon" />
-            <h2 class="item-name">{{ item.name }}</h2>
-            <p class="item-description">{{ item.description }}</p>
-            <div class="item-stats">
-              <span class="stat hp">HP: {{ item.hp }}</span>
-              <span class="stat speed">Speed: {{ item.speed }}</span>
-            </div>
-          </div>
+          <app-item-card [itemId]="item.id" [stats]="itemStats(item.id)" />
         } @else {
-          <span class="question-mark">?</span>
+          <div class="empty-card">
+            <span class="question-mark">?</span>
+          </div>
         }
-      </article>
+      </div>
 
       <app-button
         class="craft-btn"
@@ -65,13 +54,18 @@ interface ForgeItemDisplay {
         @if (hasBackpackSpace()) {
           <app-icon [pathD]="craftIconPath()" />
           Craft new item
-          <app-icon [pathD]="costIconPath()" /> {{ this.CRAFT_COST }}
+          <app-icon [pathD]="costIconPath()" /> {{ CRAFT_COST }}
         } @else {
           Not enough space
         }
       </app-button>
 
-      <app-button (click)="navigateToBackpack()">Proceed</app-button>
+      <app-button
+        class="proceed-btn"
+        [variant]="'secondary'"
+        (click)="navigateToBackpack()"
+        >Proceed <app-icon [pathD]="arrowIconPath()"
+      /></app-button>
     </main>
   `,
   styleUrls: ['./forge-view.component.scss'],
@@ -80,11 +74,11 @@ export class ForgeViewComponent {
   private readonly router = inject(Router);
   private readonly service = inject(GameLoopStateService);
 
-  // Expose constants to template
+  // Expose constant to template
   readonly CRAFT_COST = CRAFT_COST;
 
   readonly isAnimating = signal(false);
-  readonly craftedItem = signal<ForgeItemDisplay | null>(null);
+  readonly craftedItem = signal<{ id: ItemId } | null>(null);
 
   readonly matrices = computed(() => this.service.playerStats().matrices);
 
@@ -104,17 +98,17 @@ export class ForgeViewComponent {
     InterfaceIconRegistry.resolveIconPath(CRAFT_ICON),
   );
 
+  readonly arrowIconPath = computed(() =>
+    InterfaceIconRegistry.resolveIconPath('arrow'),
+  );
+
   readonly costIconPath = computed(() =>
     InterfaceIconRegistry.resolveIconPath(COST_ICON),
   );
 
-  readonly itemIconPath = computed(() => {
-    const item = this.craftedItem();
-    if (!item) {
-      return '';
-    }
-    return ItemConventionRegistry.getItemDisplay(item.id).pathD;
-  });
+  itemStats(itemId: ItemId): ItemStats {
+    return getItemBonusStats(itemId);
+  }
 
   craft(): void {
     if (!this.canCraft()) {
@@ -124,12 +118,11 @@ export class ForgeViewComponent {
     this.service.deductMatrices(CRAFT_COST);
 
     const itemId = this.getRandomItemId();
-    const forgeItem = this.createForgeItemDisplay(itemId);
 
     this.isAnimating.set(true);
 
     setTimeout(() => {
-      this.craftedItem.set(forgeItem);
+      this.craftedItem.set({ id: itemId });
       this.isAnimating.set(false);
 
       this.service.addItemToBackpack({
@@ -147,36 +140,4 @@ export class ForgeViewComponent {
     const randomIndex = Math.floor(Math.random() * FORGE_ITEM_POOL.length);
     return FORGE_ITEM_POOL[randomIndex];
   }
-
-  private createForgeItemDisplay(itemId: ItemId): ForgeItemDisplay {
-    // Derive name and description from convention registry
-    const convention = ItemConventionRegistry.getItemDisplay(itemId);
-    const stats = FORGE_ITEM_STATS[itemId] ?? { hp: 0, speed: 0 };
-
-    return {
-      id: itemId,
-      name: this.formatItemName(itemId),
-      description: convention.description,
-      hp: stats.hp,
-      speed: stats.speed,
-    };
-  }
-
-  private formatItemName(itemId: ItemId): string {
-    // Convert item_id to Title Case: "sticking_plaster" -> "Sticking Plaster"
-    return itemId
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
 }
-
-// Stats mapping for forge items (not available in convention registry)
-const FORGE_ITEM_STATS: Partial<Record<ItemId, { hp: number; speed: number }>> =
-  {
-    hand: { hp: 0, speed: 0 },
-    punch: { hp: 0, speed: 0 },
-    sticking_plaster: { hp: 10, speed: 0 },
-    sticky_boot: { hp: 0, speed: -2 },
-    wingfoot: { hp: 0, speed: 5 },
-  };

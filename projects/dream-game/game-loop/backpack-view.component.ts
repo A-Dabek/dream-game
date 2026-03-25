@@ -6,6 +6,7 @@ import { ButtonComponent } from '../common/button.component';
 import { ItemDisplayComponent } from './item-display.component';
 import { GameLoopStateService, Position } from './game-loop-state.service';
 import { InterfaceIconRegistry } from '../common/interface-icon-registry';
+import { Item } from '@dream/game-board';
 
 @Component({
   selector: 'app-backpack-view',
@@ -30,15 +31,6 @@ import { InterfaceIconRegistry } from '../common/interface-icon-registry';
       </div>
     </section>
 
-    <app-button
-      class="expand-btn"
-      [variant]="'secondary'"
-      [disabled]="!canExpand()"
-      (click)="expandBackpack()"
-    >
-      Expand <app-icon [pathD]="matrixIconPath()" /> 1
-    </app-button>
-
     <section class="backpack-section">
       <div class="backpack-grid">
         <div
@@ -53,7 +45,17 @@ import { InterfaceIconRegistry } from '../common/interface-icon-registry';
       </div>
 
       <div class="footer-buttons">
-        <app-button (click)="proceedToForge()">Proceed</app-button>
+        <app-button
+          class="expand-btn"
+          [variant]="'secondary'"
+          [disabled]="!canExpand()"
+          (click)="expandBackpack()"
+        >
+          Expand <app-icon [pathD]="matrixIconPath()" /> 1
+        </app-button>
+        <app-button [variant]="'secondary'" (click)="proceedToForge()">
+          Proceed <app-icon [pathD]="arrowIconPath()" />
+        </app-button>
       </div>
     </section>
   `,
@@ -69,6 +71,9 @@ export class BackpackViewComponent {
   readonly matrices = computed(() => this.service.playerStats().matrices);
   readonly matrixIconPath = computed(() =>
     InterfaceIconRegistry.resolveIconPath('matrices'),
+  );
+  readonly arrowIconPath = computed(() =>
+    InterfaceIconRegistry.resolveIconPath('arrow'),
   );
 
   readonly canExpand = computed(() => this.matrices() >= 1);
@@ -96,7 +101,7 @@ export class BackpackViewComponent {
   private startMove(
     area: 'equip' | 'backpack',
     index: number,
-    item: any,
+    item: Item,
   ): void {
     this.service.moveMode.set({
       active: true,

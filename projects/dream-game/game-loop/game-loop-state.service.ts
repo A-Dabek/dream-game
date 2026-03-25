@@ -23,14 +23,23 @@ const BASE_HP = 1;
 const BASE_SPEED = 1;
 const BASE_MATRICES = 10;
 
+export interface ItemBonusStats {
+  hp: number;
+  speed: number;
+}
+
 // Stats lookup for items (hp/speed bonuses)
-const ITEM_STATS: Partial<Record<ItemId, { hp: number; speed: number }>> = {
+const ITEM_STATS: Partial<Record<ItemId, ItemBonusStats>> = {
   hand: { hp: 0, speed: 0 },
   punch: { hp: 0, speed: 0 },
   sticking_plaster: { hp: 10, speed: 0 },
   sticky_boot: { hp: 0, speed: -2 },
   wingfoot: { hp: 0, speed: 5 },
 };
+
+export function getItemBonusStats(itemId: ItemId): ItemBonusStats {
+  return ITEM_STATS[itemId] ?? { hp: 0, speed: 0 };
+}
 
 @Injectable({
   providedIn: 'root',
@@ -95,13 +104,13 @@ export class GameLoopStateService {
     this.setItemAt(to, itemToMove);
   }
 
-  private getItemAt(position: Position): any {
+  private getItemAt(position: Position): Item | null {
     const items = this.getItemsForPosition(position);
     const index = position.type === 'backpack' ? position.index : position.slot;
     return items[index];
   }
 
-  private setItemAt(position: Position, item: any): void {
+  private setItemAt(position: Position, item: Item | null): void {
     const itemsSignal =
       position.type === 'backpack' ? this.backpackItems : this.equippedItems;
     const index = position.type === 'backpack' ? position.index : position.slot;
@@ -113,7 +122,7 @@ export class GameLoopStateService {
     });
   }
 
-  private getItemsForPosition(position: Position): readonly any[] {
+  private getItemsForPosition(position: Position): readonly (Item | null)[] {
     return position.type === 'backpack'
       ? this.backpackItems()
       : this.equippedItems();

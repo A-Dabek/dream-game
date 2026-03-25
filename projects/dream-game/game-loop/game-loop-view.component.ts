@@ -9,9 +9,12 @@ import { DialogComponent } from '../common/dialog.component';
   standalone: true,
   imports: [RouterOutlet, StatsBarComponent, DialogComponent],
   template: `
-    <app-stats-bar [stats]="stateService.playerStats()" />
-    <router-outlet />
-    <div class="spacer"></div>
+    <div class="game-container">
+      <app-stats-bar [stats]="stateService.playerStats()" />
+      <main class="content">
+        <router-outlet />
+      </main>
+    </div>
     <button class="abandon-btn" (click)="openAbandonDialog()">Abandon</button>
     <app-dialog
       #abandonDialog
@@ -21,17 +24,24 @@ import { DialogComponent } from '../common/dialog.component';
   `,
   styles: `
     :host {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      display: block;
     }
 
-    .spacer {
+    .game-container {
+      display: flex;
+      flex-direction: column;
       height: 100vh;
     }
 
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
     .abandon-btn {
-      margin-top: auto;
+      width: 100%;
       padding: 16px;
       background: #f44336;
       color: white;

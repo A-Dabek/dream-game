@@ -1,5 +1,9 @@
 :host {
+  display: flex;
+  flex-direction: column;
   position: relative;
+  flex: 1;
+  padding: 1rem;
 }
 
 .equipment-section {
@@ -51,11 +55,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2rem;
+  margin-top: auto;
 }
 
 .expand-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
 }

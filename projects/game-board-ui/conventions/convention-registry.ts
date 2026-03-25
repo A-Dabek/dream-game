@@ -108,4 +108,11 @@ export const ItemConventionRegistry = {
   resolveIconPath(iconName: string): string {
     return resolveIconPath(iconName);
   },
+
+  formatItemIdAsName(itemId: string): string {
+    return itemId
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  },
 } as const;

@@ -1,23 +1,28 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .forge-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
   gap: 2rem;
-  padding: 2rem;
+  padding: 1rem;
 }
 
-.item-card {
-  width: 300px;
-  min-height: 350px;
-  background-color: #2a2a2a;
-  border: 2px solid #555;
-  border-radius: 8px;
+.proceed-btn {
+  margin-top: auto;
+  align-self: flex-end;
+}
+
+.card-wrapper {
+  width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 1.5rem;
   transition:
     transform 0.2s ease-out,
     opacity 0.2s ease-out;
@@ -25,56 +30,20 @@
   &.animating {
     animation: forge-craft 0.3s ease-out;
   }
+}
 
-  .item-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .item-icon {
-    width: 64px;
-    height: 64px;
-  }
-
-  .item-name {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #fff;
-  }
-
-  .item-description {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #aaa;
-    line-height: 1.4;
-  }
-
-  .item-stats {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 1rem;
-
-    .stat {
-      font-size: 0.9rem;
-      font-weight: 500;
-
-      &.hp {
-        color: #4caf50;
-      }
-
-      &.speed {
-        color: #2196f3;
-      }
-    }
-  }
+.empty-card {
+  width: 260px;
+  height: 200px;
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .question-mark {
-    font-size: 6rem;
+    font-size: 4rem;
     color: #666;
     font-weight: bold;
   }
