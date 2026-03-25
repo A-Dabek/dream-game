@@ -1,1 +1,13 @@
-@use '../game-board-ui/styles/styles' as ui;
+@use '../../shared/styles/core' as ui;
+
+/* game-board-ui component styles - imported as global styles */
+@use '../game-board-ui/styles/components/board-ui';
+@use '../game-board-ui/styles/components/game-container';
+@use '../game-board-ui/styles/components/action-history';
+@use '../game-board-ui/styles/components/icon';
+@use '../game-board-ui/styles/components/item-display';
+@use '../game-board-ui/styles/components/player-hand';
+@use '../game-board-ui/styles/components/turn-queue';
+@use '../game-board-ui/styles/components/screens';
+@use '../game-board-ui/styles/components/status-effects';
+@use '../game-board-ui/styles/components/item-card';

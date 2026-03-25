@@ -1,0 +1,10 @@
+/* Global typography: single, consistent font stack across the app */
+html,
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Ensure the root can stretch with the viewport and allow children using % heights */
+  height: 100%;
+  min-height: 100vh;
+}

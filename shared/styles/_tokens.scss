@@ -1,0 +1,60 @@
+:root {
+  /* Surface & text */
+  --color-bg: #1a1a1a;
+  --color-text: #e0e0e0;
+  --color-text-inverse: #ffffff;
+  --color-text-muted: #cccccc;
+  --color-text-subtle: #aaaaaa;
+
+  /* Semantic */
+  --color-focus: #40c4ff; /* high-contrast focus ring */
+
+  /* Accents */
+  --color-accent-active-border: #5c85d6; /* active outline on items */
+  --color-accent-active-bg: #333a4d; /* active surface on items */
+
+  /* Shadows */
+  --shadow-soft: rgba(0, 0, 0, 0.3);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --shadow-text-strong: rgba(0, 0, 0, 0.5);
+  --shadow-active-item: rgba(92, 133, 214, 0.4); /* glow for active items */
+
+  /* Surfaces & borders */
+  --color-surface-1: #2a2a2a; /* cards/tiles */
+  --color-surface-2: #222222; /* rails/panels */
+  --color-surface-3: #333333; /* inner tracks */
+  --color-border: #444444;
+  --color-border-weak: #333333;
+  --color-border-strong: #666666;
+
+  /* Faction tints */
+  --color-player: #4a7c59;
+  --color-player-surface: #2d3d32;
+  --color-player-active: #4c6b56;
+  --shadow-player: rgba(74, 124, 89, 0.1);
+
+  --color-opponent: #a05252;
+  --color-opponent-surface: #3d2d2d;
+  --color-opponent-active: #7d1f1f;
+  --shadow-opponent: rgba(160, 82, 82, 0.1);
+
+  /* Genre colors */
+  --genre-basic: #d0d0d0; /* grayish-white for basic genre items */
+  --genre-poison: #9acd32; /* yellow-green for poison genre items */
+  --genre-doctor: #00bbbb; /* turquoise for doctor genre items */
+
+  /* Fixed layout sizes */
+  --hand-item-size: 4.2rem; /* height of a single item tile */
+  /* Size of the last played item spotlight in the center of the board */
+  --last-played-item-size: clamp(8rem, 40vw, 12rem);
+  --hand-padding-y: 0.4rem; /* vertical padding used in app-player-hand */
+  --turn-queue-gap: 0.4rem; /* gap between turn queue items, used for animation calculations */
+  --hand-gap: 0.5rem; /* horizontal gap between items */
+  --hand-height: calc(
+    var(--hand-item-size) + (var(--hand-padding-y) * 2)
+  ); /* total hand strip height */
+  --health-bar-height: 2rem; /* health bar area: bar 1.2rem + vertical margins ~0.5rem*2 */
+  --side-area-height: calc(
+    var(--hand-height) + var(--health-bar-height)
+  ); /* fixed height for player/opponent areas: hand + health bar + status effects */
+}

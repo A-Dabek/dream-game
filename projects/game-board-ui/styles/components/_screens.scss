@@ -90,11 +90,18 @@ app-pre-game-screen {
   }
 }
 
-:not(.disable-animations) app-pre-game-screen {
+app-pre-game-screen {
   .opponent-hand,
   .player-hand {
     transition:
       opacity 400ms ease-out,
       transform 400ms ease-out;
+  }
+}
+
+.disable-animations app-pre-game-screen {
+  .opponent-hand,
+  .player-hand {
+    transition: none;
   }
 }

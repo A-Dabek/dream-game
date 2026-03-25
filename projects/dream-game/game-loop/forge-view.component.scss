@@ -35,8 +35,8 @@
 .empty-card {
   width: 260px;
   height: 200px;
-  background-color: #2a2a2a;
-  border: 1px solid #555;
+  background-color: var(--color-surface-1);
+  border: 1px solid var(--color-border-strong);
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@
 
   .question-mark {
     font-size: 4rem;
-    color: #666;
+    color: var(--color-text-subtle);
     font-weight: bold;
   }
 }

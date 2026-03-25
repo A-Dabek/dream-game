@@ -15,7 +15,7 @@
 .slot {
   width: var(--hand-item-size);
   height: var(--hand-item-size);
-  background-color: white;
+  background-color: var(--color-text-inverse);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,13 +26,13 @@
   }
 
   &.move-mode {
-    border-color: yellow;
+    border-color: var(--color-focus);
   }
 }
 
 .equip-slot {
   @extend .slot;
-  border: 2px dashed #ccc;
+  border: 2px dashed var(--color-border);
 }
 
 .backpack-section {
@@ -48,7 +48,7 @@
 
 .backpack-slot {
   @extend .slot;
-  border: 2px solid #ccc;
+  border: 2px solid var(--color-border);
 }
 
 .footer-buttons {
