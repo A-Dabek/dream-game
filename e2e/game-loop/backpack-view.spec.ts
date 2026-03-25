@@ -43,6 +43,10 @@ test.describe('Backpack View', () => {
     await page.getByTestId('expand-btn').click();
     await page.getByTestId('proceed-btn').click();
     await page.getByTestId('craft-btn').click();
+
+    // Wait for craft animation to complete (300ms delay in craft method)
+    await page.waitForTimeout(500);
+
     await page.getByTestId('proceed-btn').click();
 
     // Move backpack -> equipment
