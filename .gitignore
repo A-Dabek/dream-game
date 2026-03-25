@@ -51,6 +51,10 @@ playwright-report/
 test-results/
 playwright/.cache/
 
+# Turborepo
+/.turbo/
+**/.turbo
+
 /ideas
 /temp
 .output.txt
