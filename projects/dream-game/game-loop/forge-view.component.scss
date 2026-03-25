@@ -27,7 +27,7 @@
     transform 0.2s ease-out,
     opacity 0.2s ease-out;
 
-  &.animating {
+  :not(.disable-animations) &.animating {
     animation: forge-craft 0.3s ease-out;
   }
 }

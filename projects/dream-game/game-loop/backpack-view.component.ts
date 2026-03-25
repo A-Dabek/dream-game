@@ -19,19 +19,20 @@ import { Item } from '@dream/game-board';
     ItemDisplayComponent,
   ],
   template: `
-    <section class="equipment-section">
+    <section class="equipment-section" data-testid="equipment-section">
       <div
         class="equip-slot"
         *ngFor="let item of equippedItems(); let i = index"
         [class.filled]="item !== null"
         [class.move-mode]="isSlotInMoveMode('equip', i)"
         (click)="onSlotClick('equip', i)"
+        [attr.data-testid]="'equip-slot-' + i"
       >
         <app-item-display *ngIf="item" [item]="item" />
       </div>
     </section>
 
-    <section class="backpack-section">
+    <section class="backpack-section" data-testid="backpack-section">
       <div class="backpack-grid">
         <div
           class="backpack-slot"
@@ -39,6 +40,7 @@ import { Item } from '@dream/game-board';
           [class.filled]="item !== null"
           [class.move-mode]="isSlotInMoveMode('backpack', i)"
           (click)="onSlotClick('backpack', i)"
+          [attr.data-testid]="'backpack-slot-' + i"
         >
           <app-item-display *ngIf="item" [item]="item" />
         </div>
@@ -47,13 +49,18 @@ import { Item } from '@dream/game-board';
       <div class="footer-buttons">
         <app-button
           class="expand-btn"
+          data-testid="expand-btn"
           [variant]="'secondary'"
           [disabled]="!canExpand()"
           (click)="expandBackpack()"
         >
           Expand <app-icon [pathD]="matrixIconPath()" /> 1
         </app-button>
-        <app-button [variant]="'secondary'" (click)="proceedToForge()">
+        <app-button
+          data-testid="proceed-btn"
+          [variant]="'secondary'"
+          (click)="proceedToForge()"
+        >
           Proceed <app-icon [pathD]="arrowIconPath()" />
         </app-button>
       </div>

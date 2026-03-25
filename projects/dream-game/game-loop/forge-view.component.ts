@@ -34,12 +34,16 @@ const ANIMATION_DURATION_MS = 300;
   standalone: true,
   imports: [IconComponent, ButtonComponent, ItemCardComponent],
   template: `
-    <main class="forge-container">
-      <div class="card-wrapper" [class.animating]="isAnimating()">
+    <main class="forge-container" data-testid="forge-container">
+      <div
+        class="card-wrapper"
+        [class.animating]="isAnimating()"
+        data-testid="card-wrapper"
+      >
         @if (craftedItem(); as item) {
           <app-item-card [itemId]="item.id" [stats]="itemStats(item.id)" />
         } @else {
-          <div class="empty-card">
+          <div class="empty-card" data-testid="empty-card">
             <span class="question-mark">?</span>
           </div>
         }
@@ -47,6 +51,7 @@ const ANIMATION_DURATION_MS = 300;
 
       <app-button
         class="craft-btn"
+        data-testid="craft-btn"
         [variant]="'secondary'"
         [disabled]="!canCraft()"
         (click)="craft()"
@@ -62,6 +67,7 @@ const ANIMATION_DURATION_MS = 300;
 
       <app-button
         class="proceed-btn"
+        data-testid="proceed-btn"
         [variant]="'secondary'"
         (click)="navigateToBackpack()"
         >Proceed <app-icon [pathD]="arrowIconPath()"

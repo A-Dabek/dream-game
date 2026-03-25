@@ -10,14 +10,24 @@ import { DialogComponent } from '../common/dialog.component';
   imports: [RouterOutlet, StatsBarComponent, DialogComponent],
   template: `
     <div class="game-container">
-      <app-stats-bar [stats]="stateService.playerStats()" />
+      <app-stats-bar
+        [stats]="stateService.playerStats()"
+        data-testid="stats-bar"
+      />
       <main class="content">
         <router-outlet />
       </main>
     </div>
-    <button class="abandon-btn" (click)="openAbandonDialog()">Abandon</button>
+    <button
+      class="abandon-btn"
+      data-testid="abandon-btn"
+      (click)="openAbandonDialog()"
+    >
+      Abandon
+    </button>
     <app-dialog
       #abandonDialog
+      data-testid="abandon-dialog"
       [message]="abandonMessage"
       (confirmed)="onAbandonConfirmed($event)"
     ></app-dialog>
