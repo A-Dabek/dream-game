@@ -9,6 +9,7 @@ import { RouterOutlet } from '@angular/router';
     <main>
       <nav>
         <a routerLink="/icon">Icon Component</a>
+        <a routerLink="/item-display">Item Display Component</a>
       </nav>
       <router-outlet></router-outlet>
     </main>

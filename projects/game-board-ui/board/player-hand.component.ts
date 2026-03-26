@@ -5,7 +5,7 @@ import {
   output,
 } from '@angular/core';
 import { Item } from '@dream/game-board';
-import { ItemDisplayComponent } from '../common/item-display.component';
+import { ItemDisplayComponent } from '../common';
 
 @Component({
   selector: 'app-player-hand',

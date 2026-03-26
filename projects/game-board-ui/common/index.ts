@@ -7,3 +7,4 @@ export {
   type EffectDisplayMetadata,
 } from './active-effect-display-map';
 export { IconComponent } from '@shared-ui';
+export { ItemDisplayComponent } from '@shared-ui';

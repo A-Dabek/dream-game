@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { GameActionType, Item } from '@dream/game-board';
 import { HumanInputService } from './service/human-input.service';
-import { ItemDisplayComponent } from '../common/item-display.component';
+import { ItemDisplayComponent } from '../common';
 import { ActionHistoryComponent } from './action-history.component';
 import { ActionHistoryEntry } from './action-history-entry';
 import { PlayerHandComponent } from './player-hand.component';

@@ -13,4 +13,11 @@ export const routes: Routes = [
         (m) => m.IconShowcaseComponent,
       ),
   },
+  {
+    path: 'item-display',
+    loadComponent: () =>
+      import('./pages/item-display-showcase.component').then(
+        (m) => m.ItemDisplayShowcaseComponent,
+      ),
+  },
 ];
