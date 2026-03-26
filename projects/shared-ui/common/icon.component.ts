@@ -19,6 +19,7 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        padding: 0.25rem;
         --icon-size: 1.6rem;
       }
       svg {
