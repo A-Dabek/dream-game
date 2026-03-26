@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { ItemId } from '@dream/game-board';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
-import { IconComponent } from './icon.component';
+import { IconComponent } from '@shared-ui';
 
 export interface ItemStats {
   hp: number;

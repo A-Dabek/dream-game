@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { StatusEffectsComponent } from './status-effects.component';
-import { IconComponent } from '../common/icon.component';
+import { IconComponent } from '@shared-ui';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
 import { StatusEffectDisplayData } from './status-effects-display-data';
 

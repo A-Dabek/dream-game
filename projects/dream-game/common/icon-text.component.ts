@@ -1,5 +1,5 @@
 import { Component, computed, input, InputSignal } from '@angular/core';
-import { IconComponent } from '../../game-board-ui/common/icon.component';
+import { IconComponent } from '@shared-ui';
 import {
   InterfaceIconRegistry,
   InterfaceIconName,

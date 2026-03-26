@@ -5,7 +5,7 @@ import {
   computed,
 } from '@angular/core';
 import { Item } from '@dream/game-board';
-import { IconComponent } from './icon.component';
+import { IconComponent } from '@shared-ui';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { IconComponent } from '../common/icon.component';
+import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
 import {
   GameLoopStateService,

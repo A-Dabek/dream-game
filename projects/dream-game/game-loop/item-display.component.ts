@@ -1,5 +1,5 @@
 import { Component, input, computed } from '@angular/core';
-import { IconComponent } from '../common/icon.component';
+import { IconComponent } from '@shared-ui';
 import { Item } from '@dream/game-board';
 import { ItemConventionRegistry } from '@dream/game-board-ui';
 

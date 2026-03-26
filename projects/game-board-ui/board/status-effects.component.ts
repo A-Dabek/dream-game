@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { IconComponent } from '../common/icon.component';
+import { IconComponent } from '@shared-ui';
 import { StatusEffectDisplayData } from './status-effects-display-data';
 
 @Component({

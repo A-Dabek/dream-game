@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForOf, NgIf } from '@angular/common';
-import { IconComponent } from '../common/icon.component';
+import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
 import { ItemDisplayComponent } from './item-display.component';
 import { GameLoopStateService, Position } from './game-loop-state.service';

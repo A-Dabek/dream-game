@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { TurnEntry } from '@dream/game-board';
 import { ItemConventionRegistry } from '../common';
-import { IconComponent } from '../common/icon.component';
+import { IconComponent } from '@shared-ui';
 
 @Component({
   selector: 'app-turn-queue',
