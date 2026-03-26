@@ -12,8 +12,7 @@
       "outputs": [
         "../../dist/game-board/**",
         "../../dist/game-board-ui/**",
-        "../../dist/dream-game/**",
-        "../../.angular/**"
+        "../../dist/dream-game/**"
       ]
     },
     "test": {
