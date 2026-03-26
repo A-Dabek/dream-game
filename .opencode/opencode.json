@@ -1,39 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "openrouter": {
-      "models": {
-        "reasoning": {
-          "id": "minimax/minimax-m2.7"
-        },
-        "cheap": {
-          "id": "minimax/minimax-m2.7"
-        },
-        "small": {
-          "id": "minimax/minimax-m2.7"
-        },
-        "backup2": {
-          "id": "minimax/minimax-m2.5",
-          "options": {
-            "temperature": 1.0,
-            "top_p": 0.95,
-            "min_p": 0.01,
-            "top_k": 40,
-            "repeat_penalty": 1.0
-          }
-        },
-        "backup": {
-          "id": "moonshotai/kimi-k2.5",
-          "options": {
-            "temperature": 1.0,
-            "top_p": 0.95,
-            "min_p": 0.01,
-            "top_k": 40
-          }
-        }
-      }
-    }
-  },
   "command": {
     "develop": {
       "agent": "developer",
@@ -81,9 +47,7 @@
   },
   "permission": {
     "bash": {
-      "npm i*": "deny",
-      "playwright test --update-snapshots": "deny",
-      "npm run e2e:update": "deny"
+      "npm i*": "deny"
     }
   },
   "agent": {
@@ -91,15 +55,8 @@
       "description": "{file:./agents/planner.md}",
       "color": "#FF0000",
       "mode": "primary",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "min_p": 0.01,
-      "top_k": 40,
-      "steps": 30,
-      "repeat_penalty": 1.0,
       "task": {
-        "developer": "deny",
-        "reviewer": "deny"
+        "developer": "deny"
       },
       "tools": {
         "angular-cli": true,
@@ -125,12 +82,6 @@
       "description": "{file:./agents/documentation.md}",
       "mode": "all",
       "color": "#0000FF",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "min_p": 0.01,
-      "top_k": 40,
-      "steps": 30,
-      "repeat_penalty": 1.0,
       "tools": {
         "angular-cli": true,
         "serena": true
@@ -144,12 +95,10 @@
     "developer": {
       "description": "{file:./agents/developer.md}",
       "mode": "all",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "min_p": 0.01,
-      "top_k": 40,
-      "steps": 30,
-      "repeat_penalty": 1.0,
+      "task": {
+        "coder": "allow",
+        "tester": "allow"
+      },
       "permission": {
         "skill": {
           "*": "allow"
@@ -163,30 +112,18 @@
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",
       "mode": "all",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "min_p": 0.01,
-      "top_k": 40,
-      "steps": 30,
-      "repeat_penalty": 1.0,
       "tools": {
         "angular-cli": true,
         "serena": true
       }
     },
-    "qa": {
-      "description": "{file:./agents/qa.md}",
-      "mode": "all",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "min_p": 0.01,
-      "top_k": 40,
-      "steps": 30,
-      "repeat_penalty": 1.0,
-      "tools": {
-        "angular-cli": true,
-        "serena": true
-      }
+    "tester": {
+      "description": "{file:./agents/tester.md}",
+      "mode": "all"
+    },
+    "coder": {
+      "description": "{file:./agents/coder.md}",
+      "mode": "all"
     }
   }
 }
