@@ -49,6 +49,8 @@ Thumbs.db
 # Playwright
 projects/e2e/playwright-report/
 projects/e2e/test-results/
+projects/*/playwright-report/
+projects/*/test-results/
 playwright/.cache/
 
 # Turborepo

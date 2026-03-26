@@ -1,0 +1,10 @@
+{
+  "name": "shared-ui-sandbox",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "ng build shared-ui-sandbox",
+    "start": "ng serve shared-ui-sandbox",
+    "e2e": "playwright test"
+  },
+  "private": true
+}

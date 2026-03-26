@@ -128,6 +128,78 @@
           }
         }
       }
+    },
+    "shared-ui": {
+      "projectType": "library",
+      "root": "projects/shared-ui",
+      "sourceRoot": "projects/shared-ui",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/shared-ui/index.ts",
+            "tsConfig": "projects/shared-ui/tsconfig.app.json",
+            "index": false
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        }
+      }
+    },
+    "shared-ui-sandbox": {
+      "projectType": "application",
+      "root": "projects/shared-ui-sandbox",
+      "sourceRoot": "projects/shared-ui-sandbox",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/shared-ui-sandbox/main.ts",
+            "tsConfig": "projects/shared-ui-sandbox/tsconfig.app.json",
+            "index": "projects/shared-ui-sandbox/index.html"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "shared-ui-sandbox:build:production"
+            },
+            "development": {
+              "buildTarget": "shared-ui-sandbox:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/shared-ui-sandbox/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

@@ -1,0 +1,9 @@
+{
+  "name": "shared-ui",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "ng build shared-ui",
+    "api-extractor": "tsc -p ../../projects/shared-ui/tsconfig.api.json --declaration --emitDeclarationOnly --outDir ../../dist/types/shared-ui && api-extractor run --local --config ../../projects/shared-ui/api-extractor.json"
+  },
+  "private": true
+}

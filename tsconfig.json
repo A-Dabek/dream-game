@@ -21,6 +21,7 @@
     "paths": {
       "@dream/game-board": ["projects/game-board/index.ts"],
       "@dream/game-board-ui": ["projects/game-board-ui/index.ts"],
+      "@shared-ui": ["projects/shared-ui/index.ts"],
       "@test": ["test/index.ts"]
     }
   },
@@ -43,6 +44,12 @@
     },
     {
       "path": "./projects/game-board-ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/shared-ui/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/shared-ui/tsconfig.spec.json"
     },
     {
       "path": "./projects/dream-game/tsconfig.app.json"
