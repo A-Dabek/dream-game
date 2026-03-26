@@ -268,6 +268,17 @@ Study these for patterns:
 - `action-history.component.ts` - List with icon mapping
 - `status-effects.component.ts` - Uses legacy @angular/animations (deprecated)
 
+## Reference: Shared Components
+
+The `@shared-ui` library contains shared components available to all projects:
+
+- **IconComponent** - SVG icon component with pathD, color, and size inputs
+  - Location: `projects/shared-ui/common/icon.component.ts`
+  - Import: `import { IconComponent } from '@shared-ui';`
+  - Usage: `<app-icon [pathD]="iconPath" [color]="'#ff0000'" [size]="24" />`
+
+When creating new UI components that use icons, import IconComponent from `@shared-ui` instead of creating duplicate implementations.
+
 ## Anti-Patterns to Avoid
 
 ❌ **Do NOT:**
@@ -277,6 +288,7 @@ Study these for patterns:
 - Use `*ngIf`, `*ngFor`, `*ngSwitch` (use `@if`, `@for`, `@switch` instead)
 - Use `@Input()` or `@Output()` (use `input()` and `output()` instead)
 - Import styles directly in component `styleUrls`
+- Create duplicate components that already exist in `@shared-ui`
 
 ✅ **DO:**
 - Use `animate.enter` and `animate.leave` for DOM enter/leave animations
@@ -285,3 +297,4 @@ Study these for patterns:
 - Keep styles in `projects/game-board-ui/styles/components/`
 - Use `ChangeDetectionStrategy.OnPush` on all components
 - Add `data-testid` attributes for testing
+- Use `@shared-ui` for common components (e.g., IconComponent)

@@ -9,6 +9,8 @@ This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the f
 - `projects/dream-game` (`dream-game`): Main app code responsible mainly for routing and bootstrapping.
 - `projects/game-initialization` (`game-initialization`): Project for creating randomized players and calculating their ELO rating via game orchestration.
 - `projects/e2e` (`e2e`): End-to-end tests using Playwright.
+- `projects/shared-ui` (`shared-ui`): Shared UI library for common components (e.g., IconComponent).
+- `projects/shared-ui-sandbox` (`shared-ui-sandbox`): Sandbox app for testing shared UI components.
 
 ## Build System
 

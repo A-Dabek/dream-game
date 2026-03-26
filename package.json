@@ -16,6 +16,7 @@
     "e2e:ui": "playwright test --ui",
     "e2e:debug": "playwright test --debug",
     "init-game": "turbo run init-game",
+    "verify-work": "bash .opencode/scripts/verify-work.sh",
     "deploy-work": "bash .opencode/scripts/deploy-work.sh --commit"
   },
   "private": true,
