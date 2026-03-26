@@ -4,5 +4,6 @@
     "outDir": "../../out-tsc/dream-game-spec",
     "types": ["vitest/globals"]
   },
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.d.ts"],
+  "exclude": ["e2e/**"]
 }

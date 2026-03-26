@@ -11,25 +11,28 @@ cd "$PROJECT_ROOT"
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
-# Helper functions
 run_step() {
     local step_name=$1
     shift
     local cmd="$@"
 
     echo "[$step_name] RUNNING..."
+    start_time=$(date +%s%3N)
     set +e
     output=$($cmd 2>&1)
     exit_code=$?
     set -e
+    end_time=$(date +%s%3N)
+    duration=$((end_time - start_time))
 
     if [ $exit_code -eq 0 ]; then
-        echo "[$step_name] PASSED"
+        echo "[$step_name] PASSED (${duration}ms)"
         return 0
     else
-        echo -e "${RED}[$step_name] FAILED${NC}"
+        echo -e "${RED}[$step_name] FAILED (${duration}ms)${NC}"
         echo "$output"
         echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
         exit 1
@@ -42,78 +45,28 @@ echo "========================================="
 echo ""
 
 # Step 1: Format
-run_step "FORMAT" npx prettier --write .
+run_step "FORMAT" npm run format
 
-# Step 2: Build Libraries
-run_step "BUILD:LIBS" npx ng build game-board
+# Step 2: Build
+run_step "BUILD" npm run build
 
-# Step 3: Build game-board-ui library
-run_step "BUILD:UI" npx ng build game-board-ui
+# Step 3: Test
+run_step "TEST" npm run test
 
-# Step 4: Build main app
-run_step "BUILD:APP" npx ng build dream-game
+# Step 4: API Extractor
+run_step "API-EXTRACTOR" npm run api-extractor
 
-# Step 5: Test Libraries
-run_step "TEST:LIBS" npx ng test game-board --watch=false
+# Step 5: E2E Tests
+run_step "E2E" npm run e2e
 
-# Step 6: Test UI Library
-run_step "TEST:UI" npx ng test game-board-ui --watch=false
-
-# Step 7: Test main app
-run_step "TEST:APP" npx ng test dream-game --watch=false
-
-# Step 8: API Extractor
-echo "[API-EXTRACTOR] RUNNING..."
-set +e
-output=$(npx tsc -p projects/game-board/tsconfig.api.json --declaration --emitDeclarationOnly --outDir dist/types/game-board 2>&1)
-exit_code=$?
-if [ $exit_code -ne 0 ]; then
-    echo -e "${RED}[API-EXTRACTOR] FAILED${NC}"
-    echo "$output"
-    echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
-    exit 1
-fi
-
-output=$(npx api-extractor run --local --config projects/game-board/api-extractor.json 2>&1)
-exit_code=$?
-if [ $exit_code -ne 0 ]; then
-    echo -e "${RED}[API-EXTRACTOR] FAILED${NC}"
-    echo "$output"
-    echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
-    exit 1
-fi
-
-output=$(npx tsc -p projects/game-board-ui/tsconfig.api.json --declaration --emitDeclarationOnly --outDir dist/types/game-board-ui 2>&1)
-exit_code=$?
-if [ $exit_code -ne 0 ]; then
-    echo -e "${RED}[API-EXTRACTOR] FAILED${NC}"
-    echo "$output"
-    echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
-    exit 1
-fi
-
-output=$(npx api-extractor run --local --config projects/game-board-ui/api-extractor.json 2>&1)
-exit_code=$?
-if [ $exit_code -ne 0 ]; then
-    echo -e "${RED}[API-EXTRACTOR] FAILED${NC}"
-    echo "$output"
-    echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
-    exit 1
-fi
-set -e
-echo "[API-EXTRACTOR] PASSED"
-
-# Step 9: E2E Tests
-run_step "E2E" npx playwright test
-
-# Step 10: Init Game (Performance check)
+# Step 6: Init Game (Performance check)
 echo "[INIT-GAME] RUNNING..."
-start_time=$(date +%s)
+start_time=$(date +%s%3N)
 set +e
 output=$(timeout 10s npm run init-game 2>&1)
 exit_code=$?
 set -e
-end_time=$(date +%s)
+end_time=$(date +%s%3N)
 duration=$((end_time - start_time))
 
 if [ $exit_code -eq 124 ]; then
@@ -121,13 +74,13 @@ if [ $exit_code -eq 124 ]; then
     echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
     exit 1
 elif [ $exit_code -ne 0 ]; then
-    echo -e "${RED}[INIT-GAME] FAILED${NC}"
+    echo -e "${RED}[INIT-GAME] FAILED (${duration}ms)${NC}"
     echo "$output"
     echo -e "${RED}[ERROR] Verification failed. Fix errors above.${NC}"
     exit 1
 fi
 
-echo "[INIT-GAME] PASSED (${duration}s)"
+echo "[INIT-GAME] PASSED (${duration}ms)"
 
 echo ""
 echo "========================================="

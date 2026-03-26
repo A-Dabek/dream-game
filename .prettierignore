@@ -5,3 +5,5 @@ package-lock.json
 .junie
 .vscode
 .opencode
+.turbo
+**/*.api.md

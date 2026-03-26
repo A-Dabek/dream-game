@@ -1,28 +1,20 @@
 {
   "name": "dream-project",
   "version": "0.0.0",
+  "workspaces": [
+    "projects/*"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve dream-game",
-    "build": "ng build dream-game",
-    "build:libs": "ng build game-board && ng build game-board-ui",
-    "build:game-board": "ng build game-board",
-    "build:game-board-ui": "ng build game-board-ui",
-    "watch": "ng build dream-game --watch --configuration development",
-    "test": "ng test dream-game --watch=false",
-    "test:libs": "ng test game-board --watch=false && ng test game-board-ui --watch=false",
-    "test:game-board": "ng test game-board --watch=false",
-    "test:game-board-ui": "ng test game-board-ui --watch=false",
-    "api-extractor:game-board": "tsc -p projects/game-board/tsconfig.api.json --declaration --emitDeclarationOnly --outDir dist/types/game-board && api-extractor run --local --config projects/game-board/api-extractor.json",
-    "api-extractor:game-board-ui": "tsc -p projects/game-board-ui/tsconfig.api.json --declaration --emitDeclarationOnly --outDir dist/types/game-board-ui && api-extractor run --local --config projects/game-board-ui/api-extractor.json",
-    "api-extractor": "npm run api-extractor:game-board && npm run api-extractor:game-board-ui",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "api-extractor": "turbo run api-extractor",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "e2e": "playwright test",
+    "e2e": "turbo run e2e",
     "e2e:ui": "playwright test --ui",
     "e2e:debug": "playwright test --debug",
-    "e2e:update": "playwright test --update-snapshots",
-    "init-game": "tsc -p projects/game-initialization/tsconfig.app.json && node out-tsc/game-initialization/game-initialization/src/main.js",
+    "init-game": "turbo run init-game",
     "deploy-work": "bash .opencode/scripts/deploy-work.sh --commit"
   },
   "private": true,
@@ -47,6 +39,7 @@
     "firebase-tools": "^15.8.0",
     "jsdom": "^27.1.0",
     "prettier": "^3.7.4",
+    "turbo": "^2.4.4",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }

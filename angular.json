@@ -128,21 +128,6 @@
           }
         }
       }
-    },
-    "game-initialization": {
-      "projectType": "application",
-      "root": "projects/game-initialization",
-      "sourceRoot": "projects/game-initialization/src",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:application",
-          "options": {
-            "browser": "projects/game-initialization/src/main.ts",
-            "tsConfig": "projects/game-initialization/tsconfig.app.json",
-            "index": false
-          }
-        }
-      }
     }
   }
 }

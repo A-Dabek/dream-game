@@ -1,0 +1,10 @@
+{
+  "name": "game-board",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "ng build game-board",
+    "test": "ng test game-board --watch=false",
+    "api-extractor": "tsc -p ../../projects/game-board/tsconfig.api.json --declaration --emitDeclarationOnly --outDir ../../dist/types/game-board && api-extractor run --local --config ../../projects/game-board/api-extractor.json"
+  },
+  "private": true
+}

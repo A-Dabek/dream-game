@@ -1,0 +1,8 @@
+{
+  "name": "game-initialization",
+  "version": "0.0.0",
+  "scripts": {
+    "init-game": "cd ../.. && tsc -p projects/game-initialization/tsconfig.app.json && node out-tsc/game-initialization/game-initialization/src/main.js"
+  },
+  "private": true
+}

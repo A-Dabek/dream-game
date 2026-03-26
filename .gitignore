@@ -47,8 +47,8 @@ Thumbs.db
 .firebase
 
 # Playwright
-playwright-report/
-test-results/
+projects/dream-game/e2e/playwright-report/
+projects/dream-game/e2e/test-results/
 playwright/.cache/
 
 # Turborepo

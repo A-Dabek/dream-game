@@ -71,8 +71,8 @@ echo -e "${GREEN}[CLEANUP] Specification files removed successfully${NC}"
 
 # Format code
 echo ""
-echo "[FORMAT] Running prettier..."
-npx prettier --write .
+echo "[FORMAT] Running format..."
+npm run format
 echo -e "${GREEN}[FORMAT] Code formatted successfully${NC}"
 
 # Git Commit
