@@ -1,10 +1,8 @@
 import { Component, input } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-button',
   standalone: true,
-  imports: [NgTemplateOutlet],
   template: `
     <button
       class="btn"

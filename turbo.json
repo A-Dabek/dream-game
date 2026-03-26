@@ -3,12 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "tsconfig*.json",
-        "!**/.turbo/**",
-        "!e2e/**"
-      ],
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig*.json", "!**/.turbo/**"],
       "outputs": [
         "../../dist/game-board/**",
         "../../dist/game-board-ui/**",
@@ -36,15 +31,16 @@
       "outputs": ["../../dist/types/**"]
     },
     "e2e": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["PLAYWRIGHT_*"],
       "inputs": [
         "$TURBO_DEFAULT$",
-        "e2e/**",
+        "*.e2e.ts",
         "!**/.turbo/**",
-        "!e2e/test-results/**",
-        "!e2e/playwright-report/**"
+        "!test-results/**",
+        "!playwright-report/**"
       ],
-      "outputs": ["e2e/test-results/**", "e2e/playwright-report/**"]
+      "outputs": ["test-results/**"]
     },
     "init-game": {
       "dependsOn": [],

@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "ng build dream-game",
-    "test": "ng test dream-game --watch=false",
-    "e2e": "cd ../.. && playwright test"
+    "test": "ng test dream-game --watch=false"
   },
   "private": true
 }

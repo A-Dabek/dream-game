@@ -81,7 +81,6 @@ test.describe('Backpack View', () => {
     );
 
     const initialHp = await page.getByTestId('stat-hp').textContent();
-    const initialSpeed = await page.getByTestId('stat-speed').textContent();
 
     // Expand, craft, equip
     await page.getByTestId('expand-btn').click();

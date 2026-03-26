@@ -1,17 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './projects/dream-game/e2e',
-  testMatch: ['**/*.e2e.ts'],
-  outputDir: './projects/dream-game/e2e/test-results',
+  testDir: '.',
+  testMatch: ['*.e2e.ts'],
+  outputDir: 'test-results',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['list'],
-    ['html', { outputFolder: './projects/dream-game/e2e/playwright-report' }],
-  ],
+  reporter: [['list'], ['html', { outputFolder: 'playwright-report' }]],
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:4200',
     trace: 'on-first-retry',
