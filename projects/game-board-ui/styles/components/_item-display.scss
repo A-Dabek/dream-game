@@ -32,6 +32,10 @@ app-item-display {
   }
 }
 
-:not(.disable-animations) app-item-display {
+app-item-display {
   transition: all 0.2s ease;
+}
+
+.disable-animations app-item-display {
+  transition: none;
 }

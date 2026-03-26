@@ -6,3 +6,4 @@ export {
   ACTIVE_EFFECT_DISPLAY_MAP,
   type EffectDisplayMetadata,
 } from './active-effect-display-map';
+export { IconComponent } from './icon.component';

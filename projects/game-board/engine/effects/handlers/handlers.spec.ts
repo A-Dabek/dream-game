@@ -423,6 +423,7 @@ describe('ItemCountDamageHandler', () => {
     const effect: Effect = {
       type: 'item_count_damage',
       value: 10,
+      target: 'enemy',
     };
 
     const events = handler.handle(mockState, 'player1', effect);

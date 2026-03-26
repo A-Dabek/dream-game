@@ -1,0 +1,7 @@
+/* Core styles: tokens, mixins, base, and animations.
+ * Use this for apps that need the design system without component styles. */
+
+@use '../../../shared/styles/tokens';
+@use './mixins';
+@use './base';
+@use './animations';

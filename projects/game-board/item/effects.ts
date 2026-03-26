@@ -93,7 +93,7 @@ export function invert(targetType: string, duration?: Duration): StatusEffect {
   return statusEffect({
     type: 'invert',
     condition: ConditionLibrary.beforeEffect(targetType),
-    action: [{ type: 'invert', value: targetType }],
+    action: [{ type: 'invert', value: targetType, target: 'self' }],
     duration,
   });
 }
@@ -105,7 +105,7 @@ export function negate(targetType: string, duration?: Duration): StatusEffect {
   return statusEffect({
     type: 'negate',
     condition: ConditionLibrary.beforeEffect(targetType),
-    action: [{ type: 'negate', value: targetType }],
+    action: [{ type: 'negate', value: targetType, target: 'self' }],
     duration,
   });
 }

@@ -22,7 +22,7 @@ const PoisonItemLibrary = {
 
   antidote: (): ItemDefinition => ({
     genre: 'poison',
-    onPlayEffects: [{ type: 'antidote', value: '' }],
+    onPlayEffects: [{ type: 'antidote', value: '', target: 'self' }],
   }),
 
   gas_mask: (): ItemDefinition => ({

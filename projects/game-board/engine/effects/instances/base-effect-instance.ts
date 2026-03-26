@@ -135,6 +135,7 @@ export abstract class BaseEffectInstance implements Listener {
       {
         type: 'remove_listener',
         value: data.instanceId,
+        target: 'self',
       },
       events[0]?.processedBy,
     );

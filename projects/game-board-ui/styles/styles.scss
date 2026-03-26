@@ -2,7 +2,7 @@
 
 /* You can add global styles to this file, and also import other style files */
 
-@use './tokens';
+@use '../../../shared/styles/tokens';
 @use './mixins';
 @use './base';
 @use './animations';
@@ -17,3 +17,4 @@
 @use './components/turn-queue';
 @use './components/screens';
 @use './components/status-effects';
+@use './components/item-card';

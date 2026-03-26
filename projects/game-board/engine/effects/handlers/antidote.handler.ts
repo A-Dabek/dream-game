@@ -18,6 +18,7 @@ export class AntidoteHandler implements EffectHandler {
       GameEventFactory.createEffect(playerId, {
         type: 'remove_listener',
         value: l.instanceId,
+        target: 'self',
       }),
     );
   }

@@ -56,7 +56,10 @@ describe('punch Integration Test', () => {
 
 describe('sticking_plaster Integration Test', () => {
   it('should increase player health by BASE_HEAL when sticking_plaster is played', () => {
-    const board = createTestBoard(['sticking_plaster'], { health: 50 });
+    const board = createTestBoard(['sticking_plaster'], {
+      health: 50,
+      maxHealth: 100,
+    });
     const initialPlayerHealth = board.gameState.player.health;
 
     const result = board.playItem('sticking_plaster', 'p1');
@@ -76,7 +79,10 @@ describe('sticking_plaster Integration Test', () => {
   });
 
   it('should heal exactly 6 health (calculated BASE_HEAL value)', () => {
-    const board = createTestBoard(['sticking_plaster'], { health: 50 });
+    const board = createTestBoard(['sticking_plaster'], {
+      health: 50,
+      maxHealth: 100,
+    });
 
     board.playItem('sticking_plaster', 'p1');
 

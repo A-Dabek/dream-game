@@ -1,4 +1,4 @@
-import { Effect, ItemId } from '../item';
+import { Effect, EffectValue, ItemId } from '../item';
 import {
   GameEvent,
   GameEventInput,
@@ -41,7 +41,8 @@ export const GameEventFactory = {
       playerId,
       {
         type: 'modify_status_effect',
-        value: payload as any,
+        value: payload as unknown as EffectValue,
+        target: 'self',
       },
       processedBy,
       status,

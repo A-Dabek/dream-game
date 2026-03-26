@@ -49,9 +49,9 @@ export type StatusEffectType =
 export type EffectValue = number | string | StatusEffect;
 
 export interface Effect {
-  readonly type: string;
-  readonly value: EffectValue;
-  readonly target?: 'self' | 'enemy';
+  type: string;
+  value: EffectValue;
+  target: 'self' | 'enemy';
 }
 
 export type ConditionValue = string | undefined;

@@ -83,9 +83,13 @@ app-board-ui {
     border-width: 2px;
   }
 
-  :not(.disable-animations) .last-played-item {
+  .last-played-item {
     animation: lastPlayedFadeIn 0.18s ease-out;
     will-change: opacity, transform;
+  }
+
+  .disable-animations .last-played-item {
+    animation: none;
   }
 
   .last-played-item app-icon {
@@ -167,9 +171,14 @@ app-board-ui {
     margin-top: 0.3rem;
   }
 
-  :not(.disable-animations) .opponent-area,
-  :not(.disable-animations) .player-area {
+  .opponent-area,
+  .player-area {
     transition: background-color 0.3s ease;
+  }
+
+  .disable-animations .opponent-area,
+  .disable-animations .player-area {
+    transition: none;
   }
 
   app-health-bar {
@@ -218,8 +227,12 @@ app-board-ui {
     height: 100%;
   }
 
-  :not(.disable-animations) .health-fill {
+  .health-fill {
     transition: width 0.3s ease-out;
+  }
+
+  .disable-animations .health-fill {
+    transition: none;
   }
 
   .player-health {

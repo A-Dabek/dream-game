@@ -1,0 +1,62 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex: 1;
+  padding: 1rem;
+}
+
+.equipment-section {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.slot {
+  width: var(--hand-item-size);
+  height: var(--hand-item-size);
+  background-color: var(--color-text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.filled {
+    border-style: solid;
+    border-width: 3px;
+  }
+
+  &.move-mode {
+    border-color: var(--color-focus);
+  }
+}
+
+.equip-slot {
+  @extend .slot;
+  border: 2px dashed var(--color-border);
+}
+
+.backpack-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.backpack-grid {
+  display: grid;
+  grid-template-columns: repeat(5, var(--hand-item-size));
+  gap: 0.5rem;
+}
+
+.backpack-slot {
+  @extend .slot;
+  border: 2px solid var(--color-border);
+}
+
+.footer-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.expand-btn {
+}

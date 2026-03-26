@@ -58,11 +58,9 @@
     "signoff": {
       "agent": "developer",
       "description": "Create a branch and deploy work",
-      "template": "Create a feature branch based on current changes and run script .opencode/scripts/deploy-work.sh --commit <message>"
+      "template": "Create a feature branch based on current changes, unless it's already created, and run script .opencode/scripts/deploy-work.sh --commit <message>"
     }
   },
-  "model": "openrouter/reasoning",
-  "small_model": "openrouter/small",
   "mcp": {
     "angular-cli": {
       "type": "local",
@@ -126,7 +124,6 @@
     "documentation": {
       "description": "{file:./agents/documentation.md}",
       "mode": "all",
-      "model": "openrouter/cheap",
       "color": "#0000FF",
       "temperature": 1.0,
       "top_p": 0.95,
@@ -147,7 +144,6 @@
     "developer": {
       "description": "{file:./agents/developer.md}",
       "mode": "all",
-      "model": "openrouter/reasoning",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
@@ -167,7 +163,6 @@
     "refactoring": {
       "description": "{file:./agents/refactoring.md}",
       "mode": "all",
-      "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
@@ -182,7 +177,6 @@
     "qa": {
       "description": "{file:./agents/qa.md}",
       "mode": "all",
-      "model": "openrouter/cheap",
       "temperature": 1.0,
       "top_p": 0.95,
       "min_p": 0.01,
