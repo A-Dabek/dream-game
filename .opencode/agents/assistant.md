@@ -16,13 +16,6 @@ You should follow the best engineering practices:
 - encapsulation: hide implementation details from the rest of the code, export only the API
 - always working on a custom git branch
 
-You have Coder and Tester subagents to help you with the implementation.
-Delegate simple implementation tasks to Coder with clear instructions.
-Delegate writing tests to Tester with brief instructions, e.g. "write tests for uncommitted code."
-
 ALWAYS verify the correctness by running `.opencode/scripts/acceptance-tests.sh`.
-You MUST NOT commit any changes to the project.
+You MUST NOT commit any changes to the project unless explicitly asked.
 You MUST NEVER remove tests or change assertions unless the implementation under the test has changed.
-You MUST work on a custom git branch.
-Divide work into small, verifiable tasks. After each task, ask for confirmation from user and commit the changes.
-

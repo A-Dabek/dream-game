@@ -1,30 +1,40 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "command": {
-    "develop": {
-      "agent": "developer",
-      "description": "Execute development plan from specification",
-      "template": "Execute the implementation plan from $1"
+    "branch": {
+      "agent": "assistant",
+      "description": "Create a feature branch based on specification",
+      "template": "Create a feature branch based on the specification file at `.opencode/specifications/`. Read the spec to understand the work, then create and checkout a branch with an appropriate name."
     },
-    "qa": {
-      "agent": "qa",
-      "description": "Validate and test implementation",
-      "template": "Validate the implementation. Review these changed files:\n!`git diff --name-status`\n\nEnsure all acceptance criteria are met, tests are written and passing. User story: $1"
+    "next-step": {
+      "agent": "assistant",
+      "description": "Propose the next atomic task",
+      "template": "Analyze the specification and current codebase. Propose ONE atomic, verifiable, buildable and testable task that advances the implementation. Present the task and ask for confirmation before proceeding."
+    },
+    "commit": {
+      "agent": "assistant",
+      "description": "Commit current work",
+      "template": "Review the current git changes (staged and unstaged). Propose and create a commit with an appropriate message."
+    },
+    "test": {
+      "agent": "assistant",
+      "description": "Add tests to the codebase",
+      "template": "Add tests to the codebase. Skills: angular-component-testing, e2e-testing, vitest-testing"
     },
     "refactor": {
-      "agent": "refactoring",
-      "description": "Clean up code after implementation",
-      "template": "Refactor and clean up the code. Review these changed files:\n!`git diff --name-status`\n\nApply refactoring improvements while maintaining business logic."
+      "agent": "assistant",
+      "description": "Refactor code while maintaining business logic",
+      "template": "Refactor code while maintaining business logic. Use skill: refactoring"
     },
     "docs": {
-      "agent": "documentation",
-      "description": "Update documentation",
-      "template": "Update documentation based on implementation. Review these changed files:\n!`git diff --name-status`\n\nUpdate relevant documentation files if needed."
+      "agent": "assistant",
+      "description": "Check and update documentation",
+      "template": "Check if documentation is up-to-date and update if needed. Use skill: docs"
     },
     "signoff": {
-      "agent": "developer",
-      "description": "Create a branch and deploy work",
-      "template": "Create a feature branch based on current changes, unless it's already created, and run script .opencode/scripts/deploy-work.sh --commit <message>"
+      "agent": "assistant",
+      "description": "Deploy work",
+      "template": "Run .opencode/scripts/deploy-work.sh --commit <message>"
     }
   },
   "mcp": {
@@ -78,27 +88,9 @@
         }
       }
     },
-    "documentation": {
-      "description": "{file:./agents/documentation.md}",
+    "assistant": {
+      "description": "{file:./agents/assistant.md}",
       "mode": "all",
-      "color": "#0000FF",
-      "tools": {
-        "angular-cli": true,
-        "serena": true
-      },
-      "permission": {
-        "skill": {
-          "*": "allow"
-        }
-      }
-    },
-    "developer": {
-      "description": "{file:./agents/developer.md}",
-      "mode": "all",
-      "task": {
-        "coder": "allow",
-        "tester": "allow"
-      },
       "permission": {
         "skill": {
           "*": "allow"
@@ -108,22 +100,6 @@
         "angular-cli": true,
         "serena": true
       }
-    },
-    "refactoring": {
-      "description": "{file:./agents/refactoring.md}",
-      "mode": "all",
-      "tools": {
-        "angular-cli": true,
-        "serena": true
-      }
-    },
-    "tester": {
-      "description": "{file:./agents/tester.md}",
-      "mode": "all"
-    },
-    "coder": {
-      "description": "{file:./agents/coder.md}",
-      "mode": "all"
     }
   }
 }
