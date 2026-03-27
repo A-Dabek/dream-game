@@ -12,6 +12,7 @@ The specification MUST include:
 - Problem description
 - Proposed solution
 - Acceptance criteria
+- Tests to be added that follow current testing conventions (e.g. e2e for views, screenshots for shared ui, integration tests for new items, etc.)
 
 The specification MUST NOT include:
 - source code unless specifically requested by 

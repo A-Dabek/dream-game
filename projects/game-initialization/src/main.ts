@@ -113,9 +113,7 @@ async function main() {
 
   const itemOutputPath = path.join(
     process.cwd(),
-    'projects',
-    'game-initialization',
-    'src',
+    'assets',
     'items_balance.csv',
   );
   fs.writeFileSync(itemOutputPath, itemCsvContent);
@@ -125,13 +123,7 @@ async function main() {
   );
   const csvContent = `config,elo\n${csvLines.join('\n')}`;
 
-  const outputPath = path.join(
-    process.cwd(),
-    'projects',
-    'game-initialization',
-    'src',
-    'players_elo.csv',
-  );
+  const outputPath = path.join(process.cwd(), 'assets', 'players_elo.csv');
   fs.writeFileSync(outputPath, csvContent);
 
   console.log(`Results written to ${outputPath} and ${itemOutputPath}`);
