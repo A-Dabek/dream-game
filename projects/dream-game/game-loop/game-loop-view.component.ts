@@ -1,7 +1,7 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { GameLoopStateService } from './game-loop-state.service';
-import { StatsBarComponent } from './stats-bar.component';
+import { StatsBarComponent, NavButton } from './stats-bar.component';
 import { DialogComponent } from '../common/dialog.component';
 
 @Component({
@@ -12,6 +12,7 @@ import { DialogComponent } from '../common/dialog.component';
     <div class="game-container">
       <app-stats-bar
         [stats]="stateService.playerStats()"
+        [navButton]="navButton()"
         data-testid="stats-bar"
       />
       <main class="content">
@@ -68,9 +69,25 @@ import { DialogComponent } from '../common/dialog.component';
 export class GameLoopViewComponent {
   @ViewChild('abandonDialog') private readonly abandonDialog!: DialogComponent;
 
+  private readonly router = inject(Router);
   readonly stateService = inject(GameLoopStateService);
   readonly abandonMessage =
     'Are you sure you want to abandon the run? This will reset all progress.';
+
+  readonly navButton = (): NavButton | null => {
+    const url = this.router.url;
+    if (url.includes('/backpack')) {
+      return { iconName: 'anvil', text: 'Forge', link: '/game-loop/forge' };
+    }
+    if (url.includes('/forge') || url === '/game-loop') {
+      return {
+        iconName: 'backpack',
+        text: 'Backpack',
+        link: '/game-loop/backpack',
+      };
+    }
+    return null;
+  };
 
   openAbandonDialog(): void {
     this.abandonDialog.open();

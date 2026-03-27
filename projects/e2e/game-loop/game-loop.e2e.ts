@@ -87,4 +87,27 @@ test.describe('Game Loop', () => {
       page.getByTestId('backpack-slot-0').locator('app-item-display'),
     ).toBeVisible();
   });
+
+  test('stats bar navigation buttons work correctly', async ({ page }) => {
+    // Disable animations
+    await page.evaluate(() =>
+      document.body.classList.add('disable-animations'),
+    );
+
+    // On Forge (default route): nav button shows Backpack
+    await expect(page.getByTestId('nav-btn')).toBeVisible();
+    await expect(page.getByTestId('nav-btn')).toContainText('Backpack');
+
+    // Click nav button to go to Backpack
+    await page.getByTestId('nav-btn').click();
+    await expect(page.url()).toContain('/backpack');
+
+    // On Backpack: nav button shows Forge
+    await expect(page.getByTestId('nav-btn')).toBeVisible();
+    await expect(page.getByTestId('nav-btn')).toContainText('Forge');
+
+    // Click nav button to go back to Forge
+    await page.getByTestId('nav-btn').click();
+    await expect(page.url()).toContain('/forge');
+  });
 });
