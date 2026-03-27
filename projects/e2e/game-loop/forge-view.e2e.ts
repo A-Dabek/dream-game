@@ -29,7 +29,7 @@ test.describe('Forge View', () => {
   });
 
   test('navigate to backpack', async ({ page }) => {
-    await page.getByTestId('proceed-btn').click();
+    await page.getByTestId('nav-btn').click();
     await expect(page.getByTestId('backpack-section')).toBeVisible();
   });
 });

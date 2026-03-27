@@ -1,5 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { Item, ItemId } from '@dream/game-board';
+import { CampaignService, EnemyConfig } from './campaign.service';
 
 export interface PlayerStats {
   hp: number;
@@ -45,12 +47,16 @@ export function getItemBonusStats(itemId: ItemId): ItemBonusStats {
   providedIn: 'root',
 })
 export class GameLoopStateService {
+  private readonly router = inject(Router);
+  private readonly campaignService = inject(CampaignService);
+
   readonly matrices = signal(BASE_MATRICES);
 
   readonly backpackItems = signal<(Item | null)[]>(Array(1).fill(null));
   readonly equippedItems = signal<(Item | null)[]>(Array(5).fill(null));
   readonly backpackRows = signal<number>(1);
   readonly moveMode = signal<MoveMode | null>(null);
+  readonly currentEnemy = signal<EnemyConfig | null>(null);
 
   // Computed stats based on base + equipped items
   readonly playerStats = computed<PlayerStats>(() => {
@@ -81,6 +87,7 @@ export class GameLoopStateService {
     this.equippedItems.set(Array(5).fill(null));
     this.backpackRows.set(1);
     this.moveMode.set(null);
+    this.currentEnemy.set(null);
   }
 
   addItemToBackpack(item: Item): void {
@@ -137,5 +144,50 @@ export class GameLoopStateService {
 
   deductMatrices(amount: number): void {
     this.matrices.update((value) => value - amount);
+  }
+
+  setEnemy(config: EnemyConfig): void {
+    this.currentEnemy.set(config);
+  }
+
+  buildFightState(): string | null {
+    const enemy = this.currentEnemy();
+    if (!enemy) {
+      return null;
+    }
+
+    const equipped = this.equippedItems();
+    const itemIds = equipped
+      .filter((item): item is Item => item !== null)
+      .map((item) => item.id)
+      .join(',');
+    const stats = this.playerStats();
+
+    const playerConfig = `${itemIds}|${stats.hp}|${stats.speed}`;
+    const enemyConfig = `${enemy.items}|${enemy.health}|${enemy.speed}`;
+
+    return `${playerConfig};${enemyConfig}`;
+  }
+
+  async startFight(): Promise<void> {
+    try {
+      await this.campaignService.loadEnemies();
+    } catch {
+      console.error('[GameLoopState] Failed to load enemies');
+      return;
+    }
+
+    const enemy = this.campaignService.getNextEnemy();
+    if (!enemy) {
+      console.error('[GameLoopState] No enemy available');
+      return;
+    }
+
+    this.setEnemy(enemy);
+    const state = this.buildFightState();
+
+    if (state) {
+      this.router.navigate(['/'], { queryParams: { state } });
+    }
   }
 }

@@ -1,6 +1,4 @@
 import { Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { NgForOf, NgIf } from '@angular/common';
 import { IconComponent, ItemDisplayComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
 import { GameLoopStateService, Position } from './game-loop-state.service';
@@ -10,39 +8,39 @@ import { Item } from '@dream/game-board';
 @Component({
   selector: 'app-backpack-view',
   standalone: true,
-  imports: [
-    NgForOf,
-    NgIf,
-    IconComponent,
-    ButtonComponent,
-    ItemDisplayComponent,
-  ],
+  imports: [IconComponent, ButtonComponent, ItemDisplayComponent],
   template: `
     <section class="equipment-section" data-testid="equipment-section">
-      <div
-        class="equip-slot"
-        *ngFor="let item of equippedItems(); let i = index"
-        [class.filled]="item !== null"
-        [class.move-mode]="isSlotInMoveMode('equip', i)"
-        (click)="onSlotClick('equip', i)"
-        [attr.data-testid]="'equip-slot-' + i"
-      >
-        <app-item-display *ngIf="item" [item]="item" />
-      </div>
+      @for (item of equippedItems(); track item; let i = $index) {
+        <div
+          class="equip-slot"
+          [class.filled]="item !== null"
+          [class.move-mode]="isSlotInMoveMode('equip', i)"
+          (click)="onSlotClick('equip', i)"
+          [attr.data-testid]="'equip-slot-' + i"
+        >
+          @if (item) {
+            <app-item-display [item]="item" />
+          }
+        </div>
+      }
     </section>
 
     <section class="backpack-section" data-testid="backpack-section">
       <div class="backpack-grid">
-        <div
-          class="backpack-slot"
-          *ngFor="let item of backpackItems(); let i = index"
-          [class.filled]="item !== null"
-          [class.move-mode]="isSlotInMoveMode('backpack', i)"
-          (click)="onSlotClick('backpack', i)"
-          [attr.data-testid]="'backpack-slot-' + i"
-        >
-          <app-item-display *ngIf="item" [item]="item" />
-        </div>
+        @for (item of backpackItems(); track item; let i = $index) {
+          <div
+            class="backpack-slot"
+            [class.filled]="item !== null"
+            [class.move-mode]="isSlotInMoveMode('backpack', i)"
+            (click)="onSlotClick('backpack', i)"
+            [attr.data-testid]="'backpack-slot-' + i"
+          >
+            @if (item) {
+              <app-item-display [item]="item" />
+            }
+          </div>
+        }
       </div>
 
       <div class="footer-buttons">
@@ -56,11 +54,11 @@ import { Item } from '@dream/game-board';
           Expand <app-icon [pathD]="matrixIconPath()" /> 1
         </app-button>
         <app-button
-          data-testid="proceed-btn"
+          data-testid="fight-btn"
           [variant]="'secondary'"
-          (click)="proceedToForge()"
+          (click)="fight()"
         >
-          Proceed <app-icon [pathD]="arrowIconPath()" />
+          Fight <app-icon [pathD]="swordIconPath()" />
         </app-button>
       </div>
     </section>
@@ -68,7 +66,6 @@ import { Item } from '@dream/game-board';
   styleUrls: ['./backpack-view.component.scss'],
 })
 export class BackpackViewComponent {
-  readonly router = inject(Router);
   readonly service = inject(GameLoopStateService);
 
   readonly equippedItems = this.service.equippedItems;
@@ -78,8 +75,8 @@ export class BackpackViewComponent {
   readonly matrixIconPath = computed(() =>
     InterfaceIconRegistry.resolveIconPath('matrices'),
   );
-  readonly arrowIconPath = computed(() =>
-    InterfaceIconRegistry.resolveIconPath('arrow'),
+  readonly swordIconPath = computed(() =>
+    InterfaceIconRegistry.resolveIconPath('sword'),
   );
 
   readonly canExpand = computed(() => this.matrices() >= 1);
@@ -144,7 +141,7 @@ export class BackpackViewComponent {
     this.service.expandBackpack();
   }
 
-  proceedToForge(): void {
-    this.router.navigate(['game-loop', 'forge']);
+  fight(): void {
+    this.service.startFight();
   }
 }

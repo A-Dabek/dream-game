@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
 import {
@@ -66,18 +65,17 @@ const ANIMATION_DURATION_MS = 300;
       </app-button>
 
       <app-button
-        class="proceed-btn"
-        data-testid="proceed-btn"
+        class="fight-btn"
+        data-testid="fight-btn"
         [variant]="'secondary'"
-        (click)="navigateToBackpack()"
-        >Proceed <app-icon [pathD]="arrowIconPath()"
+        (click)="fight()"
+        >Fight <app-icon [pathD]="swordIconPath()"
       /></app-button>
     </main>
   `,
   styleUrls: ['./forge-view.component.scss'],
 })
 export class ForgeViewComponent {
-  private readonly router = inject(Router);
   private readonly service = inject(GameLoopStateService);
 
   // Expose constant to template
@@ -104,8 +102,8 @@ export class ForgeViewComponent {
     InterfaceIconRegistry.resolveIconPath(CRAFT_ICON),
   );
 
-  readonly arrowIconPath = computed(() =>
-    InterfaceIconRegistry.resolveIconPath('arrow'),
+  readonly swordIconPath = computed(() =>
+    InterfaceIconRegistry.resolveIconPath('sword'),
   );
 
   readonly costIconPath = computed(() =>
@@ -138,8 +136,8 @@ export class ForgeViewComponent {
     }, ANIMATION_DURATION_MS);
   }
 
-  navigateToBackpack(): void {
-    this.router.navigate(['game-loop', 'backpack']);
+  fight(): void {
+    this.service.startFight();
   }
 
   private getRandomItemId(): ItemId {

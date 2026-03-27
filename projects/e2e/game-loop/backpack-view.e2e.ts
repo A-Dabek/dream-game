@@ -39,15 +39,16 @@ test.describe('Backpack View', () => {
       document.body.classList.add('disable-animations'),
     );
 
-    // Expand backpack and craft item
+    // Expand backpack and navigate to forge via nav button
     await page.getByTestId('expand-btn').click();
-    await page.getByTestId('proceed-btn').click();
+    await page.getByTestId('nav-btn').click();
     await page.getByTestId('craft-btn').click();
 
     // Wait for craft animation to complete (300ms delay in craft method)
     await page.waitForTimeout(500);
 
-    await page.getByTestId('proceed-btn').click();
+    // Navigate to backpack via nav button
+    await page.getByTestId('nav-btn').click();
 
     // Move backpack -> equipment
     await page.getByTestId('backpack-slot-0').click();
@@ -82,11 +83,12 @@ test.describe('Backpack View', () => {
 
     const initialHp = await page.getByTestId('stat-hp').textContent();
 
-    // Expand, craft, equip
+    // Expand, craft via nav, equip
     await page.getByTestId('expand-btn').click();
-    await page.getByTestId('proceed-btn').click();
+    await page.getByTestId('nav-btn').click();
     await page.getByTestId('craft-btn').click();
-    await page.getByTestId('proceed-btn').click();
+    await page.waitForTimeout(500);
+    await page.getByTestId('nav-btn').click();
     await page.getByTestId('backpack-slot-0').click();
     await page.getByTestId('equip-slot-0').click();
 

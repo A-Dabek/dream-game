@@ -71,15 +71,15 @@ test.describe('Game Loop', () => {
     );
 
     // Backpack: expand
-    await page.getByTestId('proceed-btn').click();
+    await page.getByTestId('nav-btn').click();
     await page.getByTestId('expand-btn').click();
 
     // Forge: craft item
-    await page.getByTestId('proceed-btn').click();
+    await page.getByTestId('nav-btn').click();
     await page.getByTestId('craft-btn').click();
 
     // Backpack: verify expanded + item
-    await page.getByTestId('proceed-btn').click();
+    await page.getByTestId('nav-btn').click();
     await expect(page.locator('[data-testid^="backpack-slot-"]')).toHaveCount(
       2,
     );
