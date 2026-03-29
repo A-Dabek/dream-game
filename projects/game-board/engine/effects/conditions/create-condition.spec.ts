@@ -430,7 +430,7 @@ describe('createCondition', () => {
           health: 100,
           maxHealth: 100,
           speed: 10,
-          items: [{ id: 'hand', genre: 'basic' }], // Has items
+          items: [{ id: 'hand', genre: 'basic', remainingUsages: 1 }], // Has items
         },
       };
       const event = createLifecycleEvent('on_turn_end', 'p1');

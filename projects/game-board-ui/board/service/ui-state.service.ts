@@ -164,6 +164,7 @@ export class UiStateService {
     const lastPlayedItem: Item = {
       id: event.itemId,
       genre: getItemGenre(event.itemId),
+      remainingUsages: 1,
     };
     this._lastPlayedItem.set(lastPlayedItem);
   }

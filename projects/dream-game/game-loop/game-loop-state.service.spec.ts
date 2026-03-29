@@ -50,7 +50,7 @@ describe('GameLoopStateService', () => {
     it('should include equipped item stats', () => {
       // Add item to equipped slot - sticking_plaster gives +10 hp
       service.equippedItems.set([
-        { id: 'sticking_plaster', genre: 'basic' },
+        { id: 'sticking_plaster', genre: 'basic', remainingUsages: 1 },
         null,
         null,
         null,

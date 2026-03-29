@@ -118,38 +118,74 @@ describe('Poison Items', () => {
   });
 
   describe('Poison Darts', () => {
-    it('should apply poison_darts status to the enemy', () => {
-      const p1 = createMockPlayer('p1', { items: ['poison_darts'] });
-      const p2 = createMockPlayer('p2', { items: [] });
+    it('should deal damage and apply poison to the enemy immediately', () => {
+      const p1 = createMockPlayer('p1', {
+        health: 100,
+        items: ['poison_darts'],
+      });
+      const p2 = createMockPlayer('p2', { health: 100, items: ['hand'] });
       const board = new Board(p1, p2);
 
       passUntilTurn(board, 'p1');
       board.playItem('poison_darts', 'p1');
 
-      const dartsListener = board.gameState.opponentStatusEffects.find(
-        (l) => l.type === 'poison_darts',
-      );
-      expect(dartsListener).toBeDefined();
-    });
-
-    it('should apply poison at the end of enemy turn', () => {
-      const p1 = createMockPlayer('p1', { items: ['poison_darts'] });
-      const p2 = createMockPlayer('p2', { items: ['hand'] });
-      const board = new Board(p1, p2);
-
-      passUntilTurn(board, 'p1');
-      board.playItem('poison_darts', 'p1');
-
-      passUntilTurn(board, 'p2');
-      // Advance to p2 turn and end it
-      board.playItem('hand', 'p2');
-
-      // Now p2 should have poison
+      expect(board.gameState.opponent.health).toBe(98);
       const poisonListener = board.gameState.opponentStatusEffects.find(
         (l) => l.type === 'poison',
       );
       expect(poisonListener).toBeDefined();
-      expect(poisonListener?.remainingCharges).toBe(1);
+      expect(poisonListener?.remainingCharges).toBe(2);
+    });
+
+    it('should have 3 usages and decrement on each use', () => {
+      const p1 = createMockPlayer('p1', {
+        health: 100,
+        items: ['poison_darts'],
+      });
+      const p2 = createMockPlayer('p2', { health: 100, items: ['hand'] });
+      const board = new Board(p1, p2);
+
+      passUntilTurn(board, 'p1');
+      board.playItem('poison_darts', 'p1');
+      let poisonDarts = board.gameState.player.items.find(
+        (i) => i.id === 'poison_darts',
+      );
+      expect(poisonDarts?.remainingUsages).toBe(2);
+
+      passUntilTurn(board, 'p1');
+      board.playItem('poison_darts', 'p1');
+      poisonDarts = board.gameState.player.items.find(
+        (i) => i.id === 'poison_darts',
+      );
+      expect(poisonDarts?.remainingUsages).toBe(1);
+
+      passUntilTurn(board, 'p1');
+      board.playItem('poison_darts', 'p1');
+      poisonDarts = board.gameState.player.items.find(
+        (i) => i.id === 'poison_darts',
+      );
+      expect(poisonDarts).toBeUndefined();
+    });
+
+    it('should accumulate poison from multiple uses', () => {
+      const p1 = createMockPlayer('p1', {
+        health: 100,
+        items: ['poison_darts'],
+      });
+      const p2 = createMockPlayer('p2', { health: 100, items: ['hand'] });
+      const board = new Board(p1, p2);
+
+      passUntilTurn(board, 'p1');
+      board.playItem('poison_darts', 'p1');
+
+      passUntilTurn(board, 'p1');
+      board.playItem('poison_darts', 'p1');
+
+      const poisonEffects = board.gameState.opponentStatusEffects.filter(
+        (l) => l.type === 'poison',
+      );
+      expect(poisonEffects.length).toBe(1);
+      expect(poisonEffects[0].remainingCharges).toBe(3);
     });
   });
 

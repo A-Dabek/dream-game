@@ -12,6 +12,7 @@ describe('ItemDisplayComponent', () => {
   const mockItem: Item = {
     id: 'punch',
     genre: 'basic',
+    remainingUsages: 1,
   };
 
   beforeEach(async () => {
@@ -58,7 +59,11 @@ describe('ItemDisplayComponent', () => {
     });
 
     it('should return empty string for unknown item id', () => {
-      setInputs({ id: 'unknown_item' as any, genre: 'basic' });
+      setInputs({
+        id: 'unknown_item' as any,
+        genre: 'basic',
+        remainingUsages: 1,
+      });
       const icon = fixture.debugElement.query(By.css('app-icon'));
       expect(icon.componentInstance.pathD()).toBe('');
     });
@@ -66,13 +71,13 @@ describe('ItemDisplayComponent', () => {
 
   describe('color', () => {
     it('should use genre-based color when genre is present', () => {
-      setInputs({ id: 'punch', genre: 'poison' });
+      setInputs({ id: 'punch', genre: 'poison', remainingUsages: 1 });
       const icon = fixture.debugElement.query(By.css('app-icon'));
       expect(icon.componentInstance.color()).toBe('var(--genre-poison)');
     });
 
     it('should use currentColor when genre is not present', () => {
-      setInputs({ id: 'punch', genre: undefined as any });
+      setInputs({ id: 'punch', genre: undefined as any, remainingUsages: 1 });
       const icon = fixture.debugElement.query(By.css('app-icon'));
       expect(icon.componentInstance.color()).toBe('currentColor');
     });
@@ -86,13 +91,17 @@ describe('ItemDisplayComponent', () => {
     });
 
     it('should remove blueprint prefix', () => {
-      setInputs({ id: '_blueprint_attack', genre: 'basic' });
+      setInputs({
+        id: '_blueprint_attack',
+        genre: 'basic',
+        remainingUsages: 1,
+      });
       const label = fixture.debugElement.query(By.css('.label'));
       expect(label.nativeElement.textContent.trim()).toBe('blueprint attack');
     });
 
     it('should replace underscores with spaces', () => {
-      setInputs({ id: 'sticky_boot', genre: 'basic' });
+      setInputs({ id: 'sticky_boot', genre: 'basic', remainingUsages: 1 });
       const label = fixture.debugElement.query(By.css('.label'));
       expect(label.nativeElement.textContent.trim()).toBe('sticky boot');
     });
@@ -120,7 +129,7 @@ describe('ItemDisplayComponent', () => {
       let label = fixture.debugElement.query(By.css('.label'));
       expect(label.nativeElement.textContent.trim()).toBe('punch');
 
-      setInputs({ id: 'hand', genre: 'basic' });
+      setInputs({ id: 'hand', genre: 'basic', remainingUsages: 1 });
       label = fixture.debugElement.query(By.css('.label'));
       expect(label.nativeElement.textContent.trim()).toBe('hand');
     });

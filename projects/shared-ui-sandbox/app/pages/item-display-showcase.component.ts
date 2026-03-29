@@ -78,29 +78,29 @@ import { Item } from '@dream/game-board';
 })
 export class ItemDisplayShowcaseComponent {
   basicItems: Item[] = [
-    { id: 'punch', genre: 'basic' },
-    { id: 'hand', genre: 'basic' },
-    { id: 'sticky_boot', genre: 'basic' },
-    { id: 'wingfoot', genre: 'basic' },
+    { id: 'punch', genre: 'basic', remainingUsages: 1 },
+    { id: 'hand', genre: 'basic', remainingUsages: 1 },
+    { id: 'sticky_boot', genre: 'basic', remainingUsages: 1 },
+    { id: 'wingfoot', genre: 'basic', remainingUsages: 1 },
   ];
 
   poisonItems: Item[] = [
-    { id: 'gas_grenade', genre: 'poison' },
-    { id: 'poison_drink', genre: 'poison' },
-    { id: 'poison_darts', genre: 'poison' },
-    { id: 'antidote', genre: 'poison' },
+    { id: 'gas_grenade', genre: 'poison', remainingUsages: 1 },
+    { id: 'poison_drink', genre: 'poison', remainingUsages: 1 },
+    { id: 'poison_darts', genre: 'poison', remainingUsages: 3 },
+    { id: 'antidote', genre: 'poison', remainingUsages: 1 },
   ];
 
   doctorItems: Item[] = [
-    { id: 'stitches', genre: 'doctor' },
-    { id: 'adrenaline', genre: 'doctor' },
-    { id: 'drip', genre: 'doctor' },
+    { id: 'stitches', genre: 'doctor', remainingUsages: 1 },
+    { id: 'adrenaline', genre: 'doctor', remainingUsages: 1 },
+    { id: 'drip', genre: 'doctor', remainingUsages: 1 },
   ];
 
-  activeItem: Item = { id: 'punch', genre: 'basic' };
+  activeItem: Item = { id: 'punch', genre: 'basic', remainingUsages: 1 };
 
   blueprintItems: Item[] = [
-    { id: '_blueprint_attack', genre: 'basic' },
-    { id: '_blueprint_heal_5', genre: 'basic' },
+    { id: '_blueprint_attack', genre: 'basic', remainingUsages: 1 },
+    { id: '_blueprint_heal_5', genre: 'basic', remainingUsages: 1 },
   ];
 }

@@ -17,6 +17,6 @@
   },
   "poison_darts": {
     "icon": "poison-darts",
-    "description": "Applies a status to the enemy that results in a new poison stack at the end of each turn."
+    "description": "Deal 2 damage and apply 2 poison to the enemy. Can be used 3 times."
   }
 }

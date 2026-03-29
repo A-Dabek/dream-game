@@ -132,6 +132,7 @@ export class ForgeViewComponent {
       this.service.addItemToBackpack({
         id: itemId,
         genre: 'basic',
+        remainingUsages: 1,
       });
     }, ANIMATION_DURATION_MS);
   }

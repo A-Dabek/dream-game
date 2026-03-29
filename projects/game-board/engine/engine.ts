@@ -56,21 +56,35 @@ export class Engine implements LogCollector {
     const state = this.state;
     const player =
       state.playerOne.id === playerId ? state.playerOne : state.playerTwo;
-    const item = player.items.find((i) => i.id === itemId);
-    const instanceId = item?.instanceId ?? itemId;
+    const itemIndex = player.items.findIndex((i) => i.id === itemId);
+    if (itemIndex === -1) return;
+
+    const item = player.items[itemIndex];
+    const instanceId = item.instanceId ?? itemId;
+    const newRemainingUsages = item.remainingUsages - 1;
+
+    player.items = [
+      ...player.items.slice(0, itemIndex),
+      { ...item, remainingUsages: newRemainingUsages },
+      ...player.items.slice(itemIndex + 1),
+    ];
 
     const onPlayEvent = GameEventFactory.createOnPlay(playerId, itemId);
     this.logEvent(onPlayEvent);
     this.eventsProcessor.runEventLoop([onPlayEvent]);
 
     const itemDef = getItemBehavior(itemId);
-    const effects: Effect[] = [
-      ActiveEffectLibrary.remove_item(instanceId),
-      ...itemDef.onPlayEffects,
-    ];
+    const effects: Effect[] = [...itemDef.onPlayEffects];
 
     for (const effect of effects) {
       this.processItemEffect(effect, playerId);
+    }
+
+    if (newRemainingUsages <= 0) {
+      this.processItemEffect(
+        ActiveEffectLibrary.remove_item(instanceId),
+        playerId,
+      );
     }
   }
 
@@ -209,10 +223,15 @@ export class Engine implements LogCollector {
     return {
       ...loadout,
       maxHealth: loadout.maxHealth ?? loadout.health,
-      items: loadout.items.map((item, index) => ({
-        ...item,
-        instanceId: item.instanceId ?? `${loadout.id}-${item.id}-${index}`,
-      })),
+      items: loadout.items.map((item, index) => {
+        const itemDef = getItemBehavior(item.id);
+        const usages = itemDef.usages ?? 1;
+        return {
+          ...item,
+          remainingUsages: item.remainingUsages || usages,
+          instanceId: item.instanceId ?? `${loadout.id}-${item.id}-${index}`,
+        };
+      }),
     };
   }
 

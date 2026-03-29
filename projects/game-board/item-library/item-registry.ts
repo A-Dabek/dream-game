@@ -47,9 +47,11 @@ const PoisonItemLibrary = {
 
   poison_darts: (): ItemDefinition => ({
     genre: 'poison',
+    usages: 3,
     onPlayEffects: [
+      ActiveEffectLibrary.attack(2),
       ActiveEffectLibrary.add_status_effect(
-        StatusEffectLibrary.poison_darts(5),
+        StatusEffectLibrary.poison(2),
         'enemy',
       ),
     ],

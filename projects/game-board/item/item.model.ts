@@ -83,12 +83,14 @@ export type ItemDefinition = {
   readonly genre: Genre;
   readonly onPlayEffects: Effect[];
   readonly passiveEffects?: PassiveEffect[];
+  readonly usages?: number;
 };
 
 export interface Item {
   readonly id: ItemId;
   readonly instanceId?: string;
   readonly genre: Genre;
+  readonly remainingUsages: number;
 }
 
 export interface Loadout {

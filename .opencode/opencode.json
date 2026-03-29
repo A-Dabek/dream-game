@@ -37,24 +37,6 @@
       "template": "Run .opencode/scripts/deploy-work.sh --commit <message>"
     }
   },
-  "mcp": {
-    "angular-cli": {
-      "type": "local",
-      "enabled": true,
-      "command": ["npx", "-y", "@angular/cli", "mcp"]
-    },
-    "serena": {
-      "type": "local",
-      "enabled": true,
-      "command": [
-        "C:\\Users\\asan_\\IdeaProjects\\serena\\.venv\\Scripts\\serena.exe",
-        "start-mcp-server",
-        "--project-from-cwd",
-        "--context",
-        "ide"
-      ]
-    }
-  },
   "permission": {
     "bash": {
       "npm i*": "deny"

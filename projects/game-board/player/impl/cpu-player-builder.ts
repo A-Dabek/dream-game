@@ -1,6 +1,6 @@
 import { FirstAvailableStrategy, Strategy } from '../../ai';
 import { Item, ItemId, Loadout } from '../../item';
-import { getItemGenre, ItemLibrary } from '../../item-library';
+import { getItemBehavior, getItemGenre, ItemLibrary } from '../../item-library';
 import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
 
@@ -211,6 +211,7 @@ export class CpuPlayerBuilder {
         id,
         instanceId: `${this.id}-item-${i}`,
         genre: getItemGenre(id),
+        remainingUsages: getItemBehavior(id).usages ?? 1,
       }));
     }
 
@@ -228,6 +229,7 @@ export class CpuPlayerBuilder {
         id,
         instanceId: `${this.id}-item-${i}`,
         genre: getItemGenre(id),
+        remainingUsages: getItemBehavior(id).usages ?? 1,
       };
     });
   }

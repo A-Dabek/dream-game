@@ -1,12 +1,16 @@
 import { Item, ItemId } from '../../item';
-import { getItemGenre } from '../../item-library';
+import { getItemBehavior, getItemGenre } from '../../item-library';
 import { BoardLoadout } from '../board.model';
 
 /**
  * Creates a test item with the given ID and its associated genre.
  */
 export function createTestItem(id: ItemId): Item {
-  return { id, genre: getItemGenre(id) };
+  return {
+    id,
+    genre: getItemGenre(id),
+    remainingUsages: getItemBehavior(id).usages ?? 1,
+  };
 }
 
 /**

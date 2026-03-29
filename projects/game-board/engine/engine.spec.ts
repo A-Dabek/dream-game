@@ -42,11 +42,15 @@ describe('Engine', () => {
   });
 
   it('should handle multiple effects', () => {
-    // We only have _blueprint_attack for now, which has one effect.
-    // If we had an item with multiple effects, we'd test it here.
-    const engine = new Engine(player1, player2);
+    const p2WithAttack: Loadout & { id: string } = {
+      id: 'p2',
+      health: 100,
+      speed: 5,
+      items: [createTestItem('_blueprint_attack')],
+    };
+    const engine = new Engine(player1, p2WithAttack);
     engine.play('p1', '_blueprint_attack');
-    engine.play('p2', '_blueprint_attack' as any); // p2 doesn't have it in loadout but Engine allows playing by ID for now if we don't check loadout in Engine
+    engine.play('p2', '_blueprint_attack');
 
     const state = engine.state;
     expect(state.playerOne.health).toBe(90);

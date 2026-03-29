@@ -14,6 +14,9 @@ import { ItemConventionRegistry } from '@dream/game-board-ui';
   standalone: true,
   imports: [IconComponent],
   template: `
+    @if (usages() > 1) {
+      <span class="usages-badge">{{ usages() }}</span>
+    }
     <app-icon [pathD]="pathD()" [color]="color()" />
     <div class="label">{{ label() }}</div>
   `,
@@ -43,4 +46,6 @@ export class ItemDisplayComponent {
     const id = this.item().id;
     return id.replace('_blueprint_', '').replace(/_/g, ' ');
   });
+
+  readonly usages = computed(() => this.item().remainingUsages ?? 1);
 }

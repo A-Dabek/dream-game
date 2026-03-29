@@ -37,7 +37,11 @@ export class TestBoardBuilder {
       ...this.player1Config,
       health,
       speed,
-      items: items.map((id) => ({ id, genre: getItemGenre(id) })),
+      items: items.map((id) => ({
+        id,
+        genre: getItemGenre(id),
+        remainingUsages: 1,
+      })),
     };
     return this;
   }
@@ -57,7 +61,11 @@ export class TestBoardBuilder {
       ...this.player2Config,
       health,
       speed,
-      items: items.map((id) => ({ id, genre: getItemGenre(id) })),
+      items: items.map((id) => ({
+        id,
+        genre: getItemGenre(id),
+        remainingUsages: 1,
+      })),
     };
     return this;
   }
