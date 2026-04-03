@@ -30,6 +30,9 @@ import { TurnEntry as TurnEntry_2 } from '../turn-manager';
 // @public (undocumented)
 export type ActiveEffectId = 'attack' | 'heal' | 'modify_speed' | 'remove_item' | 'add_status_effect';
 
+// @public
+export function biasedRoll(): number;
+
 // Warning: (ae-forgotten-export) The symbol "BoardInterface" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -211,6 +214,8 @@ export interface Item {
     readonly id: ItemId;
     // (undocumented)
     readonly instanceId?: string;
+    // (undocumented)
+    readonly remainingUsages: number;
 }
 
 // @public (undocumented)

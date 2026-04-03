@@ -1,4 +1,5 @@
 import { FirstAvailableStrategy, Strategy } from '../../ai';
+import { biasedRoll } from '../../utils/biased-roll';
 import { Item, ItemId, Loadout } from '../../item';
 import { getItemBehavior, getItemGenre, ItemLibrary } from '../../item-library';
 import { PlayerRating } from '../../rating';
@@ -8,45 +9,28 @@ const AVAILABLE_ITEM_IDS: ItemId[] = (
   Object.keys(ItemLibrary) as ItemId[]
 ).filter((id) => id !== '_blueprint_damage_to_heal_permanent'); // TODO this item is unbalanced, it causes games to never finish
 
-interface Defaults {
-  HEALTH_MIN: number;
-  HEALTH_MAX: number;
-  SPEED_MIN: number;
-  SPEED_MAX: number;
-  ITEM_COUNT: number;
-}
-
-const DEFAULTS: Defaults = {
-  HEALTH_MIN: 10,
-  HEALTH_MAX: 15,
-  SPEED_MIN: 5,
-  SPEED_MAX: 10,
-  ITEM_COUNT: 5,
-};
+const DEFAULT_ITEM_COUNT = 5;
 
 /**
  * Builder for creating CPU players with configurable properties.
  *
- * Provides a fluent interface to configure health, speed, items, and strategy
- * before building the final Player object.
- *
- * Supports both random ranges (withRandomHealth, withRandomSpeed, withRandomItems)
- * and exact values (withHealth, withSpeed, withItems).
+ * Health and speed are coupled: each item contributes a biased roll to health,
+ * and the same roll contributes (5 - roll) to speed.
  */
 export class CpuPlayerBuilder {
-  private healthMin = DEFAULTS.HEALTH_MIN;
-  private healthMax = DEFAULTS.HEALTH_MAX;
+  private healthMin: number;
+  private healthMax: number;
   private healthMean: number | null = null;
   private healthStdDev: number | null = null;
-  private healthLimitMin: number = 10;
+  private healthLimitMin: number;
 
-  private speedMin = DEFAULTS.SPEED_MIN;
-  private speedMax = DEFAULTS.SPEED_MAX;
+  private speedMin: number;
+  private speedMax: number;
   private speedMean: number | null = null;
   private speedStdDev: number | null = null;
-  private speedLimitMin: number = 1;
+  private speedLimitMin: number;
 
-  private itemCount = DEFAULTS.ITEM_COUNT;
+  private itemCount = DEFAULT_ITEM_COUNT;
   private itemCountMin: number | null = null;
   private itemCountMax: number | null = null;
 
@@ -58,7 +42,14 @@ export class CpuPlayerBuilder {
   constructor(
     readonly id: string,
     readonly name: string,
-  ) {}
+  ) {
+    this.healthMin = 10;
+    this.healthMax = 15;
+    this.healthLimitMin = 10;
+    this.speedMin = 5;
+    this.speedMax = 10;
+    this.speedLimitMin = 1;
+  }
 
   /**
    * Sets random health within the given range (inclusive).
@@ -129,7 +120,6 @@ export class CpuPlayerBuilder {
 
   /**
    * Sets an exact health value.
-   * Invalid values (non-positive) will fall back to random values within the configured range.
    */
   withHealth(health: number): this {
     this.exactHealth = health;
@@ -156,8 +146,6 @@ export class CpuPlayerBuilder {
 
   /**
    * Applies a PlayerConfig to this builder.
-   * This method provides a convenient way to configure the player from a structured config object.
-   * Invalid values in the config gracefully fall back to defaults.
    */
   withConfig(config: PlayerConfig): this {
     if (config.items !== undefined) {
@@ -185,8 +173,15 @@ export class CpuPlayerBuilder {
     }
 
     const items = this.generateItems();
-    const health = this.resolveHealth();
-    const speed = this.resolveSpeed();
+    const health =
+      this.exactHealth !== null && this.exactHealth > 0
+        ? this.exactHealth
+        : this.resolveHealth();
+    const biasedSpeed = this.resolveBiasedSpeed(items.length);
+    const speed =
+      this.exactSpeed !== null && this.exactSpeed > 0
+        ? this.exactSpeed
+        : this.resolveSpeed(biasedSpeed);
 
     const loadout: Loadout = {
       health,
@@ -219,7 +214,7 @@ export class CpuPlayerBuilder {
     const availableItemIds = AVAILABLE_ITEM_IDS;
     const count =
       this.itemCountMin !== null && this.itemCountMax !== null
-        ? this.generateRandomValue(this.itemCountMin, this.itemCountMax)
+        ? this.randomInRange(this.itemCountMin, this.itemCountMax)
         : this.itemCount;
 
     return Array.from({ length: count }, (_, i) => {
@@ -240,11 +235,6 @@ export class CpuPlayerBuilder {
   }
 
   private resolveHealth(): number {
-    // Use exact health if valid (positive)
-    if (this.exactHealth !== null && this.exactHealth > 0) {
-      return this.exactHealth;
-    }
-    // Use normal distribution if configured
     if (this.healthMean !== null && this.healthStdDev !== null) {
       return this.generateNormalValue(
         this.healthMean,
@@ -252,16 +242,24 @@ export class CpuPlayerBuilder {
         this.healthLimitMin,
       );
     }
-    // Fall back to uniform random value
-    return this.generateRandomValue(this.healthMin, this.healthMax);
+    return this.randomInRange(this.healthMin, this.healthMax);
   }
 
-  private resolveSpeed(): number {
-    // Use exact speed if valid (positive)
-    if (this.exactSpeed !== null && this.exactSpeed > 0) {
-      return this.exactSpeed;
+  private resolveBiasedSpeed(itemCount: number): number {
+    let speed = 0;
+    for (let i = 0; i < itemCount; i++) {
+      const roll = biasedRoll();
+      speed += 5 - roll;
     }
-    // Use normal distribution if configured
+    return Math.max(1, speed + 1);
+  }
+
+  private randomInRange(min: number, max: number): number {
+    const range = max - min + 1;
+    return Math.floor(Math.random() * range) + min;
+  }
+
+  private resolveSpeed(biased: number): number {
     if (this.speedMean !== null && this.speedStdDev !== null) {
       return this.generateNormalValue(
         this.speedMean,
@@ -269,8 +267,7 @@ export class CpuPlayerBuilder {
         this.speedLimitMin,
       );
     }
-    // Fall back to uniform random value
-    return this.generateRandomValue(this.speedMin, this.speedMax);
+    return this.randomInRange(this.speedMin, this.speedMax);
   }
 
   private generateNormalValue(
@@ -280,16 +277,11 @@ export class CpuPlayerBuilder {
   ): number {
     let u = 0,
       v = 0;
-    while (u === 0) u = Math.random(); // Converting [0,1) to (0,1)
+    while (u === 0) u = Math.random();
     while (v === 0) v = Math.random();
     const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     const val = Math.round(z * stdDev + mean);
     return Math.max(min, val);
-  }
-
-  private generateRandomValue(min: number, max: number): number {
-    const range = max - min + 1;
-    return Math.floor(Math.random() * range) + min;
   }
 }
 

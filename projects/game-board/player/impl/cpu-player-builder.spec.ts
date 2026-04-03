@@ -36,6 +36,21 @@ describe('CpuPlayerBuilder', () => {
     });
   });
 
+  describe('withNormalHealth', () => {
+    it('should generate health using normal distribution', () => {
+      for (let i = 0; i < 10; i++) {
+        const player = new CpuPlayerBuilder('id', 'name')
+          .withNormalHealth(25, 3, 10)
+          .withLeftMostStrategy()
+          .build();
+
+        // With mean 25 and stdDev 3, most values should be within 3 std devs
+        expect(player.loadout.health).toBeGreaterThanOrEqual(10);
+        expect(player.loadout.health).toBeLessThan(35);
+      }
+    });
+  });
+
   describe('withRandomSpeed', () => {
     it('should set speed range and build player with speed in range', () => {
       for (let i = 0; i < 10; i++) {
@@ -111,11 +126,73 @@ describe('CpuPlayerBuilder', () => {
     });
   });
 
+  describe('withExactHealth', () => {
+    it('should set exact health when specified', () => {
+      const player = new CpuPlayerBuilder('id', 'name')
+        .withHealth(50)
+        .withRandomItems(2)
+        .withLeftMostStrategy()
+        .build();
+
+      expect(player.loadout.health).toBe(50);
+    });
+  });
+
+  describe('withExactSpeed', () => {
+    it('should set exact speed when specified', () => {
+      const player = new CpuPlayerBuilder('id', 'name')
+        .withSpeed(42)
+        .withRandomItems(2)
+        .withLeftMostStrategy()
+        .build();
+
+      expect(player.loadout.speed).toBe(42);
+    });
+
+    it('should override normal distribution', () => {
+      const player = new CpuPlayerBuilder('id', 'name')
+        .withNormalSpeed(20, 3, 1)
+        .withSpeed(42)
+        .withRandomItems(2)
+        .withLeftMostStrategy()
+        .build();
+
+      expect(player.loadout.speed).toBe(42);
+    });
+  });
+
+  describe('withConfig', () => {
+    it('should apply config items', () => {
+      const player = new CpuPlayerBuilder('id', 'name')
+        .withConfig({
+          items: ['wingfoot', 'punch'],
+          health: 30,
+          speed: 12,
+        })
+        .withLeftMostStrategy()
+        .build();
+
+      expect(player.loadout.health).toBe(30);
+      expect(player.loadout.speed).toBe(12);
+      expect(player.loadout.items.length).toBe(2);
+    });
+
+    it('should apply partial config', () => {
+      const player = new CpuPlayerBuilder('id', 'name')
+        .withConfig({
+          speed: 99,
+        })
+        .withRandomItems(2)
+        .withLeftMostStrategy()
+        .build();
+
+      expect(player.loadout.speed).toBe(99);
+    });
+  });
+
   describe('withLeftMostStrategy', () => {
     it('should set the strategy to FirstAvailableStrategy', () => {
       const player = new CpuPlayerBuilder('id', 'name')
-        .withRandomHealth(10, 15)
-        .withRandomSpeed(5, 10)
         .withRandomItems(5)
         .withLeftMostStrategy()
         .build();
@@ -126,10 +203,7 @@ describe('CpuPlayerBuilder', () => {
 
   describe('build', () => {
     it('should throw error if no strategy is configured', () => {
-      const builder = new CpuPlayerBuilder('id', 'name')
-        .withRandomHealth(10, 15)
-        .withRandomSpeed(5, 10)
-        .withRandomItems(5);
+      const builder = new CpuPlayerBuilder('id', 'name').withRandomItems(5);
 
       expect(() => builder.build()).toThrow(
         'Strategy must be configured before building',

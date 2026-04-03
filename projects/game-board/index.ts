@@ -41,3 +41,4 @@ export {
   type DurationState,
   type EffectInstanceState,
 } from './engine/effects';
+export { biasedRoll } from './utils/biased-roll';

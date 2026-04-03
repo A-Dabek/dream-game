@@ -23,23 +23,24 @@ describe('Player Module', () => {
       expect(player.strategy).toBeInstanceOf(FirstAvailableStrategy);
     });
 
-    it('should create a loadout with 1 random item', () => {
+    it('should create a loadout with 4 random items', () => {
       const player = createCpuPlayer('test-id', 'Test Bot');
-      expect(player.loadout.items.length).toBe(1);
+      expect(player.loadout.items.length).toBe(4);
       player.loadout.items.forEach((item) => {
         expect(item.id).toBeDefined();
         expect(item.instanceId).toMatch(/^test-id-item-\d$/);
       });
     });
 
-    it('should randomize health and speed within expected ranges', () => {
-      // Run multiple times to increase confidence in randomization
+    it('should derive health and speed from biased rolls', () => {
+      // With 4 items and biased roll biased toward 3:
+      // Expected health: ~4 * 3 + 1 = 13, range: max(-40,1)..max(40,1) => [1,41]
+      // Expected speed: ~4 * (5 - 3) + 1 = 9, range: max(-20,1)..max(60,1) => [1,61]
       for (let i = 0; i < 10; i++) {
         const player = createCpuPlayer('test-id', 'Test Bot');
-        expect(player.loadout.health).toBeGreaterThanOrEqual(10);
-        expect(player.loadout.health).toBeLessThanOrEqual(15);
-        expect(player.loadout.speed).toBeGreaterThanOrEqual(5);
-        expect(player.loadout.speed).toBeLessThanOrEqual(10);
+        expect(player.loadout.health).toBeGreaterThanOrEqual(1);
+        expect(player.loadout.speed).toBeGreaterThanOrEqual(1);
+        expect(player.loadout.items.length).toBe(4);
       }
     });
   });
@@ -84,36 +85,32 @@ describe('Player Module', () => {
       expect(player.loadout.items.length).toBe(0);
     });
 
-    it('should fallback to random health when value is not positive', () => {
+    it('should fall back to derived health when health is not positive', () => {
       const player = createCpuPlayerWithConfig('test-id', 'Test Bot', {
         health: 0,
       });
-      expect(player.loadout.health).toBeGreaterThanOrEqual(10);
-      expect(player.loadout.health).toBeLessThanOrEqual(15);
+      expect(player.loadout.health).toBeGreaterThanOrEqual(1);
     });
 
-    it('should fallback to random health when value is negative', () => {
+    it('should fall back to derived health when health is negative', () => {
       const player = createCpuPlayerWithConfig('test-id', 'Test Bot', {
         health: -5,
       });
-      expect(player.loadout.health).toBeGreaterThanOrEqual(10);
-      expect(player.loadout.health).toBeLessThanOrEqual(15);
+      expect(player.loadout.health).toBeGreaterThanOrEqual(1);
     });
 
-    it('should fallback to random speed when value is not positive', () => {
+    it('should fall back to derived speed when speed is not positive', () => {
       const player = createCpuPlayerWithConfig('test-id', 'Test Bot', {
         speed: 0,
       });
-      expect(player.loadout.speed).toBeGreaterThanOrEqual(5);
-      expect(player.loadout.speed).toBeLessThanOrEqual(10);
+      expect(player.loadout.speed).toBeGreaterThanOrEqual(1);
     });
 
-    it('should fallback to random speed when value is negative', () => {
+    it('should fall back to derived speed when speed is negative', () => {
       const player = createCpuPlayerWithConfig('test-id', 'Test Bot', {
         speed: -5,
       });
-      expect(player.loadout.speed).toBeGreaterThanOrEqual(5);
-      expect(player.loadout.speed).toBeLessThanOrEqual(10);
+      expect(player.loadout.speed).toBeGreaterThanOrEqual(1);
     });
 
     it('should create player with complete config', () => {
@@ -133,8 +130,8 @@ describe('Player Module', () => {
       const { player1, player2 } = createGamePlayers();
       expect(player1.id).toBe('player-1');
       expect(player2.id).toBe('player-2');
-      expect(player1.loadout.health).toBeGreaterThanOrEqual(10);
-      expect(player2.loadout.health).toBeGreaterThanOrEqual(10);
+      expect(player1.loadout.health).toBeGreaterThanOrEqual(1);
+      expect(player2.loadout.health).toBeGreaterThanOrEqual(1);
     });
 
     it('should create player1 with custom config and player2 with defaults', () => {
@@ -148,8 +145,7 @@ describe('Player Module', () => {
       expect(player1.loadout.health).toBe(50);
       expect(player1.loadout.speed).toBe(15);
       expect(player1.loadout.items.length).toBe(1);
-      expect(player2.loadout.health).toBeGreaterThanOrEqual(10);
-      expect(player2.loadout.health).toBeLessThanOrEqual(15);
+      expect(player2.loadout.health).toBeGreaterThanOrEqual(1);
     });
 
     it('should create both players with custom configs', () => {

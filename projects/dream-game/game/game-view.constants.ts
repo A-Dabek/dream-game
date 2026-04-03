@@ -3,13 +3,17 @@ import { PlayerConfig } from '@dream/game-board';
 // Default human player configuration
 export const DEFAULT_HUMAN_CONFIG: PlayerConfig = {
   items: ['drip', 'poison_darts', 'stitches'],
-  health: 20,
   speed: 8,
 };
 
 // Default CPU player configuration
 export const DEFAULT_CPU_CONFIG: PlayerConfig = {
-  items: ['poison_darts', 'punch', 'sticking_plaster', 'wingfoot', 'sticky_boot'],
-  health: 18,
+  items: [
+    'poison_darts',
+    'punch',
+    'sticking_plaster',
+    'wingfoot',
+    'sticky_boot',
+  ],
   speed: 7,
 };

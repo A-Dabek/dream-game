@@ -13,7 +13,6 @@ const orchestrator = new GameOrchestrator();
 
 function generateRandomPlayer(id: string): Player {
   return new CpuPlayerBuilder(id, `Player ${id}`)
-    .withNormalHealth(GAME_CONFIG.BASE_HEALTH, GAME_CONFIG.HEALTH_STD_DEV, 10)
     .withNormalSpeed(GAME_CONFIG.BASE_SPEED, GAME_CONFIG.SPEED_STD_DEV, 1)
     .withRandomItemsInRange(3, 5)
     .withLeftMostStrategy()

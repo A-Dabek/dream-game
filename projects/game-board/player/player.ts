@@ -14,16 +14,15 @@ import { Player } from './player.model';
  */
 export function createCpuPlayer(id: string, name: string): Player {
   return new CpuPlayerBuilder(id, name)
-    .withRandomHealth(10, 15)
-    .withRandomSpeed(5, 10)
-    .withRandomItems(1)
+    .withRandomItems(4)
     .withLeftMostStrategy()
     .build();
 }
 
 /**
  * Creates a CPU player with custom configuration.
- * Invalid values in the config gracefully fall back to defaults.
+ * Health and speed are automatically derived from biased rolls based on item count.
+ * If exact health or speed is provided in the config, those values are used instead.
  *
  * @param id Unique identifier for the player.
  * @param name Name of the player.
