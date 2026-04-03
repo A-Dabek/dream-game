@@ -45,6 +45,7 @@ Thumbs.db
 
 .opencode/node_modules
 .firebase
+.claude/
 
 # Playwright
 projects/e2e/playwright-report/
