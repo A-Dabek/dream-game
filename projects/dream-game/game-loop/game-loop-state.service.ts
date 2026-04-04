@@ -26,8 +26,8 @@ export interface ForgedItemData {
 }
 
 // Base stats - player starts with these
-const BASE_HP = 1;
-const BASE_SPEED = 1;
+export const BASE_HP = 1;
+export const BASE_SPEED = 1;
 const BASE_MATRICES = 10;
 
 export interface ItemBonusStats {
@@ -99,17 +99,59 @@ export class GameLoopStateService {
     }
   }
 
+  readonly shakeSlot = signal<{
+    area: 'equip' | 'backpack';
+    index: number;
+  } | null>(null);
+
+  triggerShake(area: 'equip' | 'backpack', index: number, resetMs = 450): void {
+    this.shakeSlot.set({ area, index });
+    setTimeout(() => {
+      this.shakeSlot.set(null);
+    }, resetMs);
+  }
+
+  canEquipToSlot(
+    sourceItemStats: ItemBonusStats,
+    fromArea: 'equip' | 'backpack',
+    fromIndex: number,
+    targetArea: 'equip' | 'backpack',
+    targetIndex: number,
+  ): boolean {
+    const equipped = this.equippedItems();
+    let bonusHp = 0;
+    let bonusSpeed = 0;
+
+    // Calculate what bonuses the equip slots would have AFTER the swap
+    for (let i = 0; i < equipped.length; i++) {
+      const item = equipped[i];
+      if (!item) continue;
+      // Skip the source slot (item being moved away)
+      if (fromArea === 'equip' && i === fromIndex) continue;
+      // Skip the target slot (item being kicked out)
+      if (targetArea === 'equip' && i === targetIndex) continue;
+      bonusHp += item.stats.hp;
+      bonusSpeed += item.stats.speed;
+    }
+
+    // Add the source item's contribution
+    const resultingHp = BASE_HP + bonusHp + sourceItemStats.hp;
+    const resultingSpeed = BASE_SPEED + bonusSpeed + sourceItemStats.speed;
+    return resultingHp >= 1 && resultingSpeed >= 1;
+  }
+
   moveItem(from: Position, to: Position): void {
     const itemToMove = this.getItemAt(from);
     if (itemToMove === null) {
       return;
     }
 
-    this.setItemAt(from, null);
+    const itemAtTarget = this.getItemAt(to);
+    this.setItemAt(from, itemAtTarget);
     this.setItemAt(to, itemToMove);
   }
 
-  private getItemAt(position: Position): ForgedItemData | null {
+  getItemAt(position: Position): ForgedItemData | null {
     const items = this.getItemsForPosition(position);
     const index = position.type === 'backpack' ? position.index : position.slot;
     return items[index];

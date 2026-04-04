@@ -1,7 +1,12 @@
 import { Component, computed, inject } from '@angular/core';
 import { IconComponent, ItemDisplayComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
-import { GameLoopStateService, Position } from './game-loop-state.service';
+import {
+  GameLoopStateService,
+  ForgedItemData,
+  MoveMode,
+  Position,
+} from './game-loop-state.service';
 import { InterfaceIconRegistry } from '../common/interface-icon-registry';
 import { Item } from '@dream/game-board';
 
@@ -16,6 +21,7 @@ import { Item } from '@dream/game-board';
           class="equip-slot"
           [class.filled]="item?.item !== null"
           [class.move-mode]="isSlotInMoveMode('equip', $index)"
+          [class.shake]="isSlotShaking('equip', $index)"
           (click)="onSlotClick('equip', $index)"
           [attr.data-testid]="'equip-slot-' + $index"
         >
@@ -33,6 +39,7 @@ import { Item } from '@dream/game-board';
             class="backpack-slot"
             [class.filled]="item !== null"
             [class.move-mode]="isSlotInMoveMode('backpack', $index)"
+            [class.shake]="isSlotShaking('backpack', $index)"
             (click)="onSlotClick('backpack', $index)"
             [attr.data-testid]="'backpack-slot-' + $index"
           >
@@ -90,6 +97,11 @@ export class BackpackViewComponent {
     );
   }
 
+  isSlotShaking(area: 'equip' | 'backpack', index: number): boolean {
+    const shake = this.service.shakeSlot();
+    return shake !== null && shake.area === area && shake.index === index;
+  }
+
   onSlotClick(area: 'equip' | 'backpack', index: number): void {
     const items = area === 'equip' ? this.equippedItems : this.backpackItems;
     const itemData = items()[index];
@@ -118,11 +130,40 @@ export class BackpackViewComponent {
     const moveMode = this.service.moveMode();
     if (!moveMode) return;
 
+    if (area === 'equip' && !this.canEquipToSlot(moveMode, index)) {
+      this.triggerEquipShake(moveMode.fromIndex, moveMode.fromArea);
+      this.service.moveMode.set(null);
+      return;
+    }
+
     const from = this.positionFromMoveMode(moveMode);
     const to = this.indexToPosition(area, index);
 
     this.service.moveItem(from, to);
     this.service.moveMode.set(null);
+  }
+
+  private canEquipToSlot(moveMode: MoveMode, targetSlotIndex: number): boolean {
+    const sourceItem = this.getMoveSourceItem(moveMode);
+    return this.service.canEquipToSlot(
+      sourceItem.stats,
+      moveMode.fromArea,
+      moveMode.fromIndex,
+      'equip',
+      targetSlotIndex,
+    );
+  }
+
+  private getMoveSourceItem(moveMode: MoveMode): ForgedItemData {
+    const items =
+      moveMode.fromArea === 'equip'
+        ? this.service.equippedItems()
+        : this.service.backpackItems();
+    return items[moveMode.fromIndex]!;
+  }
+
+  private triggerEquipShake(index: number, area: 'equip' | 'backpack'): void {
+    this.service.triggerShake(area, index);
   }
 
   private positionFromMoveMode(moveMode: any): Position {
