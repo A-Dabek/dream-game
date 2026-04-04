@@ -206,7 +206,7 @@ describe('GameLoopStateService', () => {
       );
     });
 
-    it.skip('should allow equip-to-equip swap when stats are unchanged', () => {
+    it('should allow equip-to-equip swap when stats stay valid', () => {
       const itemA = createForgedItem('sticking_plaster', { hp: -2, speed: 3 });
       const itemB = createForgedItem('wingfoot', { hp: 3, speed: -2 });
       service.equippedItems.set([itemA, itemB, null, null, null]);

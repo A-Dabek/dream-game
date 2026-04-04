@@ -122,21 +122,36 @@ export class GameLoopStateService {
     let bonusHp = 0;
     let bonusSpeed = 0;
 
+    // Capture the target item's stats before the loop (for equip-to-equip swaps)
+    const targetItem =
+      targetArea === 'equip' ? equipped[targetIndex] : null;
+
     // Calculate what bonuses the equip slots would have AFTER the swap
     for (let i = 0; i < equipped.length; i++) {
       const item = equipped[i];
       if (!item) continue;
       // Skip the source slot (item being moved away)
       if (fromArea === 'equip' && i === fromIndex) continue;
-      // Skip the target slot (item being kicked out)
+      // Skip the target slot — for equip targets it moves to source slot,
+      // so we must not count it here (handled below)
       if (targetArea === 'equip' && i === targetIndex) continue;
       bonusHp += item.stats.hp;
       bonusSpeed += item.stats.speed;
     }
 
-    // Add the source item's contribution
-    const resultingHp = BASE_HP + bonusHp + sourceItemStats.hp;
-    const resultingSpeed = BASE_SPEED + bonusSpeed + sourceItemStats.speed;
+    // Add the source item's contribution (it goes to the target slot)
+    bonusHp += sourceItemStats.hp;
+    bonusSpeed += sourceItemStats.speed;
+
+    // For equip-to-equip swaps, the target item moves to the source slot
+    // so its stats also stay in the equipped pool
+    if (fromArea === 'equip' && targetItem) {
+      bonusHp += targetItem.stats.hp;
+      bonusSpeed += targetItem.stats.speed;
+    }
+
+    const resultingHp = BASE_HP + bonusHp;
+    const resultingSpeed = BASE_SPEED + bonusSpeed;
     return resultingHp >= 1 && resultingSpeed >= 1;
   }
 

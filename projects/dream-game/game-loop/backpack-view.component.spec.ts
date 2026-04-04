@@ -202,14 +202,18 @@ describe('BackpackViewComponent', () => {
     expect(service.backpackItems()[0]).toBe(item); // item stays in backpack
   });
 
-  it.skip('should swap equip slot items when both items stay valid', () => {
+  it('should swap equip slot items when both items stay valid', () => {
     const itemA = createForgedItem('sticking_plaster', { hp: 2, speed: -1 });
     const itemB = createForgedItem('wingfoot', { hp: -1, speed: 2 });
     service.equippedItems.set([itemA, itemB, null, null, null]);
 
     fixture.detectChanges();
-    fixture.nativeElement.querySelector('[data-testid="equip-slot-0"]').click(); // pick up itemA
-    fixture.nativeElement.querySelector('[data-testid="equip-slot-1"]').click(); // drop on itemB
+    fixture.nativeElement
+      .querySelector('[data-testid="equip-slot-0"]')
+      .click(); // pick up itemA
+    fixture.nativeElement
+      .querySelector('[data-testid="equip-slot-1"]')
+      .click(); // drop on itemB
 
     expect(service.equippedItems()[0]).toBe(itemB);
     expect(service.equippedItems()[1]).toBe(itemA);
