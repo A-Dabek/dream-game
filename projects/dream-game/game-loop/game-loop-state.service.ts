@@ -123,8 +123,7 @@ export class GameLoopStateService {
     let bonusSpeed = 0;
 
     // Capture the target item's stats before the loop (for equip-to-equip swaps)
-    const targetItem =
-      targetArea === 'equip' ? equipped[targetIndex] : null;
+    const targetItem = targetArea === 'equip' ? equipped[targetIndex] : null;
 
     // Calculate what bonuses the equip slots would have AFTER the swap
     for (let i = 0; i < equipped.length; i++) {
@@ -153,6 +152,27 @@ export class GameLoopStateService {
     const resultingHp = BASE_HP + bonusHp;
     const resultingSpeed = BASE_SPEED + bonusSpeed;
     return resultingHp >= 1 && resultingSpeed >= 1;
+  }
+
+  canUnequipItem(equipSlotIndex: number): boolean {
+    const equipped = this.equippedItems();
+    const itemToRemove = equipped[equipSlotIndex];
+    if (!itemToRemove) return true;
+
+    let bonusHp = 0;
+    let bonusSpeed = 0;
+    for (let i = 0; i < equipped.length; i++) {
+      if (i === equipSlotIndex) continue;
+      const item = equipped[i];
+      if (item) {
+        bonusHp += item.stats.hp;
+        bonusSpeed += item.stats.speed;
+      }
+    }
+
+    const remainingHp = BASE_HP + bonusHp;
+    const remainingSpeed = BASE_SPEED + bonusSpeed;
+    return remainingHp >= 1 && remainingSpeed >= 1;
   }
 
   moveItem(from: Position, to: Position): void {

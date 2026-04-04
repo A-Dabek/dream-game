@@ -208,12 +208,8 @@ describe('BackpackViewComponent', () => {
     service.equippedItems.set([itemA, itemB, null, null, null]);
 
     fixture.detectChanges();
-    fixture.nativeElement
-      .querySelector('[data-testid="equip-slot-0"]')
-      .click(); // pick up itemA
-    fixture.nativeElement
-      .querySelector('[data-testid="equip-slot-1"]')
-      .click(); // drop on itemB
+    fixture.nativeElement.querySelector('[data-testid="equip-slot-0"]').click(); // pick up itemA
+    fixture.nativeElement.querySelector('[data-testid="equip-slot-1"]').click(); // drop on itemB
 
     expect(service.equippedItems()[0]).toBe(itemB);
     expect(service.equippedItems()[1]).toBe(itemA);

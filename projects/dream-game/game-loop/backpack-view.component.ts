@@ -136,6 +136,12 @@ export class BackpackViewComponent {
       return;
     }
 
+    if (moveMode.fromArea === 'equip' && !this.canUnequip(moveMode, area)) {
+      this.triggerEquipShake(moveMode.fromIndex, moveMode.fromArea);
+      this.service.moveMode.set(null);
+      return;
+    }
+
     const from = this.positionFromMoveMode(moveMode);
     const to = this.indexToPosition(area, index);
 
@@ -160,6 +166,15 @@ export class BackpackViewComponent {
         ? this.service.equippedItems()
         : this.service.backpackItems();
     return items[moveMode.fromIndex]!;
+  }
+
+  private canUnequip(
+    moveMode: MoveMode,
+    targetArea: 'equip' | 'backpack',
+  ): boolean {
+    // If dropping on another equip slot (swap), the stats change is handled by canEquipToSlot
+    if (targetArea === 'equip') return true;
+    return this.service.canUnequipItem(moveMode.fromIndex);
   }
 
   private triggerEquipShake(index: number, area: 'equip' | 'backpack'): void {
