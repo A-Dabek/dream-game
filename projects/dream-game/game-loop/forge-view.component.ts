@@ -3,10 +3,11 @@ import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
 import {
   GameLoopStateService,
-  getItemBonusStats,
+  ForgedItemData,
+  forgeItemStats,
 } from './game-loop-state.service';
 import { InterfaceIconRegistry } from '../common/interface-icon-registry';
-import { ItemCardComponent, ItemStats } from '@dream/game-board-ui';
+import { ItemCardComponent } from '@dream/game-board-ui';
 import { ItemId } from '@dream/game-board';
 
 // Basic items pool for forging (excluding blueprints)
@@ -39,8 +40,8 @@ const ANIMATION_DURATION_MS = 300;
         [class.animating]="isAnimating()"
         data-testid="card-wrapper"
       >
-        @if (craftedItem(); as item) {
-          <app-item-card [itemId]="item.id" [stats]="itemStats(item.id)" />
+        @if (craftedItem(); as itemData) {
+          <app-item-card [itemId]="itemData.item.id" [stats]="itemData.stats" />
         } @else {
           <div class="empty-card" data-testid="empty-card">
             <span class="question-mark">?</span>
@@ -82,7 +83,7 @@ export class ForgeViewComponent {
   readonly CRAFT_COST = CRAFT_COST;
 
   readonly isAnimating = signal(false);
-  readonly craftedItem = signal<{ id: ItemId } | null>(null);
+  readonly craftedItem = signal<ForgedItemData | null>(null);
 
   readonly matrices = computed(() => this.service.playerStats().matrices);
 
@@ -110,10 +111,6 @@ export class ForgeViewComponent {
     InterfaceIconRegistry.resolveIconPath(COST_ICON),
   );
 
-  itemStats(itemId: ItemId): ItemStats {
-    return getItemBonusStats(itemId);
-  }
-
   craft(): void {
     if (!this.canCraft()) {
       return;
@@ -122,18 +119,18 @@ export class ForgeViewComponent {
     this.service.deductMatrices(CRAFT_COST);
 
     const itemId = this.getRandomItemId();
+    const stats = forgeItemStats();
 
     this.isAnimating.set(true);
 
     setTimeout(() => {
-      this.craftedItem.set({ id: itemId });
+      const item = { id: itemId, genre: 'basic' as const, remainingUsages: 1 };
+      const forgedItem = { item, stats };
+
+      this.craftedItem.set(forgedItem);
       this.isAnimating.set(false);
 
-      this.service.addItemToBackpack({
-        id: itemId,
-        genre: 'basic',
-        remainingUsages: 1,
-      });
+      this.service.addItemToBackpack(forgedItem);
     }, ANIMATION_DURATION_MS);
   }
 

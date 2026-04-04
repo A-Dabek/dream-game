@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Item, ItemId } from '@dream/game-board';
+import { biasedRoll, Item } from '@dream/game-board';
 import { CampaignService, EnemyConfig } from './campaign.service';
 
 export interface PlayerStats {
@@ -20,6 +20,11 @@ export interface MoveMode {
   fromIndex: number;
 }
 
+export interface ForgedItemData {
+  item: Item;
+  stats: ItemBonusStats;
+}
+
 // Base stats - player starts with these
 const BASE_HP = 1;
 const BASE_SPEED = 1;
@@ -30,17 +35,9 @@ export interface ItemBonusStats {
   speed: number;
 }
 
-// Stats lookup for items (hp/speed bonuses)
-const ITEM_STATS: Partial<Record<ItemId, ItemBonusStats>> = {
-  hand: { hp: 0, speed: 0 },
-  punch: { hp: 0, speed: 0 },
-  sticking_plaster: { hp: 10, speed: 0 },
-  sticky_boot: { hp: 0, speed: -2 },
-  wingfoot: { hp: 0, speed: 5 },
-};
-
-export function getItemBonusStats(itemId: ItemId): ItemBonusStats {
-  return ITEM_STATS[itemId] ?? { hp: 0, speed: 0 };
+export function forgeItemStats(): ItemBonusStats {
+  const roll = biasedRoll();
+  return { hp: roll, speed: 5 - roll };
 }
 
 @Injectable({
@@ -52,8 +49,12 @@ export class GameLoopStateService {
 
   readonly matrices = signal(BASE_MATRICES);
 
-  readonly backpackItems = signal<(Item | null)[]>(Array(1).fill(null));
-  readonly equippedItems = signal<(Item | null)[]>(Array(5).fill(null));
+  readonly backpackItems = signal<(ForgedItemData | null)[]>(
+    Array(1).fill(null),
+  );
+  readonly equippedItems = signal<(ForgedItemData | null)[]>(
+    Array(5).fill(null),
+  );
   readonly backpackRows = signal<number>(1);
   readonly moveMode = signal<MoveMode | null>(null);
   readonly currentEnemy = signal<EnemyConfig | null>(null);
@@ -64,19 +65,16 @@ export class GameLoopStateService {
     let bonusHp = 0;
     let bonusSpeed = 0;
 
-    for (const item of equipped) {
-      if (item) {
-        const stats = ITEM_STATS[item.id];
-        if (stats) {
-          bonusHp += stats.hp;
-          bonusSpeed += stats.speed;
-        }
+    for (const itemData of equipped) {
+      if (itemData) {
+        bonusHp += itemData.stats.hp;
+        bonusSpeed += itemData.stats.speed;
       }
     }
 
     return {
-      hp: BASE_HP + bonusHp,
-      speed: BASE_SPEED + bonusSpeed,
+      hp: Math.max(1, BASE_HP + bonusHp),
+      speed: Math.max(1, BASE_SPEED + bonusSpeed),
       matrices: this.matrices(),
     };
   });
@@ -90,11 +88,11 @@ export class GameLoopStateService {
     this.currentEnemy.set(null);
   }
 
-  addItemToBackpack(item: Item): void {
+  addItemToBackpack(forgedItem: ForgedItemData): void {
     const currentItems = this.backpackItems();
     const emptyIndex = currentItems.indexOf(null);
     if (emptyIndex !== -1) {
-      currentItems[emptyIndex] = item;
+      currentItems[emptyIndex] = forgedItem;
       this.backpackItems.set([...currentItems]);
     } else {
       // If no empty slot, perhaps expand, but for now, do nothing
@@ -111,25 +109,27 @@ export class GameLoopStateService {
     this.setItemAt(to, itemToMove);
   }
 
-  private getItemAt(position: Position): Item | null {
+  private getItemAt(position: Position): ForgedItemData | null {
     const items = this.getItemsForPosition(position);
     const index = position.type === 'backpack' ? position.index : position.slot;
     return items[index];
   }
 
-  private setItemAt(position: Position, item: Item | null): void {
+  private setItemAt(position: Position, itemData: ForgedItemData | null): void {
     const itemsSignal =
       position.type === 'backpack' ? this.backpackItems : this.equippedItems;
     const index = position.type === 'backpack' ? position.index : position.slot;
 
     itemsSignal.update((items) => {
       const updated = [...items];
-      updated[index] = item;
+      updated[index] = itemData;
       return updated;
     });
   }
 
-  private getItemsForPosition(position: Position): readonly (Item | null)[] {
+  private getItemsForPosition(
+    position: Position,
+  ): readonly (ForgedItemData | null)[] {
     return position.type === 'backpack'
       ? this.backpackItems()
       : this.equippedItems();
@@ -158,8 +158,8 @@ export class GameLoopStateService {
 
     const equipped = this.equippedItems();
     const itemIds = equipped
-      .filter((item): item is Item => item !== null)
-      .map((item) => item.id)
+      .filter((item): item is ForgedItemData => item !== null)
+      .map((item) => item.item.id)
       .join(',');
     const stats = this.playerStats();
 

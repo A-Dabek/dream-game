@@ -11,16 +11,16 @@ import { Item } from '@dream/game-board';
   imports: [IconComponent, ButtonComponent, ItemDisplayComponent],
   template: `
     <section class="equipment-section" data-testid="equipment-section">
-      @for (item of equippedItems(); track item; let i = $index) {
+      @for (item of equippedItems(); track $index) {
         <div
           class="equip-slot"
-          [class.filled]="item !== null"
-          [class.move-mode]="isSlotInMoveMode('equip', i)"
-          (click)="onSlotClick('equip', i)"
-          [attr.data-testid]="'equip-slot-' + i"
+          [class.filled]="item?.item !== null"
+          [class.move-mode]="isSlotInMoveMode('equip', $index)"
+          (click)="onSlotClick('equip', $index)"
+          [attr.data-testid]="'equip-slot-' + $index"
         >
           @if (item) {
-            <app-item-display [item]="item" />
+            <app-item-display [item]="item.item" />
           }
         </div>
       }
@@ -28,16 +28,16 @@ import { Item } from '@dream/game-board';
 
     <section class="backpack-section" data-testid="backpack-section">
       <div class="backpack-grid">
-        @for (item of backpackItems(); track item; let i = $index) {
+        @for (item of backpackItems(); track $index) {
           <div
             class="backpack-slot"
             [class.filled]="item !== null"
-            [class.move-mode]="isSlotInMoveMode('backpack', i)"
-            (click)="onSlotClick('backpack', i)"
-            [attr.data-testid]="'backpack-slot-' + i"
+            [class.move-mode]="isSlotInMoveMode('backpack', $index)"
+            (click)="onSlotClick('backpack', $index)"
+            [attr.data-testid]="'backpack-slot-' + $index"
           >
             @if (item) {
-              <app-item-display [item]="item" />
+              <app-item-display [item]="item.item" />
             }
           </div>
         }
@@ -92,10 +92,10 @@ export class BackpackViewComponent {
 
   onSlotClick(area: 'equip' | 'backpack', index: number): void {
     const items = area === 'equip' ? this.equippedItems : this.backpackItems;
-    const item = items()[index];
+    const itemData = items()[index];
 
-    if (item && this.service.moveMode() === null) {
-      this.startMove(area, index, item);
+    if (itemData && this.service.moveMode() === null) {
+      this.startMove(area, index, itemData.item);
     } else if (this.service.moveMode() !== null) {
       this.completeMove(area, index);
     }

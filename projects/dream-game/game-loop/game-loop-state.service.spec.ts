@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { GameLoopStateService } from './game-loop-state.service';
+import {
+  GameLoopStateService,
+  forgeItemStats,
+} from './game-loop-state.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import type { ItemId } from '@dream/game-board';
 
 describe('GameLoopStateService', () => {
   let service: GameLoopStateService;
@@ -48,20 +52,46 @@ describe('GameLoopStateService', () => {
     });
 
     it('should include equipped item stats', () => {
-      // Add item to equipped slot - sticking_plaster gives +10 hp
-      service.equippedItems.set([
-        { id: 'sticking_plaster', genre: 'basic', remainingUsages: 1 },
-        null,
-        null,
-        null,
-        null,
-      ]);
+      const stats = forgeItemStats();
+      const forgedItem: {
+        item: { id: ItemId; genre: 'basic'; remainingUsages: number };
+        stats: { hp: number; speed: number };
+      } = {
+        item: {
+          id: 'sticking_plaster' as ItemId,
+          genre: 'basic',
+          remainingUsages: 1,
+        },
+        stats,
+      };
+      service.equippedItems.set([forgedItem, null, null, null, null]);
 
       service.setEnemy({ items: 'hand', health: 5, speed: 1 });
       const state = service.buildFightState();
 
       expect(state).toContain('sticking_plaster');
-      expect(state).toContain('11'); // base hp 1 + 10 from item
+      expect(state).toContain(String(1 + stats.hp)); // base hp 1 + item hp
+    });
+
+    it('should clamp hp and speed to minimum of 1', () => {
+      const negativeItem: {
+        item: { id: ItemId; genre: 'basic'; remainingUsages: number };
+        stats: { hp: number; speed: number };
+      } = {
+        item: { id: 'wingfoot' as ItemId, genre: 'basic', remainingUsages: 1 },
+        stats: { hp: -10, speed: -10 },
+      };
+      service.equippedItems.set([
+        negativeItem,
+        negativeItem,
+        negativeItem,
+        negativeItem,
+        negativeItem,
+      ]);
+
+      const stats = service.playerStats();
+      expect(stats.hp).toBeGreaterThanOrEqual(1);
+      expect(stats.speed).toBeGreaterThanOrEqual(1);
     });
   });
 });
