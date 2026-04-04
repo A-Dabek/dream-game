@@ -7,7 +7,7 @@ import {
   MoveMode,
   Position,
 } from './game-loop-state.service';
-import { InterfaceIconRegistry } from '../common/interface-icon-registry';
+import { resolveIcon } from '../common/interface-icon-registry';
 import { Item } from '@dream/game-board';
 
 @Component({
@@ -58,14 +58,14 @@ import { Item } from '@dream/game-board';
           [disabled]="!canExpand()"
           (click)="expandBackpack()"
         >
-          Expand <app-icon [pathD]="matrixIconPath()" /> 1
+          Expand <app-icon [pathD]="matrixIconPath" /> 1
         </app-button>
         <app-button
           data-testid="fight-btn"
           [variant]="'secondary'"
-          (click)="fight()"
+          (click)="service.startFight()"
         >
-          Fight <app-icon [pathD]="swordIconPath()" />
+          Fight <app-icon [pathD]="swordIconPath" />
         </app-button>
       </div>
     </section>
@@ -77,23 +77,17 @@ export class BackpackViewComponent {
 
   readonly equippedItems = this.service.equippedItems;
   readonly backpackItems = this.service.backpackItems;
-  readonly isMoveModeActive = computed(() => this.service.moveMode() !== null);
-  readonly matrices = computed(() => this.service.playerStats().matrices);
-  readonly matrixIconPath = computed(() =>
-    InterfaceIconRegistry.resolveIconPath('matrices'),
-  );
-  readonly swordIconPath = computed(() =>
-    InterfaceIconRegistry.resolveIconPath('sword'),
-  );
+  readonly matrixIconPath = resolveIcon('matrices');
+  readonly swordIconPath = resolveIcon('sword');
 
-  readonly canExpand = computed(() => this.matrices() >= 1);
+  readonly canExpand = computed(() => this.service.matrices() >= 1);
 
   isSlotInMoveMode(area: 'equip' | 'backpack', index: number): boolean {
     const moveMode = this.service.moveMode();
     return (
-      this.isMoveModeActive() &&
-      moveMode?.fromArea === area &&
-      moveMode?.fromIndex === index
+      moveMode !== null &&
+      moveMode.fromArea === area &&
+      moveMode.fromIndex === index
     );
   }
 
@@ -142,8 +136,8 @@ export class BackpackViewComponent {
       return;
     }
 
-    const from = this.positionFromMoveMode(moveMode);
-    const to = this.indexToPosition(area, index);
+    const from = this.toPosition(moveMode.fromArea, moveMode.fromIndex);
+    const to = this.toPosition(area, index);
 
     this.service.moveItem(from, to);
     this.service.moveMode.set(null);
@@ -181,23 +175,13 @@ export class BackpackViewComponent {
     this.service.triggerShake(area, index);
   }
 
-  private positionFromMoveMode(moveMode: any): Position {
-    return moveMode.fromArea === 'equip'
-      ? { type: 'equipped' as const, slot: moveMode.fromIndex }
-      : { type: 'backpack' as const, index: moveMode.fromIndex };
-  }
-
-  private indexToPosition(area: 'equip' | 'backpack', index: number): Position {
+  private toPosition(area: 'equip' | 'backpack', index: number): Position {
     return area === 'equip'
-      ? { type: 'equipped' as const, slot: index }
-      : { type: 'backpack' as const, index };
+      ? { type: 'equipped', slot: index }
+      : { type: 'backpack', index };
   }
 
   expandBackpack(): void {
     this.service.expandBackpack();
-  }
-
-  fight(): void {
-    this.service.startFight();
   }
 }

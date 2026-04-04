@@ -13,3 +13,7 @@ export class InterfaceIconRegistry {
     return path;
   }
 }
+
+export function resolveIcon(name: InterfaceIconName): string {
+  return InterfaceIconRegistry.resolveIconPath(name);
+}

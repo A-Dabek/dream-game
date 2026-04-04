@@ -61,22 +61,16 @@ export class GameLoopStateService {
 
   // Computed stats based on base + equipped items
   readonly playerStats = computed<PlayerStats>(() => {
-    const equipped = this.equippedItems();
-    let bonusHp = 0;
-    let bonusSpeed = 0;
-
-    for (const itemData of equipped) {
-      if (itemData) {
-        bonusHp += itemData.stats.hp;
-        bonusSpeed += itemData.stats.speed;
-      }
-    }
-
+    const bonuses = this.equippedBonuses();
     return {
-      hp: Math.max(1, BASE_HP + bonusHp),
-      speed: Math.max(1, BASE_SPEED + bonusSpeed),
+      hp: Math.max(1, BASE_HP + bonuses.bonusHp),
+      speed: Math.max(1, BASE_SPEED + bonuses.bonusSpeed),
       matrices: this.matrices(),
     };
+  });
+
+  private equippedBonuses = computed(() => {
+    return this.calculateEquippedBonuses(null);
   });
 
   resetRun(): void {
@@ -156,23 +150,30 @@ export class GameLoopStateService {
 
   canUnequipItem(equipSlotIndex: number): boolean {
     const equipped = this.equippedItems();
-    const itemToRemove = equipped[equipSlotIndex];
-    if (!itemToRemove) return true;
+    if (!equipped[equipSlotIndex]) return true;
 
+    const bonuses = this.calculateEquippedBonuses(equipSlotIndex);
+    return (
+      BASE_HP + bonuses.bonusHp >= 1 && BASE_SPEED + bonuses.bonusSpeed >= 1
+    );
+  }
+
+  private calculateEquippedBonuses(excludeSlotIndex: number | null): {
+    bonusHp: number;
+    bonusSpeed: number;
+  } {
+    const equipped = this.equippedItems();
     let bonusHp = 0;
     let bonusSpeed = 0;
     for (let i = 0; i < equipped.length; i++) {
-      if (i === equipSlotIndex) continue;
+      if (i === excludeSlotIndex) continue;
       const item = equipped[i];
       if (item) {
         bonusHp += item.stats.hp;
         bonusSpeed += item.stats.speed;
       }
     }
-
-    const remainingHp = BASE_HP + bonusHp;
-    const remainingSpeed = BASE_SPEED + bonusSpeed;
-    return remainingHp >= 1 && remainingSpeed >= 1;
+    return { bonusHp, bonusSpeed };
   }
 
   moveItem(from: Position, to: Position): void {
