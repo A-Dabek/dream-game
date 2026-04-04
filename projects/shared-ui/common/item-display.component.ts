@@ -19,6 +19,10 @@ import { ItemConventionRegistry } from '@dream/game-board-ui';
     }
     <app-icon [pathD]="pathD()" [color]="color()" />
     <div class="label">{{ label() }}</div>
+    @if (stats(); as s) {
+      <span class="stat-hp">{{ s.hp > 0 ? '+' : '' }}{{ s.hp }}</span>
+      <span class="stat-speed">{{ s.speed > 0 ? '+' : '' }}{{ s.speed }}</span>
+    }
   `,
   styleUrls: ['./item-display.component.scss'],
   host: {
@@ -28,6 +32,7 @@ import { ItemConventionRegistry } from '@dream/game-board-ui';
 export class ItemDisplayComponent {
   readonly item = input.required<Item>();
   readonly active = input(false);
+  readonly stats = input<{ hp: number; speed: number } | null>(null);
 
   readonly pathD = computed(() => {
     try {

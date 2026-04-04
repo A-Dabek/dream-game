@@ -20,7 +20,7 @@ import { Item } from '@dream/game-board';
           [attr.data-testid]="'equip-slot-' + $index"
         >
           @if (item) {
-            <app-item-display [item]="item.item" />
+            <app-item-display [item]="item.item" [stats]="item.stats" />
           }
         </div>
       }
@@ -37,7 +37,7 @@ import { Item } from '@dream/game-board';
             [attr.data-testid]="'backpack-slot-' + $index"
           >
             @if (item) {
-              <app-item-display [item]="item.item" />
+              <app-item-display [item]="item.item" [stats]="item.stats" />
             }
           </div>
         }

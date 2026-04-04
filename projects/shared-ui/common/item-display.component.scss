@@ -52,3 +52,21 @@ app-icon {
 .disable-animations :host {
   transition: none;
 }
+
+.stat-hp {
+  position: absolute;
+  bottom: 0.2rem;
+  left: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #4caf50;
+}
+
+.stat-speed {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #2196f3;
+}
