@@ -4,6 +4,8 @@ import {
   effect,
   inject,
   input,
+  OnDestroy,
+  output,
   signal,
 } from '@angular/core';
 import {
@@ -59,7 +61,7 @@ import { SoundService } from '../board/service/sound.service';
               [player]="humanPlayer().loadout"
               [opponent]="cpuPlayer().loadout"
               [winner]="s.winnerId === humanPlayer().id ? 'player' : 'opponent'"
-              (restart)="handleRestart()"
+              (continue)="continue.emit($event)"
               animate.enter="slide-in"
               animate.leave="slide-out"
             />
@@ -69,7 +71,7 @@ import { SoundService } from '../board/service/sound.service';
     </div>
   `,
 })
-export class GameContainerComponent {
+export class GameContainerComponent implements OnDestroy {
   readonly uiStateService = inject(UiStateService);
 
   private readonly gameService = inject(GameService);
@@ -79,6 +81,8 @@ export class GameContainerComponent {
   private readonly soundService = inject(SoundService);
 
   readonly config = input.required<GamePlayersConfig>();
+  readonly gameEnd = output<{ winnerId: string }>();
+  readonly continue = output<boolean>();
 
   readonly state = this.uiStateService.uiState;
   readonly lastPlayedItem = this.uiStateService.lastPlayedItem;
@@ -102,6 +106,7 @@ export class GameContainerComponent {
       const s = this.state();
       if (s?.isGameOver && this.stage() !== 'post') {
         this.stage.set('post');
+        this.gameEnd.emit({ winnerId: s.winnerId! });
         if (s.winnerId === this.humanPlayer().id) {
           this.soundService.playWin();
         } else {
@@ -111,21 +116,17 @@ export class GameContainerComponent {
     });
   }
 
+  ngOnDestroy(): void {
+    this.uiStateService.clear();
+  }
+
   handleReady() {
     this.stage.set('game');
     void this.gameService.startGame(this.humanPlayer(), this.cpuPlayer());
     const initial = this.gameService.gameState();
-    this.uiStateService.initialize(initial);
-  }
-
-  handleRestart() {
-    this.uiStateService.clear();
-    this.stage.set('pre');
-    // Re-create players on restart to ensure fresh state
-    const config = this.config();
-    const { humanPlayer, cpuPlayer } = this.createPlayers(config);
-    this.humanPlayer.set(humanPlayer);
-    this.cpuPlayer.set(cpuPlayer);
+    if (initial) {
+      this.uiStateService.initialize(initial);
+    }
   }
 
   private createPlayers(config: {

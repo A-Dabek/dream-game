@@ -70,6 +70,7 @@ export class UiStateService {
   }
 
   clear(): void {
+    this.gameService.clear();
     this.logSubscription.unsubscribe();
     this.soundService.stopBackground();
     this._uiState.set(null);

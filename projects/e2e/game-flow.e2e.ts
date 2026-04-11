@@ -63,18 +63,11 @@ test('Full game flow: human wins in 2 moves', async ({ page }) => {
   await expect(playerSection.locator('.headline')).toContainText('Winner');
   await expect(opponentSection.locator('.headline')).toContainText('Loser');
 
-  // 11. Click "New Game"
-  const newGameButton = postGameScreen.getByTestId('new-game-button');
-  await expect(newGameButton).toBeVisible();
-  await newGameButton.click();
+  // 11. Click "Continue"
+  const continueButton = postGameScreen.getByTestId('continue-button');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
 
-  // 12. Pre-game screen is shown again
-  await expect(page.getByTestId('pre-game-screen')).toBeVisible();
-
-  // 13. "Ready" button is clicked again
-  await expect(readyButton).toBeVisible();
-  await readyButton.click();
-
-  // 14. Game board is shown again
-  await expect(page.getByTestId('game-screen')).toBeVisible();
+  // 12. Reward screen is shown
+  await expect(page.getByTestId('reward-view')).toBeVisible();
 });

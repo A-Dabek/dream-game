@@ -41,11 +41,10 @@ import { PlayerHandComponent } from '../board/player-hand.component';
         <button
           type="button"
           class="screen-btn"
-          (click)="restart.emit()"
-          aria-label="Start a new game"
-          data-testid="new-game-button"
+          (click)="continue.emit(playerWon())"
+          data-testid="continue-button"
         >
-          New Game
+          Continue
         </button>
       </section>
     </div>
@@ -59,5 +58,5 @@ export class PostGameScreenComponent {
   readonly playerWon = computed(() => this.winner() === 'player');
   readonly opponentWon = computed(() => this.winner() === 'opponent');
 
-  readonly restart = output<void>();
+  readonly continue = output<boolean>();
 }

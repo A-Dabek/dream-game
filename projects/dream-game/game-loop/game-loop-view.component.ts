@@ -1,6 +1,7 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { GameLoopStateService } from './game-loop-state.service';
+import { ItemManagementService } from './item-management.service';
 import { StatsBarComponent, NavButton } from './stats-bar.component';
 import { DialogComponent } from '../common/dialog.component';
 
@@ -11,7 +12,7 @@ import { DialogComponent } from '../common/dialog.component';
   template: `
     <div class="game-container">
       <app-stats-bar
-        [stats]="stateService.playerStats()"
+        [stats]="itemManagement.playerStats()"
         [navButton]="navButton()"
         data-testid="stats-bar"
       />
@@ -71,6 +72,7 @@ export class GameLoopViewComponent {
 
   private readonly router = inject(Router);
   readonly stateService = inject(GameLoopStateService);
+  readonly itemManagement = inject(ItemManagementService);
   readonly abandonMessage =
     'Are you sure you want to abandon the run? This will reset all progress.';
 
@@ -79,7 +81,11 @@ export class GameLoopViewComponent {
     if (url.includes('/backpack')) {
       return { iconName: 'anvil', text: 'Forge', link: '/game-loop/forge' };
     }
-    if (url.includes('/forge') || url === '/game-loop') {
+    if (
+      url.includes('/forge') ||
+      url.includes('/reward') ||
+      url === '/game-loop'
+    ) {
       return {
         iconName: 'backpack',
         text: 'Backpack',

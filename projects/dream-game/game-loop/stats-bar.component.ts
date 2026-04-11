@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconTextComponent } from '../common/icon-text.component';
 import { InterfaceIconName } from '../common/interface-icon-registry';
-import { PlayerStats } from './game-loop-state.service';
+import { PlayerStats } from './player-progress.service';
 
 export interface NavButton {
   iconName: InterfaceIconName;

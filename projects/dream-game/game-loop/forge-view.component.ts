@@ -6,6 +6,8 @@ import {
   ForgedItemData,
   forgeItemStats,
 } from './game-loop-state.service';
+import { ItemManagementService } from './item-management.service';
+import { PlayerProgressService } from './player-progress.service';
 import { resolveIcon } from '../common/interface-icon-registry';
 import { ItemCardComponent } from '@dream/game-board-ui';
 import { ItemId } from '@dream/game-board';
@@ -78,6 +80,8 @@ const ANIMATION_DURATION_MS = 300;
 })
 export class ForgeViewComponent {
   readonly service = inject(GameLoopStateService);
+  private readonly itemManagement = inject(ItemManagementService);
+  private readonly playerProgress = inject(PlayerProgressService);
 
   // Expose constant to template
   readonly CRAFT_COST = CRAFT_COST;
@@ -86,13 +90,13 @@ export class ForgeViewComponent {
   readonly craftedItem = signal<ForgedItemData | null>(null);
 
   readonly hasBackpackSpace = computed(() => {
-    const items = this.service.backpackItems();
+    const items = this.itemManagement.backpackItems();
     return items.some((item) => item === null);
   });
 
   readonly canCraft = computed(
     () =>
-      this.service.matrices() >= CRAFT_COST &&
+      this.playerProgress.matrices() >= CRAFT_COST &&
       this.hasBackpackSpace() &&
       !this.isAnimating(),
   );
@@ -106,7 +110,7 @@ export class ForgeViewComponent {
       return;
     }
 
-    this.service.deductMatrices(CRAFT_COST);
+    this.playerProgress.deductMatrices(CRAFT_COST);
 
     const itemId = this.getRandomItemId();
     const stats = forgeItemStats();
@@ -120,7 +124,7 @@ export class ForgeViewComponent {
       this.craftedItem.set(forgedItem);
       this.isAnimating.set(false);
 
-      this.service.addItemToBackpack(forgedItem);
+      this.itemManagement.addItemToBackpack(forgedItem);
     }, ANIMATION_DURATION_MS);
   }
 

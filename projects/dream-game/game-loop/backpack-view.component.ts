@@ -1,12 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
 import { IconComponent, ItemDisplayComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
-import {
-  GameLoopStateService,
-  ForgedItemData,
-  MoveMode,
-  Position,
-} from './game-loop-state.service';
+import { MoveMode, Position, ForgedItemData } from './game-loop-state.service';
+import { GameLoopStateService } from './game-loop-state.service';
+import { ItemManagementService } from './item-management.service';
+import { PlayerProgressService } from './player-progress.service';
 import { resolveIcon } from '../common/interface-icon-registry';
 import { Item } from '@dream/game-board';
 
@@ -74,13 +72,15 @@ import { Item } from '@dream/game-board';
 })
 export class BackpackViewComponent {
   readonly service = inject(GameLoopStateService);
+  private readonly itemManagement = inject(ItemManagementService);
+  private readonly playerProgress = inject(PlayerProgressService);
 
-  readonly equippedItems = this.service.equippedItems;
-  readonly backpackItems = this.service.backpackItems;
+  readonly equippedItems = this.itemManagement.equippedItems;
+  readonly backpackItems = this.itemManagement.backpackItems;
   readonly matrixIconPath = resolveIcon('matrices');
   readonly swordIconPath = resolveIcon('sword');
 
-  readonly canExpand = computed(() => this.service.matrices() >= 1);
+  readonly canExpand = computed(() => this.playerProgress.matrices() >= 1);
 
   isSlotInMoveMode(area: 'equip' | 'backpack', index: number): boolean {
     const moveMode = this.service.moveMode();
@@ -92,7 +92,7 @@ export class BackpackViewComponent {
   }
 
   isSlotShaking(area: 'equip' | 'backpack', index: number): boolean {
-    const shake = this.service.shakeSlot();
+    const shake = this.itemManagement.shakeSlot();
     return shake !== null && shake.area === area && shake.index === index;
   }
 
@@ -139,13 +139,13 @@ export class BackpackViewComponent {
     const from = this.toPosition(moveMode.fromArea, moveMode.fromIndex);
     const to = this.toPosition(area, index);
 
-    this.service.moveItem(from, to);
+    this.itemManagement.moveItem(from, to);
     this.service.moveMode.set(null);
   }
 
   private canEquipToSlot(moveMode: MoveMode, targetSlotIndex: number): boolean {
     const sourceItem = this.getMoveSourceItem(moveMode);
-    return this.service.canEquipToSlot(
+    return this.itemManagement.canEquipToSlot(
       sourceItem.stats,
       moveMode.fromArea,
       moveMode.fromIndex,
@@ -157,8 +157,8 @@ export class BackpackViewComponent {
   private getMoveSourceItem(moveMode: MoveMode): ForgedItemData {
     const items =
       moveMode.fromArea === 'equip'
-        ? this.service.equippedItems()
-        : this.service.backpackItems();
+        ? this.itemManagement.equippedItems()
+        : this.itemManagement.backpackItems();
     return items[moveMode.fromIndex]!;
   }
 
@@ -168,11 +168,11 @@ export class BackpackViewComponent {
   ): boolean {
     // If dropping on another equip slot (swap), the stats change is handled by canEquipToSlot
     if (targetArea === 'equip') return true;
-    return this.service.canUnequipItem(moveMode.fromIndex);
+    return this.itemManagement.canUnequipItem(moveMode.fromIndex);
   }
 
   private triggerEquipShake(index: number, area: 'equip' | 'backpack'): void {
-    this.service.triggerShake(area, index);
+    this.itemManagement.triggerShake(area, index);
   }
 
   private toPosition(area: 'equip' | 'backpack', index: number): Position {
@@ -182,6 +182,6 @@ export class BackpackViewComponent {
   }
 
   expandBackpack(): void {
-    this.service.expandBackpack();
+    this.itemManagement.expandBackpack();
   }
 }

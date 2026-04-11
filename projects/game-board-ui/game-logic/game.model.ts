@@ -3,7 +3,7 @@ import { Board, GameState, Player, LogEntry } from '@dream/game-board';
 import { Observable } from 'rxjs';
 
 export interface GameServiceInterface {
-  readonly gameState: Signal<GameState>;
+  readonly gameState: Signal<GameState | null>;
   readonly logs$: Observable<LogEntry[]>;
 
   /**
@@ -15,4 +15,9 @@ export interface GameServiceInterface {
    * @returns The board state after the game is over.
    */
   startGame(player1: Player, player2: Player): Promise<Board>;
+
+  /**
+   * Resets the internal state and subjects.
+   */
+  clear(): void;
 }

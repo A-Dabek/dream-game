@@ -84,6 +84,7 @@ describe('UiStateService - Status Effects', () => {
           useValue: {
             logs$: logsSubject.asObservable(),
             gameState: vi.fn().mockReturnValue(null),
+            clear: vi.fn(),
           },
         },
         {
