@@ -10,18 +10,14 @@ import {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="center-content">
-      <div class="health-bar-container">
-        <div class="health-bar">
-          <div
-            class="health-fill"
-            [class.player-health]="variant() === 'player'"
-            [class.opponent-health]="variant() === 'opponent'"
-            [style.width.%]="healthPercent()"
-          ></div>
-          <span class="health-text">{{ health() }} / {{ maxHealth() }}</span>
-        </div>
-      </div>
+    <div class="health-bar">
+      <div
+        class="health-fill"
+        [class.player-health]="variant() === 'player'"
+        [class.opponent-health]="variant() === 'opponent'"
+        [style.width.%]="healthPercent()"
+      ></div>
+      <span class="health-text">{{ health() }} / {{ maxHealth() }}</span>
     </div>
   `,
 })
