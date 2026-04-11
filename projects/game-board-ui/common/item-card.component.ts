@@ -19,9 +19,13 @@ export interface ItemStats {
   imports: [IconComponent],
   template: `
     <div class="card-content">
-      <app-icon [pathD]="iconPath()" class="item-icon" />
-      <h2 class="item-name">{{ displayName() }}</h2>
-      <p class="item-description">{{ description() }}</p>
+      <div class="item-header">
+        <app-icon [pathD]="iconPath()" class="item-icon" />
+        <div class="item-info">
+          <h2 class="item-name">{{ displayName() }}</h2>
+          <p class="item-description">{{ description() }}</p>
+        </div>
+      </div>
       @if (stats(); as itemStats) {
         <div class="item-stats">
           <span class="stat hp">HP: {{ itemStats.hp }}</span>
