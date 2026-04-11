@@ -84,7 +84,6 @@ describe('UiStateService - Status Effects', () => {
           useValue: {
             logs$: logsSubject.asObservable(),
             gameState: vi.fn().mockReturnValue(null),
-            clear: vi.fn(),
           },
         },
         {
@@ -131,16 +130,13 @@ describe('UiStateService - Status Effects', () => {
       expect(service.uiState()?.playerStatusEffects[0].genre).toBe('poison');
     });
 
-    it('should reset state when clear() is called', () => {
+    it('should call ngOnDestroy to clean up', () => {
       const soundService = TestBed.inject(SoundService);
       service.initialize(mockGameState());
       expect(service.uiState()).not.toBeNull();
 
-      service.clear();
+      service.ngOnDestroy();
 
-      expect(service.uiState()).toBeNull();
-      expect(service.lastPlayedItem()).toBeNull();
-      expect(service.actionHistory()).toEqual([]);
       expect(soundService.stopBackground).toHaveBeenCalled();
     });
   });

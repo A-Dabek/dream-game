@@ -15,9 +15,4 @@ export interface GameServiceInterface {
    * @returns The board state after the game is over.
    */
   startGame(player1: Player, player2: Player): Promise<Board>;
-
-  /**
-   * Resets the internal state and subjects.
-   */
-  clear(): void;
 }

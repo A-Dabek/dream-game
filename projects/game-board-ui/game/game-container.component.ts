@@ -4,7 +4,6 @@ import {
   effect,
   inject,
   input,
-  OnDestroy,
   output,
   signal,
 } from '@angular/core';
@@ -26,6 +25,7 @@ import { SoundService } from '../board/service/sound.service';
   selector: 'app-game-container',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [BoardUiComponent, PreGameScreenComponent, PostGameScreenComponent],
+  providers: [GameService, UiStateService],
   template: `
     <div class="screens-container" data-testid="game-container">
       @switch (stage()) {
@@ -71,7 +71,7 @@ import { SoundService } from '../board/service/sound.service';
     </div>
   `,
 })
-export class GameContainerComponent implements OnDestroy {
+export class GameContainerComponent {
   readonly uiStateService = inject(UiStateService);
 
   private readonly gameService = inject(GameService);
@@ -114,10 +114,6 @@ export class GameContainerComponent implements OnDestroy {
         }
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.uiStateService.clear();
   }
 
   handleReady() {

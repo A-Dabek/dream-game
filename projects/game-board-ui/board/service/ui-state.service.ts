@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import {
   GameAction,
@@ -18,10 +18,8 @@ import { SoundService } from './sound.service';
 import { UiGameState } from '../ui-game-state';
 import { mapEngineStateToUiState, mapToUiState } from '../ui-state-mapper';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class UiStateService {
+@Injectable()
+export class UiStateService implements OnDestroy {
   private static readonly delayStorageKey = 'dream-game:delay';
   private readonly defaultDelay = 200;
   private cachedDelay: number | null = null;
@@ -69,14 +67,9 @@ export class UiStateService {
       .subscribe();
   }
 
-  clear(): void {
-    this.gameService.clear();
+  ngOnDestroy(): void {
     this.logSubscription.unsubscribe();
     this.soundService.stopBackground();
-    this._uiState.set(null);
-    this._lastPlayedItem.set(null);
-    this._actionHistory.set([]);
-    this.lastObservedActionCount = 0;
   }
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {

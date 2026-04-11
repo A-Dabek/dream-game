@@ -11,7 +11,9 @@ describe('GameService', () => {
   let humanInputService: HumanInputService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [GameService],
+    });
     service = TestBed.inject(GameService);
     humanInputService = TestBed.inject(HumanInputService);
   });

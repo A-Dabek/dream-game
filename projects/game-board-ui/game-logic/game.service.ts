@@ -10,9 +10,7 @@ import {
 import { Subject } from 'rxjs';
 import { GameServiceInterface } from './game.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class GameService implements GameServiceInterface {
   private _gameState$ = new Subject<GameState | null>();
   readonly gameState = toSignal(
@@ -28,10 +26,5 @@ export class GameService implements GameServiceInterface {
 
   async startGame(player1: Player, player2: Player): Promise<Board> {
     return this.orchestrator.startGame(player1, player2);
-  }
-
-  clear(): void {
-    this._gameState$.next(null);
-    this._logs$.next([]);
   }
 }
