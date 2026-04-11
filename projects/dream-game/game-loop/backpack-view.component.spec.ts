@@ -26,7 +26,6 @@ function createForgedItem(
 
 describe('BackpackViewComponent', () => {
   let fixture: ComponentFixture<BackpackViewComponent>;
-  let service: GameLoopStateService;
   let itemManagement: ItemManagementService;
 
   beforeEach(async () => {
@@ -47,7 +46,6 @@ describe('BackpackViewComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(BackpackViewComponent);
-    service = TestBed.inject(GameLoopStateService);
     itemManagement = TestBed.inject(ItemManagementService);
   });
 
@@ -93,9 +91,9 @@ describe('BackpackViewComponent', () => {
     );
     firstSlot.click();
 
-    expect(service.moveMode()).toBeTruthy();
-    expect(service.moveMode()!.fromArea).toBe('backpack');
-    expect(service.moveMode()!.fromIndex).toBe(0);
+    expect(itemManagement.moveMode()).toBeTruthy();
+    expect(itemManagement.moveMode()!.fromArea).toBe('backpack');
+    expect(itemManagement.moveMode()!.fromIndex).toBe(0);
   });
 
   it('should complete move when clicking an empty slot while in move mode', () => {
@@ -146,7 +144,7 @@ describe('BackpackViewComponent', () => {
 
     const shakingSlot = itemManagement.shakeSlot();
     expect(shakingSlot).toEqual({ area: 'backpack', index: 0 });
-    expect(service.moveMode()).toBeNull(); // move mode should be cleared
+    expect(itemManagement.moveMode()).toBeNull(); // move mode should be cleared
   });
 
   it('should shake source backpack slot when trying to replace with invalid item', () => {

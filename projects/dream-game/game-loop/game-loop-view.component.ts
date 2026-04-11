@@ -1,7 +1,6 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { GameLoopStateService } from './game-loop-state.service';
-import { ItemManagementService } from './item-management.service';
 import { StatsBarComponent, NavButton } from './stats-bar.component';
 import { DialogComponent } from '../common/dialog.component';
 
@@ -12,7 +11,7 @@ import { DialogComponent } from '../common/dialog.component';
   template: `
     <div class="game-container">
       <app-stats-bar
-        [stats]="itemManagement.playerStats()"
+        [stats]="playerStats()"
         [navButton]="navButton()"
         data-testid="stats-bar"
       />
@@ -71,8 +70,9 @@ export class GameLoopViewComponent {
   @ViewChild('abandonDialog') private readonly abandonDialog!: DialogComponent;
 
   private readonly router = inject(Router);
-  readonly stateService = inject(GameLoopStateService);
-  readonly itemManagement = inject(ItemManagementService);
+  private readonly stateService = inject(GameLoopStateService);
+
+  readonly playerStats = this.stateService.playerStats;
   readonly abandonMessage =
     'Are you sure you want to abandon the run? This will reset all progress.';
 

@@ -4,7 +4,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { PlayerProgressService } from './player-progress.service';
+import { GameLoopStateService } from './game-loop-state.service';
 import { IconComponent } from '@shared-ui';
 import { resolveIcon } from '../common/interface-icon-registry';
 
@@ -51,10 +51,10 @@ import { resolveIcon } from '../common/interface-icon-registry';
   `,
 })
 export class RewardViewComponent implements OnInit {
-  private readonly playerProgress = inject(PlayerProgressService);
+  private readonly service = inject(GameLoopStateService);
   readonly matrixIconPath = resolveIcon('matrices');
 
   ngOnInit(): void {
-    this.playerProgress.addMatrices(4);
+    this.service.addReward(4);
   }
 }

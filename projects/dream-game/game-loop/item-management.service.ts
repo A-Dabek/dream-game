@@ -20,6 +20,13 @@ export type Position =
   | { type: 'backpack'; index: number }
   | { type: 'equipped'; slot: number };
 
+export interface MoveMode {
+  active: boolean;
+  item: Item;
+  fromArea: 'equip' | 'backpack';
+  fromIndex: number;
+}
+
 export function forgeItemStats(): ItemBonusStats {
   const roll = biasedRoll();
   return { hp: roll, speed: 5 - roll };
@@ -43,6 +50,8 @@ export class ItemManagementService {
     index: number;
   } | null>(null);
 
+  readonly moveMode = signal<MoveMode | null>(null);
+
   readonly playerStats = computed(() => {
     const bonuses = this.equippedBonuses();
     return {
@@ -61,6 +70,7 @@ export class ItemManagementService {
     this.equippedItems.set(Array(5).fill(null));
     this.backpackRows.set(1);
     this.shakeSlot.set(null);
+    this.moveMode.set(null);
   }
 
   addItemToBackpack(forgedItem: ForgedItemData): void {
@@ -70,6 +80,89 @@ export class ItemManagementService {
       currentItems[emptyIndex] = forgedItem;
       this.backpackItems.set([...currentItems]);
     }
+  }
+
+  onSlotClick(area: 'equip' | 'backpack', index: number): void {
+    const items = area === 'equip' ? this.equippedItems : this.backpackItems;
+    const itemData = items()[index];
+
+    if (itemData && this.moveMode() === null) {
+      this.startMove(area, index, itemData.item);
+    } else if (this.moveMode() !== null) {
+      this.completeMove(area, index);
+    }
+  }
+
+  private startMove(
+    area: 'equip' | 'backpack',
+    index: number,
+    item: Item,
+  ): void {
+    this.moveMode.set({
+      active: true,
+      item,
+      fromArea: area,
+      fromIndex: index,
+    });
+  }
+
+  private completeMove(area: 'equip' | 'backpack', index: number): void {
+    const moveMode = this.moveMode();
+    if (!moveMode) return;
+
+    if (area === 'equip' && !this.canEquipToSlotAt(moveMode, index)) {
+      this.triggerShake(moveMode.fromArea, moveMode.fromIndex);
+      this.moveMode.set(null);
+      return;
+    }
+
+    if (moveMode.fromArea === 'equip' && !this.canUnequip(moveMode, area)) {
+      this.triggerShake(moveMode.fromArea, moveMode.fromIndex);
+      this.moveMode.set(null);
+      return;
+    }
+
+    const from = this.toPosition(moveMode.fromArea, moveMode.fromIndex);
+    const to = this.toPosition(area, index);
+
+    this.moveItem(from, to);
+    this.moveMode.set(null);
+  }
+
+  private canEquipToSlotAt(
+    moveMode: MoveMode,
+    targetSlotIndex: number,
+  ): boolean {
+    const sourceItem = this.getMoveSourceItem(moveMode);
+    return this.canEquipToSlot(
+      sourceItem.stats,
+      moveMode.fromArea,
+      moveMode.fromIndex,
+      'equip',
+      targetSlotIndex,
+    );
+  }
+
+  private getMoveSourceItem(moveMode: MoveMode): ForgedItemData {
+    const items =
+      moveMode.fromArea === 'equip'
+        ? this.equippedItems()
+        : this.backpackItems();
+    return items[moveMode.fromIndex]!;
+  }
+
+  private canUnequip(
+    moveMode: MoveMode,
+    targetArea: 'equip' | 'backpack',
+  ): boolean {
+    if (targetArea === 'equip') return true;
+    return this.canUnequipItem(moveMode.fromIndex);
+  }
+
+  private toPosition(area: 'equip' | 'backpack', index: number): Position {
+    return area === 'equip'
+      ? { type: 'equipped', slot: index }
+      : { type: 'backpack', index };
   }
 
   canEquipToSlot(

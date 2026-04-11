@@ -1,35 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
-import {
-  GameLoopStateService,
-  ForgedItemData,
-  forgeItemStats,
-} from './game-loop-state.service';
-import { ItemManagementService } from './item-management.service';
-import { PlayerProgressService } from './player-progress.service';
+import { GameLoopStateService } from './game-loop-state.service';
 import { resolveIcon } from '../common/interface-icon-registry';
 import { ItemCardComponent } from '@dream/game-board-ui';
-import { ItemId } from '@dream/game-board';
-
-// Basic items pool for forging (excluding blueprints)
-const FORGE_ITEM_POOL: ItemId[] = [
-  'hand',
-  'punch',
-  'sticking_plaster',
-  'sticky_boot',
-  'wingfoot',
-];
-
-// Icon names
-const CRAFT_ICON = 'arrow';
-const COST_ICON = 'matrices';
-
-// Craft cost in matrices
-const CRAFT_COST = 2;
-
-// Animation duration in milliseconds
-const ANIMATION_DURATION_MS = 300;
+import { ForgeService, CRAFT_COST } from './forge.service';
 
 @Component({
   selector: 'app-forge-view',
@@ -71,7 +46,7 @@ const ANIMATION_DURATION_MS = 300;
         class="fight-btn"
         data-testid="fight-btn"
         [variant]="'secondary'"
-        (click)="service.startFight()"
+        (click)="startFight()"
         >Fight <app-icon [pathD]="swordIconPath"
       /></app-button>
     </main>
@@ -79,57 +54,25 @@ const ANIMATION_DURATION_MS = 300;
   styleUrls: ['./forge-view.component.scss'],
 })
 export class ForgeViewComponent {
-  readonly service = inject(GameLoopStateService);
-  private readonly itemManagement = inject(ItemManagementService);
-  private readonly playerProgress = inject(PlayerProgressService);
+  private readonly service = inject(GameLoopStateService);
+  private readonly forgeService = inject(ForgeService);
 
-  // Expose constant to template
   readonly CRAFT_COST = CRAFT_COST;
 
-  readonly isAnimating = signal(false);
-  readonly craftedItem = signal<ForgedItemData | null>(null);
+  readonly isAnimating = this.forgeService.isAnimating;
+  readonly craftedItem = this.forgeService.craftedItem;
+  readonly canCraft = this.forgeService.canCraft;
+  readonly hasBackpackSpace = this.forgeService.hasBackpackSpace;
 
-  readonly hasBackpackSpace = computed(() => {
-    const items = this.itemManagement.backpackItems();
-    return items.some((item) => item === null);
-  });
-
-  readonly canCraft = computed(
-    () =>
-      this.playerProgress.matrices() >= CRAFT_COST &&
-      this.hasBackpackSpace() &&
-      !this.isAnimating(),
-  );
-
-  readonly craftIconPath = resolveIcon(CRAFT_ICON);
+  readonly craftIconPath = resolveIcon('arrow');
   readonly swordIconPath = resolveIcon('sword');
-  readonly costIconPath = resolveIcon(COST_ICON);
+  readonly costIconPath = resolveIcon('matrices');
 
   craft(): void {
-    if (!this.canCraft()) {
-      return;
-    }
-
-    this.playerProgress.deductMatrices(CRAFT_COST);
-
-    const itemId = this.getRandomItemId();
-    const stats = forgeItemStats();
-
-    this.isAnimating.set(true);
-
-    setTimeout(() => {
-      const item = { id: itemId, genre: 'basic' as const, remainingUsages: 1 };
-      const forgedItem = { item, stats };
-
-      this.craftedItem.set(forgedItem);
-      this.isAnimating.set(false);
-
-      this.itemManagement.addItemToBackpack(forgedItem);
-    }, ANIMATION_DURATION_MS);
+    this.forgeService.craft();
   }
 
-  private getRandomItemId(): ItemId {
-    const randomIndex = Math.floor(Math.random() * FORGE_ITEM_POOL.length);
-    return FORGE_ITEM_POOL[randomIndex];
+  startFight(): void {
+    this.service.startFight();
   }
 }
