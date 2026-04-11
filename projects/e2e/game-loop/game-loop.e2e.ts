@@ -81,7 +81,7 @@ test.describe('Game Loop', () => {
     // Backpack: verify expanded + item
     await page.getByTestId('nav-btn').click();
     await expect(page.locator('[data-testid^="backpack-slot-"]')).toHaveCount(
-      2,
+      6,
     );
     await expect(
       page.getByTestId('backpack-slot-0').locator('app-item-display'),

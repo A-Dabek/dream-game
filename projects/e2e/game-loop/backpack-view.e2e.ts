@@ -18,17 +18,17 @@ test.describe('Backpack View', () => {
     await expect(page.getByTestId('equipment-section')).toBeVisible();
     await expect(page.getByTestId('backpack-section')).toBeVisible();
 
-    // 5 equipment slots, 1 backpack slot initially
+    // 5 equipment slots, 5 backpack slots initially
     await expect(page.locator('[data-testid^="equip-slot-"]')).toHaveCount(5);
     await expect(page.locator('[data-testid^="backpack-slot-"]')).toHaveCount(
-      1,
+      5,
     );
 
     // Expand costs 1 matrix
     await expect(page.getByTestId('stat-matrices')).toContainText('10');
     await page.getByTestId('expand-btn').click();
     await expect(page.locator('[data-testid^="backpack-slot-"]')).toHaveCount(
-      2,
+      6,
     );
     await expect(page.getByTestId('stat-matrices')).toContainText('9');
   });

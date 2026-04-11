@@ -50,7 +50,7 @@ export class GameLoopStateService {
   readonly matrices = signal(BASE_MATRICES);
 
   readonly backpackItems = signal<(ForgedItemData | null)[]>(
-    Array(1).fill(null),
+    Array(5).fill(null),
   );
   readonly equippedItems = signal<(ForgedItemData | null)[]>(
     Array(5).fill(null),
@@ -75,7 +75,7 @@ export class GameLoopStateService {
 
   resetRun(): void {
     this.matrices.set(BASE_MATRICES);
-    this.backpackItems.set(Array(1).fill(null));
+    this.backpackItems.set(Array(5).fill(null));
     this.equippedItems.set(Array(5).fill(null));
     this.backpackRows.set(1);
     this.moveMode.set(null);
