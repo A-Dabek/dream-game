@@ -1,4 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { PlayerProgressService } from './player-progress.service';
 import { IconComponent } from '@shared-ui';
 import { resolveIcon } from '../common/interface-icon-registry';
@@ -6,6 +11,7 @@ import { resolveIcon } from '../common/interface-icon-registry';
 @Component({
   selector: 'app-reward-view',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
     <main class="reward-container" data-testid="reward-view">
@@ -23,24 +29,24 @@ import { resolveIcon } from '../common/interface-icon-registry';
       align-items: center;
       justify-content: center;
       flex: 1;
-      gap: 32px;
+      gap: 2rem;
     }
 
     .title {
-      font-size: 32px;
+      font-size: 2rem;
       margin: 0;
     }
 
     .currency-line {
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-size: 24px;
+      gap: 1rem;
+      font-size: 1.5rem;
       font-weight: bold;
     }
 
     .amount {
-      color: #4caf50;
+      color: var(--color-player);
     }
   `,
 })

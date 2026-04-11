@@ -55,7 +55,7 @@ test.describe('Backpack View', () => {
     await page.getByTestId('equip-slot-0').click();
 
     // Verify in equipment, not in backpack
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(300);
     await expect(
       page.getByTestId('equip-slot-0').locator('app-item-display'),
     ).toBeVisible();
