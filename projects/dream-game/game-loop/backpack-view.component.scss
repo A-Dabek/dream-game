@@ -8,7 +8,7 @@
 
 .equipment-section {
   display: flex;
-  gap: 0.5rem;
+  justify-content: space-between;
   margin-bottom: 2rem;
 }
 
@@ -43,7 +43,9 @@
 .backpack-grid {
   display: grid;
   grid-template-columns: repeat(5, var(--hand-item-size));
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 0.5rem 0;
+  margin-bottom: 1rem;
 }
 
 .backpack-slot {
