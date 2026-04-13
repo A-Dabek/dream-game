@@ -20,9 +20,6 @@ const DEFAULT_ITEM_COUNT = 5;
 export class CpuPlayerBuilder {
   private healthMin: number;
   private healthMax: number;
-  private healthMean: number | null = null;
-  private healthStdDev: number | null = null;
-  private healthLimitMin: number;
 
   private speedMin: number;
   private speedMax: number;
@@ -45,45 +42,11 @@ export class CpuPlayerBuilder {
   ) {
     this.healthMin = 10;
     this.healthMax = 15;
-    this.healthLimitMin = 10;
     this.speedMin = 5;
     this.speedMax = 10;
     this.speedLimitMin = 1;
   }
 
-  /**
-   * Sets random health within the given range (inclusive).
-   */
-  withRandomHealth(min: number, max: number): this {
-    this.healthMin = Math.min(min, max);
-    this.healthMax = Math.max(min, max);
-    this.healthMean = null;
-    return this;
-  }
-
-  /**
-   * Sets random health using normal distribution.
-   */
-  withNormalHealth(mean: number, stdDev: number, min: number = 10): this {
-    this.healthMean = mean;
-    this.healthStdDev = stdDev;
-    this.healthLimitMin = min;
-    return this;
-  }
-
-  /**
-   * Sets random speed within the given range (inclusive).
-   */
-  withRandomSpeed(min: number, max: number): this {
-    this.speedMin = Math.min(min, max);
-    this.speedMax = Math.max(min, max);
-    this.speedMean = null;
-    return this;
-  }
-
-  /**
-   * Sets random speed using normal distribution.
-   */
   withNormalSpeed(mean: number, stdDev: number, min: number = 1): this {
     this.speedMean = mean;
     this.speedStdDev = stdDev;
@@ -91,9 +54,6 @@ export class CpuPlayerBuilder {
     return this;
   }
 
-  /**
-   * Sets the number of random items to include in the loadout.
-   */
   withRandomItems(count: number): this {
     this.itemCount = Math.max(0, count);
     this.itemCountMin = null;
@@ -101,9 +61,6 @@ export class CpuPlayerBuilder {
     return this;
   }
 
-  /**
-   * Sets a range for the number of random items to include in the loadout.
-   */
   withRandomItemsInRange(min: number, max: number): this {
     this.itemCountMin = Math.min(min, max);
     this.itemCountMax = Math.max(min, max);
@@ -118,44 +75,15 @@ export class CpuPlayerBuilder {
     return this;
   }
 
-  /**
-   * Sets an exact health value.
-   */
-  withHealth(health: number): this {
-    this.exactHealth = health;
-    return this;
-  }
-
-  /**
-   * Sets an exact speed value.
-   * Invalid values (non-positive) will fall back to random values within the configured range.
-   */
-  withSpeed(speed: number): this {
-    this.exactSpeed = speed;
-    return this;
-  }
-
-  /**
-   * Sets exact items by their ItemIds.
-   * Invalid ItemIds are filtered out and won't appear in the loadout.
-   */
-  withItems(itemIds: ItemId[]): this {
-    this.exactItems = itemIds;
-    return this;
-  }
-
-  /**
-   * Applies a PlayerConfig to this builder.
-   */
   withConfig(config: PlayerConfig): this {
     if (config.items !== undefined) {
-      this.withItems(config.items);
+      this.exactItems = config.items;
     }
     if (config.health !== undefined) {
-      this.withHealth(config.health);
+      this.exactHealth = config.health;
     }
     if (config.speed !== undefined) {
-      this.withSpeed(config.speed);
+      this.exactSpeed = config.speed;
     }
     return this;
   }
@@ -199,7 +127,6 @@ export class CpuPlayerBuilder {
   }
 
   private generateItems(): Item[] {
-    // Use exact items if configured
     if (this.exactItems !== null) {
       const validItemIds = this.filterValidItemIds(this.exactItems);
       return validItemIds.map((id, i) => ({
@@ -210,7 +137,6 @@ export class CpuPlayerBuilder {
       }));
     }
 
-    // Fall back to random items
     const availableItemIds = AVAILABLE_ITEM_IDS;
     const count =
       this.itemCountMin !== null && this.itemCountMax !== null
@@ -235,13 +161,6 @@ export class CpuPlayerBuilder {
   }
 
   private resolveHealth(): number {
-    if (this.healthMean !== null && this.healthStdDev !== null) {
-      return this.generateNormalValue(
-        this.healthMean,
-        this.healthStdDev,
-        this.healthLimitMin,
-      );
-    }
     return this.randomInRange(this.healthMin, this.healthMax);
   }
 

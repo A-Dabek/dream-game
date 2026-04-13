@@ -71,17 +71,15 @@ export class CpuPlayerBuilder {
     readonly id: string;
     // (undocumented)
     readonly name: string;
+    // (undocumented)
     withConfig(config: PlayerConfig): this;
-    withHealth(health: number): this;
-    withItems(itemIds: ItemId_2[]): this;
     withLeftMostStrategy(): this;
-    withNormalHealth(mean: number, stdDev: number, min?: number): this;
+    // (undocumented)
     withNormalSpeed(mean: number, stdDev: number, min?: number): this;
-    withRandomHealth(min: number, max: number): this;
+    // (undocumented)
     withRandomItems(count: number): this;
+    // (undocumented)
     withRandomItemsInRange(min: number, max: number): this;
-    withRandomSpeed(min: number, max: number): this;
-    withSpeed(speed: number): this;
 }
 
 // @public
