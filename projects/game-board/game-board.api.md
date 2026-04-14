@@ -212,6 +212,9 @@ export interface GameState {
 }
 
 // @public (undocumented)
+export function generateDescription(effects: RandomEffectDefinition[]): string;
+
+// @public (undocumented)
 export type Genre = 'basic' | 'poison' | 'doctor';
 
 // @public (undocumented)
@@ -302,6 +305,40 @@ export class PlayerRating implements Rating {
     // (undocumented)
     win(opponentRating: number): number;
 }
+
+// @public (undocumented)
+export interface RandomEffectDefinition {
+    // (undocumented)
+    target: 'self' | 'enemy';
+    // (undocumented)
+    type: 'damage' | 'healing';
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export interface RandomItemDefinition {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    onPlayEffects: RandomEffectDefinition[];
+}
+
+// @public (undocumented)
+export const RandomItemGenerator: {
+    generate(count: number, random?: () => number): RandomItemDefinition[];
+    generateOne(id: string, random?: () => number): RandomItemDefinition;
+};
+
+// @public (undocumented)
+export const RandomItemRegistrar: {
+    register(def: RandomItemDefinition): void;
+};
+
+// Warning: (ae-forgotten-export) The symbol "ConventionRegistrar" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export function setRandomItemConventionRegistrar(r: ConventionRegistrar): void;
 
 // @public (undocumented)
 export type StateChangeLogEntry = {

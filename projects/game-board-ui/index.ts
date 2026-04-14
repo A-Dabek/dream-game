@@ -3,6 +3,8 @@ export {
   ItemConventionRegistry,
   ALL_ITEMS,
   registerIconPath,
+  registerItemConvention,
+  registerStatusEffectConvention,
   hasIcon,
   getAvailableIconNames,
 } from './conventions/convention-registry';

@@ -8,7 +8,15 @@ import {
 import { PlayerProgressService } from './player-progress.service';
 
 function getForgeItemPool(): string[] {
-  return ['hand', 'punch', 'sticking_plaster', 'sticky_boot', 'wingfoot'];
+  const basePool = [
+    'hand',
+    'punch',
+    'sticking_plaster',
+    'sticky_boot',
+    'wingfoot',
+  ];
+  const randomPool = Array.from({ length: 100 }, (_, i) => `rand_${i + 1}`);
+  return [...basePool, ...randomPool];
 }
 
 // Craft cost in matrices

@@ -6,6 +6,8 @@ import {
   GameOrchestrator,
   type Player,
   type ItemId,
+  RandomItemRegistrar,
+  RandomItemDefinition,
 } from '../../game-board';
 import { environment } from '../../game-board-ui/environments/environment';
 
@@ -25,6 +27,15 @@ function serializePlayer(p: Player): string {
 }
 
 async function main() {
+  const itemsPath = path.join(process.cwd(), 'assets', 'random_items.json');
+  if (fs.existsSync(itemsPath)) {
+    const items: RandomItemDefinition[] = JSON.parse(
+      fs.readFileSync(itemsPath, 'utf8'),
+    );
+    items.forEach((item) => RandomItemRegistrar.register(item));
+    console.log(`Registered ${items.length} random items for simulation.`);
+  }
+
   const numGames = environment.initializationGames || 1000;
   const numPlayers = 100;
   const players: Player[] = [];

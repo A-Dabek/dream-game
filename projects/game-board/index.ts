@@ -52,3 +52,13 @@ export {
   type EffectInstanceState,
 } from './engine/effects';
 export { biasedRoll } from './utils/biased-roll';
+export {
+  type RandomEffectDefinition,
+  type RandomItemDefinition,
+} from './random-item/random-item-definition';
+export { RandomItemGenerator } from './random-item/random-item-generator';
+export {
+  RandomItemRegistrar,
+  setRandomItemConventionRegistrar,
+} from './random-item/random-item-registrar';
+export { generateDescription } from './random-item/description-generator';
