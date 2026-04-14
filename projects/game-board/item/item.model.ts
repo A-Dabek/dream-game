@@ -2,7 +2,7 @@ export type Genre = 'basic' | 'poison' | 'doctor';
 
 export type MergeStrategy = 'new' | 'increase';
 
-export type ItemId =
+export type StaticItemId =
   | '_blueprint_attack'
   | '_blueprint_passive_attack'
   | '_blueprint_reactive_removal'
@@ -32,7 +32,9 @@ export type ItemId =
   | 'adrenaline'
   | 'drip';
 
-export type StatusEffectType =
+export type ItemId = StaticItemId | string;
+
+export type StaticStatusEffectType =
   | 'poison'
   | 'invert'
   | 'negate'
@@ -43,8 +45,9 @@ export type StatusEffectType =
   | 'anti_nullify'
   | 'stitches'
   | 'heart_strain'
-  | 'drip'
-  | ItemId; // Allow item IDs for custom passive effects
+  | 'drip';
+
+export type StatusEffectType = StaticStatusEffectType | string;
 
 export type EffectValue = number | string | StatusEffect;
 
@@ -97,4 +100,39 @@ export interface Loadout {
   items: Item[];
   health: number;
   speed: number;
+}
+
+const STATIC_ITEM_IDS: Set<string> = new Set<string>([
+  '_blueprint_attack',
+  '_blueprint_passive_attack',
+  '_blueprint_reactive_removal',
+  '_blueprint_damage_to_heal_charges',
+  '_blueprint_damage_to_heal_turns',
+  '_blueprint_damage_to_heal_permanent',
+  '_blueprint_self_damage',
+  '_blueprint_negate_damage',
+  '_blueprint_passive_negate',
+  '_blueprint_damage_to_owner',
+  '_blueprint_heal_on_damage',
+  '_blueprint_triple_threat',
+  '_blueprint_anti_nullify',
+  '_dummy',
+  '_blueprint_heal_5',
+  'punch',
+  'sticking_plaster',
+  'hand',
+  'sticky_boot',
+  'wingfoot',
+  'gas_grenade',
+  'antidote',
+  'gas_mask',
+  'poison_drink',
+  'poison_darts',
+  'stitches',
+  'adrenaline',
+  'drip',
+]);
+
+export function isStaticItemId(id: string): id is StaticItemId {
+  return STATIC_ITEM_IDS.has(id);
 }

@@ -1,4 +1,10 @@
-import { ItemId, StatusEffectType, ActiveEffectId } from '@dream/game-board';
+import {
+  StaticItemId,
+  StaticStatusEffectType,
+  ItemId,
+  StatusEffectType,
+  ActiveEffectId,
+} from '@dream/game-board';
 import {
   ACTIVE_EFFECT_DISPLAY_MAP,
   EffectDisplayMetadata,
@@ -24,9 +30,9 @@ export interface ConventionEntry {
   readonly description: string;
 }
 
-export type ItemConventionMap = Record<ItemId, ConventionEntry>;
-export type StatusEffectConventionMap = Record<
-  StatusEffectType,
+export type StaticItemConventionMap = Record<StaticItemId, ConventionEntry>;
+export type StaticStatusEffectConventionMap = Record<
+  StaticStatusEffectType,
   ConventionEntry
 >;
 
@@ -37,7 +43,7 @@ export const ALL_ITEMS = {
   ...basicItemsJson,
   ...poisonItemsJson,
   ...doctorItemsJson,
-} satisfies ItemConventionMap;
+} satisfies StaticItemConventionMap;
 
 export const ALL_STATUS_EFFECTS = {
   ...basicStatusEffectsJson,
@@ -46,7 +52,7 @@ export const ALL_STATUS_EFFECTS = {
   ...basicItemsJson,
   ...poisonItemsJson,
   ...doctorItemsJson,
-} satisfies StatusEffectConventionMap;
+} satisfies StaticStatusEffectConventionMap;
 
 function resolveIconPath(iconName: string): string {
   const path = ICON_PATHS[iconName];
@@ -66,7 +72,7 @@ export const ItemConventionRegistry = {
   },
 
   getItemConvention(itemId: ItemId): ConventionEntry {
-    const itemConfig = ALL_ITEMS[itemId];
+    const itemConfig = (ALL_ITEMS as Record<string, ConventionEntry>)[itemId];
 
     if (!itemConfig) {
       throw new Error(`No convention entry for item: ${itemId}`);
@@ -76,7 +82,9 @@ export const ItemConventionRegistry = {
   },
 
   getStatusEffectDisplay(type: StatusEffectType): EffectDisplayMetadata {
-    const effectConfig = ALL_STATUS_EFFECTS[type];
+    const effectConfig = (
+      ALL_STATUS_EFFECTS as Record<string, ConventionEntry>
+    )[type];
 
     if (!effectConfig) {
       throw new Error(`No convention entry for status effect: ${type}`);

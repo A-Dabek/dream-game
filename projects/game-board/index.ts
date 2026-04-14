@@ -28,9 +28,12 @@ export {
   type Genre,
   type Item,
   type ItemId,
+  type StaticItemId,
   type Loadout,
   type StatusEffectType,
+  type StaticStatusEffectType,
 } from './item/item.model';
+export { isStaticItemId } from './item/item.model';
 export { getItemGenre } from './item-library/item-registry';
 export {
   type ActiveEffectId,

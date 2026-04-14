@@ -213,7 +213,7 @@ export const ItemLibrary = {
 } as const;
 
 export function getItemBehavior(itemId: ItemId): ItemDefinition {
-  const entry = ItemLibrary[itemId];
+  const entry = (ItemLibrary as Record<string, () => ItemDefinition>)[itemId];
   if (!entry) {
     throw new Error(`No behavior found for item: ${itemId}`);
   }

@@ -8,11 +8,14 @@ export {
   type Item,
   type ItemDefinition,
   type ItemId,
+  type StaticItemId,
   type Loadout,
   type PassiveEffect,
   type StatusEffect,
   type StatusEffectType,
+  type StaticStatusEffectType,
 } from './item.model';
+export { isStaticItemId } from './item.model';
 export { GAME_CONFIG, BASE_HEAL } from './game-config';
 export {
   BEFORE_EFFECT,
