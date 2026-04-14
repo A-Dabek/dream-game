@@ -14,6 +14,7 @@ import { GameAction as GameAction_2 } from '../board';
 import { GameActionType } from '../engine';
 import { GameState as GameState_2 } from '../board';
 import { Genre as Genre_2 } from '../item';
+import { ItemDefinition } from '../item';
 import { ItemId as ItemId_2 } from '../../item';
 import { ItemId as ItemId_3 } from '../item';
 import { ListenerData } from './engine/effects';
@@ -212,6 +213,12 @@ export interface GameState {
 
 // @public (undocumented)
 export type Genre = 'basic' | 'poison' | 'doctor';
+
+// @public (undocumented)
+export function getAllItemIds(): string[];
+
+// @public (undocumented)
+export function getItemBehavior(itemId: ItemId_3): ItemDefinition;
 
 // @public (undocumented)
 export function getItemGenre(itemId: ItemId_3): Genre_2;

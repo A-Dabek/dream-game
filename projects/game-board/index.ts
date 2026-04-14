@@ -36,7 +36,12 @@ export {
   type PassiveEffect,
 } from './item/item.model';
 export { isStaticItemId } from './item/item.model';
-export { getItemGenre, isRegisteredItemId } from './item-library/item-registry';
+export {
+  getItemGenre,
+  getItemBehavior,
+  getAllItemIds,
+  isRegisteredItemId,
+} from './item-library/item-registry';
 export {
   type ActiveEffectId,
   type StatusEffectId,

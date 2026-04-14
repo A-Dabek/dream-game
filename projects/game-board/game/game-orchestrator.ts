@@ -7,6 +7,7 @@ import {
 } from '../board';
 import { LogEntry } from '../engine';
 import { ItemId } from '../item';
+import { isRegisteredItemId } from '../item-library';
 import { Player } from '../player';
 
 /**
@@ -76,6 +77,13 @@ export class GameOrchestrator {
     switch (action.type) {
       case GameActionType.PLAY_ITEM:
         if (action.itemId) {
+          if (!isRegisteredItemId(action.itemId)) {
+            return {
+              success: false,
+              action,
+              error: `Unregistered item ID: ${action.itemId}`,
+            };
+          }
           return board.playItem(action.itemId as ItemId, action.playerId);
         } else {
           return board.pass(action.playerId);

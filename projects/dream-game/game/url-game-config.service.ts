@@ -1,6 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { GamePlayersConfig, ItemId, PlayerConfig } from '@dream/game-board';
+import {
+  GamePlayersConfig,
+  isRegisteredItemId,
+  ItemId,
+  PlayerConfig,
+} from '@dream/game-board';
 
 /**
  * Service for parsing game configuration from URL query parameters.
@@ -112,12 +117,12 @@ export class UrlGameConfigService {
   }
 
   private parseItems(itemsStr: string): ItemId[] {
+    if (!itemsStr) return [];
     return itemsStr
-      ? (itemsStr
-          .split(',')
-          .map((id) => id.trim())
-          .filter(Boolean) as ItemId[])
-      : [];
+      .split(',')
+      .map((id) => id.trim())
+      .filter(Boolean)
+      .filter((id) => isRegisteredItemId(id)) as ItemId[];
   }
 
   private parsePositiveInt(valueStr: string): number | undefined {

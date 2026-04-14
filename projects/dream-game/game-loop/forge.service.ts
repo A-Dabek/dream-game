@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { ItemId } from '@dream/game-board';
+import { getItemBehavior, getItemGenre, Item, ItemId } from '@dream/game-board';
 import {
   ForgedItemData,
   forgeItemStats,
@@ -7,14 +7,9 @@ import {
 } from './item-management.service';
 import { PlayerProgressService } from './player-progress.service';
 
-// Basic items pool for forging (excluding blueprints)
-const FORGE_ITEM_POOL: ItemId[] = [
-  'hand',
-  'punch',
-  'sticking_plaster',
-  'sticky_boot',
-  'wingfoot',
-];
+function getForgeItemPool(): string[] {
+  return ['hand', 'punch', 'sticking_plaster', 'sticky_boot', 'wingfoot'];
+}
 
 // Craft cost in matrices
 export const CRAFT_COST = 2;
@@ -57,7 +52,11 @@ export class ForgeService {
     this.isAnimating.set(true);
 
     setTimeout(() => {
-      const item = { id: itemId, genre: 'basic' as const, remainingUsages: 1 };
+      const item: Item = {
+        id: itemId,
+        genre: getItemGenre(itemId),
+        remainingUsages: getItemBehavior(itemId).usages ?? 1,
+      };
       const forgedItem = { item, stats };
 
       this.craftedItem.set(forgedItem);
@@ -68,7 +67,8 @@ export class ForgeService {
   }
 
   private getRandomItemId(): ItemId {
-    const randomIndex = Math.floor(Math.random() * FORGE_ITEM_POOL.length);
-    return FORGE_ITEM_POOL[randomIndex];
+    const pool = getForgeItemPool();
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    return pool[randomIndex] as ItemId;
   }
 }
