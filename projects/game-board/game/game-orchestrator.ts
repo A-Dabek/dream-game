@@ -77,6 +77,7 @@ export class GameOrchestrator {
     switch (action.type) {
       case GameActionType.PLAY_ITEM:
         if (action.itemId) {
+          // FIXME this should just throw, it cannot happen normally
           if (!isRegisteredItemId(action.itemId)) {
             return {
               success: false,

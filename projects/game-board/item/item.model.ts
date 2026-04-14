@@ -102,6 +102,7 @@ export interface Loadout {
   speed: number;
 }
 
+// FIXME this is not strictly-typed, if new items appear this won't raise errors
 const STATIC_ITEM_IDS: Set<string> = new Set<string>([
   '_blueprint_attack',
   '_blueprint_passive_attack',

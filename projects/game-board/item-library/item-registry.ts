@@ -211,7 +211,7 @@ export const ItemLibrary = {
 
   ...DoctorItemLibrary,
 } as const;
-
+// FIXME this file mixes too many different things
 type ItemFactory = () => ItemDefinition;
 
 const dynamicItemRegistry = new Map<string, ItemFactory>();
@@ -258,6 +258,7 @@ export function getItemBehavior(itemId: ItemId): ItemDefinition {
   return EMPTY_ITEM_DEFINITION;
 }
 
+// FIXME only builder needs this
 export function getAllItemIds(): string[] {
   const staticIds = Object.keys(ItemLibrary);
   const dynamicIds = Array.from(dynamicItemRegistry.keys());

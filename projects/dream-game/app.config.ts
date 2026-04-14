@@ -1,7 +1,7 @@
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
-  APP_INITIALIZER,
+  provideAppInitializer,
   inject,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -21,23 +21,18 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => {
-        setRandomItemConventionRegistrar(registerItemConvention);
-        const http = inject(HttpClient);
-        return async () => {
-          try {
-            const items = await firstValueFrom(
-              http.get<RandomItemDefinition[]>('assets/random_items.json'),
-            );
-            items.forEach((item) => RandomItemRegistrar.register(item));
-          } catch (e) {
-            console.warn('Failed to load random items:', e);
-          }
-        };
-      },
-      multi: true,
-    },
+    provideAppInitializer(async () => {
+      // FIXME this is needed to register items on both UI and non-UI
+      setRandomItemConventionRegistrar(registerItemConvention);
+      const http = inject(HttpClient);
+      try {
+        const items = await firstValueFrom(
+          http.get<RandomItemDefinition[]>('assets/random_items.json'),
+        );
+        items.forEach((item) => RandomItemRegistrar.register(item));
+      } catch (e) {
+        console.warn('Failed to load random items:', e);
+      }
+    }),
   ],
 };

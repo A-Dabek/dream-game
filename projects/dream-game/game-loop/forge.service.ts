@@ -15,6 +15,7 @@ function getForgeItemPool(): string[] {
     'sticky_boot',
     'wingfoot',
   ];
+  // FIXME relies on names being rand_*
   const randomPool = Array.from({ length: 100 }, (_, i) => `rand_${i + 1}`);
   return [...basePool, ...randomPool];
 }

@@ -9,6 +9,7 @@ import {
 import { PlayerRating } from '../../rating';
 import { Player } from '../player.model';
 
+// FIXME why file scope...
 function getAvailableItemIds(): string[] {
   return getAllItemIds().filter(
     (id) => id !== '_blueprint_damage_to_heal_permanent',

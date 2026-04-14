@@ -20,6 +20,7 @@ import poisonStatusEffectsJson from './poison-status-effects.json';
 import doctorItemsJson from './doctor-items.json';
 import doctorStatusEffectsJson from './doctor-status-effects.json';
 
+// FIXME too little encapsulation in this entire file
 export interface ItemDisplayMetadata {
   readonly pathD: string;
   readonly description: string;

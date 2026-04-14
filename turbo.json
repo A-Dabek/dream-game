@@ -48,6 +48,11 @@
       "dependsOn": [],
       "inputs": ["$TURBO_DEFAULT$", "!**/.turbo/**"],
       "outputs": ["out-tsc/**"]
+    },
+    "generate-items": {
+      "dependsOn": [],
+      "inputs": ["$TURBO_DEFAULT$", "!**/.turbo/**"],
+      "outputs": ["out-tsc/**"]
     }
   }
 }

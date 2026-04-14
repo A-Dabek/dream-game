@@ -9,6 +9,7 @@ import { ItemConventionRegistry } from '../common';
 import { StatusEffectDisplayData } from './status-effects-display-data';
 import { UiGameState } from './ui-game-state';
 
+// FIXME paths should be only available to icon component instead of passed around
 function resolveStatusEffectIcon(type: string): string {
   return ItemConventionRegistry.getStatusEffectDisplay(type as StatusEffectType)
     .pathD;

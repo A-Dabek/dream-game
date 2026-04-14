@@ -65,6 +65,7 @@ import { UiGameState } from './ui-game-state';
         </div>
         <div class="last-played-wrapper" role="status" aria-live="polite">
           @if (lastPlayedItem(); as item) {
+            <!--          FIXME styling is a little off  -->
             <app-item-card
               class="last-played-item"
               [itemId]="item.id"
