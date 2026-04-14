@@ -4,6 +4,8 @@ import {
   ItemId,
   StatusEffectType,
   ActiveEffectId,
+  Effect,
+  PassiveEffect,
 } from '@dream/game-board';
 import {
   ACTIVE_EFFECT_DISPLAY_MAP,
@@ -54,6 +56,23 @@ export const ALL_STATUS_EFFECTS = {
   ...doctorItemsJson,
 } satisfies StaticStatusEffectConventionMap;
 
+const dynamicItemConventions = new Map<string, ConventionEntry>();
+const dynamicStatusEffectConventions = new Map<string, ConventionEntry>();
+
+export function registerItemConvention(
+  id: string,
+  entry: ConventionEntry,
+): void {
+  dynamicItemConventions.set(id, entry);
+}
+
+export function registerStatusEffectConvention(
+  id: string,
+  entry: ConventionEntry,
+): void {
+  dynamicStatusEffectConventions.set(id, entry);
+}
+
 function resolveIconPath(iconName: string): string {
   const path = ICON_PATHS[iconName];
   if (path === undefined) {
@@ -72,27 +91,43 @@ export const ItemConventionRegistry = {
   },
 
   getItemConvention(itemId: ItemId): ConventionEntry {
-    const itemConfig = (ALL_ITEMS as Record<string, ConventionEntry>)[itemId];
-
-    if (!itemConfig) {
-      throw new Error(`No convention entry for item: ${itemId}`);
+    const staticEntry = ALL_ITEMS[itemId as keyof typeof ALL_ITEMS];
+    if (staticEntry) {
+      return staticEntry;
     }
 
-    return itemConfig;
-  },
-
-  getStatusEffectDisplay(type: StatusEffectType): EffectDisplayMetadata {
-    const effectConfig = (
-      ALL_STATUS_EFFECTS as Record<string, ConventionEntry>
-    )[type];
-
-    if (!effectConfig) {
-      throw new Error(`No convention entry for status effect: ${type}`);
+    const dynamicEntry = dynamicItemConventions.get(itemId);
+    if (dynamicEntry) {
+      return dynamicEntry;
     }
 
     return {
-      pathD: resolveIconPath(effectConfig.icon),
-      description: effectConfig.description,
+      icon: 'uncertainty',
+      description: this.formatItemIdAsName(itemId),
+    };
+  },
+
+  getStatusEffectDisplay(type: StatusEffectType): EffectDisplayMetadata {
+    const staticEntry =
+      ALL_STATUS_EFFECTS[type as keyof typeof ALL_STATUS_EFFECTS];
+    if (staticEntry) {
+      return {
+        pathD: resolveIconPath(staticEntry.icon),
+        description: staticEntry.description,
+      };
+    }
+
+    const dynamicEntry = dynamicStatusEffectConventions.get(type);
+    if (dynamicEntry) {
+      return {
+        pathD: resolveIconPath(dynamicEntry.icon),
+        description: dynamicEntry.description,
+      };
+    }
+
+    return {
+      pathD: resolveIconPath('uncertainty'),
+      description: this.formatItemIdAsName(type),
     };
   },
 
@@ -124,3 +159,43 @@ export const ItemConventionRegistry = {
       .join(' ');
   },
 } as const;
+
+export function generateDescriptionFromEffects(
+  onPlayEffects: Effect[],
+  passiveEffects?: PassiveEffect[],
+): string {
+  const parts: string[] = [];
+
+  for (const effect of onPlayEffects) {
+    parts.push(effectTypeToDescription(effect));
+  }
+
+  if (passiveEffects?.length) {
+    parts.push(
+      `${passiveEffects.length} passive effect${
+        passiveEffects.length > 1 ? 's' : ''
+      }`,
+    );
+  }
+
+  return parts.join('. ') || 'No effects';
+}
+
+function effectTypeToDescription(effect: Effect): string {
+  switch (effect.type) {
+    case 'damage':
+      return `Deals ${effect.value} damage`;
+    case 'healing':
+      return `Heals ${effect.value} health`;
+    case 'speed_up':
+      return `Increases speed by ${effect.value}`;
+    case 'slow_down':
+      return `Decreases speed by ${Math.abs(Number(effect.value))}`;
+    case 'add_status_effect':
+      return 'Applies a status effect';
+    case 'remove_item':
+      return 'Removes an item';
+    default:
+      return effect.type.replace(/_/g, ' ');
+  }
+}

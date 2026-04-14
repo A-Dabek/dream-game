@@ -10,14 +10,8 @@ import { StatusEffectDisplayData } from './status-effects-display-data';
 import { UiGameState } from './ui-game-state';
 
 function resolveStatusEffectIcon(type: string): string {
-  try {
-    return ItemConventionRegistry.getStatusEffectDisplay(
-      type as StatusEffectType,
-    ).pathD;
-  } catch {
-    // Fallback icon for unknown status effects
-    return ItemConventionRegistry.resolveIconPath('uncertainty');
-  }
+  return ItemConventionRegistry.getStatusEffectDisplay(type as StatusEffectType)
+    .pathD;
 }
 
 /**

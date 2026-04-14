@@ -32,6 +32,8 @@ export {
   type Loadout,
   type StatusEffectType,
   type StaticStatusEffectType,
+  type Effect,
+  type PassiveEffect,
 } from './item/item.model';
 export { isStaticItemId } from './item/item.model';
 export { getItemGenre, isRegisteredItemId } from './item-library/item-registry';

@@ -35,11 +35,7 @@ export class ItemDisplayComponent {
   readonly stats = input<{ hp: number; speed: number } | null>(null);
 
   readonly pathD = computed(() => {
-    try {
-      return ItemConventionRegistry.getItemDisplay(this.item().id).pathD;
-    } catch {
-      return '';
-    }
+    return ItemConventionRegistry.getItemDisplay(this.item().id).pathD;
   });
 
   readonly color = computed(() => {

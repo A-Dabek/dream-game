@@ -7,7 +7,7 @@
 import { Board as Board_2 } from '../board';
 import { Duration } from '../item';
 import { DurationState } from './engine/effects';
-import { Effect } from '../item';
+import { Effect as Effect_2 } from '../item';
 import { EffectInstanceState } from './engine/effects';
 import { GameAction } from '../engine';
 import { GameAction as GameAction_2 } from '../board';
@@ -90,6 +90,18 @@ export function createGamePlayers(config?: GamePlayersConfig): {
 
 export { DurationState }
 
+// @public (undocumented)
+export interface Effect {
+    // (undocumented)
+    target: 'self' | 'enemy';
+    // (undocumented)
+    type: string;
+    // Warning: (ae-forgotten-export) The symbol "EffectValue" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    value: EffectValue;
+}
+
 export { EffectInstanceState }
 
 // @public (undocumented)
@@ -152,7 +164,7 @@ export type GameEvent = ({
     phase: LifecyclePhase;
 } | {
     type: 'effect';
-    effect: Effect;
+    effect: Effect_2;
 }) & {
     playerId: string;
     processedBy: string[];
@@ -242,6 +254,11 @@ export type LogEntry = {
     type: 'event';
     event: GameEvent;
 } | StateChangeLogEntry;
+
+// Warning: (ae-forgotten-export) The symbol "StatusEffect_2" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type PassiveEffect = StatusEffect_2;
 
 // @public
 export interface Player {
