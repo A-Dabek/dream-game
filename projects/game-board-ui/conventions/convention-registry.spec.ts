@@ -1,6 +1,9 @@
 import {
   ItemConventionRegistry,
   registerItemConvention,
+  registerIconPath,
+  hasIcon,
+  getAvailableIconNames,
   generateDescriptionFromEffects,
 } from './convention-registry';
 import { Effect } from '@dream/game-board';
@@ -72,6 +75,46 @@ describe('ItemConventionRegistry', () => {
       expect(generateDescriptionFromEffects(effects, passives)).toBe(
         '1 passive effect',
       );
+    });
+  });
+
+  describe('Icon System Utilities', () => {
+    it('should register and resolve dynamic icon path', () => {
+      const dynamicPath = 'M 0 0 L 100 100';
+      registerIconPath('custom_sword', dynamicPath);
+      expect(ItemConventionRegistry.resolveIconPath('custom_sword')).toBe(
+        dynamicPath,
+      );
+    });
+
+    it('should return fallback for nonexistent icon path', () => {
+      const uncertaintyPath =
+        ItemConventionRegistry.resolveIconPath('uncertainty');
+      expect(ItemConventionRegistry.resolveIconPath('nonexistent_icon')).toBe(
+        uncertaintyPath,
+      );
+    });
+
+    it('should report correct results for hasIcon', () => {
+      expect(hasIcon('punch')).toBe(true);
+      expect(hasIcon('heal')).toBe(false); // Empty string placeholder
+      expect(hasIcon('nonexistent')).toBe(false);
+
+      registerIconPath('new_icon', 'M123');
+      expect(hasIcon('new_icon')).toBe(true);
+    });
+
+    it('should return available icon names', () => {
+      const names = getAvailableIconNames();
+      expect(names).toContain('punch');
+      expect(names).not.toContain('heal');
+      expect(names).toContain('uncertainty');
+    });
+
+    it('should include dynamic icons in available icon names', () => {
+      registerIconPath('another_dynamic', 'M456');
+      const names = getAvailableIconNames();
+      expect(names).toContain('another_dynamic');
     });
   });
 });

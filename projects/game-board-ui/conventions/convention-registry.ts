@@ -39,6 +39,8 @@ export type StaticStatusEffectConventionMap = Record<
 >;
 
 const ICON_PATHS = iconPathsJson as Record<string, string>;
+const UNCERTAINTY_ICON_PATH = ICON_PATHS['uncertainty'] || '';
+const dynamicIconPaths = new Map<string, string>();
 
 // Validate that all ItemId and StatusEffectType values have convention entries
 export const ALL_ITEMS = {
@@ -73,12 +75,37 @@ export function registerStatusEffectConvention(
   dynamicStatusEffectConventions.set(id, entry);
 }
 
+export function registerIconPath(iconName: string, pathD: string): void {
+  dynamicIconPaths.set(iconName, pathD);
+}
+
+export function hasIcon(iconName: string): boolean {
+  return (
+    (iconName in ICON_PATHS || dynamicIconPaths.has(iconName)) &&
+    resolveIconPath(iconName) !== ''
+  );
+}
+
+export function getAvailableIconNames(): string[] {
+  const staticIcons = Object.entries(ICON_PATHS)
+    .filter(([, path]) => path !== '')
+    .map(([name]) => name);
+  const dynamicIcons = Array.from(dynamicIconPaths.keys());
+  return [...new Set([...staticIcons, ...dynamicIcons])];
+}
+
 function resolveIconPath(iconName: string): string {
-  const path = ICON_PATHS[iconName];
-  if (path === undefined) {
-    throw new Error(`Icon "${iconName}" not found in icon-paths.json`);
+  const staticPath = ICON_PATHS[iconName];
+  if (staticPath !== undefined) {
+    return staticPath;
   }
-  return path;
+
+  const dynamicPath = dynamicIconPaths.get(iconName);
+  if (dynamicPath !== undefined) {
+    return dynamicPath;
+  }
+
+  return UNCERTAINTY_ICON_PATH;
 }
 
 export const ItemConventionRegistry = {

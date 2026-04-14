@@ -1,6 +1,9 @@
 export {
   ItemConventionRegistry,
   type ItemDisplayMetadata,
+  registerIconPath,
+  hasIcon,
+  getAvailableIconNames,
 } from '../conventions/convention-registry';
 export {
   ACTIVE_EFFECT_DISPLAY_MAP,
