@@ -205,6 +205,12 @@ export type Genre = 'basic' | 'poison' | 'doctor';
 export function getItemGenre(itemId: ItemId_3): Genre_2;
 
 // @public (undocumented)
+export function isRegisteredItemId(id: string): boolean;
+
+// @public (undocumented)
+export function isStaticItemId(id: string): id is StaticItemId;
+
+// @public (undocumented)
 export interface Item {
     // (undocumented)
     readonly genre: Genre;
@@ -217,7 +223,7 @@ export interface Item {
 }
 
 // @public (undocumented)
-export type ItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_passive_negate' | '_blueprint_damage_to_owner' | '_blueprint_heal_on_damage' | '_blueprint_triple_threat' | '_blueprint_anti_nullify' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts' | 'stitches' | 'adrenaline' | 'drip';
+export type ItemId = StaticItemId | string;
 
 export { ListenerData }
 
@@ -280,6 +286,12 @@ export type StateChangeLogEntry = {
 };
 
 // @public (undocumented)
+export type StaticItemId = '_blueprint_attack' | '_blueprint_passive_attack' | '_blueprint_reactive_removal' | '_blueprint_damage_to_heal_charges' | '_blueprint_damage_to_heal_turns' | '_blueprint_damage_to_heal_permanent' | '_blueprint_self_damage' | '_blueprint_negate_damage' | '_blueprint_passive_negate' | '_blueprint_damage_to_owner' | '_blueprint_heal_on_damage' | '_blueprint_triple_threat' | '_blueprint_anti_nullify' | '_dummy' | '_blueprint_heal_5' | 'punch' | 'sticking_plaster' | 'hand' | 'sticky_boot' | 'wingfoot' | 'gas_grenade' | 'antidote' | 'gas_mask' | 'poison_drink' | 'poison_darts' | 'stitches' | 'adrenaline' | 'drip';
+
+// @public (undocumented)
+export type StaticStatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'impatience' | 'periodic_attack' | 'anti_nullify' | 'stitches' | 'heart_strain' | 'drip';
+
+// @public (undocumented)
 export interface StatusEffectData {
     // (undocumented)
     durationType: Duration['type'];
@@ -297,7 +309,7 @@ export interface StatusEffectData {
 export type StatusEffectId = 'poison' | 'invert' | 'negate' | 'passive_attack' | 'status_effect';
 
 // @public (undocumented)
-export type StatusEffectType = 'poison' | 'invert' | 'negate' | 'reactive_removal' | 'advance_turn' | 'impatience' | 'periodic_attack' | 'anti_nullify' | 'stitches' | 'heart_strain' | 'drip' | ItemId;
+export type StatusEffectType = StaticStatusEffectType | string;
 
 // @public
 export interface Strategy {

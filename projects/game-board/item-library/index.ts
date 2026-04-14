@@ -1,1 +1,9 @@
-export { getItemBehavior, getItemGenre, ItemLibrary } from './item-registry';
+export {
+  getItemBehavior,
+  getItemGenre,
+  ItemLibrary,
+  registerItem,
+  unregisterItem,
+  isRegisteredItemId,
+  getAllItemIds,
+} from './item-registry';

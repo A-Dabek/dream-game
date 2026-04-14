@@ -34,7 +34,7 @@ export {
   type StaticStatusEffectType,
 } from './item/item.model';
 export { isStaticItemId } from './item/item.model';
-export { getItemGenre } from './item-library/item-registry';
+export { getItemGenre, isRegisteredItemId } from './item-library/item-registry';
 export {
   type ActiveEffectId,
   type StatusEffectId,

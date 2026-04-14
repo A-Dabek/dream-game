@@ -212,12 +212,56 @@ export const ItemLibrary = {
   ...DoctorItemLibrary,
 } as const;
 
-export function getItemBehavior(itemId: ItemId): ItemDefinition {
-  const entry = (ItemLibrary as Record<string, () => ItemDefinition>)[itemId];
-  if (!entry) {
-    throw new Error(`No behavior found for item: ${itemId}`);
+type ItemFactory = () => ItemDefinition;
+
+const dynamicItemRegistry = new Map<string, ItemFactory>();
+
+export function registerItem(id: string, factory: ItemFactory): void {
+  if (
+    ItemLibrary[id as keyof typeof ItemLibrary] &&
+    !dynamicItemRegistry.has(id)
+  ) {
+    console.warn(
+      `Item "${id}" already exists in static ItemLibrary; dynamic registration skipped.`,
+    );
+    return;
   }
-  return entry();
+  dynamicItemRegistry.set(id, factory);
+}
+
+export function unregisterItem(id: string): void {
+  dynamicItemRegistry.delete(id);
+}
+
+export function isRegisteredItemId(id: string): boolean {
+  return !!(
+    ItemLibrary[id as keyof typeof ItemLibrary] || dynamicItemRegistry.has(id)
+  );
+}
+
+const EMPTY_ITEM_DEFINITION: ItemDefinition = {
+  genre: 'basic',
+  onPlayEffects: [],
+};
+
+export function getItemBehavior(itemId: ItemId): ItemDefinition {
+  const staticEntry = ItemLibrary[itemId as keyof typeof ItemLibrary];
+  if (staticEntry) {
+    return staticEntry();
+  }
+
+  const dynamicEntry = dynamicItemRegistry.get(itemId);
+  if (dynamicEntry) {
+    return dynamicEntry();
+  }
+
+  return EMPTY_ITEM_DEFINITION;
+}
+
+export function getAllItemIds(): string[] {
+  const staticIds = Object.keys(ItemLibrary);
+  const dynamicIds = Array.from(dynamicItemRegistry.keys());
+  return [...staticIds, ...dynamicIds];
 }
 
 export function getItemGenre(itemId: ItemId): Genre {
