@@ -71,16 +71,7 @@ app-board-ui {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    border-radius: 1.2rem;
-    border: 1px solid var(--color-border-weak);
-    background: var(--color-surface-2);
-    box-shadow: 0 10px 28px var(--shadow-medium);
     box-sizing: border-box;
-  }
-
-  .last-played-item {
-    --hand-item-size: var(--last-played-item-size);
-    border-width: 2px;
   }
 
   .last-played-item {
@@ -92,23 +83,22 @@ app-board-ui {
     animation: none;
   }
 
-  .last-played-item app-icon {
-    --icon-size: clamp(2.8rem, 10vw, 4.8rem);
-  }
-
-  .last-played-item .label {
-    font-size: clamp(0.95rem, 2vw, 1.3rem);
-    letter-spacing: 0.05em;
-    text-transform: capitalize;
-    color: var(--color-text);
-  }
-
   .last-played-placeholder {
+    width: 260px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid var(--color-border-weak);
+    background: var(--color-surface-2);
+    box-shadow: 0 4px 12px var(--shadow-light);
     font-size: 0.85rem;
     letter-spacing: 0.08em;
     color: var(--color-text-subtle);
     text-align: center;
-    padding: 0 0.5rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
   }
 
   /* Opponent area layout: hand on top, then health bar */

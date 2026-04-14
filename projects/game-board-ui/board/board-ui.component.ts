@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { GameActionType, Item } from '@dream/game-board';
 import { HumanInputService } from './service/human-input.service';
-import { ItemDisplayComponent } from '../common';
+import { ItemCardComponent } from '../common';
 import { ActionHistoryComponent } from './action-history.component';
 import { ActionHistoryEntry } from './action-history-entry';
 import { PlayerHandComponent } from './player-hand.component';
@@ -24,7 +24,7 @@ import { UiGameState } from './ui-game-state';
   imports: [
     PlayerHandComponent,
     TurnQueueComponent,
-    ItemDisplayComponent,
+    ItemCardComponent,
     ActionHistoryComponent,
     HealthBarComponent,
     StatusEffectsComponent,
@@ -65,7 +65,11 @@ import { UiGameState } from './ui-game-state';
         </div>
         <div class="last-played-wrapper" role="status" aria-live="polite">
           @if (lastPlayedItem(); as item) {
-            <app-item-display class="last-played-item" [item]="item" />
+            <app-item-card
+              class="last-played-item"
+              [itemId]="item.id"
+              data-testid="last-played-card"
+            />
           } @else {
             <div class="last-played-placeholder">Awaiting the first play</div>
           }

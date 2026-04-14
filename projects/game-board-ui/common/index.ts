@@ -11,3 +11,4 @@ export {
 } from './active-effect-display-map';
 export { IconComponent } from '@shared-ui';
 export { ItemDisplayComponent } from '@shared-ui';
+export { ItemCardComponent, type ItemStats } from './item-card.component';
