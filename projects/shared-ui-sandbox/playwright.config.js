@@ -26,7 +26,7 @@ module.exports = defineConfig({
   ],
 
   webServer: {
-    command: 'npm run start -- --port 4201',
+    command: 'bun run start -- --port 4201',
     url: 'http://localhost:4201',
     reuseExistingServer: true,
     timeout: 120000,

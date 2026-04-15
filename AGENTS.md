@@ -22,7 +22,7 @@ This project uses **Turborepo** for optimized build orchestration. The `turbo.js
 - `e2e` - Runs Playwright end-to-end tests
 - `init-game` - Initializes game data
 
-All tasks are accessed via npm scripts in the root `package.json` (e.g., `npm run build`, `npm run test`, `npm run e2e`).
+All tasks are accessed via bun scripts in the root `package.json` (e.g., `bun run build`, `bun run test`, `bun run e2e`).
 
 ## Gameplay
 

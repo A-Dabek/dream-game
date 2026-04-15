@@ -9,7 +9,6 @@
       <excludeFolder url="file://$MODULE_DIR$/.firebase" />
       <excludeFolder url="file://$MODULE_DIR$/.serena/cache" />
       <excludeFolder url="file://$MODULE_DIR$/.turbo" />
-      <excludeFolder url="file://$MODULE_DIR$/ideas" />
       <excludeFolder url="file://$MODULE_DIR$/test-results" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

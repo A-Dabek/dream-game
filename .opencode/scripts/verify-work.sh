@@ -42,25 +42,25 @@ echo "========================================="
 echo ""
 
 # Step 1: Format
-run_step "FORMAT" npm run format
+run_step "FORMAT" bun run format
 
 # Step 2: Build
-run_step "BUILD" npm run build
+run_step "BUILD" bun run build
 
 # Step 3: Test
-run_step "TEST" npm run test
+run_step "TEST" bun run test
 
 # Step 4: API Extractor
-run_step "API-EXTRACTOR" npm run api-extractor
+run_step "API-EXTRACTOR" bun run api-extractor
 
 # Step 5: E2E Tests
-run_step "E2E" npm run e2e
+run_step "E2E" bun run e2e
 
 # Step 6: Init Game (Performance check)
 echo "[INIT-GAME] RUNNING..."
 start_time=$(date +%s%3N)
 set +e
-output=$(timeout 10s npm run init-game 2>&1)
+output=$(timeout 10s bun run init-game 2>&1)
 exit_code=$?
 set -e
 end_time=$(date +%s%3N)
