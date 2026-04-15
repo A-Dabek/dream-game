@@ -2,7 +2,8 @@
   "name": "game-initialization",
   "version": "0.0.0",
   "scripts": {
-    "init-game": "cd ../.. && tsc -p projects/game-initialization/tsconfig.app.json && node out-tsc/game-initialization/game-initialization/src/main.js"
+    "init-game": "bun run src/init-game.ts",
+    "generate-items": "bun run src/generate-random-items.ts"
   },
   "private": true
 }

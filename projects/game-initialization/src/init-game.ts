@@ -7,7 +7,7 @@ import {
   type Player,
   type ItemId,
   RandomItemRegistrar,
-  RandomItemDefinition,
+  type RandomItemDefinition,
 } from '../../game-board';
 import { environment } from '../../game-board-ui/environments/environment';
 
@@ -27,7 +27,9 @@ function serializePlayer(p: Player): string {
 }
 
 async function main() {
-  const itemsPath = path.join(process.cwd(), 'assets', 'random_items.json');
+  // Resolve the absolute path to assets folder from project root
+  const projectRoot = path.resolve(__dirname, '../../..');
+  const itemsPath = path.join(projectRoot, 'assets', 'random_items.json');
   if (fs.existsSync(itemsPath)) {
     const items: RandomItemDefinition[] = JSON.parse(
       fs.readFileSync(itemsPath, 'utf8'),
@@ -55,12 +57,6 @@ async function main() {
       p2Idx = Math.floor(Math.random() * players.length);
     }
 
-    // console.log(
-    //   'Fight between items: ',
-    //   serializePlayer(players[p1Idx]),
-    //   'vs',
-    //   serializePlayer(players[p2Idx]),
-    // );
     await orchestrator.startGame(players[p1Idx], players[p2Idx]);
 
     if ((i + 1) % 100 === 0) {
@@ -121,11 +117,7 @@ async function main() {
 
   const itemCsvContent = `itemId,topCount,bottomCount,totalCount,balance\n${itemCsvLines.join('\n')}`;
 
-  const itemOutputPath = path.join(
-    process.cwd(),
-    'assets',
-    'items_balance.csv',
-  );
+  const itemOutputPath = path.join(projectRoot, 'assets', 'items_balance.csv');
   fs.writeFileSync(itemOutputPath, itemCsvContent);
 
   const csvLines = players.map(
@@ -133,7 +125,7 @@ async function main() {
   );
   const csvContent = `config,elo\n${csvLines.join('\n')}`;
 
-  const outputPath = path.join(process.cwd(), 'assets', 'players_elo.csv');
+  const outputPath = path.join(projectRoot, 'assets', 'players_elo.csv');
   fs.writeFileSync(outputPath, csvContent);
 
   console.log(`Results written to ${outputPath} and ${itemOutputPath}`);

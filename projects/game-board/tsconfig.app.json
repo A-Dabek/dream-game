@@ -2,10 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/game-board",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ES2022",
-    "types": ["node"]
+    "types": []
   },
   "include": ["**/*.ts"],
   "exclude": ["**/*.spec.ts"]

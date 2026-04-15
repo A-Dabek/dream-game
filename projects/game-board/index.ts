@@ -56,7 +56,6 @@ export {
   type RandomEffectDefinition,
   type RandomItemDefinition,
 } from './random-item/random-item-definition';
-export { RandomItemGenerator } from './random-item/random-item-generator';
 export {
   RandomItemRegistrar,
   setRandomItemConventionRegistrar,

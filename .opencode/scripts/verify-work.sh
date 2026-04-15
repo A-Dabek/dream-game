@@ -56,7 +56,10 @@ run_step "API-EXTRACTOR" bun run api-extractor
 # Step 5: E2E Tests
 run_step "E2E" bun run e2e
 
-# Step 6: Init Game (Performance check)
+# Step 6: Random items
+run_step "RANDOM-ITEMS" bun run generate-items
+
+# Step 7: Init Game (Performance check)
 echo "[INIT-GAME] RUNNING..."
 start_time=$(date +%s%3N)
 set +e
