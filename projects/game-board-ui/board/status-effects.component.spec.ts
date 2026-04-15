@@ -15,24 +15,27 @@ describe('StatusEffectsComponent', () => {
       type: 'poison',
       remainingCharges: 3,
       durationType: 'turns',
-      pathD: ItemConventionRegistry.getStatusEffectDisplay('poison').pathD,
+      iconName: ItemConventionRegistry.getStatusEffectConvention('poison').icon,
       genre: 'basic',
+      name: 'Poison',
     },
     {
       instanceId: 'effect-2',
       type: 'negate',
       remainingCharges: null,
       durationType: 'permanent',
-      pathD: ItemConventionRegistry.getStatusEffectDisplay('negate').pathD,
+      iconName: ItemConventionRegistry.getStatusEffectConvention('negate').icon,
       genre: 'basic',
+      name: 'Negate',
     },
     {
       instanceId: 'effect-3',
       type: 'invert',
       remainingCharges: 2,
       durationType: 'charges',
-      pathD: ItemConventionRegistry.getStatusEffectDisplay('invert').pathD,
+      iconName: ItemConventionRegistry.getStatusEffectConvention('invert').icon,
       genre: 'basic',
+      name: 'Invert',
     },
   ];
 
@@ -83,7 +86,9 @@ describe('StatusEffectsComponent', () => {
     it('should derive correct icon name from effect type', () => {
       setInputs([mockStatusEffects[0]]);
       const icon = fixture.debugElement.query(By.css('app-icon'));
-      expect(icon.componentInstance.pathD()).toBe(mockStatusEffects[0].pathD);
+      expect(icon.componentInstance.iconName()).toBe(
+        mockStatusEffects[0].iconName,
+      );
     });
   });
 

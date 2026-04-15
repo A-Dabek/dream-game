@@ -10,11 +10,15 @@ import { IconComponent } from '@shared-ui';
       <h1>Icon Component</h1>
 
       <section>
-        <h2>Different Path Values</h2>
+        <h2>Different Icons</h2>
         <div class="icon-grid">
           @for (icon of icons; track icon.id) {
             <div class="icon-item">
-              <app-icon [pathD]="icon.pathD" [color]="icon.color" [size]="48" />
+              <app-icon
+                [iconName]="icon.iconName"
+                [color]="icon.color"
+                [size]="48"
+              />
               <span>{{ icon.name }}</span>
             </div>
           }
@@ -27,7 +31,7 @@ import { IconComponent } from '@shared-ui';
           @for (color of colors; track color) {
             <div class="color-item" [style.color]="color">
               <app-icon
-                pathD="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"
+                [iconName]="sampleIconName"
                 [color]="color"
                 [size]="32"
               />
@@ -42,10 +46,7 @@ import { IconComponent } from '@shared-ui';
         <div class="size-grid">
           @for (size of sizes; track size) {
             <div class="size-item">
-              <app-icon
-                pathD="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"
-                [size]="size"
-              />
+              <app-icon [iconName]="sampleIconName" [size]="size" />
               <span>{{ size }}px</span>
             </div>
           }
@@ -96,26 +97,25 @@ export class IconShowcaseComponent {
   icons = [
     {
       id: 1,
-      name: 'Checkmark',
-      pathD:
-        'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z',
+      name: 'Police Badge',
+      iconName: 'police-badge',
       color: 'currentColor',
     },
     {
       id: 2,
-      name: 'Circle',
-      pathD:
-        'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z',
+      name: 'Brutal Helm',
+      iconName: 'brutal-helm',
       color: 'currentColor',
     },
     {
       id: 3,
-      name: 'Star',
-      pathD:
-        'M288 64L256 128l-32-64c-17.7-35.4-70.7-35.4-88.4 0L91.2 160 16 176c-39.2 8.3-54.9 56-26.5 80l57.6 40.8L32 360c-11.8 34.2 18.6 63 51.6 49.2l68.8-28.4L204 440c17.7 35.4 70.7 35.4 88.4 0l44.4-96.4 57.6-40.8c39.2-8.3 54.9-56 26.5-80l-15.2-63.6 57.6-40.8c33-13.8 39.4-63 18.6-84.8L336 128l-32 64c-17.7 35.4-70.7 35.4-88.4 0z',
+      name: 'Fast Forward',
+      iconName: 'fast-forward-button',
       color: 'currentColor',
     },
-  ];
+  ] as const;
+
+  sampleIconName = 'check-mark' as const;
 
   colors = [
     'currentColor',

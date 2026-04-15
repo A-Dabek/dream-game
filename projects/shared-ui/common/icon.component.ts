@@ -1,4 +1,14 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
+
+// IMPORTANT: Do NOT open or read the entire icons.json during development/review!
+// It is over 5MB big. We import it here only to look up paths by icon name.
+import iconsJson from '../../../assets/icons.json';
+import { IconName } from './icon-name';
 
 @Component({
   selector: 'app-icon',
@@ -10,6 +20,9 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
       viewBox="0 0 512 512"
       fill="currentColor"
     >
+      @if (title()) {
+        <title>{{ title() }}</title>
+      }
       <path [attr.d]="pathD()" />
     </svg>
   `,
@@ -33,7 +46,15 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
   },
 })
 export class IconComponent {
-  readonly pathD = input.required<string>();
+  readonly iconName = input.required<IconName>();
+  readonly title = input<string | null>(null);
+
+  readonly pathD = computed(() => {
+    const name = this.iconName();
+    const d = (iconsJson as Record<string, string>)[name];
+    return d ?? '';
+  });
+
   readonly color = input('currentColor');
   readonly size = input(1.6);
 }

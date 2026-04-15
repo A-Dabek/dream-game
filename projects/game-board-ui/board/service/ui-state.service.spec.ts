@@ -126,7 +126,7 @@ describe('UiStateService - Status Effects', () => {
       service.initialize(state);
 
       expect(service.uiState()?.playerStatusEffects.length).toBe(1);
-      expect(service.uiState()?.playerStatusEffects[0].pathD).toBeDefined();
+      expect(service.uiState()?.playerStatusEffects[0].iconName).toBeDefined();
       expect(service.uiState()?.playerStatusEffects[0].genre).toBe('poison');
     });
 

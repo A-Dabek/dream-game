@@ -26,7 +26,7 @@ import { StatusEffectDisplayData } from './status-effects-display-data';
           [attr.aria-label]="effect.type"
         >
           <app-icon
-            [pathD]="effect.pathD"
+            [iconName]="effect.iconName"
             [color]="
               effect.genre
                 ? 'var(--genre-' + effect.genre + ')'

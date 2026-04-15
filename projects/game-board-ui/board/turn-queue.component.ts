@@ -5,8 +5,9 @@ import {
   output,
 } from '@angular/core';
 import { TurnEntry } from '@dream/game-board';
-import { ItemConventionRegistry } from '../common';
+// import { ItemConventionRegistry } from '../common';
 import { IconComponent } from '@shared-ui';
+import { IconName } from '@shared-ui';
 
 @Component({
   selector: 'app-turn-queue',
@@ -21,7 +22,7 @@ import { IconComponent } from '@shared-ui';
         [class.current]="$first"
         animate.leave="turn-slide-out"
       >
-        <app-icon [pathD]="getPathD(turn.playerId)" />
+        <app-icon [iconName]="getIconName(turn.playerId)" />
         @if ($first && turn.playerId === playerId()) {
           <div
             class="skip-button"
@@ -33,7 +34,7 @@ import { IconComponent } from '@shared-ui';
             (keydown.space)="$event.preventDefault(); skipTurn.emit()"
             data-testid="skip-turn-button"
           >
-            <app-icon [pathD]="passIconPath" />
+            <app-icon [iconName]="passIconName" />
           </div>
         }
       </div>
@@ -44,11 +45,11 @@ export class TurnQueueComponent {
   readonly turnQueue = input.required<TurnEntry[]>();
   readonly playerId = input.required<string>();
   readonly skipTurn = output<void>();
-  readonly passIconPath = ItemConventionRegistry.PASS_ICON_PATH;
+  readonly passIconName: IconName = 'fast-forward-button' as IconName;
 
-  getPathD(playerId: string): string {
-    const iconName =
-      playerId === this.playerId() ? 'police-badge' : 'brutal-helm';
-    return ItemConventionRegistry.resolveIconPath(iconName);
+  getIconName(playerId: string): IconName {
+    return (
+      playerId === this.playerId() ? 'police-badge' : 'brutal-helm'
+    ) as IconName;
   }
 }

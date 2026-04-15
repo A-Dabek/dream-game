@@ -1,10 +1,9 @@
 import { Component, inject } from '@angular/core';
+import { ItemCardComponent } from '@dream/game-board-ui';
 import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
+import { CRAFT_COST, ForgeService } from './forge.service';
 import { GameLoopStateService } from './game-loop-state.service';
-import { resolveIcon } from '../common/interface-icon-registry';
-import { ItemCardComponent } from '@dream/game-board-ui';
-import { ForgeService, CRAFT_COST } from './forge.service';
 
 @Component({
   selector: 'app-forge-view',
@@ -34,9 +33,9 @@ import { ForgeService, CRAFT_COST } from './forge.service';
         (click)="craft()"
       >
         @if (hasBackpackSpace()) {
-          <app-icon [pathD]="craftIconPath" />
+          <app-icon iconName="anvil" />
           Craft new item
-          <app-icon [pathD]="costIconPath" /> {{ CRAFT_COST }}
+          <app-icon iconName="stack" /> {{ CRAFT_COST }}
         } @else {
           Not enough space
         }
@@ -47,8 +46,9 @@ import { ForgeService, CRAFT_COST } from './forge.service';
         data-testid="fight-btn"
         [variant]="'secondary'"
         (click)="startFight()"
-        >Fight <app-icon [pathD]="swordIconPath"
-      /></app-button>
+        >Fight
+        <app-icon iconName="sword-clash" />
+      </app-button>
     </main>
   `,
   styleUrls: ['./forge-view.component.scss'],
@@ -63,10 +63,6 @@ export class ForgeViewComponent {
   readonly craftedItem = this.forgeService.craftedItem;
   readonly canCraft = this.forgeService.canCraft;
   readonly hasBackpackSpace = this.forgeService.hasBackpackSpace;
-
-  readonly craftIconPath = resolveIcon('arrow');
-  readonly swordIconPath = resolveIcon('sword');
-  readonly costIconPath = resolveIcon('matrices');
 
   craft(): void {
     this.forgeService.craft();

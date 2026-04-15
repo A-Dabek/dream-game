@@ -1,4 +1,5 @@
 import { StatusEffectData, Genre } from '@dream/game-board';
+import { IconName } from '@shared-ui';
 
 /**
  * Extends StatusEffectData with UI-specific display properties.
@@ -6,6 +7,7 @@ import { StatusEffectData, Genre } from '@dream/game-board';
  * allowing the component to access display-derived data.
  */
 export interface StatusEffectDisplayData extends StatusEffectData {
-  readonly pathD: string;
+  readonly name: string;
+  readonly iconName: IconName;
   readonly genre: Genre;
 }

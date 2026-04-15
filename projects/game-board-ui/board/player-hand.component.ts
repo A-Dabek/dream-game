@@ -5,7 +5,8 @@ import {
   output,
 } from '@angular/core';
 import { Item } from '@dream/game-board';
-import { ItemDisplayComponent } from '../common';
+import { ItemDisplayComponent, ItemConventionRegistry } from '../common';
+import { IconName } from '@shared-ui';
 
 @Component({
   selector: 'app-player-hand',
@@ -24,7 +25,11 @@ import { ItemDisplayComponent } from '../common';
         [attr.data-item-id]="item.id"
         [attr.data-interactive]="interactive()"
       >
-        <app-item-display [item]="item" />
+        <app-item-display
+          [item]="item"
+          [iconName]="getIcon(item.id)"
+          [label]="getLabel(item.id)"
+        />
       </div>
     }
   `,
@@ -34,4 +39,12 @@ export class PlayerHandComponent {
   readonly interactive = input(true);
   readonly side = input<'player' | 'opponent'>('player');
   readonly itemSelected = output<Item>();
+
+  protected getIcon(itemId: string): IconName {
+    return ItemConventionRegistry.getItemConvention(itemId).icon as IconName;
+  }
+
+  protected getLabel(itemId: string): string {
+    return ItemConventionRegistry.getItemConvention(itemId).name;
+  }
 }

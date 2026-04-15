@@ -9,21 +9,19 @@ import { ItemConventionRegistry } from '../common';
 import { StatusEffectDisplayData } from './status-effects-display-data';
 import { UiGameState } from './ui-game-state';
 
-// FIXME paths should be only available to icon component instead of passed around
-function resolveStatusEffectIcon(type: string): string {
-  return ItemConventionRegistry.getStatusEffectDisplay(type as StatusEffectType)
-    .pathD;
-}
-
 /**
  * Maps a core StatusEffectData to UI-specific StatusEffectDisplayData.
  */
 export function mapStatusEffectToDisplayData(
   data: StatusEffectData,
 ): StatusEffectDisplayData {
+  const convention = ItemConventionRegistry.getStatusEffectConvention(
+    data.type as StatusEffectType,
+  );
   return {
     ...data,
-    pathD: resolveStatusEffectIcon(data.type),
+    name: convention.name,
+    iconName: convention.icon as any,
   };
 }
 
@@ -41,12 +39,17 @@ export function mapListenerToDisplayData(
     currentDuration.type === 'charges' ||
     (currentDuration.type === 'permanent' && currentDuration.remaining > 0);
 
+  const convention = ItemConventionRegistry.getStatusEffectConvention(
+    effect.type as StatusEffectType,
+  );
+
   return {
     instanceId,
     type: effect.type,
     remainingCharges: shouldShowCharges ? currentDuration.remaining : null,
     durationType: currentDuration.type,
-    pathD: resolveStatusEffectIcon(effect.type),
+    name: convention.name,
+    iconName: convention.icon as any,
     genre: effect.genre,
   };
 }

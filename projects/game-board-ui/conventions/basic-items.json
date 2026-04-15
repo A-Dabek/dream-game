@@ -1,81 +1,101 @@
 {
   "hand": {
+    "name": "Hand",
     "icon": "hand",
     "description": "A basic hand."
   },
   "punch": {
+    "name": "Punch",
     "icon": "punch",
     "description": "A basic punch attack."
   },
   "sticking_plaster": {
+    "name": "Sticking Plaster",
     "icon": "sticking-plaster",
     "description": "Heals a small amount of health."
   },
   "sticky_boot": {
+    "name": "Sticky Boot",
     "icon": "sticky-boot",
     "description": "Reduces enemy speed."
   },
   "wingfoot": {
+    "name": "Wingfoot",
     "icon": "wingfoot",
     "description": "Increases your speed."
   },
   "_blueprint_attack": {
+    "name": "Blueprint Attack",
     "icon": "attack",
     "description": "A blueprint attack."
   },
   "_blueprint_heal_5": {
+    "name": "Blueprint Heal 5",
     "icon": "heal-5",
     "description": "A blueprint heal for 5 health."
   },
   "_blueprint_passive_attack": {
+    "name": "Blueprint Passive Attack",
     "icon": "passive-attack",
     "description": "Deals damage periodically."
   },
   "_blueprint_reactive_removal": {
+    "name": "Blueprint Reactive Removal",
     "icon": "reactive-removal",
     "description": "Removes items reactively."
   },
   "_blueprint_self_damage": {
+    "name": "Blueprint Self Damage",
     "icon": "self-damage",
     "description": "Deals damage to yourself."
   },
   "_blueprint_damage_to_heal_charges": {
+    "name": "Blueprint Damage to Heal (Charges)",
     "icon": "damage-to-heal-charges",
     "description": "Converts damage to healing for a number of charges."
   },
   "_blueprint_damage_to_heal_permanent": {
+    "name": "Blueprint Damage to Heal (Permanent)",
     "icon": "damage-to-heal-permanent",
     "description": "Permanently converts damage to healing."
   },
   "_blueprint_damage_to_heal_turns": {
+    "name": "Blueprint Damage to Heal (Turns)",
     "icon": "damage-to-heal-turns",
     "description": "Converts damage to healing for a number of turns."
   },
   "_dummy": {
+    "name": "Dummy",
     "icon": "dummy",
     "description": "A dummy item."
   },
   "_blueprint_negate_damage": {
+    "name": "Blueprint Negate Damage",
     "icon": "negate-damage",
     "description": "Negates damage."
   },
   "_blueprint_triple_threat": {
+    "name": "Blueprint Triple Threat",
     "icon": "triple-threat",
     "description": "A triple threat attack."
   },
   "_blueprint_damage_to_owner": {
+    "name": "Blueprint Damage to Owner",
     "icon": "damage-to-owner",
     "description": "Deals 1 damage to owner when they are damaged."
   },
   "_blueprint_heal_on_damage": {
+    "name": "Blueprint Heal on Damage",
     "icon": "heal-on-damage",
     "description": "Heals 1 to owner when they are damaged."
   },
   "_blueprint_passive_negate": {
+    "name": "Blueprint Passive Negate",
     "icon": "negate-damage",
     "description": "Negates damage as a passive effect."
   },
   "_blueprint_anti_nullify": {
+    "name": "Blueprint Anti-Nullify",
     "icon": "anti-nullify",
     "description": "Prevents nullification of events."
   }

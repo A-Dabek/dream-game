@@ -22,8 +22,8 @@ describe('ui-state-mapper', () => {
 
       expect(result.instanceId).toBe('1');
       expect(result.type).toBe('poison');
-      expect(result.pathD).toBe(
-        ItemConventionRegistry.getStatusEffectDisplay('poison').pathD,
+      expect(result.iconName).toBe(
+        ItemConventionRegistry.getStatusEffectConvention('poison').icon,
       );
       expect(result.genre).toBe('poison');
     });
@@ -39,9 +39,7 @@ describe('ui-state-mapper', () => {
 
       const result = mapStatusEffectToDisplayData(effect);
       expect(result.genre).toBe('basic');
-      expect(result.pathD).toBe(
-        ItemConventionRegistry.resolveIconPath('uncertainty'),
-      );
+      expect(result.iconName).toBe('uncertainty');
     });
   });
 
@@ -66,8 +64,8 @@ describe('ui-state-mapper', () => {
 
       expect(result.instanceId).toBe('e1');
       expect(result.type).toBe('poison');
-      expect(result.pathD).toBe(
-        ItemConventionRegistry.getStatusEffectDisplay('poison').pathD,
+      expect(result.iconName).toBe(
+        ItemConventionRegistry.getStatusEffectConvention('poison').icon,
       );
       expect(result.genre).toBe('poison');
     });
@@ -89,9 +87,7 @@ describe('ui-state-mapper', () => {
       };
 
       const result = mapListenerToDisplayData(listener);
-      expect(result.pathD).toBe(
-        ItemConventionRegistry.resolveIconPath('uncertainty'),
-      );
+      expect(result.iconName).toBe('uncertainty');
     });
   });
 
@@ -128,7 +124,7 @@ describe('ui-state-mapper', () => {
       const result = mapToUiState(state);
 
       expect(result.playerStatusEffects.length).toBe(1);
-      expect(result.playerStatusEffects[0].pathD).toBeDefined();
+      expect(result.playerStatusEffects[0].iconName).toBeDefined();
       expect(result.playerStatusEffects[0].genre).toBe('poison');
     });
   });

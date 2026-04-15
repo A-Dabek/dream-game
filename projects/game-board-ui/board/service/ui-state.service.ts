@@ -14,6 +14,7 @@ import {
 import { GameService } from '../../game-logic';
 import { ActionHistoryEntry } from '../action-history-entry';
 import { ItemConventionRegistry } from '../../common';
+import { IconName } from '@shared-ui';
 import { SoundService } from './sound.service';
 import { UiGameState } from '../ui-game-state';
 import { mapEngineStateToUiState, mapToUiState } from '../ui-state-mapper';
@@ -74,17 +75,18 @@ export class UiStateService implements OnDestroy {
 
   private createHistoryEntry(action: GameAction): ActionHistoryEntry {
     const itemId = action.itemId as ItemId | undefined;
-    const pathD = itemId
-      ? ItemConventionRegistry.getItemDisplay(itemId).pathD
-      : ItemConventionRegistry.PASS_ICON_PATH;
+    const convention = itemId
+      ? ItemConventionRegistry.getItemConvention(itemId)
+      : { name: 'Pass', icon: 'fast-forward-button' };
 
     const genre = itemId ? getItemGenre(itemId) : undefined;
 
     return {
       id: `history-${crypto.randomUUID().slice(0, 8)}`,
+      name: convention.name,
       actionType: action.type,
       playerId: action.playerId,
-      pathD,
+      iconName: convention.icon as IconName,
       itemId,
       genre,
     };

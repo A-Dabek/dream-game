@@ -4,9 +4,8 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { GameLoopStateService } from './game-loop-state.service';
 import { IconComponent } from '@shared-ui';
-import { resolveIcon } from '../common/interface-icon-registry';
+import { GameLoopStateService } from './game-loop-state.service';
 
 @Component({
   selector: 'app-reward-view',
@@ -17,7 +16,7 @@ import { resolveIcon } from '../common/interface-icon-registry';
     <main class="reward-container" data-testid="reward-view">
       <h1 class="title">Rewards</h1>
       <div class="currency-line">
-        <app-icon [pathD]="matrixIconPath" />
+        <app-icon iconName="stack" />
         <span class="amount">+4</span>
       </div>
     </main>
@@ -52,7 +51,6 @@ import { resolveIcon } from '../common/interface-icon-registry';
 })
 export class RewardViewComponent implements OnInit {
   private readonly service = inject(GameLoopStateService);
-  readonly matrixIconPath = resolveIcon('matrices');
 
   ngOnInit(): void {
     this.service.addReward(4);

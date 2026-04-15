@@ -7,6 +7,7 @@ import {
 import { ItemId } from '@dream/game-board';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
 import { IconComponent } from '@shared-ui';
+import { IconName } from '@shared-ui';
 
 export interface ItemStats {
   hp: number;
@@ -20,7 +21,7 @@ export interface ItemStats {
   template: `
     <div class="card-content">
       <div class="item-header">
-        <app-icon [pathD]="iconPath()" class="item-icon" />
+        <app-icon [iconName]="iconName()" class="item-icon" />
         <div class="item-info">
           <h2 class="item-name">{{ displayName() }}</h2>
           <p class="item-description">{{ description() }}</p>
@@ -42,13 +43,13 @@ export class ItemCardComponent {
   readonly stats = input<ItemStats | null>(null);
 
   readonly convention = computed(() =>
-    ItemConventionRegistry.getItemDisplay(this.itemId()),
+    ItemConventionRegistry.getItemConvention(this.itemId()),
   );
 
-  readonly iconPath = computed(() => this.convention().pathD);
+  readonly iconName = computed<IconName>(
+    () => this.convention().icon as IconName,
+  );
   readonly description = computed(() => this.convention().description);
 
-  readonly displayName = computed(() =>
-    ItemConventionRegistry.formatItemIdAsName(this.itemId()),
-  );
+  readonly displayName = computed(() => this.convention().name);
 }

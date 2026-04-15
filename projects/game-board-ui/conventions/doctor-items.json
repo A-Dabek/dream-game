@@ -1,13 +1,16 @@
 {
   "stitches": {
+    "name": "Stitches",
     "icon": "stitched-wound",
     "description": "Heals up to 10 health and applies a stitches effect that absorbs incoming damage. When stitches are consumed, deals back the initial heal amount as damage."
   },
   "adrenaline": {
+    "name": "Adrenaline",
     "icon": "miracle-medicine",
     "description": "Grants +10 speed but applies heart strain for 5 turns, which reduces speed by 3 at the start of each turn."
   },
   "drip": {
+    "name": "Drip",
     "icon": "medical-drip",
     "description": "Applies a drip status effect that heals 1 health at the start and end of each turn for 25 activations."
   }

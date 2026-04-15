@@ -1,9 +1,9 @@
 import { Component, computed, inject } from '@angular/core';
-import { IconComponent, ItemDisplayComponent } from '@shared-ui';
+import { IconComponent, ItemDisplayComponent, IconName } from '@shared-ui';
+import { ItemConventionRegistry } from '@dream/game-board-ui';
 import { ButtonComponent } from '../common/button.component';
 import { GameLoopStateService } from './game-loop-state.service';
 import { ItemManagementService } from './item-management.service';
-import { resolveIcon } from '../common/interface-icon-registry';
 
 @Component({
   selector: 'app-backpack-view',
@@ -21,7 +21,12 @@ import { resolveIcon } from '../common/interface-icon-registry';
           [attr.data-testid]="'equip-slot-' + $index"
         >
           @if (item) {
-            <app-item-display [item]="item.item" [stats]="item.stats" />
+            <app-item-display
+              [item]="item.item"
+              [stats]="item.stats"
+              [iconName]="getIcon(item.item.id)"
+              [label]="getLabel(item.item.id)"
+            />
           }
         </div>
       }
@@ -39,7 +44,12 @@ import { resolveIcon } from '../common/interface-icon-registry';
             [attr.data-testid]="'backpack-slot-' + $index"
           >
             @if (item) {
-              <app-item-display [item]="item.item" [stats]="item.stats" />
+              <app-item-display
+                [item]="item.item"
+                [stats]="item.stats"
+                [iconName]="getIcon(item.item.id)"
+                [label]="getLabel(item.item.id)"
+              />
             }
           </div>
         }
@@ -53,14 +63,17 @@ import { resolveIcon } from '../common/interface-icon-registry';
           [disabled]="!canExpand()"
           (click)="expandBackpack()"
         >
-          Expand <app-icon [pathD]="matrixIconPath" /> 1
+          Expand
+          <app-icon iconName="stack" />
+          1
         </app-button>
         <app-button
           data-testid="fight-btn"
           [variant]="'secondary'"
           (click)="startFight()"
         >
-          Fight <app-icon [pathD]="swordIconPath" />
+          Fight
+          <app-icon iconName="sword-clash" />
         </app-button>
       </div>
     </section>
@@ -69,14 +82,10 @@ import { resolveIcon } from '../common/interface-icon-registry';
 })
 export class BackpackViewComponent {
   private readonly service = inject(GameLoopStateService);
+  readonly canExpand = computed(() => this.service.playerStats().matrices >= 1);
   private readonly itemManagement = inject(ItemManagementService);
-
   readonly equippedItems = this.itemManagement.equippedItems;
   readonly backpackItems = this.itemManagement.backpackItems;
-  readonly matrixIconPath = resolveIcon('matrices');
-  readonly swordIconPath = resolveIcon('sword');
-
-  readonly canExpand = computed(() => this.service.playerStats().matrices >= 1);
 
   isSlotInMoveMode(area: 'equip' | 'backpack', index: number): boolean {
     const moveMode = this.itemManagement.moveMode();
@@ -102,5 +111,13 @@ export class BackpackViewComponent {
 
   startFight(): void {
     this.service.startFight();
+  }
+
+  protected getIcon(itemId: string): IconName {
+    return ItemConventionRegistry.getItemConvention(itemId).icon as IconName;
+  }
+
+  protected getLabel(itemId: string): string {
+    return ItemConventionRegistry.getItemConvention(itemId).name;
   }
 }

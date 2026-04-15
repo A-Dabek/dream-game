@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ItemDisplayComponent } from '@shared-ui';
+import { ItemDisplayComponent, IconName } from '@shared-ui';
 import { Item } from '@dream/game-board';
+import { ItemConventionRegistry } from '@dream/game-board-ui';
 
 @Component({
   selector: 'app-item-display-showcase',
@@ -14,7 +15,11 @@ import { Item } from '@dream/game-board';
         <h2>Basic Items</h2>
         <div class="item-grid">
           @for (item of basicItems; track item.id) {
-            <app-item-display [item]="item" />
+            <app-item-display
+              [item]="item"
+              [iconName]="getIcon(item.id)"
+              [label]="getLabel(item.id)"
+            />
           }
         </div>
       </section>
@@ -23,7 +28,11 @@ import { Item } from '@dream/game-board';
         <h2>Poison Items</h2>
         <div class="item-grid">
           @for (item of poisonItems; track item.id) {
-            <app-item-display [item]="item" />
+            <app-item-display
+              [item]="item"
+              [iconName]="getIcon(item.id)"
+              [label]="getLabel(item.id)"
+            />
           }
         </div>
       </section>
@@ -32,7 +41,11 @@ import { Item } from '@dream/game-board';
         <h2>Doctor Items</h2>
         <div class="item-grid">
           @for (item of doctorItems; track item.id) {
-            <app-item-display [item]="item" />
+            <app-item-display
+              [item]="item"
+              [iconName]="getIcon(item.id)"
+              [label]="getLabel(item.id)"
+            />
           }
         </div>
       </section>
@@ -40,7 +53,12 @@ import { Item } from '@dream/game-board';
       <section>
         <h2>Active State</h2>
         <div class="item-grid">
-          <app-item-display [item]="activeItem" [active]="true" />
+          <app-item-display
+            [item]="activeItem"
+            [active]="true"
+            [iconName]="getIcon(activeItem.id)"
+            [label]="getLabel(activeItem.id)"
+          />
         </div>
       </section>
 
@@ -48,7 +66,11 @@ import { Item } from '@dream/game-board';
         <h2>Blueprint Items</h2>
         <div class="item-grid">
           @for (item of blueprintItems; track item.id) {
-            <app-item-display [item]="item" />
+            <app-item-display
+              [item]="item"
+              [iconName]="getIcon(item.id)"
+              [label]="getLabel(item.id)"
+            />
           }
         </div>
       </section>
@@ -103,4 +125,12 @@ export class ItemDisplayShowcaseComponent {
     { id: '_blueprint_attack', genre: 'basic', remainingUsages: 1 },
     { id: '_blueprint_heal_5', genre: 'basic', remainingUsages: 1 },
   ];
+
+  getIcon(itemId: string): IconName {
+    return ItemConventionRegistry.getItemConvention(itemId).icon as IconName;
+  }
+
+  getLabel(itemId: string): string {
+    return ItemConventionRegistry.getItemConvention(itemId).name;
+  }
 }

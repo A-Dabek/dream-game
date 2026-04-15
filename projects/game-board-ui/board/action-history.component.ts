@@ -16,7 +16,8 @@ import { ActionHistoryEntry } from './action-history-entry';
           animate.enter="history-slide-in"
         >
           <app-icon
-            [pathD]="entry.pathD"
+            [iconName]="entry.iconName"
+            [title]="entry.name"
             [color]="
               entry.genre ? 'var(--genre-' + entry.genre + ')' : 'currentColor'
             "

@@ -1,29 +1,36 @@
 {
   "invert": {
+    "name": "Invert",
     "icon": "invert",
     "description": "Inverts the effect of the next action."
   },
   "negate": {
+    "name": "Negate",
     "icon": "negate",
     "description": "Negates the effect of the next action."
   },
   "reactive_removal": {
+    "name": "Reactive Removal",
     "icon": "reactive-removal",
     "description": "Removes an item when receiving damage."
   },
   "advance_turn": {
+    "name": "Advance Turn",
     "icon": "fast-forward-button",
     "description": "Advances the turn order."
   },
   "impatience": {
+    "name": "Impatience",
     "icon": "nothing-to-say",
     "description": "Deals increasing damage when you have no items left."
   },
   "periodic_attack": {
+    "name": "Periodic Attack",
     "icon": "periodic-attack",
     "description": "Deals damage at the end of each turn."
   },
   "anti_nullify": {
+    "name": "Anti-Nullify",
     "icon": "anti-nullify",
     "description": "Prevents nullification of events."
   }

@@ -1,7 +1,6 @@
 export {
   ItemConventionRegistry,
   type ItemDisplayMetadata,
-  registerIconPath,
   hasIcon,
   getAvailableIconNames,
 } from '../conventions/convention-registry';

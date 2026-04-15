@@ -1,3 +1,4 @@
+import { IconName } from '@shared-ui';
 import { RandomItemDefinition } from './random-item-definition';
 import { registerItem } from '../item-library/item-registry';
 import { ActiveEffectLibrary } from '../effect-library/active-effects';
@@ -5,7 +6,7 @@ import { generateDescription } from './description-generator';
 
 export type ConventionRegistrar = (
   id: string,
-  convention: { icon: string; description: string },
+  convention: { name: string; icon: IconName; description: string },
 ) => void;
 
 let conventionRegistrar: ConventionRegistrar | null = null;
@@ -31,6 +32,7 @@ export const RandomItemRegistrar = {
     // UI registration (optional)
     if (conventionRegistrar) {
       conventionRegistrar(def.id, {
+        name: 'Unknown',
         icon: 'uncertainty',
         description: generateDescription(def.onPlayEffects),
       });

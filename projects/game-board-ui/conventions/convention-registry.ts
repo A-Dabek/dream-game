@@ -7,12 +7,9 @@ import {
   Effect,
   PassiveEffect,
 } from '@dream/game-board';
-import {
-  ACTIVE_EFFECT_DISPLAY_MAP,
-  EffectDisplayMetadata,
-} from '../common/active-effect-display-map';
+import { ICON_NAMES, IconName } from '@shared-ui';
+import { ACTIVE_EFFECT_DISPLAY_MAP, EffectDisplayMetadata } from '../common';
 
-import iconPathsJson from './icon-paths.json';
 import basicItemsJson from './basic-items.json';
 import basicStatusEffectsJson from './basic-status-effects.json';
 import poisonItemsJson from './poison-items.json';
@@ -22,14 +19,13 @@ import doctorStatusEffectsJson from './doctor-status-effects.json';
 
 // FIXME too little encapsulation in this entire file
 export interface ItemDisplayMetadata {
-  readonly pathD: string;
+  readonly name: string;
   readonly description: string;
 }
 
-export type IconName = keyof typeof iconPathsJson;
-
 export interface ConventionEntry {
-  readonly icon: string;
+  readonly name: string;
+  readonly icon: IconName;
   readonly description: string;
 }
 
@@ -39,8 +35,6 @@ export type StaticStatusEffectConventionMap = Record<
   ConventionEntry
 >;
 
-const ICON_PATHS = iconPathsJson as Record<string, string>;
-const UNCERTAINTY_ICON_PATH = ICON_PATHS['uncertainty'] || '';
 const dynamicIconPaths = new Map<string, string>();
 
 // Validate that all ItemId and StatusEffectType values have convention entries
@@ -48,7 +42,7 @@ export const ALL_ITEMS = {
   ...basicItemsJson,
   ...poisonItemsJson,
   ...doctorItemsJson,
-} satisfies StaticItemConventionMap;
+} as unknown as StaticItemConventionMap;
 
 export const ALL_STATUS_EFFECTS = {
   ...basicStatusEffectsJson,
@@ -57,7 +51,7 @@ export const ALL_STATUS_EFFECTS = {
   ...basicItemsJson,
   ...poisonItemsJson,
   ...doctorItemsJson,
-} satisfies StaticStatusEffectConventionMap;
+} as unknown as StaticStatusEffectConventionMap;
 
 const dynamicItemConventions = new Map<string, ConventionEntry>();
 const dynamicStatusEffectConventions = new Map<string, ConventionEntry>();
@@ -76,44 +70,20 @@ export function registerStatusEffectConvention(
   dynamicStatusEffectConventions.set(id, entry);
 }
 
-export function registerIconPath(iconName: string, pathD: string): void {
-  dynamicIconPaths.set(iconName, pathD);
-}
-
 export function hasIcon(iconName: string): boolean {
-  return (
-    (iconName in ICON_PATHS || dynamicIconPaths.has(iconName)) &&
-    resolveIconPath(iconName) !== ''
-  );
+  return dynamicIconPaths.has(iconName);
 }
 
 export function getAvailableIconNames(): string[] {
-  const staticIcons = Object.entries(ICON_PATHS)
-    .filter(([, path]) => path !== '')
-    .map(([name]) => name);
   const dynamicIcons = Array.from(dynamicIconPaths.keys());
-  return [...new Set([...staticIcons, ...dynamicIcons])];
-}
-
-function resolveIconPath(iconName: string): string {
-  const staticPath = ICON_PATHS[iconName];
-  if (staticPath !== undefined) {
-    return staticPath;
-  }
-
-  const dynamicPath = dynamicIconPaths.get(iconName);
-  if (dynamicPath !== undefined) {
-    return dynamicPath;
-  }
-
-  return UNCERTAINTY_ICON_PATH;
+  return [...new Set([...ICON_NAMES, ...dynamicIcons])];
 }
 
 export const ItemConventionRegistry = {
   getItemDisplay(itemId: ItemId): ItemDisplayMetadata {
     const entry = this.getItemConvention(itemId);
     return {
-      pathD: resolveIconPath(entry.icon),
+      name: entry.name,
       description: entry.description,
     };
   },
@@ -130,8 +100,28 @@ export const ItemConventionRegistry = {
     }
 
     return {
+      name: this.formatItemIdAsName(itemId),
       icon: 'uncertainty',
       description: this.formatItemIdAsName(itemId),
+    };
+  },
+
+  getStatusEffectConvention(type: StatusEffectType): ConventionEntry {
+    const staticEntry =
+      ALL_STATUS_EFFECTS[type as keyof typeof ALL_STATUS_EFFECTS];
+    if (staticEntry) {
+      return staticEntry;
+    }
+
+    const dynamicEntry = dynamicStatusEffectConventions.get(type);
+    if (dynamicEntry) {
+      return dynamicEntry;
+    }
+
+    return {
+      name: this.formatItemIdAsName(type),
+      icon: 'uncertainty',
+      description: this.formatItemIdAsName(type),
     };
   },
 
@@ -140,7 +130,7 @@ export const ItemConventionRegistry = {
       ALL_STATUS_EFFECTS[type as keyof typeof ALL_STATUS_EFFECTS];
     if (staticEntry) {
       return {
-        pathD: resolveIconPath(staticEntry.icon),
+        name: staticEntry.name,
         description: staticEntry.description,
       };
     }
@@ -148,13 +138,13 @@ export const ItemConventionRegistry = {
     const dynamicEntry = dynamicStatusEffectConventions.get(type);
     if (dynamicEntry) {
       return {
-        pathD: resolveIconPath(dynamicEntry.icon),
+        name: dynamicEntry.name,
         description: dynamicEntry.description,
       };
     }
 
     return {
-      pathD: resolveIconPath('uncertainty'),
+      name: this.formatItemIdAsName(type),
       description: this.formatItemIdAsName(type),
     };
   },
@@ -163,21 +153,15 @@ export const ItemConventionRegistry = {
     const config = ACTIVE_EFFECT_DISPLAY_MAP[effectId];
     if (!config) {
       return {
-        pathD: resolveIconPath('active-effect'),
+        name: this.formatItemIdAsName(effectId),
         description: 'Unknown active effect',
       };
     }
 
     return {
-      pathD: resolveIconPath(config.iconName),
+      name: config.name,
       description: config.description,
     };
-  },
-
-  PASS_ICON_PATH: resolveIconPath('fast-forward-button'),
-
-  resolveIconPath(iconName: string): string {
-    return resolveIconPath(iconName);
   },
 
   formatItemIdAsName(itemId: string): string {

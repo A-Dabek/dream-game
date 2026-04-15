@@ -1,11 +1,11 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconTextComponent } from '../common/icon-text.component';
-import { InterfaceIconName } from '../common/interface-icon-registry';
 import { PlayerStats } from './player-progress.service';
+import { IconName } from '@shared-ui';
 
 export interface NavButton {
-  iconName: InterfaceIconName;
+  iconName: IconName;
   text: string;
   link: string;
 }
@@ -16,7 +16,7 @@ export interface NavButton {
   imports: [IconTextComponent, RouterLink],
   template: `
     <app-icon-text
-      iconName="matrices"
+      iconName="stack"
       [text]="stats().matrices.toString()"
       data-testid="stat-matrices"
     ></app-icon-text>
@@ -30,12 +30,12 @@ export interface NavButton {
       </a>
     }
     <app-icon-text
-      iconName="hp"
+      iconName="hearts"
       [text]="stats().hp.toString()"
       data-testid="stat-hp"
     ></app-icon-text>
     <app-icon-text
-      iconName="speed"
+      iconName="leather-boot"
       [text]="stats().speed.toString()"
       data-testid="stat-speed"
     ></app-icon-text>
