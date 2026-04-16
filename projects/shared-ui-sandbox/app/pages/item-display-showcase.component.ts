@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ItemDisplayComponent, IconName } from '@shared-ui';
-import { Item } from '@dream/game-board';
+import { IconName, Item } from '@dream/shared-basic';
+import { ItemDisplayComponent } from '@shared-ui';
 import { ItemConventionRegistry } from '@dream/game-board-ui';
 
 @Component({

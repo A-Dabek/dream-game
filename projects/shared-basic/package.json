@@ -2,7 +2,8 @@
   "name": "@dream/shared-basic",
   "version": "0.0.0",
   "scripts": {
-    "build": "ng build shared-basic"
+    "build": "ng build shared-basic",
+    "api-extractor": "tsc -p ../../projects/shared-basic/tsconfig.api.json --declaration --emitDeclarationOnly --outDir ../../dist/types/shared-basic && api-extractor run --local --config ../../projects/shared-basic/api-extractor.json"
   },
   "private": true
 }

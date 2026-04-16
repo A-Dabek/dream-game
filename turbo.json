@@ -8,6 +8,7 @@
         "../../dist/game-board/**",
         "../../dist/game-board-ui/**",
         "../../dist/shared-ui/**",
+        "../../dist/shared-basic/**",
         "../../dist/dream-game/**",
         "../../dist/shared-ui-sandbox/**"
       ]
