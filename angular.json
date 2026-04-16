@@ -196,6 +196,33 @@
           }
         }
       }
+    },
+    "shared-basic": {
+      "projectType": "library",
+      "root": "projects/shared-basic",
+      "sourceRoot": "projects/shared-basic",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/shared-basic/index.ts",
+            "tsConfig": "projects/shared-basic/tsconfig.app.json",
+            "index": false
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        }
+      }
     }
   }
 }

@@ -4,11 +4,11 @@ import {
   computed,
   input,
 } from '@angular/core';
+import { IconName } from '@dream/shared-basic';
 
 // IMPORTANT: Do NOT open or read the entire icons.json during development/review!
 // It is over 5MB big. We import it here only to look up paths by icon name.
 import iconsJson from '../../../assets/icons.json';
-import { IconName } from './icon-name';
 
 @Component({
   selector: 'app-icon',

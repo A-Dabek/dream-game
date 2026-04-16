@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { Item } from '@dream/shared-basic';
 import { EffectHandlerFactory } from './effect-handler.factory';
 import { DefaultEffectHandler } from './default-effect.handler';
 import { ItemCountDamageHandler } from './item-count-damage.handler';
 import { EngineState } from '../../engine.types';
-import { Effect, Item } from '../../../item';
+import { Effect } from '../../../item';
 
 describe('EffectHandlerFactory', () => {
   beforeEach(() => {

@@ -4,9 +4,8 @@ import {
   input,
   output,
 } from '@angular/core';
-import { Item } from '@dream/game-board';
+import { IconName, Item } from '@dream/shared-basic';
 import { ItemDisplayComponent, ItemConventionRegistry } from '../common';
-import { IconName } from '@shared-ui';
 
 @Component({
   selector: 'app-player-hand',

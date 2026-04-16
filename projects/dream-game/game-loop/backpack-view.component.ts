@@ -1,5 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
-import { IconComponent, ItemDisplayComponent, IconName } from '@shared-ui';
+import { IconName } from '@dream/shared-basic';
+import { IconComponent, ItemDisplayComponent } from '@shared-ui';
 import { ItemConventionRegistry } from '@dream/game-board-ui';
 import { ButtonComponent } from '../common/button.component';
 import { GameLoopStateService } from './game-loop-state.service';

@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { getItemBehavior, getItemGenre, Item, ItemId } from '@dream/game-board';
+import { getItemBehavior, getItemGenre, ItemId } from '@dream/game-board';
+import { Item } from '@dream/shared-basic';
 import {
   ForgedItemData,
   forgeItemStats,

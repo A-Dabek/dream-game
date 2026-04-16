@@ -1,6 +1,6 @@
 import { Component, input, InputSignal } from '@angular/core';
+import { IconName } from '@dream/shared-basic';
 import { IconComponent } from '@shared-ui';
-import { IconName } from '@shared-ui';
 
 @Component({
   selector: 'app-icon-text',

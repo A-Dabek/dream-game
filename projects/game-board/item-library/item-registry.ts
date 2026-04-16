@@ -1,4 +1,5 @@
-import { Genre, ItemId, ItemDefinition } from '../item';
+import { Genre } from '@dream/shared-basic';
+import { ItemId, ItemDefinition } from '../item';
 import { ActiveEffectLibrary } from '../effect-library/active-effects';
 import { StatusEffectLibrary } from '../effect-library/status-effects';
 import { ConditionLibrary } from '../item/conditions';

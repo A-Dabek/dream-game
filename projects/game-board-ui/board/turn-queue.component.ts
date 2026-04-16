@@ -7,7 +7,7 @@ import {
 import { TurnEntry } from '@dream/game-board';
 // import { ItemConventionRegistry } from '../common';
 import { IconComponent } from '@shared-ui';
-import { IconName } from '@shared-ui';
+import { IconName } from '@dream/shared-basic';
 
 @Component({
   selector: 'app-turn-queue',

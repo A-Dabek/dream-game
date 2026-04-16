@@ -1,4 +1,4 @@
-﻿export const ICON_NAMES = [
+export const ICON_NAMES = [
   'attack',
   'passive-attack',
   'reactive-removal',

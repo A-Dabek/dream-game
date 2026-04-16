@@ -1,10 +1,10 @@
+import { Genre } from '@dream/shared-basic';
 import { ConditionLibrary } from './conditions';
 import { charges, permanent } from './durations';
 import {
   Condition,
   Duration,
   Effect,
-  Genre,
   MergeStrategy,
   StatusEffect,
   StatusEffectType,

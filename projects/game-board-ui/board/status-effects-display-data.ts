@@ -1,5 +1,5 @@
-import { StatusEffectData, Genre } from '@dream/game-board';
-import { IconName } from '@shared-ui';
+import { StatusEffectData } from '@dream/game-board';
+import { Genre, IconName } from '@dream/shared-basic';
 
 /**
  * Extends StatusEffectData with UI-specific display properties.

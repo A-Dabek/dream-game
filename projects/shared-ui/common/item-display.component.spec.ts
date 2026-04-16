@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { ItemDisplayComponent } from './item-display.component';
 import { IconComponent } from '@shared-ui';
 import { ItemConventionRegistry } from '@dream/game-board-ui';
-import { Item } from '@dream/game-board';
+import { Item } from '@dream/shared-basic';
 
 describe('ItemDisplayComponent', () => {
   let component: ItemDisplayComponent;

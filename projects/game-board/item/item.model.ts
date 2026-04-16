@@ -1,4 +1,5 @@
-export type Genre = 'basic' | 'poison' | 'doctor';
+import type { Genre } from '@dream/shared-basic';
+import type { Item } from '@dream/shared-basic';
 
 export type MergeStrategy = 'new' | 'increase';
 
@@ -88,13 +89,6 @@ export type ItemDefinition = {
   readonly passiveEffects?: PassiveEffect[];
   readonly usages?: number;
 };
-
-export interface Item {
-  readonly id: ItemId;
-  readonly instanceId?: string;
-  readonly genre: Genre;
-  readonly remainingUsages: number;
-}
 
 export interface Loadout {
   items: Item[];

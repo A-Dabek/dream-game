@@ -7,7 +7,7 @@ import {
 import { ItemId } from '@dream/game-board';
 import { ItemConventionRegistry } from '../conventions/convention-registry';
 import { IconComponent } from '@shared-ui';
-import { IconName } from '@shared-ui';
+import { IconName } from '@dream/shared-basic';
 
 export interface ItemStats {
   hp: number;

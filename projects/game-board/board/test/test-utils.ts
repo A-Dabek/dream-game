@@ -1,4 +1,5 @@
-import { Item, ItemId } from '../../item';
+import { Item } from '@dream/shared-basic';
+import { ItemId } from '../../item';
 import { getItemBehavior, getItemGenre } from '../../item-library';
 import { BoardLoadout } from '../board.model';
 

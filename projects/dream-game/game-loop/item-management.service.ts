@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { Item, biasedRoll } from '@dream/game-board';
+import { biasedRoll } from '@dream/game-board';
+import { Item } from '@dream/shared-basic';
 import {
   BASE_HP,
   BASE_SPEED,

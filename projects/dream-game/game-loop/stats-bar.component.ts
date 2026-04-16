@@ -1,8 +1,8 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { IconName } from '@dream/shared-basic';
 import { IconTextComponent } from '../common/icon-text.component';
 import { PlayerStats } from './player-progress.service';
-import { IconName } from '@shared-ui';
 
 export interface NavButton {
   iconName: IconName;

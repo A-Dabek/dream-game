@@ -1,6 +1,7 @@
+import { Item } from '@dream/shared-basic';
 import { FirstAvailableStrategy, Strategy } from '../../ai';
 import { biasedRoll } from '../../utils/biased-roll';
-import { Item, ItemId, Loadout } from '../../item';
+import { ItemId, Loadout } from '../../item';
 import {
   getItemBehavior,
   getItemGenre,

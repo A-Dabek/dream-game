@@ -25,8 +25,6 @@ export {
   type GamePlayersConfig,
 } from './player/impl/cpu-player-builder';
 export {
-  type Genre,
-  type Item,
   type ItemId,
   type StaticItemId,
   type Loadout,

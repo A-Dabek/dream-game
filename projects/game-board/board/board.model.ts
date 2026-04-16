@@ -1,5 +1,6 @@
+import { Genre } from '@dream/shared-basic';
 import { type GameAction, GameActionType, LogEntry } from '../engine';
-import { Duration, Genre, ItemId, Loadout, StatusEffectType } from '../item';
+import { Duration, ItemId, Loadout, StatusEffectType } from '../item';
 import { TurnEntry } from '../turn-manager';
 import { Board } from './impl/board';
 

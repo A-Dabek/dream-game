@@ -1,4 +1,4 @@
-import { IconName } from '@shared-ui';
+import { IconName } from '@dream/shared-basic';
 import { RandomItemDefinition } from './random-item-definition';
 import { registerItem } from '../item-library/item-registry';
 import { ActiveEffectLibrary } from '../effect-library/active-effects';

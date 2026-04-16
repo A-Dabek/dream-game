@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import { IconName, Item } from '@dream/shared-basic';
 import { concatMap, from, Subscription, timer } from 'rxjs';
 import {
   GameAction,
@@ -6,7 +7,6 @@ import {
   GameEvent,
   GameState,
   getItemGenre,
-  Item,
   ItemId,
   LogEntry,
   StateChangeLogEntry,
@@ -14,7 +14,6 @@ import {
 import { GameService } from '../../game-logic';
 import { ActionHistoryEntry } from '../action-history-entry';
 import { ItemConventionRegistry } from '../../common';
-import { IconName } from '@shared-ui';
 import { SoundService } from './sound.service';
 import { UiGameState } from '../ui-game-state';
 import { mapEngineStateToUiState, mapToUiState } from '../ui-state-mapper';

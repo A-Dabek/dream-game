@@ -19,6 +19,7 @@
     "module": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@dream/shared-basic": ["projects/shared-basic/index.ts"],
       "@dream/game-board": ["projects/game-board/index.ts"],
       "@dream/game-board-ui": ["projects/game-board-ui/index.ts"],
       "@shared-ui": ["projects/shared-ui/index.ts"],
@@ -59,6 +60,9 @@
     },
     {
       "path": "./projects/game-initialization/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/shared-basic/tsconfig.app.json"
     }
   ]
 }

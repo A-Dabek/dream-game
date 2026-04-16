@@ -4,8 +4,6 @@ export {
   type Duration,
   type Effect,
   type EffectValue,
-  type Genre,
-  type Item,
   type ItemDefinition,
   type ItemId,
   type StaticItemId,

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Item } from '@dream/shared-basic';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { BackpackViewComponent } from './backpack-view.component';
 import {
@@ -8,7 +9,7 @@ import {
 import { ItemManagementService } from './item-management.service';
 import { PlayerProgressService } from './player-progress.service';
 import { FightManagerService } from './fight-manager.service';
-import { Item, ItemId } from '@dream/game-board';
+import { ItemId } from '@dream/game-board';
 import { IconComponent } from '@shared-ui';
 import { ButtonComponent } from '../common/button.component';
 import { RouterTestingModule } from '@angular/router/testing';

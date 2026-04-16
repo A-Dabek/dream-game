@@ -1,3 +1,4 @@
+import { Item } from '@dream/shared-basic';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
@@ -6,7 +7,7 @@ import {
 } from './item-management.service';
 import { PlayerProgressService } from './player-progress.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import type { Item, ItemId } from '@dream/game-board';
+import type { ItemId } from '@dream/game-board';
 
 describe('ItemManagementService', () => {
   let service: ItemManagementService;

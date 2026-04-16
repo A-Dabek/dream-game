@@ -7,7 +7,7 @@ import {
   Effect,
   PassiveEffect,
 } from '@dream/game-board';
-import { ICON_NAMES, IconName } from '@shared-ui';
+import { ICON_NAMES, IconName } from '@dream/shared-basic';
 import { ACTIVE_EFFECT_DISPLAY_MAP, EffectDisplayMetadata } from '../common';
 
 import basicItemsJson from './basic-items.json';

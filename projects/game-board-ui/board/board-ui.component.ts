@@ -5,7 +5,8 @@ import {
   inject,
   input,
 } from '@angular/core';
-import { GameActionType, Item } from '@dream/game-board';
+import { GameActionType } from '@dream/game-board';
+import { Item } from '@dream/shared-basic';
 import { HumanInputService } from './service/human-input.service';
 import { ItemCardComponent } from '../common';
 import { ActionHistoryComponent } from './action-history.component';
