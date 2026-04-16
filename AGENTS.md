@@ -11,6 +11,7 @@ This is an Angular (v21) monorepo for a turn-based card-like 1v1 game with the f
 - `projects/e2e` (`e2e`): End-to-end tests using Playwright.
 - `projects/shared-ui` (`shared-ui`): Shared UI library for common components (e.g., IconComponent).
 - `projects/shared-ui-sandbox` (`shared-ui-sandbox`): Sandbox app for testing shared UI components.
+- `projects/shared-basic` (`shared-basic`): Shared basic types and constants (e.g., IconName type, ICON_NAMES array, Genre type, Item types).
 
 ## Build System
 
