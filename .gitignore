@@ -44,6 +44,7 @@ __screenshots__/
 Thumbs.db
 
 .opencode/node_modules
+.opencode/package-lock.json
 .firebase
 .claude/
 CLAUDE.md
@@ -63,3 +64,4 @@ playwright/.cache/
 /temp
 .output.txt
 *.csv
+assets/random_items.json

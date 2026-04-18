@@ -6,5 +6,6 @@ export interface RandomEffectDefinition {
 
 export interface RandomItemDefinition {
   id: string;
+  icon: string;
   onPlayEffects: RandomEffectDefinition[];
 }

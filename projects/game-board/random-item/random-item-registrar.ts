@@ -31,9 +31,13 @@ export const RandomItemRegistrar = {
 
     // UI registration (optional)
     if (conventionRegistrar) {
+      const name = def.icon
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
       conventionRegistrar(def.id, {
-        name: 'Unknown',
-        icon: 'uncertainty',
+        name,
+        icon: def.icon as IconName,
         description: generateDescription(def.onPlayEffects),
       });
     }

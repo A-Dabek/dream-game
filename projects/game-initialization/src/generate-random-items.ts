@@ -4,6 +4,7 @@ import type {
   RandomEffectDefinition,
   RandomItemDefinition,
 } from '../../game-board';
+import { ICON_NAMES } from '../../shared-basic/icon-name';
 
 function generateNormalValue(
   mean: number,
@@ -43,7 +44,10 @@ function generateOne(
     },
   );
 
-  return { id, onPlayEffects };
+  const iconIndex = Math.floor(random() * ICON_NAMES.length);
+  const icon = ICON_NAMES[iconIndex];
+
+  return { id, icon, onPlayEffects };
 }
 
 function seededRandom(seed: number) {
