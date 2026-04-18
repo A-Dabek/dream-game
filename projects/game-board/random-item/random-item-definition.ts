@@ -1,5 +1,5 @@
 export interface RandomEffectDefinition {
-  type: 'damage' | 'healing';
+  type: 'damage' | 'healing' | 'speed_up' | 'slow_down';
   value: number;
   target: 'self' | 'enemy';
 }

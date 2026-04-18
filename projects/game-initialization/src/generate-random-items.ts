@@ -30,14 +30,24 @@ function generateOne(
   const onPlayEffects: RandomEffectDefinition[] = Array.from(
     { length: effectCount },
     () => {
-      const type = random() < 0.5 ? 'damage' : 'healing';
+      const roll = random();
+      const type =
+        roll < 0.4
+          ? 'damage'
+          : roll < 0.8
+            ? 'healing'
+            : roll < 0.9
+              ? 'speed_up'
+              : 'slow_down';
       const target = random() < 0.5 ? 'self' : 'enemy';
 
       let value: number;
       if (type === 'damage') {
         value = generateNormalValue(5, 2, 1, 9, random);
-      } else {
+      } else if (type === 'healing') {
         value = generateNormalValue(6, 2, 1, 10, random);
+      } else {
+        value = generateNormalValue(3, 1, 1, 5, random);
       }
 
       return { type, value, target };
