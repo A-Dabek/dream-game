@@ -10,12 +10,12 @@ export function generateDescription(effects: RandomEffectDefinition[]): string {
       switch (e.type) {
         case 'damage':
           return e.target === 'self'
-            ? `Deal ${e.value} damage to self`
-            : `Deal ${e.value} damage`;
+            ? `Deal ${e.value} to self`
+            : `Deal ${e.value}`;
         case 'healing':
           return e.target === 'self'
-            ? `Heal ${e.value} health`
-            : `Heal ${e.value} health to enemy`;
+            ? `Heal ${e.value}`
+            : `Heal ${e.value} to enemy`;
         case 'speed_up':
           return e.target === 'self'
             ? `Speed up by ${e.value}`

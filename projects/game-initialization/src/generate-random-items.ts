@@ -1,8 +1,80 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ActiveEffectLibrary } from '../../game-board/effect-library';
+import type { ActiveRandomEffect } from '../../game-board/effect-library/active-effects';
 import type { RandomItemDefinition } from '../../game-board';
 import { ICON_NAMES } from '../../shared-basic/icon-name';
+
+type EffectType = ActiveRandomEffect['type'];
+type Target = ActiveRandomEffect['target'];
+
+/**
+ * Human-editable rarity scale for effect types by target.
+ * 1 = most common, 2 = 2x rarer than 1, 3 = 4x rarer, 4 = 8x rarer, etc.
+ * Adding new effects with higher numbers keeps them naturally rare.
+ */
+const EFFECT_WEIGHTS: Record<EffectType, Record<Target, number>> = {
+  damage: { enemy: 1, self: 3 },
+  healing: { enemy: 2, self: 2 },
+  speed_up: { enemy: 3, self: 2 },
+  slow_down: { enemy: 3, self: 3 },
+};
+
+// Rarity scale for number of effects per item (same logarithmic scale)
+// 1 = most common, 2 = 2x rarer, 3 = 4x rarer, 4 = 8x rarer
+const EFFECT_COUNT_RARITY = { 1: 1, 2: 2, 3: 3, 4: 4 };
+
+// Value ranges for each effect type by target (mean, stdDev, min, max)
+// These are independent of rarity - higher rarity effects can still have large values
+const VALUE_RANGES: Record<
+  EffectType,
+  Record<Target, [number, number, number, number]>
+> = {
+  damage: { enemy: [5, 2, 1, 9], self: [5, 2, 1, 9] },
+  healing: { enemy: [6, 2, 1, 10], self: [6, 2, 1, 10] },
+  speed_up: { enemy: [3, 1, 1, 5], self: [3, 1, 1, 5] },
+  slow_down: { enemy: [3, 1, 1, 5], self: [3, 1, 1, 5] },
+};
+
+/** Converts logarithmic rarity scale to linear probability: 1 = most common, 2 = 2x rarer, 3 = 4x rarer, etc */
+function rarityToLinearWeight(rarity: number): number {
+  return 1 / Math.pow(2, rarity - 1);
+}
+
+/** Flattens nested weights into [key, weight] pairs and normalizes to sum to 1 */
+function flattenAndNormalizeWeights(
+  weights: Record<EffectType, Record<Target, number>>,
+): Array<[effectType: EffectType, target: Target, weight: number]> {
+  const entries: Array<[EffectType, Target, number]> = [];
+  for (const effectType of Object.keys(weights) as EffectType[]) {
+    for (const target of Object.keys(weights[effectType]) as Target[]) {
+      const linearWeight = rarityToLinearWeight(weights[effectType][target]);
+      entries.push([effectType, target, linearWeight]);
+    }
+  }
+  const total = entries.reduce((sum, e) => sum + e[2], 0);
+  return entries.map(([et, t, w]) => [et, t, w / total]);
+}
+
+/** Selects effect type and target based on weights using weighted random */
+function selectEffect(
+  weights: Record<EffectType, Record<Target, number>>,
+  random: () => number,
+): [EffectType, Target] {
+  const entries = flattenAndNormalizeWeights(weights);
+  let cumulative = 0;
+  const roll = random();
+
+  for (const [effectType, target, weight] of entries) {
+    cumulative += weight;
+    if (roll < cumulative) {
+      return [effectType, target];
+    }
+  }
+  // Fallback to last entry due to floating point
+  const last = entries[entries.length - 1];
+  return [last[0], last[1]];
+}
 
 function generateNormalValue(
   mean: number,
@@ -20,31 +92,45 @@ function generateNormalValue(
   return Math.min(max, Math.max(min, val));
 }
 
+/** Selects effect count based on rarity scale */
+function selectEffectCount(random: () => number): number {
+  const entries = Object.entries(EFFECT_COUNT_RARITY).map(
+    ([count, rarity]) =>
+      [Number(count), rarityToLinearWeight(rarity)] as [number, number],
+  );
+  const total = entries.reduce((sum, e) => sum + e[1], 0);
+  const normalized = entries.map(
+    ([count, weight]) => [count, weight / total] as [number, number],
+  );
+
+  let cumulative = 0;
+  const roll = random();
+  for (const [count, weight] of normalized) {
+    cumulative += weight;
+    if (roll < cumulative) return count;
+  }
+  return normalized[normalized.length - 1][0];
+}
+
 function generateOne(
   id: string,
   random: () => number = Math.random,
 ): RandomItemDefinition {
-  const effectCount = random() < 0.5 ? 1 : 2;
+  const effectCount = selectEffectCount(random);
   const onPlayEffects = Array.from({ length: effectCount }, () => {
-    const roll = random();
-    const target: 'self' | 'enemy' = random() < 0.5 ? 'self' : 'enemy';
+    const [effectType, target] = selectEffect(EFFECT_WEIGHTS, random);
+    const [mean, stdDev, min, max] = VALUE_RANGES[effectType][target];
+    const value = generateNormalValue(mean, stdDev, min, max, random);
 
     // Use ActiveEffectLibrary factory functions for type safety
-    if (roll < 0.4) {
-      // damage → attack
-      const value = generateNormalValue(5, 2, 1, 9, random);
+    if (effectType === 'damage') {
       return ActiveEffectLibrary.attack(value, target);
-    } else if (roll < 0.8) {
-      // healing → heal
-      const value = generateNormalValue(6, 2, 1, 10, random);
+    } else if (effectType === 'healing') {
       return ActiveEffectLibrary.heal(value, target);
-    } else if (roll < 0.9) {
-      // speed_up → modify_speed with positive value
-      const value = generateNormalValue(3, 1, 1, 5, random);
+    } else if (effectType === 'speed_up') {
       return ActiveEffectLibrary.modify_speed(value, target);
     } else {
-      // slow_down → modify_speed with negative value
-      const value = generateNormalValue(3, 1, 1, 5, random);
+      // slow_down
       return ActiveEffectLibrary.modify_speed(-value, target);
     }
   });
