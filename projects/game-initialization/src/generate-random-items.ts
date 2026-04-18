@@ -1,9 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import type {
-  RandomEffectDefinition,
-  RandomItemDefinition,
-} from '../../game-board';
+import { ActiveEffectLibrary } from '../../game-board/effect-library';
+import type { RandomItemDefinition } from '../../game-board';
 import { ICON_NAMES } from '../../shared-basic/icon-name';
 
 function generateNormalValue(
@@ -27,32 +25,29 @@ function generateOne(
   random: () => number = Math.random,
 ): RandomItemDefinition {
   const effectCount = random() < 0.5 ? 1 : 2;
-  const onPlayEffects: RandomEffectDefinition[] = Array.from(
-    { length: effectCount },
-    () => {
-      const roll = random();
-      const type =
-        roll < 0.4
-          ? 'damage'
-          : roll < 0.8
-            ? 'healing'
-            : roll < 0.9
-              ? 'speed_up'
-              : 'slow_down';
-      const target = random() < 0.5 ? 'self' : 'enemy';
+  const onPlayEffects = Array.from({ length: effectCount }, () => {
+    const roll = random();
+    const target: 'self' | 'enemy' = random() < 0.5 ? 'self' : 'enemy';
 
-      let value: number;
-      if (type === 'damage') {
-        value = generateNormalValue(5, 2, 1, 9, random);
-      } else if (type === 'healing') {
-        value = generateNormalValue(6, 2, 1, 10, random);
-      } else {
-        value = generateNormalValue(3, 1, 1, 5, random);
-      }
-
-      return { type, value, target };
-    },
-  );
+    // Use ActiveEffectLibrary factory functions for type safety
+    if (roll < 0.4) {
+      // damage → attack
+      const value = generateNormalValue(5, 2, 1, 9, random);
+      return ActiveEffectLibrary.attack(value, target);
+    } else if (roll < 0.8) {
+      // healing → heal
+      const value = generateNormalValue(6, 2, 1, 10, random);
+      return ActiveEffectLibrary.heal(value, target);
+    } else if (roll < 0.9) {
+      // speed_up → modify_speed with positive value
+      const value = generateNormalValue(3, 1, 1, 5, random);
+      return ActiveEffectLibrary.modify_speed(value, target);
+    } else {
+      // slow_down → modify_speed with negative value
+      const value = generateNormalValue(3, 1, 1, 5, random);
+      return ActiveEffectLibrary.modify_speed(-value, target);
+    }
+  });
 
   const iconIndex = Math.floor(random() * ICON_NAMES.length);
   const icon = ICON_NAMES[iconIndex];

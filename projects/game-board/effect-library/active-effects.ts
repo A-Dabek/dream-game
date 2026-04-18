@@ -1,5 +1,15 @@
 import { Effect, StatusEffect } from '../item/item.model';
 
+/**
+ * Strict type union for random-item generated effects.
+ * Ensures only valid effect types are used.
+ */
+export type ActiveRandomEffect =
+  | { type: 'damage'; value: number; target: 'self' | 'enemy' }
+  | { type: 'healing'; value: number; target: 'self' | 'enemy' }
+  | { type: 'speed_up'; value: number; target: 'self' | 'enemy' }
+  | { type: 'slow_down'; value: number; target: 'self' | 'enemy' };
+
 export const ActiveEffectLibrary = {
   attack: (
     value: number | string,

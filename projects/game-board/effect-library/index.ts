@@ -1,2 +1,2 @@
-export { ActiveEffectLibrary } from './active-effects';
+export { ActiveEffectLibrary, type ActiveRandomEffect } from './active-effects';
 export { StatusEffectLibrary } from './status-effects';
